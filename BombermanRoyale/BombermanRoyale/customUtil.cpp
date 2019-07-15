@@ -41,7 +41,7 @@ bool InitializeLogger()
 	std::string cOutFileName;
 	cOutFileName.append("ErrorLog");
 	cOutFileName.append(GetCurrentDateAndTime());
-	cOutFileName.append(".txt");
+	cOutFileName.append(".log");
 
 	if (G_SUCCESS(CreateGLog(cOutFileName.c_str(), &g_pcLogger)))
 	{
