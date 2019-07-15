@@ -30,3 +30,14 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio Stuffs
+Release
+Debug
+x64
+x86
+*.suo
+*.sdf
+*.db
+*.opensdf
+*.user
