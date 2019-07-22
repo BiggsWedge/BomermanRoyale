@@ -312,7 +312,6 @@ void ConvertFBX(const char* fileName)
 
 
 	importer->Initialize(".//Assets/Run.fbx", -1, manager->GetIOSettings());
-	//importer->Initialize(".//Assets/Box_Attack(1).fbx", -1, manager->GetIOSettings());
 	importer->Import(scene);
 
 	int numPoses;
@@ -416,9 +415,9 @@ void ConvertFBX(const char* fileName)
 		joint __joint;
 		__joint.parent_index = _joint.parentIndex;
 
-		for (int y = 0; y < 4; ++y)
-			for (int x = 0; x < 4; ++x)
-				__joint._mat[y * 4 + x] = _mat.mData[y][x];
+		for (int x = 0; x < 4; ++x)
+			for (int y = 0; y < 4; ++y)
+				__joint._mat[x * 4 + y] = _mat.mData[x][y];
 
 		bindPose.push_back(__joint);
 	}
@@ -440,9 +439,9 @@ void ConvertFBX(const char* fileName)
 			joint __joint;
 			__joint.parent_index = _joint.parentIndex;
 
-			for (int y = 0; y < 4; ++y)
-				for (int x = 0; x < 4; ++x)
-					__joint._mat[y * 4 + x] = _mat.mData[y][x];
+			for (int x = 0; x < 4; ++x)
+				for (int y = 0; y < 4; ++y)
+					__joint._mat[x * 4 + y] = _mat.mData[x][y];
 
 			_key.joints.push_back(__joint);
 		}
@@ -481,9 +480,8 @@ void ConvertFBX(const char* fileName)
 	for (int i = 0; i < _clusterCount; ++i)
 	{
 		FbxCluster* _currClust = _skin->GetCluster(i);
-
 		FbxNode* _link = _currClust->GetLink();
-		int JOINT_INDEX = 0;
+		int JOINT_INDEX = -1;
 
 		for (int j = 0; j < myJointNodes.size(); ++j)
 			if (myJointNodes[j]._node == _link)
@@ -498,7 +496,6 @@ void ConvertFBX(const char* fileName)
 			influence _temp;
 			_temp.joint = JOINT_INDEX;
 			_temp.weight = WEIGHT;
-			cout << "\nWeight of INDEX " << j << " at cluster " << i << " = " << WEIGHT;
 
 			influence_set* _theInfluenceSet = &control_point_influences[CONTROL_POINT_INDEX];
 
@@ -528,7 +525,6 @@ void ConvertFBX(const char* fileName)
 
 
 	ofstream animfile("..\\EngineDevelopment\\Assets\\BattleMage.anim", ios::trunc | ios::binary | ios::out);
-	//ofstream animfile("..\\EngineDevelopment\\Assets\\Box_Attack.anim", ios::trunc | ios::binary | ios::out);
 	assert(animfile.is_open());
 
 	int numJ = bindPose.size();
@@ -577,7 +573,6 @@ void ConvertFBX(const char* fileName)
 	ProcessFbxMeshComplete(scene->GetRootNode(), &vertices, &indices, &numIndices, &numVerts);
 
 	ofstream file("..\\EngineDevelopment\\Assets\\BattleMage.mesh", std::ios::trunc | std::ios::binary | std::ios::out);
-	//ofstream file("..\\EngineDevelopment\\Assets\\Box.mesh", std::ios::trunc | std::ios::binary | std::ios::out);
 
 	assert(file.is_open());
 
@@ -687,7 +682,6 @@ void ConvertFBX(const char* fileName)
 
 
 	ofstream matfile("..\\EngineDevelopment\\Assets\\BattleMage.mat", ios::trunc | ios::binary | ios::out);
-	//ofstream matfile("..\\EngineDevelopment\\Assets\\Box.mat", ios::trunc | ios::binary | ios::out);
 	assert(matfile.is_open());
 
 	if (!matfile.is_open())
@@ -731,8 +725,8 @@ void ConvertFBX(const char* fileName)
 void main()
 {
 
+
 	ConvertFBX(".//Assets//BattleMage.fbx");
-	//ConvertFBX(".//Assets//Box_Bindpose(1).fbx");
 
 	system("pause");
 }

@@ -230,7 +230,7 @@ namespace end
 			{
 				if (mats[i][j].input < 0)
 					continue;
-				std::experimental::filesystem::path filePath;
+				std::filesystem::path filePath;
 				filePath = filePaths[mats[i][j].input].data();
 				HRESULT result = DirectX::CreateWICTextureFromFile(_device, filePath.wstring().c_str(), nullptr, &_srv[j]);
 				if (!SUCCEEDED(result))
@@ -418,12 +418,10 @@ namespace end
 		DirectX::XMMATRIX toRet = x;
 		for (int i = 0; i < 4; ++i)
 		{
-			toRet.r[i] = DirectX::XMVectorLerp(x.r[i], y.r[i], ratio);
-
-			//for (int j = 0; j < 4; ++j)
-			//{
-			//	toRet.r[i].m128_f32[j] = lerp(x.r[i].m128_f32[j], y.r[i].m128_f32[j], ratio);
-			//}
+			for (int j = 0; j < 4; ++j)
+			{
+				toRet.r[i].m128_f32[j] = lerp(x.r[i].m128_f32[j], y.r[i].m128_f32[j], ratio);
+			}
 		}
 		/*
 		for (int i = 0; i < 3; ++i)

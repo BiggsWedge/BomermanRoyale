@@ -210,7 +210,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 			cameraMovement = float2((5.0f * frameTime * (inputs[KEY_D].held() & 1)) + (-5.0f * frameTime * (inputs[KEY_A].held() & 1)), ((5.0f * frameTime * (inputs[KEY_W].held() & 1)) + (-5.0f * frameTime * (inputs[KEY_S].held() & 1))));
 
 
-			_theRenderer->update(frameTime* 0.06f, { mouseDelta.y * sensitivity * frameTime, mouseDelta.x * sensitivity * frameTime }, movingTargetStats, cameraMovement);
+			_theRenderer->update(frameTime, { mouseDelta.y * sensitivity * frameTime, mouseDelta.x * sensitivity * frameTime }, movingTargetStats, cameraMovement);
 			_theRenderer->draw();
 			mouseDelta = { 0.0f, 0.0f };
 			if (GetFocus() == hWnd)

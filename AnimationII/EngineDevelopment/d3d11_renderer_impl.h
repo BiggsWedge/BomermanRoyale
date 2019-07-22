@@ -401,7 +401,6 @@ namespace end
 #pragma endregion
 
 			BattleMage.loadModel(".\\Assets\\BattleMage.mesh", ".\\Assets\\BattleMage.mat", ".\\Assets\\BattleMage.anim");
-			//BattleMage.loadModel(".\\Assets\\Box.mesh", ".\\Assets\\Box.mat", ".\\Assets\\Box_Attack.anim");
 			BattleMage.initialize(device);
 
 #pragma region Vertex Buffer Creation
@@ -561,8 +560,7 @@ namespace end
 
 				debug_renderer::drawMatrix(tween);
 
-				_jointsConst._joints[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, BattleMage._bindPose[i]._mat) * tween);
-				//_jointsConst._joints[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixIdentity());
+				_jointsConst._joints[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, BattleMage._bindPose[i]._mat) * tween);
 
 				if (_key.joints[i].parentIndex >= 0)
 				{
@@ -575,7 +573,6 @@ namespace end
 					float3 end = { endMat._41, endMat._42, endMat._43 };
 
 					debug_renderer::add_line(start, end, float4(1.0f, 1.0f, 1.0f, 1.0f));
-
 				}
 
 				
