@@ -1,7 +1,7 @@
 /****************************************************
 *	Filename:			main.cpp
 *	Date:				07/11/2019
-*	Mod. Date:			07/11/2019;
+*	Mod. Date:			07/16/2019;
 *	Mod. Initials:		D.S.
 *	Author:				Dominic Sondgeroth
 *	Purpose:			This file is the main
@@ -14,23 +14,22 @@
 
 int main(void)
 {
-	InitializeLogger();
+	InitializeGlobals();
+
+	LoadTextures();
+	LoadModel(".//Assets//Cube.mesh", ".//Assets//Cube.mat");
+
 
 	CGame* p_cGame = new CGame();
-
-	bool bGameInitializedCorrectly;
-
-	bGameInitializedCorrectly = p_cGame->Initialize();
-
-	if (!bGameInitializedCorrectly)
-		return 1;
-
+	p_cGame->Initialize();
+	p_cGame->LoadObject();
 	p_cGame->Run();
 
-
-	
 	delete p_cGame;
-	g_pcLogger->DecrementCount();
+	g_d3dData->Cleanup();
+	g_pWindow->DecrementCount();
+	g_pLogger->DecrementCount();
+
 	return 0;
 }
 
