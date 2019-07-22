@@ -230,7 +230,7 @@ namespace end
 			{
 				if (mats[i][j].input < 0)
 					continue;
-				std::filesystem::path filePath;
+				std::experimental::filesystem::path filePath;
 				filePath = filePaths[mats[i][j].input].data();
 				HRESULT result = DirectX::CreateWICTextureFromFile(_device, filePath.wstring().c_str(), nullptr, &_srv[j]);
 				if (!SUCCEEDED(result))
@@ -276,7 +276,7 @@ namespace end
 
 		for (auto& v : _vertices)
 		{
-			v.Position.x = -v.Position.x;
+			v.Position.x = v.Position.x;
 			v.Normal.x = -v.Normal.x;
 			v.Texture.y = 1.0f - v.Texture.y;
 		}

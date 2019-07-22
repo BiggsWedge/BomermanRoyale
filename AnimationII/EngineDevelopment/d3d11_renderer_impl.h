@@ -130,7 +130,7 @@ namespace end
 			ZeroMemory(&rasterDesc, sizeof(rasterDesc));
 			rasterDesc.FillMode = fillMode;
 			rasterDesc.CullMode = D3D11_CULL_BACK;
-			rasterDesc.FrontCounterClockwise = true;
+			rasterDesc.FrontCounterClockwise = false;
 			rasterDesc.DepthBias = false;
 			rasterDesc.DepthBiasClamp = 1.0f;
 			rasterDesc.SlopeScaledDepthBias = 0;
@@ -424,6 +424,7 @@ namespace end
 
 			device->CreateBuffer(&gridVertBuffDesc, &gridSubResc, &vertex_buffer[VERTEX_BUFFER::DEBUG_RENDERER]);
 
+			recreateRasterState();
 #pragma endregion
 
 		}
