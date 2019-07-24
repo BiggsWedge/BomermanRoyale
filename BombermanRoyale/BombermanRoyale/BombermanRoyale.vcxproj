@@ -121,17 +121,52 @@
     <ClCompile Include="..\Gateware\Source\G_System\GI_Static.cpp" />
     <ClCompile Include="..\Gateware\Source\G_System\GLog.cpp" />
     <ClCompile Include="..\Gateware\Source\G_System\GWindow.cpp" />
+    <ClCompile Include="CEntityManager.cpp" />
+    <ClCompile Include="CObject.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="DirectXData.cpp" />
     <ClCompile Include="CGame.cpp" />
-    <ClCompile Include="CRenderer.cpp" />
-    <ClCompile Include="customUtil.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="TImpl.cpp" />
+    <ClCompile Include="CRendererManager.cpp" />
+    <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="WICTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CEntityManager.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="DirectXData.h" />
     <ClInclude Include="CGame.h" />
-    <ClInclude Include="CRenderer.h" />
-    <ClInclude Include="customUtil.h" />
-    <ClInclude Include="TImpl.h" />
+    <ClInclude Include="CObject.h" />
+    <ClInclude Include="CRendererManager.h" />
+    <ClInclude Include="TObjectTemplate.h" />
+    <ClInclude Include="Utilities.h" />
+    <ClInclude Include="WICTextureLoader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="BasicVertex.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).csh</HeaderFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename)</VariableName>
+    </FxCompile>
+    <FxCompile Include="BasicPixel.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Domain</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Domain</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Domain</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).csh</HeaderFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename)</VariableName>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
