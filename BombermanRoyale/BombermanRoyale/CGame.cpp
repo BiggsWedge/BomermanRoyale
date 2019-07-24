@@ -1,71 +1,46 @@
-/****************************************************
-*	Filename:			CGame.cpp
-*	Date:				07/11/2019
-*	Mod. Date:			07/15/2019
-*	Mod. Initials:		D.S.
-*	Author:				Dominic Sondgeroth
-*	Purpose:			This is the impelmentation
-*						file that is the companion
-*						to the CGame.h file;
-****************************************************/
-
 #include "CGame.h"
-
-using namespace GW;
-using namespace SYSTEM;
-using namespace CORE;
-
-
-CGame::CGame()
-{
-
-}
 
 bool CGame::Initialize()
 {
-	if (!G_SUCCESS(CreateGWindow(100, 100, 1024, 720, GWindowStyle::WINDOWEDBORDERED, &p_cWindow)))
-	{
-		g_pcLogger->LogCatergorized("FAILURE", "Failed to create the window");
-		return false;
-	}
-	else
-		g_pcLogger->LogCatergorized("SUCCESS", "Successfully created the window");
-
-	p_cRenderer = new CRenderer();
-	if (!p_cRenderer->Initialize(p_cWindow))
-	{
-		g_pcLogger->LogCatergorized("FAILURE", "Failed to initialize Renderer");
-		return false;
-	}
-
-	HWND window_handle;
-
-	if (!G_SUCCESS(p_cWindow->GetWindowHandle(sizeof(HWND), (void**)&window_handle)))
-	{
-		g_pcLogger->LogCatergorized("FAILURE", "Failed to get the window handle");
-		return false;
-	}
+	p_cRendererManager = new CRendererManager();
 
 	return true;
 }
 
 void CGame::Run()
 {
-	GWindowInputEvents m_LastEvent;
-	while (G_SUCCESS(p_cWindow->GetLastEvent(m_LastEvent)) && m_LastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY)
+	GW::SYSTEM::GWindowInputEvents gLastEvent;
+	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY)
 	{
-		if (G_FAIL(p_cWindow->ProcessWindowEvents()))
+		if (G_FAIL(g_pWindow->ProcessWindowEvents()))
 			break;
 
-		p_cRenderer->Draw();
+		p_cRendererManager->Draw();
 	}
-	return;
 }
+
+void CGame::LoadObject()
+{
+	OBJLoadInfo loadInfo;
+	loadInfo.position = { 0.0f, 0.0f, 0.0f };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.meshID = 0;
+	loadInfo.usedDiffuse = g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::CRATE];
+	loadInfo.usedVertex = g_d3dData->d3dVertexShader[VERTEX_SHADER::BASIC];
+	loadInfo.usedPixel = g_d3dData->d3dPixelShader[PIXEL_SHADER::BASIC];
+	loadInfo.usedInput = g_d3dData->d3dInputLayout[INPUT_LAYOUT::BASIC];
+	loadInfo.usedGeo = nullptr;
+
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+}
+
+CGame::CGame()
+{
+
+}
+
 
 CGame::~CGame()
 {
-	p_cRenderer->Cleanup();
-	delete p_cRenderer;
-	p_cRenderer = nullptr;
-	p_cWindow->DecrementCount();
+	delete p_cRendererManager;
 }
