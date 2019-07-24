@@ -62,6 +62,115 @@ namespace end
 		*_out = _temp;
 	}
 
+	DirectX::XMMATRIX MovePlayer(DirectX::XMMATRIX playerMatrix)
+	{
+		DirectX::XMMATRIX PYTranslation = { 1.0f,0,0,0,
+			0,1.0f,0,0,
+			0,0,1.0f,0,
+			0,0.05f,0,1.0f };
+
+
+		DirectX::XMMATRIX NYTranslation = { 1.0f,0,0,0,
+			0,1.0f,0,0,
+			0,0,1.0f,0,
+			0,-0.05f,0,1.0f };
+
+
+
+		DirectX::XMMATRIX PXTranslation = { 1.0f,0,0,0,
+			0,1.0f,0,0,
+			0,0,1.0f,0,
+			0.05f,0,0,1.0f };
+
+
+		DirectX::XMMATRIX NXTranslation = { 1.0f,0,0,0,
+			0,1.0f,0,0,
+			0,0,1.0f,0,
+			-0.05f,0,0   ,1.0f };
+
+
+		DirectX::XMMATRIX NZTranslation = { 1.0f,0,0,0,
+			0,1.0f,0,0,
+			0,0,1.0f,0,
+			0,0,-0.05f,1.0f };
+
+
+		DirectX::XMMATRIX PZTranslation = { 1.0f,0,0,0,
+			0,1.0f,0,0,
+			0,0,1.0f,0,
+			0,0,0.05f,1.0f };
+
+
+
+		if (GetAsyncKeyState(VK_DOWN))
+		{
+			DirectX::XMVECTOR temp = playerMatrix.r[3];
+			playerMatrix.r[3] = DirectX::XMVECTOR{ 0.0f,0.0f,0.0f,0.0f };
+			playerMatrix = DirectX::XMMatrixRotationX(0.05f) * playerMatrix;
+			playerMatrix.r[3] = temp;
+		}
+
+
+		if (GetAsyncKeyState(VK_UP))
+		{
+			DirectX::XMVECTOR temp = playerMatrix.r[3];
+			playerMatrix.r[3] = DirectX::XMVECTOR{ 0.0f,0.0f,0.0f,0.0f };
+			playerMatrix = DirectX::XMMatrixRotationX(-0.05f) * playerMatrix;
+			playerMatrix.r[3] = temp;
+		}
+
+
+		if (GetAsyncKeyState(VK_LEFT))
+		{
+			DirectX::XMVECTOR temp = playerMatrix.r[3];
+			playerMatrix.r[3] = DirectX::XMVECTOR{ 0.0f,0.0f,0.0f,0.0f };
+			playerMatrix *= DirectX::XMMatrixRotationY(-0.05f);
+			playerMatrix.r[3] = temp;
+		}
+
+
+		if (GetAsyncKeyState(VK_RIGHT))
+		{
+			DirectX::XMVECTOR temp2 = playerMatrix.r[3];
+			playerMatrix.r[3] = DirectX::XMVECTOR{ 0.0f,0.0f,0.0f,0.0f };
+			playerMatrix *= DirectX::XMMatrixRotationY(0.05f);
+			playerMatrix.r[3] = temp2;
+		}
+
+
+		if (GetAsyncKeyState('D'))
+		{
+			playerMatrix = PXTranslation * playerMatrix;
+		}
+
+
+		if (GetAsyncKeyState('A'))
+		{
+			playerMatrix = NXTranslation * playerMatrix;
+		}
+
+		if (GetAsyncKeyState('W'))
+		{
+			playerMatrix = PZTranslation * playerMatrix;
+		}
+
+		if (GetAsyncKeyState('S'))
+		{
+			playerMatrix = NZTranslation * playerMatrix;
+		}
+
+		if (GetAsyncKeyState(VK_LCONTROL))
+		{
+			playerMatrix *= NYTranslation;
+		}
+		if (GetAsyncKeyState(VK_SPACE))
+		{
+			playerMatrix *= PYTranslation;
+		}
+
+		return playerMatrix;
+	}
+
 	struct renderer::impl
 	{
 		// platform/api specific members, functions, etc.
@@ -626,8 +735,10 @@ namespace end
 
 			debugConstBuff.modeling = DirectX::XMMatrixIdentity();
 			debugConstBuff.modeling = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
-			debugConstBuff.modeling = debugConstBuff.modeling * DirectX::XMMatrixTranslation(3.0f, 0.0f, 0.0f);
+			debugConstBuff.modeling = debugConstBuff.modeling * DirectX::XMMatrixTranslation(6.0f, 0.0f, 0.0f);
 			debugConstBuff.modeling = DirectX::XMMatrixTranspose(debugConstBuff.modeling);
+
+			debugConstBuff.modeling = MovePlayer(debugConstBuff.modeling);
 
 			context->UpdateSubresource(constant_buffer[CONSTANT_BUFFER::MVP], 0, nullptr, &debugConstBuff, 0, 0);
 

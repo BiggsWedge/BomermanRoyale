@@ -44,8 +44,13 @@ namespace end
 	{
 		totalTimePassed += lastFrameTime;
 		p_impl->frameTime = lastFrameTime;
-		default_view._viewMatrix = DirectX::XMMatrixTranslation(cameraMovement.x, 0.0f, cameraMovement.y) * default_view._viewMatrix;
-		default_view._viewMatrix = MouseLook(default_view._viewMatrix, mouseMovement);
+		if (GetKeyState(VK_RCONTROL) & 1)
+		{
+			default_view._viewMatrix = MouseLook(default_view._viewMatrix, mouseMovement);
+			default_view._viewMatrix = DirectX::XMMatrixTranslation(cameraMovement.x, 0.0f, cameraMovement.y) * default_view._viewMatrix;
+
+		}
+		
 		if (toggleRenderMode)
 		{
 			p_impl->toggleFillMode();
