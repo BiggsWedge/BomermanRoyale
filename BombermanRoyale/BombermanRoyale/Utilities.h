@@ -114,4 +114,6 @@ extern std::vector<TMeshTemplate> v_tMeshTemplates;
 
 void LoadModel(const char* meshFile, const char* matFile);
 
+void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile);
+
 void LoadTextures();

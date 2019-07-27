@@ -47,6 +47,15 @@ void CGame::LoadObject()
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	loadInfo.meshID = 1;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+
+	loadInfo.position = { 0.0f, 0.77f, 5.0f };
+	loadInfo.forwardVec = { 0.0f, 0.85f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::MAIN_MENU;
+
+	loadInfo.scale = DirectX::XMFLOAT3(1.75f, 1.99f, 1.0f);
+	loadInfo.meshID = 2;
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
 CGame::CGame()
