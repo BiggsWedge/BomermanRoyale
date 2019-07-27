@@ -11,10 +11,12 @@ CObject::CObject()
 
 void CObject::Draw()
 {
+	ID3D11CommandList* d3dCommandList = nullptr;
 	TRendererComponent* renderer = nullptr;
 	TMeshComponent* mesh = nullptr;
 	TTransformComponent* transform = nullptr;
 	TTextureComponent* tex = nullptr;
+
 	for (TComponent* c : v_tComponents)
 	{
 		switch (c->GetComponentType())
@@ -44,6 +46,12 @@ void CObject::Draw()
 	}
 	const UINT offsets[] = { 0 };
 	const UINT strides[] = { sizeof(TSimpleVertex) };
+
+	ID3D11RenderTargetView* const d3dTargets[] = { g_d3dData->d3dRenderTargetView };
+
+	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState);
+	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
+	g_d3dData->d3dContext->OMSetRenderTargets(1, d3dTargets, g_d3dData->d3dDepthStencilView);
 
 	g_d3dData->d3dContext->IASetInputLayout(g_d3dData->d3dInputLayout[renderer->iUsedInputLayout]);
 	g_d3dData->d3dContext->IASetVertexBuffers(0, 1, &mesh->d3dVertexBuffer, strides, offsets);
@@ -85,5 +93,7 @@ void CObject::Draw()
 	g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC]);
 
 	g_d3dData->d3dContext->DrawIndexed(mesh->indexCount, 0, 0);
+
+
 
 }

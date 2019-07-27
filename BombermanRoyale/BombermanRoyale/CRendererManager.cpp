@@ -12,9 +12,7 @@ bool CRendererManager::HasComponent(CObject _objToCheck, int _componentToCheck)
 
 void CRendererManager::RenderObject(CObject _objToDraw)
 {
-
 	rendereableObjects.push_back(_objToDraw);
-
 }
 
 bool CRendererManager::Draw()
@@ -51,9 +49,7 @@ bool CRendererManager::Draw()
 	/*********DRAW OTHER STUFF HERE************/
 
 	for (CObject c : rendereableObjects)
-	{
 		c.Draw();
-	}
 
 	g_d3dData->d3dSwapChain->Present(1, 0);
 

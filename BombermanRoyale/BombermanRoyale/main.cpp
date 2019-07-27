@@ -8,8 +8,7 @@
 *						entrypoint for the game
 ****************************************************/
 #include "CGame.h"
-
-
+#include <DirectXCollision.h>
 
 
 int main(void)
@@ -18,6 +17,8 @@ int main(void)
 
 	LoadTextures();
 	LoadModel(".//Assets//Cube.mesh", ".//Assets//Cube.mat");
+	LoadModel(".//Assets//BattleMage.mesh", ".//Assets//BattleMage.mat");
+
 
 
 	CGame* p_cGame = new CGame();

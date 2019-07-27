@@ -32,13 +32,14 @@ TTransformComponent::TTransformComponent()
 
 }
 
-TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector)
+TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector, DirectX::XMFLOAT3 scale)
 {
 	componentType = COMPONENT_TYPE::TRANSFORM;
 	fPosition = spawnPosition;
 	fForwardVector = forwardVector;
 	DirectX::XMFLOAT3 up = { 0.0f, 1.0f, 0.0f };
 	mObjMatrix = DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat3(&fPosition), DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&fForwardVector))), DirectX::XMLoadFloat3(&up));
+	mObjMatrix = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) * mObjMatrix;
 }
 
 TTransformComponent::~TTransformComponent()
