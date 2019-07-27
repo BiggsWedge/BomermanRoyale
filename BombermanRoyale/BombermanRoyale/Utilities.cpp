@@ -86,7 +86,6 @@ void LoadModel(const char* meshFile, const char* matFile)
 {
 
 	int index = v_tMeshTemplates.size();
-	v_tMeshTemplates.resize(index + 1);
 
 	TMeshTemplate temp;
 	temp.uID = index;
@@ -114,12 +113,16 @@ void LoadModel(const char* meshFile, const char* matFile)
 
 	for (auto& v : temp.v_tVertices)
 	{
+		v.fPosition.x /= 50.0f;
+		v.fPosition.y /= 50.0f;
+		v.fPosition.z /= 50.0f;
+
 		v.fPosition.x = -v.fPosition.x;
 		v.fNormal.x = -v.fNormal.x;
 		v.fTexCoord.y = 1.0f - v.fTexCoord.y;
 	}
 
-
+	v_tMeshTemplates.push_back(temp);
 }
 
 

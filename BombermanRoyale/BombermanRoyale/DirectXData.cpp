@@ -117,12 +117,14 @@ bool DirectXData::Initialize()
 
 #pragma region Camera Creation
 
-	camPos = { 0.0f, 10.0f, -5.0f };
+	camPos = { 0.0f, 15.0f, -15.0f };
 	DirectX::XMFLOAT3 at = { 0.0f, 0.0f, 0.0f };
 	DirectX::XMFLOAT3 up = { 0.0f, 1.0f, 0.0f };
 
-	basicConstBuff.mViewMatrix = DirectX::XMMatrixInverse(nullptr, DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat3(&camPos), DirectX::XMLoadFloat3(&at), DirectX::XMLoadFloat3(&up)));
-	basicConstBuff.mProjMatrix = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(70), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 50.0f);
+	camMat = DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat3(&camPos), DirectX::XMLoadFloat3(&at), DirectX::XMLoadFloat3(&up));
+
+	viewMat = camMat;// DirectX::XMMatrixInverse(nullptr, camMat);
+	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 50.0f);
 
 #pragma endregion
 
@@ -144,7 +146,7 @@ bool DirectXData::Initialize()
 	ZeroMemory(&BasicPConstBuffDesc, sizeof(BasicPConstBuffDesc));
 
 	BasicPConstBuffDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	BasicPConstBuffDesc.ByteWidth = sizeof(TBasicVertexConstBuff);
+	BasicPConstBuffDesc.ByteWidth = sizeof(TBasicPixelConstBuff);
 	BasicPConstBuffDesc.CPUAccessFlags = 0;
 	BasicPConstBuffDesc.MiscFlags = 0;
 	BasicPConstBuffDesc.StructureByteStride = 0;

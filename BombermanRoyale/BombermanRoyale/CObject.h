@@ -12,7 +12,7 @@ public:
 	CObject();
 	inline std::vector<TComponent*> GetComponenets() { return v_tComponents; }
 	inline void AddComponent(TComponent* _toAdd) { v_tComponents.push_back(_toAdd); }
-	ID3D11CommandList* Draw();
+	void Draw();
 };
 
 

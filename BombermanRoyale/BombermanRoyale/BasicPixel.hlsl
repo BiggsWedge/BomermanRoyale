@@ -25,14 +25,14 @@ struct inPixel
 
 cbuffer textureFlags
 {
-    bool texFlags[4];
+    int4 texFlags;
 };
 
 
 float4 main(in inPixel _inPix) : SV_TARGET
 {
     float4 outColor = (float4) 0;
-    if (texFlags[0])
+    if (texFlags[0] == 1)
         outColor += _diffuse.Sample(_samState, _inPix.texCoord);
 
     return outColor;

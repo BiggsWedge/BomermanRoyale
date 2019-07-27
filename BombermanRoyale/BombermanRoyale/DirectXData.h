@@ -18,7 +18,7 @@ struct TBasicVertexConstBuff
 
 struct TBasicPixelConstBuff
 {
-	bool flags[4];
+	int flags[4];
 };
 
 struct RENDER_TARGET_VIEW
@@ -86,6 +86,11 @@ struct DIFFUSE_TEXTURES
 	enum { CRATE = 0, COUNT };
 };
 
+struct NORMAL_TEXTURES
+{
+	enum { COUNT = 0 };
+};
+
 class DirectXData
 {
 public:
@@ -107,10 +112,12 @@ public:
 	ID3D11SamplerState*					d3dSamplerState = nullptr;
 
 	ID3D11ShaderResourceView*			d3dDiffuseTextures[DIFFUSE_TEXTURES::COUNT] = {};
-	ID3D11Buffer*						d3dConstantBuffers[CONSTANT_BUFFER::COUNT] = {};
+
 
 
 	DirectX::XMMATRIX					camMat;
+	DirectX::XMMATRIX					viewMat;
+	DirectX::XMMATRIX					projMat;
 	DirectX::XMFLOAT3					camPos;
 
 	TBasicVertexConstBuff					basicConstBuff;

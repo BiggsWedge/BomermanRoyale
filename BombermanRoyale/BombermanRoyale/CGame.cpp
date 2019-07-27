@@ -14,6 +14,13 @@ void CGame::Run()
 	{
 		if (G_FAIL(g_pWindow->ProcessWindowEvents()))
 			break;
+		for (int i = 0; i < objects.size(); ++i)
+		{
+			if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+			{
+				p_cRendererManager->RenderObject(*objects[i]);
+			}
+		}
 
 		p_cRendererManager->Draw();
 	}
@@ -25,12 +32,15 @@ void CGame::LoadObject()
 	loadInfo.position = { 0.0f, 0.0f, 0.0f };
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.meshID = 0;
-	loadInfo.usedDiffuse = g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::CRATE];
-	loadInfo.usedVertex = g_d3dData->d3dVertexShader[VERTEX_SHADER::BASIC];
-	loadInfo.usedPixel = g_d3dData->d3dPixelShader[PIXEL_SHADER::BASIC];
-	loadInfo.usedInput = g_d3dData->d3dInputLayout[INPUT_LAYOUT::BASIC];
-	loadInfo.usedGeo = nullptr;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
 
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { -5.0f, 0.0f, 0.0f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
