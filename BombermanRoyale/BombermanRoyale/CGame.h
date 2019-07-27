@@ -8,7 +8,7 @@ class CGame
 
 	CRendererManager* p_cRendererManager;
 	CEntityManager* p_cEntityManager;
-	std::vector<CObject> objects;
+	std::vector<CObject*> objects;
 
 
 public:

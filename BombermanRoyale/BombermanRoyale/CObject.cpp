@@ -7,75 +7,83 @@
 
 CObject::CObject()
 {
-	g_d3dData->d3dDevice->CreateDeferredContext(0, &d3dDeferredContext);
 }
 
-ID3D11CommandList * CObject::Draw()
+void CObject::Draw()
 {
-
-	ID3D11CommandList* toRet = nullptr;
 	TRendererComponent* renderer = nullptr;
 	TMeshComponent* mesh = nullptr;
 	TTransformComponent* transform = nullptr;
 	TTextureComponent* tex = nullptr;
-	for (auto& c : v_tComponents)
+	for (TComponent* c : v_tComponents)
 	{
-		switch ( c->GetComponentType())
+		switch (c->GetComponentType())
 		{
 		case COMPONENT_TYPE::TRANSFORM:
 		{
-			transform = (TTransformComponent*)&c;
+			transform = (TTransformComponent*)c;
 		}
 		case COMPONENT_TYPE::MESH:
 		{
-			mesh = (TMeshComponent*)&c;
+			mesh = (TMeshComponent*)c;
 			break;
 		}
 		case COMPONENT_TYPE::RENDERER:
 		{
-			renderer = (TRendererComponent*)&c;
+			renderer = (TRendererComponent*)c;
 			break;
 		}
 		case COMPONENT_TYPE::TEXTURE:
 		{
-			tex = (TTextureComponent*)&c;
+			tex = (TTextureComponent*)c;
 			break;
 		}
 		default:
 			break;
 		}
 	}
+	const UINT offsets[] = { 0 };
 	const UINT strides[] = { sizeof(TSimpleVertex) };
 
-	d3dDeferredContext->IASetInputLayout(*renderer->p_d3dUsedInputLayout);
-	d3dDeferredContext->IASetVertexBuffers(0, 1, &mesh->d3dVertexBuffer, 0, strides);
-	d3dDeferredContext->IASetIndexBuffer(mesh->d3dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	g_d3dData->d3dContext->IASetInputLayout(g_d3dData->d3dInputLayout[renderer->iUsedInputLayout]);
+	g_d3dData->d3dContext->IASetVertexBuffers(0, 1, &mesh->d3dVertexBuffer, strides, offsets);
+	g_d3dData->d3dContext->IASetIndexBuffer(mesh->d3dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	g_d3dData->d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	d3dDeferredContext->VSSetShader(*renderer->p_d3dUsedVertexShader, 0, 0);
-	d3dDeferredContext->PSSetShader(*renderer->p_d3dUsedPixelShader, 0, 0);
-	if (renderer->p_d3dUsedGeometryShader)
-		d3dDeferredContext->GSSetShader(*renderer->p_d3dUsedGeometryShader, 0, 0);
+	g_d3dData->d3dContext->VSSetShader(g_d3dData->d3dVertexShader[renderer->iUsedVertexShaderIndex], 0, 0);
 
-	d3dDeferredContext->PSSetShaderResources(0, 1, tex->p_d3dUsedDiffuse);
-
-	d3dDeferredContext->PSSetSamplers(0, 1, &g_d3dData->d3dSamplerState);
-
-	g_d3dData->basicConstBuff.mModelMatrix = transform->mObjMatrix;
+	g_d3dData->d3dContext->PSSetShader(g_d3dData->d3dPixelShader[renderer->iUsedPixelShaderIndex], 0, 0);
+	if (renderer->iUsedGeometryShaderIndex >= 0)
+		g_d3dData->d3dContext->GSSetShader(g_d3dData->d3dGeometryShader[renderer->iUsedGeometryShaderIndex], 0, 0);
 
 	TBasicPixelConstBuff pConst;
-	pConst.flags[0] = true;
-	pConst.flags[1] = false;
-	pConst.flags[2] = false;
-	pConst.flags[3] = false;
+	for (int i = 0; i < 4; ++i)
+		pConst.flags[i] = -1;
 
-	d3dDeferredContext->UpdateSubresource(g_d3dData->d3dConstantBuffers[CONSTANT_BUFFER::V_BASIC], 0, nullptr, &g_d3dData->basicConstBuff, 0, 0);
-	d3dDeferredContext->UpdateSubresource(g_d3dData->d3dConstantBuffers[CONSTANT_BUFFER::P_BASIC], 0, nullptr, &pConst, 0, 0);
+	if (tex->iUsedDiffuseIndex >= 0)
+	{
+		g_d3dData->d3dContext->PSSetShaderResources(0, 1, &g_d3dData->d3dDiffuseTextures[tex->iUsedDiffuseIndex]);
+		pConst.flags[0] = 1;
+	}
 
-	d3dDeferredContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstantBuffers[CONSTANT_BUFFER::P_BASIC]);
-	d3dDeferredContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstantBuffers[CONSTANT_BUFFER::V_BASIC]);
+	if (tex->iUsedNormalIndex >= 0)
+	{
+		pConst.flags[1] = 1;
+	}
 
-	d3dDeferredContext->DrawIndexed(mesh->indexCount, 0, 0);
 
-	d3dDeferredContext->FinishCommandList(false, &toRet);
-	return toRet;
+	g_d3dData->d3dContext->PSSetSamplers(0, 1, &g_d3dData->d3dSamplerState);
+
+	g_d3dData->basicConstBuff.mModelMatrix = DirectX::XMMatrixTranspose(transform->mObjMatrix);
+	g_d3dData->basicConstBuff.mViewMatrix = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
+	g_d3dData->basicConstBuff.mProjMatrix = DirectX::XMMatrixTranspose(g_d3dData->projMat);
+
+	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_BASIC], 0, nullptr, &g_d3dData->basicConstBuff, 0, 0);
+	g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_BASIC]);
+
+	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC], 0, nullptr, &pConst, 0, 0);
+	g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC]);
+
+	g_d3dData->d3dContext->DrawIndexed(mesh->indexCount, 0, 0);
+
 }

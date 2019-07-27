@@ -5,26 +5,21 @@
 
 TRendererComponent::TRendererComponent()
 {
+	componentType = COMPONENT_TYPE::RENDERER;
 }
 
-TRendererComponent::TRendererComponent(ID3D11VertexShader * _usedVertexShader, ID3D11PixelShader * _usedPixelShader, ID3D11GeometryShader * _usedGeometryShader, ID3D11InputLayout * _usedInputLayout)
+TRendererComponent::TRendererComponent(int _usedVertexShader, int _usedPixelShader, int _usedInputLayout, int _usedGeometryShader)
 {
-	if (_usedVertexShader)
-		p_d3dUsedVertexShader = &_usedVertexShader;
-	if (_usedPixelShader)
-		p_d3dUsedPixelShader = &_usedPixelShader;
-	if (_usedGeometryShader)
-		p_d3dUsedGeometryShader = &_usedGeometryShader;
-	if (_usedInputLayout)
-		p_d3dUsedInputLayout = &_usedInputLayout;
+	componentType = COMPONENT_TYPE::RENDERER;
+	iUsedVertexShaderIndex = _usedVertexShader;
+	iUsedPixelShaderIndex = _usedPixelShader;
+	iUsedGeometryShaderIndex = _usedGeometryShader;
+	iUsedInputLayout = _usedInputLayout;
 }
 
 TRendererComponent::~TRendererComponent()
 {
-	p_d3dUsedVertexShader = nullptr;
-	p_d3dUsedPixelShader = nullptr;
-	p_d3dUsedGeometryShader = nullptr;
-	p_d3dUsedInputLayout = nullptr;
+
 }
 
 #pragma endregion
@@ -33,11 +28,13 @@ TRendererComponent::~TRendererComponent()
 
 TTransformComponent::TTransformComponent()
 {
+	componentType = COMPONENT_TYPE::TRANSFORM;
 
 }
 
 TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector)
 {
+	componentType = COMPONENT_TYPE::TRANSFORM;
 	fPosition = spawnPosition;
 	fForwardVector = forwardVector;
 	DirectX::XMFLOAT3 up = { 0.0f, 1.0f, 0.0f };
@@ -55,23 +52,20 @@ TTransformComponent::~TTransformComponent()
 
 TTextureComponent::TTextureComponent()
 {
+	componentType = COMPONENT_TYPE::TEXTURE;
 
 }
 
-TTextureComponent::TTextureComponent(ID3D11ShaderResourceView* d3dUsedDiffuse, ID3D11ShaderResourceView* d3dUsedSpecular, ID3D11ShaderResourceView* d3dUsedEmissive, ID3D11ShaderResourceView* d3dUsedNormal)
+TTextureComponent::TTextureComponent(int _usedDiffuse, int _usedNormal)
 {
-	p_d3dUsedDiffuse = &d3dUsedDiffuse;
-	p_d3dUsedSpecular = &d3dUsedSpecular;
-	p_d3dUsedEmissive = &d3dUsedEmissive;
-	p_d3dUsedNormal = &d3dUsedNormal;
+	componentType = COMPONENT_TYPE::TEXTURE;
+	iUsedDiffuseIndex = _usedDiffuse;
+	iUsedNormalIndex = _usedNormal;
 }
 
 TTextureComponent::~TTextureComponent()
 {
-	p_d3dUsedDiffuse = nullptr;
-	p_d3dUsedEmissive = nullptr;
-	p_d3dUsedNormal = nullptr;
-	p_d3dUsedSpecular = nullptr;
+
 }
 
 #pragma endregion
@@ -80,27 +74,33 @@ TTextureComponent::~TTextureComponent()
 
 TMeshComponent::TMeshComponent()
 {
-
+	componentType = COMPONENT_TYPE::MESH;
 }
 
 TMeshComponent::TMeshComponent(TMeshTemplate _template)
 {
+	componentType = COMPONENT_TYPE::MESH;
+
 	indexCount = _template.v_iIndices.size();
+	vertexCount = _template.v_tVertices.size();
+
+
 	D3D11_BUFFER_DESC vBuffDesc;
 	D3D11_SUBRESOURCE_DATA vBuffSub;
 	ZeroMemory(&vBuffDesc, sizeof(vBuffDesc));
 	ZeroMemory(&vBuffSub, sizeof(vBuffSub));
 
 	vBuffDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vBuffDesc.ByteWidth = sizeof(TSimpleVertex);
+	vBuffDesc.ByteWidth = sizeof(TSimpleVertex) * vertexCount;
 	vBuffDesc.CPUAccessFlags = 0;
 	vBuffDesc.MiscFlags = 0;
 	vBuffDesc.StructureByteStride = 0;
 	vBuffDesc.Usage = D3D11_USAGE_DEFAULT;
 
 	vBuffSub.pSysMem = _template.v_tVertices.data();
+	HRESULT result;
 
-	g_d3dData->d3dDevice->CreateBuffer(&vBuffDesc, &vBuffSub, &d3dVertexBuffer);
+	result = g_d3dData->d3dDevice->CreateBuffer(&vBuffDesc, &vBuffSub, &d3dVertexBuffer);
 
 	D3D11_BUFFER_DESC iBuffDesc;
 	D3D11_SUBRESOURCE_DATA iBuffSub;
@@ -108,7 +108,7 @@ TMeshComponent::TMeshComponent(TMeshTemplate _template)
 	ZeroMemory(&iBuffSub, sizeof(iBuffSub));
 
 	iBuffDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	iBuffDesc.ByteWidth = sizeof(int);
+	iBuffDesc.ByteWidth = sizeof(int) * indexCount;
 	iBuffDesc.CPUAccessFlags = 0;
 	iBuffDesc.MiscFlags = 0;
 	iBuffDesc.StructureByteStride = 0;
@@ -116,7 +116,7 @@ TMeshComponent::TMeshComponent(TMeshTemplate _template)
 
 	iBuffSub.pSysMem = _template.v_iIndices.data();
 
-	g_d3dData->d3dDevice->CreateBuffer(&iBuffDesc, &iBuffSub, &d3dIndexBuffer);
+	result = g_d3dData->d3dDevice->CreateBuffer(&iBuffDesc, &iBuffSub, &d3dIndexBuffer);
 
 }
 

@@ -16,21 +16,16 @@ public:
 struct TRendererComponent : TComponent
 {
 private:
-	int componentType = COMPONENT_TYPE::RENDERER;
 public:
-	ID3D11VertexShader**			p_d3dUsedVertexShader;
-	ID3D11PixelShader**				p_d3dUsedPixelShader;
-	ID3D11GeometryShader**			p_d3dUsedGeometryShader;
-	ID3D11InputLayout**				p_d3dUsedInputLayout;
+	int iUsedVertexShaderIndex, iUsedPixelShaderIndex, iUsedGeometryShaderIndex, iUsedInputLayout;
 	TRendererComponent();
-	TRendererComponent(ID3D11VertexShader* _usedVertexShader, ID3D11PixelShader* _usedPixelShader, ID3D11GeometryShader* _usedGeometryShader, ID3D11InputLayout* _usedInputLayout);
+	TRendererComponent(int _usedVertexShader, int _usedPixelShader, int _usedInputLayout, int _usedGeometryShader = -1);
 	~TRendererComponent();
 };
 
 struct TTransformComponent : TComponent
 {
 private:
-	int componentType = COMPONENT_TYPE::TRANSFORM;
 public:
 	DirectX::XMFLOAT3				fPosition;
 	DirectX::XMFLOAT3				fForwardVector;
@@ -44,24 +39,20 @@ public:
 struct TTextureComponent : TComponent
 {
 private:
-	int componentType = COMPONENT_TYPE::TEXTURE;
 public:
-	ID3D11ShaderResourceView**			p_d3dUsedDiffuse;
-	ID3D11ShaderResourceView**			p_d3dUsedSpecular;
-	ID3D11ShaderResourceView**			p_d3dUsedEmissive;
-	ID3D11ShaderResourceView**			p_d3dUsedNormal;
+	int iUsedDiffuseIndex, iUsedNormalIndex;
 
 	TTextureComponent();
-	TTextureComponent(ID3D11ShaderResourceView* d3dUsedDiffuse, ID3D11ShaderResourceView* d3dUsedSpecular, ID3D11ShaderResourceView* d3dUsedEmissive, ID3D11ShaderResourceView* d3dUsedNormal);
+	TTextureComponent(int _usedDiffuse, int _usedNormal = -1);
 	~TTextureComponent();
 };
 
 struct TMeshComponent : TComponent
 {
 private:
-	int componentType = COMPONENT_TYPE::MESH;
 public:
 	UINT indexCount;
+	UINT vertexCount;
 	ID3D11Buffer*		d3dVertexBuffer;
 	ID3D11Buffer*		d3dIndexBuffer;
 	TMeshComponent();

@@ -8,25 +8,16 @@ struct OBJLoadInfo
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT3 forwardVec;
 
-	ID3D11VertexShader* usedVertex;
-	ID3D11PixelShader* usedPixel;
-	ID3D11GeometryShader* usedGeo;
-	ID3D11InputLayout* usedInput;
-
-	ID3D11ShaderResourceView* usedDiffuse;
+	int usedVertex, usedPixel, usedGeo, usedInput, usedDiffuse;
 
 };
-
 
 class CEntityManager
 {
 private:
 
-
 public:
-
-	CObject CreateOBJFromTemplate(OBJLoadInfo loadInfo);
-
+	CObject* CreateOBJFromTemplate(OBJLoadInfo loadInfo);
 
 };
 
