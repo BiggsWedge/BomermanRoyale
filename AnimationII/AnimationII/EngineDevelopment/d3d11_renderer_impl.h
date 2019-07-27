@@ -19,6 +19,8 @@
 #include <vector>
 #include "ps_cube.csh"
 #include "vs_cube.csh"
+#include "MenuPS.csh"
+#include "MenuVS.csh"
 #include "debug_renderer_vs.csh"
 #include "debug_renderer_ps.csh"
 #include "debug_renderer.h"
@@ -97,6 +99,10 @@ namespace end
 
 		D3D11_VIEWPORT				view_port[VIEWPORT::COUNT]{};
 
+		ID3D11Buffer*				_vertexBuffer;
+
+		ID3D11Buffer*				_indexBuffer;
+
 		/* Add more as needed...
 		ID3D11SamplerState*			sampler_state[STATE_SAMPLER::COUNT]{};
 
@@ -127,6 +133,14 @@ namespace end
 		}
 
 		float totalTime;
+
+#pragma region NEW Start Menu vars
+
+		bool GameStart = false;
+		uint32_t* _indices;
+		Simple_Vertex* _vertices;
+
+#pragma endregion
 
 	private:
 		void recreateRasterState()
@@ -165,25 +179,52 @@ namespace end
 
 #pragma endregion
 
-#pragma region Default View Creation
+#pragma region Menu Camera Creation Settings
+
 			screenWidth = GetSystemMetrics(SM_CXSCREEN);
 			screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
 			//WIDTH GetSystemMetrics(SM_CXSCREEN);
 			//HEIGHT GetSystemMetrics(SM_CYSCREEN);
 
-			DirectX::XMFLOAT3 _camPos = DirectX::XMFLOAT3(0.0f, 15.0f, -15.0f);
+			DirectX::XMFLOAT3 _camPos = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
 			DirectX::XMFLOAT3 _target = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 			DirectX::XMFLOAT3 _up = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
 
-			float3 camPos = { 0.0f, 15.0f, -15.0f };
+			float3 camPos = { 0.0f, 0.0f, -1.0f };
 			float3 target = { 0.0f, 0.0f, 0.0f };
 			float3 up = { 0.0f, 1.0f, 0.0f };
 
 			default_view._viewMatrix = LookAt(camPos, target, up);
-			default_view._projetionMatrix = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(40), screenWidth / screenHeight, 0.1f, 1000.0f);
+			default_view._projetionMatrix = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(90), screenWidth / screenHeight, 0.1f, 1000.0f);
 			//default_view._projetionMatrix = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(40), screenWidth.0f / HEIGHT.0f, 0.1f, 1000.0f);
 			//default_view._projetionMatrix = DirectX::XMMatrixOrthographicLH(16, 9, 0.1f, 1000.0f);
+
+#pragma endregion
+
+#pragma region Game State View Creation Settings
+
+			if (GameStart)
+			{
+				screenWidth = GetSystemMetrics(SM_CXSCREEN);
+				screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+				//WIDTH GetSystemMetrics(SM_CXSCREEN);
+				//HEIGHT GetSystemMetrics(SM_CYSCREEN);
+
+				DirectX::XMFLOAT3 _camPos = DirectX::XMFLOAT3(0.0f, 15.0f, -15.0f);
+				DirectX::XMFLOAT3 _target = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+				DirectX::XMFLOAT3 _up = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+
+				float3 camPos = { 0.0f, 15.0f, -15.0f };
+				float3 target = { 0.0f, 0.0f, 0.0f };
+				float3 up = { 0.0f, 1.0f, 0.0f };
+
+				default_view._viewMatrix = LookAt(camPos, target, up);
+				default_view._projetionMatrix = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(40), screenWidth / screenHeight, 0.1f, 1000.0f);
+				//default_view._projetionMatrix = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(40), screenWidth.0f / HEIGHT.0f, 0.1f, 1000.0f);
+				//default_view._projetionMatrix = DirectX::XMMatrixOrthographicLH(16, 9, 0.1f, 1000.0f);
+			}
 
 #pragma endregion
 
@@ -341,6 +382,15 @@ namespace end
 			if (FAILED(result))
 				printf("Failed to create Grid Pixel Shader!\n");
 
+			result = device->CreatePixelShader(MenuPS, sizeof(MenuPS), nullptr, &pixel_shader[PIXEL_SHADER::MENUS]);
+			if (FAILED(result))
+				printf("Failed to create Pixel Shader!\n");
+			
+			
+			result = device->CreateVertexShader(MenuVS, sizeof(MenuVS), nullptr, &vertex_shader[VERTEX_SHADER::MENUS]);
+			if (FAILED(result))
+				printf("Failed to create Grid Vertex Shader!\n");
+
 #pragma endregion
 
 #pragma region Constant Buffer Creation
@@ -477,182 +527,61 @@ namespace end
 
 #pragma endregion
 
-#pragma region Draws Grid
+#pragma region Start Menu
 
-			int start = 0;
+			_vertices = new Simple_Vertex[4];
+			_vertices[0].Position = { -10.75f, 6.1f, -5.0f };
+			_vertices[1].Position = { 10.75f, 6.1f, -5.0f };
+			_vertices[2].Position = { -10.75f, -6.1f, -5.0f };
+			_vertices[3].Position = { 10.75f, -6.1f, -5.0f };
 
-			for (int i = 0; i < 11; i++)
-			{
-				float3 pos1, pos2;
+			_vertices[0].Texture = { 0.0f, 0.0f };
+			_vertices[1].Texture = { 1.0f, 0.0f };
+			_vertices[2].Texture = { 0.0f, 1.0f };
+			_vertices[3].Texture = { 1.0f, 1.0f };
 
-				float4 col;
+			_indices = new uint32_t[6];
+			_indices[0] = 0;
+			_indices[1] = 2;
+			_indices[2] = 1;
+			_indices[3] = 1;
+			_indices[4] = 2;
+			_indices[5] = 3;
 
-				pos1.x = pos2.x = -5.0f + i;
-				pos1.y = pos2.y = 0.0f;
-				pos1.z = 5.0;
-				pos2.z = -5.0;
+			D3D11_BUFFER_DESC vertBufferDesc;
+			D3D11_SUBRESOURCE_DATA vertBuffSubResc;
 
-				col.x = gridRed;
-				col.y = gridGreen;
-				col.z = gridBlue;
-				col.w = 1.0f;
+			ZeroMemory(&vertBufferDesc, sizeof(vertBufferDesc));
+			ZeroMemory(&vertBuffSubResc, sizeof(vertBuffSubResc));
 
-				debug_renderer::add_line(pos1, pos2, col);
+			vertBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			vertBufferDesc.ByteWidth = sizeof(Simple_Vertex) * 4;
+			vertBufferDesc.CPUAccessFlags = 0;
+			vertBufferDesc.MiscFlags = 0;
+			vertBufferDesc.StructureByteStride = 0;
+			vertBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
-				pos1.x = 5.0f;
-				pos2.x = -5.0f;
-				pos1.y = pos2.y = 0.0f;
-				pos1.z = pos2.z = -5.0f + i;
+			vertBuffSubResc.pSysMem = _vertices;
 
-				debug_renderer::add_line(pos1, pos2, col);
-			}
+			device->CreateBuffer(&vertBufferDesc, &vertBuffSubResc, &_vertexBuffer);
 
-			switch ((int)timePassed % 6)
-			{
-			case 0: // TO MAGENTA
-				gridRed = colorLerp(0, 1, fractionalTime);
-				gridGreen = 0;
-				gridBlue = 1;
-				break;
-			case 1: //  TO RED
-				gridRed = 1;
-				gridGreen = 0;
-				gridBlue = colorLerp(1, 0, fractionalTime);
-				break;
-			case 2: //  TO YELLOW
-				gridRed = 1;
-				gridGreen = colorLerp(0, 1, fractionalTime);
-				gridBlue = 0;
-				break;
-			case 3: // TO GREEN
-				gridRed = colorLerp(1, 0, fractionalTime);
-				gridGreen = 1;
-				gridBlue = 0;
-				break;
-			case 4: // TO CYAN
-				gridRed = 0;
-				gridGreen = 1;
-				gridBlue = colorLerp(0, 1, fractionalTime);
-				break;
-			case 5: // TO BLUE
-				gridRed = 0;
-				gridGreen = colorLerp(1, 0, fractionalTime);
-				gridBlue = 1;
-				break;
-			default:
-				gridRed = gridGreen = gridBlue = 0;
-				break;
-			}
+			D3D11_BUFFER_DESC indexBufferDesc;
+			D3D11_SUBRESOURCE_DATA indexBufferSubResourceData;
 
-#pragma endregion
+			ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
+			ZeroMemory(&indexBufferSubResourceData, sizeof(indexBufferSubResourceData));
 
-			if (currKeyFrame == BattleMage._anim.frames.size())
-				currKeyFrame = 0;
+			indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+			indexBufferDesc.ByteWidth = sizeof(uint32_t) * 6;
+			indexBufferDesc.CPUAccessFlags = 0;
+			indexBufferDesc.MiscFlags = 0;
+			indexBufferDesc.StructureByteStride = 0;
+			indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
-			while (animTime > BattleMage._anim.frames[currFrameIndex + 1].time)
-			{
-				currFrameIndex++;
-				if (currFrameIndex == BattleMage._anim.frames.size() - 1)
-				{
-					animTime -= BattleMage._anim.duration;
-					currFrameIndex = 0;
-				}
-			}
+			indexBufferSubResourceData.pSysMem = _indices;
 
-			float startTime, endTime;
-			startTime = BattleMage._anim.frames[currFrameIndex].time;
-			endTime = BattleMage._anim.frames[currFrameIndex + 1].time;
-
-			float ratio = (animTime - startTime) / (endTime - startTime);
-
-			if (manualInput)
-				currFrameIndex = currKeyFrame;
-
-			KeyFrame _key = BattleMage._anim.frames[(manualInput) ? currKeyFrame : currFrameIndex];
-
-			jointCB _jointsConst;
-			_jointsConst.numJoints = ANIM[currFrameIndex].joints.size();
-
-			for (int i = 0; i < BattleMage._bindPose.size(); ++i)
-			{
-				debug_renderer::drawMatrix(DirectX::XMMatrixInverse(0, BattleMage._bindPose[i]._mat));
-
-				DirectX::XMFLOAT4X4 startMat, endMat;
-
-				if (BattleMage._bindPose[i].parentIndex >= 0)
-				{
-
-				DirectX::XMStoreFloat4x4(&startMat, DirectX::XMMatrixInverse(0, BattleMage._bindPose[i]._mat));
-				DirectX::XMStoreFloat4x4(&endMat,DirectX::XMMatrixInverse(0,  BattleMage._bindPose[BattleMage._bindPose[i].parentIndex]._mat));
-
-				float3 start = { startMat._41, startMat._42, startMat._43 };
-				float3 end = { endMat._41, endMat._42, endMat._43 };
-				debug_renderer::add_line(start, end, float4(1.0f, 0.0f, 0.0f, 1.0f));
-				}
-			}
-
-
-
-			for (int i = 0; i < ANIM[currFrameIndex].joints.size(); ++i)
-			{
-				DirectX::XMMATRIX tween = ANIM[currFrameIndex].joints[i]._mat; matLerp(ANIM[currFrameIndex].joints[i]._mat, ANIM[currFrameIndex + 1].joints[i]._mat, ratio);
-
-				debug_renderer::drawMatrix(tween);
-
-				_jointsConst._joints[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, BattleMage._bindPose[i]._mat) * tween);
-				//_jointsConst._joints[i] = DirectX::XMMatrixInverse(nullptr, tween);//DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, BattleMage._bindPose[i]._mat) * tween);
-
-				_jointsConst._joints[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply( BattleMage._bindPose[i]._mat,tween));
-
-
-				if (_key.joints[i].parentIndex >= 0)
-				{
-					DirectX::XMFLOAT4X4 startMat, endMat;
-
-
-					DirectX::XMStoreFloat4x4(&startMat, matLerp(ANIM[currFrameIndex].joints[i]._mat, ANIM[currFrameIndex + 1].joints[i]._mat, 0));//ratio));
-					DirectX::XMStoreFloat4x4(&endMat, matLerp(ANIM[currFrameIndex].joints[ANIM[currFrameIndex].joints[i].parentIndex]._mat, ANIM[currFrameIndex + 1].joints[ANIM[currFrameIndex].joints[i].parentIndex]._mat, 0));// ratio));
-
-					float3 start = { startMat._41, startMat._42, startMat._43 };
-					float3 end = { endMat._41, endMat._42, endMat._43 };
-
-					debug_renderer::add_line(start, end, float4(1.0f, 1.0f, 1.0f, 1.0f));
-				}
-
-				
-			}
-
-
-#pragma region Draws Debug Renderer
-
-			cbuffer debugConstBuff;
-			//debugConstBuff.modeling = DirectX::XMMatrixIdentity();
-			debugConstBuff.modeling = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
-			//debugConstBuff.modeling = DirectX::XMMatrixTranspose(debugConstBuff.modeling);
-			debugConstBuff.proj = DirectX::XMMatrixTranspose(v._projetionMatrix);
-			debugConstBuff.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, v._viewMatrix));
-
-			UINT strides = sizeof(colored_vertex);
-			UINT offsets = 0;
-
-			context->UpdateSubresource(constant_buffer[CONSTANT_BUFFER::DEBUG_RENDERER], 0, nullptr, &debugConstBuff, 0, 0);
-
-			context->IASetVertexBuffers(0, 1, &vertex_buffer[VERTEX_BUFFER::DEBUG_RENDERER], &strides, &offsets);
-
-			context->UpdateSubresource(vertex_buffer[VERTEX_BUFFER::DEBUG_RENDERER], 0, nullptr, debug_renderer::get_line_verts(), 0, 0);
-
-			context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-
-			context->IASetInputLayout(input_layout[INPUT_LAYOUT::DEBUG_RENDERER]);
-
-			context->VSSetShader(vertex_shader[VERTEX_SHADER::DEBUG_RENDERER], 0, 0);
-			context->VSSetConstantBuffers(0, 1, &constant_buffer[CONSTANT_BUFFER::DEBUG_RENDERER]);
-
-			context->PSSetShader(pixel_shader[PIXEL_SHADER::DEBUG_RENDERER], 0, 0);
-
-			context->Draw(debug_renderer::get_line_vert_count(), 0);
-
-#pragma endregion
+			device->CreateBuffer(&indexBufferDesc, &indexBufferSubResourceData, &_indexBuffer);
+			
 
 			Light pointLight;
 			pointLight.position = DirectX::XMFLOAT3(0.0, 6.0f, 2.0f);
@@ -663,17 +592,21 @@ namespace end
 			LightCB _light;
 			_light._light = pointLight;
 
-			strides = sizeof(Simple_Vertex);
+			UINT strides = sizeof(Simple_Vertex);
+			UINT offsets = 0;
 
 			matCB _mat;
 			_mat._mat = BattleMage._mat;
-			
-			cbuffer cvCbuffer;
 
-			debugConstBuff.modeling = DirectX::XMMatrixIdentity();
+			jointCB jointConst;
+
+			cbuffer cvCbuffer;
+			cbuffer debugConstBuff;
+
 			debugConstBuff.modeling = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
-			debugConstBuff.modeling = debugConstBuff.modeling * DirectX::XMMatrixTranslation(3.0f, 0.0f, 0.0f);
-			debugConstBuff.modeling = DirectX::XMMatrixTranspose(debugConstBuff.modeling);
+			//debugConstBuff.modeling = DirectX::XMMatrixTranspose(debugConstBuff.modeling);
+			debugConstBuff.proj = DirectX::XMMatrixTranspose(v._projetionMatrix);
+			debugConstBuff.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, v._viewMatrix));
 
 			context->UpdateSubresource(constant_buffer[CONSTANT_BUFFER::MVP], 0, nullptr, &debugConstBuff, 0, 0);
 
@@ -685,7 +618,7 @@ namespace end
 			context->UpdateSubresource(constant_buffer[CONSTANT_BUFFER::MATERIAL], 0, nullptr, &_mat, 0, 0);
 			context->PSSetConstantBuffers(1, 1, &constant_buffer[CONSTANT_BUFFER::MATERIAL]);
 
-			context->UpdateSubresource(constant_buffer[CONSTANT_BUFFER::JOINTS], 0, nullptr, &_jointsConst, 0, 0);
+			context->UpdateSubresource(constant_buffer[CONSTANT_BUFFER::JOINTS], 0, nullptr, &jointConst, 0, 0);
 			context->VSSetConstantBuffers(1, 1, &constant_buffer[CONSTANT_BUFFER::JOINTS]);
 
 			context->VSSetShader(vertex_shader[VERTEX_SHADER::COLORED_VERTEX], 0, 0);
@@ -695,7 +628,255 @@ namespace end
 
 			context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			BattleMage.render(context);
+			context->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+			context->IASetVertexBuffers(0, 1, &_vertexBuffer, &strides, &offsets);
+
+			context->PSSetSamplers(0, 1, &BattleMage._samState);
+			context->PSSetShaderResources(0, 1, &BattleMage._srv[0]);
+			context->PSSetShaderResources(1, 1, &BattleMage._srv[1]);
+			context->PSSetShaderResources(2, 1, &BattleMage._srv[2]);
+
+			context->DrawIndexed(6, 0, 0);
+
+#pragma endregion
+
+#pragma region Draws Grid
+
+			if (GameStart)
+			{
+				int start = 0;
+
+				for (int i = 0; i < 11; i++)
+				{
+					float3 pos1, pos2;
+
+					float4 col;
+
+					pos1.x = pos2.x = -5.0f + i;
+					pos1.y = pos2.y = 0.0f;
+					pos1.z = 5.0;
+					pos2.z = -5.0;
+
+					col.x = gridRed;
+					col.y = gridGreen;
+					col.z = gridBlue;
+					col.w = 1.0f;
+
+					debug_renderer::add_line(pos1, pos2, col);
+
+					pos1.x = 5.0f;
+					pos2.x = -5.0f;
+					pos1.y = pos2.y = 0.0f;
+					pos1.z = pos2.z = -5.0f + i;
+
+					debug_renderer::add_line(pos1, pos2, col);
+				}
+
+				switch ((int)timePassed % 6)
+				{
+				case 0: // TO MAGENTA
+					gridRed = colorLerp(0, 1, fractionalTime);
+					gridGreen = 0;
+					gridBlue = 1;
+					break;
+				case 1: //  TO RED
+					gridRed = 1;
+					gridGreen = 0;
+					gridBlue = colorLerp(1, 0, fractionalTime);
+					break;
+				case 2: //  TO YELLOW
+					gridRed = 1;
+					gridGreen = colorLerp(0, 1, fractionalTime);
+					gridBlue = 0;
+					break;
+				case 3: // TO GREEN
+					gridRed = colorLerp(1, 0, fractionalTime);
+					gridGreen = 1;
+					gridBlue = 0;
+					break;
+				case 4: // TO CYAN
+					gridRed = 0;
+					gridGreen = 1;
+					gridBlue = colorLerp(0, 1, fractionalTime);
+					break;
+				case 5: // TO BLUE
+					gridRed = 0;
+					gridGreen = colorLerp(1, 0, fractionalTime);
+					gridBlue = 1;
+					break;
+				default:
+					gridRed = gridGreen = gridBlue = 0;
+					break;
+				}
+
+			}
+#pragma endregion
+
+#pragma region Draws Vectors for joint orietation
+			jointCB _jointsConst;
+			if (GameStart)
+			{
+				if (currKeyFrame == BattleMage._anim.frames.size())
+					currKeyFrame = 0;
+
+				while (animTime > BattleMage._anim.frames[currFrameIndex + 1].time)
+				{
+					currFrameIndex++;
+					if (currFrameIndex == BattleMage._anim.frames.size() - 1)
+					{
+						animTime -= BattleMage._anim.duration;
+						currFrameIndex = 0;
+					}
+				}
+
+				float startTime, endTime;
+				startTime = BattleMage._anim.frames[currFrameIndex].time;
+				endTime = BattleMage._anim.frames[currFrameIndex + 1].time;
+
+				float ratio = (animTime - startTime) / (endTime - startTime);
+
+				if (manualInput)
+					currFrameIndex = currKeyFrame;
+
+				KeyFrame _key = BattleMage._anim.frames[(manualInput) ? currKeyFrame : currFrameIndex];
+
+				
+				_jointsConst.numJoints = ANIM[currFrameIndex].joints.size();
+
+				for (int i = 0; i < BattleMage._bindPose.size(); ++i)
+				{
+					debug_renderer::drawMatrix(DirectX::XMMatrixInverse(0, BattleMage._bindPose[i]._mat));
+
+					DirectX::XMFLOAT4X4 startMat, endMat;
+
+					if (BattleMage._bindPose[i].parentIndex >= 0)
+					{
+
+						DirectX::XMStoreFloat4x4(&startMat, DirectX::XMMatrixInverse(0, BattleMage._bindPose[i]._mat));
+						DirectX::XMStoreFloat4x4(&endMat, DirectX::XMMatrixInverse(0, BattleMage._bindPose[BattleMage._bindPose[i].parentIndex]._mat));
+
+						float3 start = { startMat._41, startMat._42, startMat._43 };
+						float3 end = { endMat._41, endMat._42, endMat._43 };
+						debug_renderer::add_line(start, end, float4(1.0f, 0.0f, 0.0f, 1.0f));
+					}
+				}
+
+
+
+				for (int i = 0; i < ANIM[currFrameIndex].joints.size(); ++i)
+				{
+					DirectX::XMMATRIX tween = ANIM[currFrameIndex].joints[i]._mat; matLerp(ANIM[currFrameIndex].joints[i]._mat, ANIM[currFrameIndex + 1].joints[i]._mat, ratio);
+
+					debug_renderer::drawMatrix(tween);
+
+					_jointsConst._joints[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, BattleMage._bindPose[i]._mat) * tween);
+					//_jointsConst._joints[i] = DirectX::XMMatrixInverse(nullptr, tween);//DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, BattleMage._bindPose[i]._mat) * tween);
+
+					_jointsConst._joints[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(BattleMage._bindPose[i]._mat, tween));
+
+
+					if (_key.joints[i].parentIndex >= 0)
+					{
+						DirectX::XMFLOAT4X4 startMat, endMat;
+
+
+						DirectX::XMStoreFloat4x4(&startMat, matLerp(ANIM[currFrameIndex].joints[i]._mat, ANIM[currFrameIndex + 1].joints[i]._mat, 0));//ratio));
+						DirectX::XMStoreFloat4x4(&endMat, matLerp(ANIM[currFrameIndex].joints[ANIM[currFrameIndex].joints[i].parentIndex]._mat, ANIM[currFrameIndex + 1].joints[ANIM[currFrameIndex].joints[i].parentIndex]._mat, 0));// ratio));
+
+						float3 start = { startMat._41, startMat._42, startMat._43 };
+						float3 end = { endMat._41, endMat._42, endMat._43 };
+
+						debug_renderer::add_line(start, end, float4(1.0f, 1.0f, 1.0f, 1.0f));
+					}
+
+
+				}
+
+			}
+#pragma endregion
+
+#pragma region Draws Debug Renderer
+			if (GameStart)
+			{
+				debugConstBuff;
+				//debugConstBuff.modeling = DirectX::XMMatrixIdentity();
+				debugConstBuff.modeling = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
+				//debugConstBuff.modeling = DirectX::XMMatrixTranspose(debugConstBuff.modeling);
+				debugConstBuff.proj = DirectX::XMMatrixTranspose(v._projetionMatrix);
+				debugConstBuff.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, v._viewMatrix));
+
+				UINT strides = sizeof(colored_vertex);
+				UINT offsets = 0;
+
+				context->UpdateSubresource(constant_buffer[CONSTANT_BUFFER::DEBUG_RENDERER], 0, nullptr, &debugConstBuff, 0, 0);
+
+				context->IASetVertexBuffers(0, 1, &vertex_buffer[VERTEX_BUFFER::DEBUG_RENDERER], &strides, &offsets);
+
+				context->UpdateSubresource(vertex_buffer[VERTEX_BUFFER::DEBUG_RENDERER], 0, nullptr, debug_renderer::get_line_verts(), 0, 0);
+
+				context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+				context->IASetInputLayout(input_layout[INPUT_LAYOUT::DEBUG_RENDERER]);
+
+				context->VSSetShader(vertex_shader[VERTEX_SHADER::DEBUG_RENDERER], 0, 0);
+				context->VSSetConstantBuffers(0, 1, &constant_buffer[CONSTANT_BUFFER::DEBUG_RENDERER]);
+
+				context->PSSetShader(pixel_shader[PIXEL_SHADER::DEBUG_RENDERER], 0, 0);
+
+				context->Draw(debug_renderer::get_line_vert_count(), 0);
+			}
+
+#pragma endregion
+
+#pragma region Draw BattleMage
+			if (GameStart)
+			{
+				Light pointLight;
+				pointLight.position = DirectX::XMFLOAT3(0.0, 6.0f, 2.0f);
+				pointLight.color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+				pointLight.intensity = 0.1f;
+				pointLight.type = POINT_LIGHT;
+
+				LightCB _light;
+				_light._light = pointLight;
+
+				strides = sizeof(Simple_Vertex);
+
+				matCB _mat;
+				_mat._mat = BattleMage._mat;
+
+				cbuffer cvCbuffer;
+
+				debugConstBuff.modeling = DirectX::XMMatrixIdentity();
+				debugConstBuff.modeling = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
+				debugConstBuff.modeling = debugConstBuff.modeling * DirectX::XMMatrixTranslation(3.0f, 0.0f, 0.0f);
+				debugConstBuff.modeling = DirectX::XMMatrixTranspose(debugConstBuff.modeling);
+
+				context->UpdateSubresource(constant_buffer[CONSTANT_BUFFER::MVP], 0, nullptr, &debugConstBuff, 0, 0);
+
+				context->IASetInputLayout(input_layout[INPUT_LAYOUT::REG_SHADER]);
+
+				context->UpdateSubresource(constant_buffer[CONSTANT_BUFFER::LIGHTS], 0, nullptr, &_light, 0, 0);
+				context->PSSetConstantBuffers(0, 1, &constant_buffer[CONSTANT_BUFFER::LIGHTS]);
+
+				context->UpdateSubresource(constant_buffer[CONSTANT_BUFFER::MATERIAL], 0, nullptr, &_mat, 0, 0);
+				context->PSSetConstantBuffers(1, 1, &constant_buffer[CONSTANT_BUFFER::MATERIAL]);
+
+				context->UpdateSubresource(constant_buffer[CONSTANT_BUFFER::JOINTS], 0, nullptr, &_jointsConst, 0, 0);
+				context->VSSetConstantBuffers(1, 1, &constant_buffer[CONSTANT_BUFFER::JOINTS]);
+
+				context->VSSetShader(vertex_shader[VERTEX_SHADER::COLORED_VERTEX], 0, 0);
+				context->VSSetConstantBuffers(0, 1, &constant_buffer[CONSTANT_BUFFER::MVP]);
+
+				context->PSSetShader(pixel_shader[PIXEL_SHADER::COLORED_VERTEX], 0, 0);
+
+				context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+				BattleMage.render(context);
+
+			}
+
+#pragma endregion
 
 			// **SKIP**:
 			// Draw batches in visible set (Implemented In a future assignment)
@@ -754,6 +935,10 @@ namespace end
 
 			// Releases Context
 			SAFE_RELEASE(context);
+
+			SAFE_RELEASE(_vertexBuffer);
+
+			SAFE_RELEASE(_indexBuffer);
 
 			// Sets up Live Object Debugging
 			ID3D11Debug* _myDebug = nullptr;

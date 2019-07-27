@@ -48,12 +48,14 @@ VS_OUT main(VS_IN input)
     }
 
     output.pos = mul(float4(skinnedPos.xyz, 1), world);
+	output.pos = mul(float4(input.pos.xyz, 1), world);
     output.wPos = output.pos;
     output.pos = mul(output.pos, view);
     output.pos = mul(output.pos, projection);
     //output.pos = float4(output.pos.xyz, 1);
 
     output.norm = mul(float4(skinnedNorm.xyz, 0), world);
+	output.norm = mul(float4(0.0f, 0.0f, 1.0f, 0.0f), world);
 
     output.tex = float2(input.tex.x, 1.0f - input.tex.y);
     output.eyePos.x = -dot(view[3].xyz, view[0].xyz);

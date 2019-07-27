@@ -55,11 +55,11 @@ namespace end
 	};
 
 	struct VERTEX_SHADER {
-		enum { COLORED_VERTEX = 0, DEBUG_RENDERER, COUNT };
+		enum { COLORED_VERTEX = 0, DEBUG_RENDERER, MENUS, COUNT };
 	};
 
 	struct PIXEL_SHADER {
-		enum { COLORED_VERTEX = 0, DEBUG_RENDERER, COUNT };
+		enum { COLORED_VERTEX = 0, DEBUG_RENDERER, MENUS, COUNT };
 	};
 
 	struct VIEW_RENDER_TARGET {
@@ -87,7 +87,7 @@ namespace end
 	};
 
 	struct VERTEX_BUFFER {
-		enum { DEBUG_RENDERER = 0, MODEL, COUNT };
+		enum { DEBUG_RENDERER = 0, MODEL, MENUS, COUNT };
 	};
 
 	/* Add more as needed...
