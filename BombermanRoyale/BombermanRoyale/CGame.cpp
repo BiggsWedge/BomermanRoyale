@@ -37,10 +37,15 @@ void CGame::LoadObject()
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { -5.0f, 0.0f, 0.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
+
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	loadInfo.meshID = 1;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 

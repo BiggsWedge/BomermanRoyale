@@ -83,7 +83,7 @@ struct DEPTH_STENCIL_STATE
 
 struct DIFFUSE_TEXTURES
 {
-	enum { CRATE = 0, COUNT };
+	enum { CRATE = 0, BATTLE_MAGE, COUNT };
 };
 
 struct NORMAL_TEXTURES

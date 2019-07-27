@@ -30,9 +30,10 @@ public:
 	DirectX::XMFLOAT3				fPosition;
 	DirectX::XMFLOAT3				fForwardVector;
 	DirectX::XMMATRIX				mObjMatrix;
+	DirectX::XMFLOAT3				fScale;
 
 	TTransformComponent();
-	TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector);
+	TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector, DirectX::XMFLOAT3 scale);
 	~TTransformComponent();
 };
 
