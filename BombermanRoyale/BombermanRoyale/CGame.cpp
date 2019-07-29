@@ -1,4 +1,5 @@
 #include "CGame.h"
+#include <iostream>
 
 bool CGame::Initialize()
 {
@@ -9,6 +10,8 @@ bool CGame::Initialize()
 
 void CGame::Run()
 {
+	/*GW::SYSTEM::GInput *gLastestInput;
+	float errorCode;*/
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
 	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY)
 	{
@@ -21,6 +24,15 @@ void CGame::Run()
 				p_cRendererManager->RenderObject(*objects[i]);
 			}
 		}
+
+	
+
+		/*GW::SYSTEM::CreateGInput(g_pWindow, 12, &gLastestInput);
+
+		if (gLastestInput->GetState(0x3d, errorCode))
+		{
+			std::cout << "HERE";
+		}*/
 
 		p_cRendererManager->Draw();
 	}

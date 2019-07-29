@@ -3,6 +3,7 @@
 using namespace std;
 using namespace GW;
 using namespace SYSTEM;
+using namespace AUDIO;
 
 
 std::vector<const wchar_t*> diffuseTextures =
@@ -14,6 +15,9 @@ std::vector<const wchar_t*> diffuseTextures =
 
 GLog* g_pLogger = nullptr;
 GWindow* g_pWindow = nullptr;
+GInput* g_pInputRecord = nullptr;
+GAudio* g_pAudioHolder = nullptr;
+
 std::vector<TMeshTemplate> v_tMeshTemplates = {};
 
 string GetCurrentDateAndTime()
@@ -70,11 +74,50 @@ bool InitializeWindow()
 	}
 }
 
+
+bool InitializeInput()
+{
+
+	if (G_SUCCESS(CreateGInput(g_pWindow, sizeof(g_pWindow),&g_pInputRecord)))
+	{
+		g_pLogger->LogCatergorized("SUCCESS", "Input Manager successfully created.");
+		return true;
+	}
+	else
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Input Manager unsuccessfully created.");
+		return false;
+	}
+	
+}
+
+
+bool InitializeAudio()
+{
+
+	if (G_SUCCESS(CreateGAudio(&g_pAudioHolder)))
+	{
+		g_pLogger->LogCatergorized("SUCCESS", "Audio Manager successfully created.");
+		return true;
+	}
+	else
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Audio Manager unsuccessfully created.");
+		return false;
+	}
+
+}
+
+
 bool InitializeGlobals()
 {
 	if (!InitializeLogger())
 		return false;
 	if (!InitializeWindow())
+		return false;
+	if (!InitializeInput())
+		return false;
+	if (!InitializeAudio())
 		return false;
 	g_d3dData = new DirectXData();
 	if (!g_d3dData->Initialize())

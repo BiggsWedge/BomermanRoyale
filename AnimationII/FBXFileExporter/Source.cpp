@@ -3,7 +3,12 @@
 using namespace std;
 using namespace DirectX;
 
-
+struct FileSet
+{
+	const char* meshFile = nullptr;
+	const char* animFile = nullptr;
+	const char* bastFile = nullptr;
+};
 
 void ProcessFbxMeshComplete(FbxNode* Node, vector<SimpleVertex>* vertices, vector<int>* indices, int* numIndices, int* numVertices)
 {
@@ -294,7 +299,7 @@ void Compactify(std::vector<SimpleVertex>* vertices, std::vector<int>* indices, 
 }
 
 
-void ConvertFBX(const char* fileName)
+void ConvertFBX(FileSet files)
 {
 #pragma region Setup
 
@@ -307,6 +312,9 @@ void ConvertFBX(const char* fileName)
 	FbxImporter* importer = FbxImporter::Create(manager, "");
 
 #pragma endregion
+
+	if (files.animFile)
+	{
 
 #pragma region Animation
 
@@ -558,10 +566,11 @@ void ConvertFBX(const char* fileName)
 	animfile.close();
 
 #pragma endregion
+	}
 
 #pragma region Mesh
 
-	importer->Initialize(fileName, -1, manager->GetIOSettings());
+	importer->Initialize(files.meshFile, -1, manager->GetIOSettings());
 
 	importer->Import(scene);
 
@@ -572,7 +581,12 @@ void ConvertFBX(const char* fileName)
 
 	ProcessFbxMeshComplete(scene->GetRootNode(), &vertices, &indices, &numIndices, &numVerts);
 
-	ofstream file("..\\EngineDevelopment\\Assets\\BattleMage.mesh", std::ios::trunc | std::ios::binary | std::ios::out);
+	std::string outMesh;
+	outMesh.append(".//Assets//");
+	outMesh.append(files.bastFile);
+	outMesh.append(".mesh");
+
+	ofstream file(outMesh.c_str() , std::ios::trunc | std::ios::binary | std::ios::out);
 
 	assert(file.is_open());
 
@@ -679,9 +693,12 @@ void ConvertFBX(const char* fileName)
 		}
 	}
 
+	std::string outMat;
+	outMat.append(".//Assets//");
+	outMat.append(files.bastFile);
+	outMat.append(".mat");
 
-
-	ofstream matfile("..\\EngineDevelopment\\Assets\\BattleMage.mat", ios::trunc | ios::binary | ios::out);
+	ofstream matfile(outMat.c_str(), ios::trunc | ios::binary | ios::out);
 	assert(matfile.is_open());
 
 	if (!matfile.is_open())
@@ -724,9 +741,12 @@ void ConvertFBX(const char* fileName)
 
 void main()
 {
+	FileSet fileset;
 
+	fileset.meshFile = ".//Assets//BaseLevel.fbx";
+	fileset.bastFile = "BaseLevel";
 
-	ConvertFBX(".//Assets//BattleMage.fbx");
+	ConvertFBX(fileset);
 
 	system("pause");
 }
