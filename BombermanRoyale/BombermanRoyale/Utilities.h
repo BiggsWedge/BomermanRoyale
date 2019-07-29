@@ -7,7 +7,7 @@
 #include "..\Gateware\Interface\G_System\GLog.h"
 #include "..\Gateware\Interface\G_System\GWindow.h"
 #include "..\Gateware\Interface\G_System\GInput.h"
-//#include "..\Gateware\Interface\G_Audio\GAudio.h"
+#include "..\Gateware\Interface\G_Audio\GAudio.h"
 #include "WICTextureLoader.h"
 #include "BasicVertex.csh"
 #include "BasicPixel.csh"
@@ -19,7 +19,8 @@ using file_path_t = std::array<char, 260>;
 extern GW::SYSTEM::GLog* g_pLogger;
 extern GW::SYSTEM::GWindow* g_pWindow;
 extern GW::SYSTEM::GInput* g_pInputRecord;
-//extern GW::AUDIO::GAudio* g_pAudioHolder;
+extern GW::AUDIO::GAudio* g_pAudioHolder;
+extern GW::AUDIO::GMusic* g_pMusicHolder;
 
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the
@@ -52,21 +53,21 @@ std::string GetCurrentDateAndTime();
 ***********************************************************************/
 bool InitializeInput();
 
-///***********************************************************************
-//*	InitializeInput():	Initializes the AudioManager.
-//						Returns true if successfully initialized
-//						or false if not.
-//*	Ins:
-//*								None
-//*	Outs:
-//*								None
-//*	Returns:
-//*								Bool
-//*
-//*	Mod. Date:					07/29/2019
-//*	Mod. Initials:				D.R.
-//***********************************************************************/
-//bool InitializeAudio();
+/***********************************************************************
+*	InitializeInput():	Initializes the AudioManager.
+						Returns true if successfully initialized
+						or false if not.
+*	Ins:
+*								None
+*	Outs:
+*								None
+*	Returns:
+*								Bool
+*
+*	Mod. Date:					07/29/2019
+*	Mod. Initials:				D.R.
+***********************************************************************/
+bool InitializeAudio();
 
 /***********************************************************************
 *	InitializeLogger():			Initializes the errorlogger.

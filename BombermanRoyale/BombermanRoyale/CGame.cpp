@@ -1,6 +1,8 @@
 #include "CGame.h"
 #include <iostream>
 
+const char* backgroundMusicFilePath = ".//Assets//Music//BackgroundMusic.wav";
+
 bool CGame::Initialize()
 {
 	p_cRendererManager = new CRendererManager();
@@ -10,8 +12,8 @@ bool CGame::Initialize()
 
 void CGame::Run()
 {
-	/*GW::SYSTEM::GInput *gLastestInput;
-	float errorCode;*/
+
+	float errorCode = 0;
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
 	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY)
 	{
@@ -26,13 +28,15 @@ void CGame::Run()
 		}
 
 	
-
-		/*GW::SYSTEM::CreateGInput(g_pWindow, 12, &gLastestInput);
-
-		if (gLastestInput->GetState(0x3d, errorCode))
+		if (g_pInputRecord->GetState(G_KEY_SPACE, errorCode) == 1)
 		{
-			std::cout << "HERE";
-		}*/
+			std::cout << "SPACE WAS PRESSED";
+		}
+		
+		if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicHolder)))
+		{
+			g_pMusicHolder->StreamStart(false);
+		}
 
 		p_cRendererManager->Draw();
 	}
