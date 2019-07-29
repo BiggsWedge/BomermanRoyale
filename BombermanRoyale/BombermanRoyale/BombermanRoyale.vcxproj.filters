@@ -98,6 +98,9 @@
     <ClInclude Include="CEntityManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GInput.h">
+      <Filter>Gateware</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertex.hlsl">

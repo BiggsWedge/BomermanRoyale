@@ -138,6 +138,7 @@
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CRendererManager.h" />
+    <ClInclude Include="GInput.h" />
     <ClInclude Include="TObjectTemplate.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="WICTextureLoader.h" />
