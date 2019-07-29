@@ -69,6 +69,9 @@
     <ClCompile Include="CObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GInput.cpp">
+      <Filter>Gateware</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -97,9 +100,6 @@
     </ClInclude>
     <ClInclude Include="CEntityManager.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GInput.h">
-      <Filter>Gateware</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
