@@ -31,10 +31,8 @@ bool CRendererManager::Draw()
 	}
 
 	if (G_SUCCESS(g_d3dData->d3dSurface->GetDepthStencilView((void**)&g_d3dData->d3dDepthStencilView)))
-	{
 		g_d3dData->d3dContext->ClearDepthStencilView(g_d3dData->d3dDepthStencilView, D3D11_CLEAR_DEPTH, 1, 0);
-		SAFE_RELEASE(g_d3dData->d3dDepthStencilView);
-	}
+
 	ID3D11RenderTargetView* const d3dTargets[] = { g_d3dData->d3dRenderTargetView };
 
 	g_d3dData->d3dContext->OMSetRenderTargets(1, d3dTargets, g_d3dData->d3dDepthStencilView);
@@ -68,7 +66,9 @@ bool CRendererManager::Draw()
 
 	rendereableObjects.clear();
 
+	SAFE_RELEASE(g_d3dData->d3dDepthStencilView);
 	SAFE_RELEASE(g_d3dData->d3dRenderTargetView);
+	SAFE_RELEASE(g_d3dData->d3dDepthStencilView);
 	return true;
 }
 

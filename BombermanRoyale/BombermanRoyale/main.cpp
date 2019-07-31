@@ -1,7 +1,6 @@
 /****************************************************
 *	Filename:			main.cpp
-*	Date:				07/11/2019
-*	Mod. Date:			07/16/2019;
+*	Mod. Date:			07/27/2019;
 *	Mod. Initials:		D.S.
 *	Author:				Dominic Sondgeroth
 *	Purpose:			This file is the main
@@ -11,6 +10,7 @@
 #include <DirectXCollision.h>
 
 
+
 int main(void)
 {
 	InitializeGlobals();
@@ -18,16 +18,24 @@ int main(void)
 	LoadTextures();
 	LoadModel(".//Assets//Cube.mesh", ".//Assets//Cube.mat");
 	LoadModel(".//Assets//BattleMage.mesh", ".//Assets//BattleMage.mat");
+	LoadMenuScreen(19, 11, 0, ".//Assets//Menu.mat");
 
 
 
 	CGame* p_cGame = new CGame();
-	p_cGame->Initialize();
+	bool result = p_cGame->Initialize();
+	if (!result)
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to initialize the game");
+		return 1;
+	}
+	g_pLogger->LogCatergorized("SUCCESS", "Successfully initialized the game");
 	p_cGame->LoadObject();
 	p_cGame->Run();
 
 	delete p_cGame;
 	g_d3dData->Cleanup();
+
 	g_pWindow->DecrementCount();
 	g_pLogger->DecrementCount();
 
