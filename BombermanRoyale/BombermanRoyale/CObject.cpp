@@ -103,17 +103,58 @@ void CObject::Draw()
 
 }
 
-bool CObject::GetComponent(int componentType, TRendererComponent* & component)
+bool CObject::GetComponent(int componentType, TComponent* & component)
 {
-	TRendererComponent* renderer;
+	if(componentType == 0)
+		TRendererComponent* renderer;
+	if (componentType == 1)
+		TMeshComponent* renderer;
+	if (componentType == 2)
+		TTransformComponent* renderer;
+	if (componentType == 3)
+		TTextureComponent* renderer;
+
+	
 	for (TComponent* c : v_tComponents)
 	{
 		if (c->GetComponentType() == componentType)
 		{
-			component = (TRendererComponent*)c;
+			if (componentType == 0)
+				component = (TRendererComponent*)c;
+			else if (componentType == 1)
+				component = (TMeshComponent*)c;
+			else if (componentType == 2)
+				component = (TTransformComponent*)c;
+			else
+				component = (TTextureComponent*)c;
+			//component = (TRendererComponent*)c;
 			//component = new TRendererComponent(component->iUsedVertexShaderIndex, component->iUsedPixelShaderIndex, component->iUsedInputLayout, component->iUsedGeometryShaderIndex, component->iUsedLoadState);
 			return true;
 		}
 	}
 	return false;
 }
+
+bool CObject::Move(float _x, float _z)
+{
+	TComponent* cTransform;
+	TTransformComponent* transform;
+	if (!GetComponent(COMPONENT_TYPE::TRANSFORM, cTransform))
+		return false;
+	transform = (TTransformComponent*)cTransform;
+
+	transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
+	
+	DirectX::XMFLOAT4 pos;
+	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
+	transform->fPosition = DirectX::XMFLOAT3(pos.x, pos.y, pos.z);
+
+	return true;
+}
+
+
+
+
+
+
+

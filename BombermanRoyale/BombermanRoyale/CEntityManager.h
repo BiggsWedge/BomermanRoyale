@@ -14,15 +14,6 @@
 #include "CObject.h"
 #include <DirectXCollision.h>
 
-struct OBJLoadInfo
-{
-	int meshID;
-	DirectX::XMFLOAT3 position;
-	DirectX::XMFLOAT3 forwardVec;
-	DirectX::XMFLOAT3 scale;
-	DirectX::BoundingBox collider;
-	int usedVertex, usedPixel, usedGeo, usedInput, usedDiffuse, LoadState;
-};
 
 class CEntityManager
 {
@@ -45,6 +36,8 @@ public:
 		Mod. Date:						07/27/2019
 	*********************************************************/
 	CObject* CreateOBJFromTemplate(OBJLoadInfo loadInfo);
+
+	CObject* DropBomb(CObject* playerSource);
 
 };
 
