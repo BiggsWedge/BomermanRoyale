@@ -86,4 +86,5 @@ void CObject::Draw()
 
 	g_d3dData->d3dContext->DrawIndexed(mesh->indexCount, 0, 0);
 
+
 }

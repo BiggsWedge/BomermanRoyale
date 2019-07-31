@@ -1,5 +1,6 @@
 #include "CGame.h"
 
+
 bool CGame::Initialize()
 {
 	p_cRendererManager = new CRendererManager();
@@ -21,6 +22,10 @@ void CGame::Run()
 				p_cRendererManager->RenderObject(*objects[i]);
 			}
 		}
+		if (GetAsyncKeyState('A'))
+		{
+			LoadLines();
+		}
 
 		p_cRendererManager->Draw();
 	}
@@ -29,7 +34,8 @@ void CGame::Run()
 void CGame::LoadObject()
 {
 	OBJLoadInfo loadInfo;
-	loadInfo.position = { 0.0f, 0.0f, 0.0f };
+	TCollider collider;
+	loadInfo.position = { 0.0f, 0.0f,0.0f };
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.meshID = 0;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
@@ -37,10 +43,18 @@ void CGame::LoadObject()
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
-
+	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
+	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
+	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
+	loadInfo.Collider.Center = collider.center;
+	loadInfo.Collider.Extents = collider.extents;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { -5.0f, 0.0f, 0.0f };
+	loadInfo.position = { -5.0f, 0.0f, -2.0f };
+	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
+	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
+	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
+	loadInfo.Collider.Center = collider.center;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
