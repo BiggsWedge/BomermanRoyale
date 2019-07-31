@@ -26,9 +26,6 @@ extern GW::AUDIO::GAudio* g_pAudioHolder;
 extern GW::AUDIO::GMusic* g_pMusicStream;
 extern GW::AUDIO::GSound* g_pSoundPlayer;
 
-//bool FullScreen = false;
-
-
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the
 *								current date and time.
@@ -122,11 +119,9 @@ bool InitializeWindow();
 *	Mod. Date:					07/19/2019
 *	Mod. Initials:				D.S.
 ***********************************************************************/
-
 bool InitializeGlobals();
 
-struct TSimpleVertex
-{
+struct TSimpleVertex {
 	DirectX::XMFLOAT3		fPosition;
 	DirectX::XMFLOAT3		fNormal;
 	DirectX::XMFLOAT2		fTexCoord;
@@ -134,8 +129,7 @@ struct TSimpleVertex
 	DirectX::XMFLOAT4		fWeights;
 };
 
-struct TLineVertex
-{
+struct TLineVertex {
 	float3 pos = { 0.0f, 0.0f, 0.0f };
 	float4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -147,8 +141,7 @@ struct TLineVertex
 	inline TLineVertex(const float3& p, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) : pos{ p }, color{ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f } {}
 };
 
-struct TMaterial
-{
+struct TMaterial {
 	DirectX::XMFLOAT3		fSurfaceDiffuse;
 	float					fDiffuseFactor;
 	DirectX::XMFLOAT3		fSurfaceEmissive;
@@ -160,12 +153,10 @@ struct TMaterial
 };
 
 
-struct TMeshTemplate
-{
+struct TMeshTemplate {
 	UINT uID;
 	std::vector<TSimpleVertex>		v_tVertices;
 	std::vector<int>				v_iIndices;
-
 };
 
 struct TCollider {
