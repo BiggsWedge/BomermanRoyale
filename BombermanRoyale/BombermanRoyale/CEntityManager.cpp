@@ -41,7 +41,11 @@ CObject* CEntityManager::DropBomb(CObject* playerSource)
 
 	OBJLoadInfo loadInfo;
 
-	loadInfo.position = { cTransform->fPosition };
+	DirectX::XMFLOAT3 pos = cTransform->fPosition;
+	//pos.x = floorf(pos.x) + (1.25f * (pos.x / abs(pos.x)));
+	//pos.z = floorf(pos.z) + (1.25f * (pos.z / abs(pos.z)));
+
+	loadInfo.position = pos;
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.meshID = 0;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLACK_TEX;

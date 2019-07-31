@@ -86,6 +86,10 @@ void CGame::Run()
 
 
 	float errorCode = 0;
+	if (G_FAIL(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
 
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
 	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY)
@@ -275,6 +279,7 @@ void CGame::Run()
 			if (p2BTimer >= 18)
 			{
 
+				g_pSoundPlayer->Play();
 				delete p2B;
 				p2B = nullptr;
 			}
@@ -286,6 +291,7 @@ void CGame::Run()
 			if (p1BTimer >= 18)
 			{
 
+				g_pSoundPlayer->Play();
 				delete p1B;
 				p1B = nullptr;
 			}
@@ -344,13 +350,7 @@ void CGame::Run()
 
 		if (SFXButton.pressed())
 		{
-			if (G_SUCCESS(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer)))
-			{
 				g_pSoundPlayer->Play();
-				std::cout << "SPACE WAS PRESSED";
-			}
-			else
-				g_pLogger->LogCatergorized("FAILURE", "Failed to play SFX");
 		}
 
 #pragma endregion
