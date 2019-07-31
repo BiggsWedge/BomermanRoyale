@@ -51,11 +51,16 @@ bool CRendererManager::Draw()
 	for (CObject c : rendereableObjects)
 		c.Draw();
 
+	UINT strides[] = { sizeof(TLineVertex) };
+	UINT offsets[] = { 0 };
+
+	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dVertexBuffers[VERTEX_BUFFER::LINE], 0, nullptr, get_line_verts(), 0, 0);
+	g_d3dData->d3dContext->IASetVertexBuffers(0, 1, &g_d3dData->d3dVertexBuffers[VERTEX_BUFFER::LINE], strides, offsets);
 	g_d3dData->d3dContext->IASetInputLayout(g_d3dData->d3dInputLayout[INPUT_LAYOUT::LINE]);
 	g_d3dData->d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	g_d3dData->d3dContext->VSSetShader(g_d3dData->d3dVertexShader[VERTEX_SHADER::LINE], 0, 0);
+
 	g_d3dData->d3dContext->PSSetShader(g_d3dData->d3dPixelShader[PIXEL_SHADER::LINE], nullptr, 0);
-	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dVertexBuffers[VERTEX_BUFFER::LINE], 0, nullptr, get_line_verts(), 0, 0);
 	g_d3dData->d3dContext->Draw(get_line_vert_count(), 0);
 	clear_lines();
 

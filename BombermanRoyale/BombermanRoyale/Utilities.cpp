@@ -207,13 +207,29 @@ DirectX::XMVECTOR Float32XMVector(float3 point)
 }
 
 void LoadLines() {
-	drawAABB(v_tMeshTemplates[0].v_tVertices.at(0).fPosition, v_tMeshTemplates[0].v_tVertices.at(1).fPosition, v_tMeshTemplates[0].v_tVertices.at(2).fPosition, v_tMeshTemplates[0].v_tVertices.at(3).fPosition,
-		v_tMeshTemplates[0].v_tVertices.at(5).fPosition, v_tMeshTemplates[0].v_tVertices.at(6).fPosition, v_tMeshTemplates[0].v_tVertices.at(9).fPosition, v_tMeshTemplates[0].v_tVertices.at(10).fPosition, float4{ 0,0,1,1 }, float4{ 0,0,1,1 });
+	DirectX::XMFLOAT3 scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+	 scale = DirectX::XMFLOAT3(1,1,1);
+	TCollider debugCollider = GetCenter(v_tMeshTemplates[1]);
+	for (size_t i = 0; i < 8; i++)
+	{
+		debugCollider.corners[i].x = debugCollider.corners[i].x * scale.x;
+		debugCollider.corners[i].y = debugCollider.corners[i].y * scale.y;
+		debugCollider.corners[i].z = debugCollider.corners[i].z * scale.z;
+	}
 
+	drawAABB(debugCollider.corners[2], debugCollider.corners[0], debugCollider.corners[4], debugCollider.corners[6], debugCollider.corners[5], debugCollider.corners[3], debugCollider.corners[7], debugCollider.corners[1], { 1,0,0,1 }, { 1,0,0,1 });
+	//0 lbb
+	//1 rtf
+	//2 lbf
+	//3 ltb
+	//4 rbb
+	//5 ltf
+	//6 rbf
+	//7 rtb
 }
 
 TCollider GetCenter(TMeshTemplate _verts) {
-	TCollider collider;
+	TCollider collider = TCollider();
 	float3 center;
 	float minX, maxX, minY, maxY, minZ, maxZ;
 
@@ -244,6 +260,8 @@ TCollider GetCenter(TMeshTemplate _verts) {
 	collider.center = center;
 	collider.extents = GetExtents(minX, maxX, minY, maxY, minZ, maxZ);
 
+	GetCorners(collider.center, collider.extents, collider.corners);
+
 	return collider;
 }
 
@@ -255,4 +273,28 @@ DirectX::XMFLOAT3 GetExtents(float _minX, float _maxX, float _minY, float _maxY,
 	extents.z = (_maxZ - _minZ) * 0.5f;
 
 	return extents;
+}
+
+void GetCorners(float3 _center, float3 _extents, float3*& corners) {
+
+	float newX, newY, newZ;
+	
+	newX = _center.x - _extents.x;
+	newY = _center.y - _extents.y;
+	newZ = _center.z - _extents.z;
+
+	corners[0] = { newX,newY,newZ };
+
+	newX = _center.x + _extents.x;
+	newY = _center.y + _extents.y;
+	newZ = _center.z + _extents.z;
+
+	corners[1] = { newX,newY,newZ };
+
+	corners[2] = { corners[0].x,corners[0].y,corners[1].z };
+	corners[3] = { corners[0].x,corners[1].y,corners[0].z };
+	corners[4] = { corners[1].x,corners[0].y,corners[0].z };
+	corners[5] = { corners[0].x,corners[1].y,corners[1].z };
+	corners[6] = { corners[1].x,corners[0].y,corners[1].z };
+	corners[7] = { corners[1].x,corners[1].y,corners[0].z };
 }
