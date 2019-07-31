@@ -330,7 +330,7 @@ void CGame::Run()
 			{
 				renderer = (TRendererComponent*)cRenderer;
 				if (renderer->iUsedLoadState == curGameState)
-					sp_cRendererManager->RenderObject(*p2B);
+					p_cRendererManager->RenderObject(*p2B);
 			}
 		}
 

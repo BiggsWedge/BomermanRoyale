@@ -260,14 +260,14 @@ DirectX::XMVECTOR Float32XMVector(float3 point) {
 
 void LoadLines() {
 	DirectX::XMFLOAT3 scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-	DirectX::XMFLOAT3 position = { -5.0f, 0.0f, 0.0f };
-	TCollider debugCollider = GetCenter(v_tMeshTemplates[1]);
-	scale = DirectX::XMFLOAT3(50,50,50);
+	DirectX::XMFLOAT3 position = { 0.0f, 0.0f, 0.0f };
+	TCollider debugCollider = GetCenter(v_tMeshTemplates[0]);
+	scale = DirectX::XMFLOAT3(1,1,1);
 
 	for (size_t i = 0; i < 8; i++) {
-		debugCollider.corners[i].x = (debugCollider.corners[i].x * scale.x) - position.x *25.0f;
-		debugCollider.corners[i].y = (debugCollider.corners[i].y * scale.y) - position.y *25.0f;
-		debugCollider.corners[i].z = (debugCollider.corners[i].z * scale.z) - position.z *25.0f;
+		debugCollider.corners[i].x = (debugCollider.corners[i].x * scale.x) - position.x; //*25.0f;
+		debugCollider.corners[i].y = (debugCollider.corners[i].y * scale.y) - position.y; //*25.0f;
+		debugCollider.corners[i].z = (debugCollider.corners[i].z * scale.z) - position.z; //*25.0f;
 	}
 
 	drawAABB(debugCollider.corners[2], debugCollider.corners[0], debugCollider.corners[4], debugCollider.corners[6], debugCollider.corners[5], debugCollider.corners[3], debugCollider.corners[7], debugCollider.corners[1], { 1,0,0,1 }, { 1,0,0,1 });
