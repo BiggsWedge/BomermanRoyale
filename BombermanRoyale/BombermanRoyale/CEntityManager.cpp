@@ -29,3 +29,28 @@ CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 
 	return temp;
 }
+
+
+CObject* CEntityManager::DropBomb(CObject* playerSource)
+{
+	CObject* bomb;
+	TComponent* transform;
+	TTransformComponent* cTransform;
+	playerSource->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
+	cTransform = (TTransformComponent*)transform;
+
+	OBJLoadInfo loadInfo;
+
+	loadInfo.position = { cTransform->fPosition };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.meshID = 0;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLACK_TEX;
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.LoadState = 3;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 75.0f, 1.0f / 75.0f, 1.0f / 75.0f);
+	bomb = CreateOBJFromTemplate(loadInfo);
+	return bomb;
+}

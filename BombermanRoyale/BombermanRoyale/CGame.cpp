@@ -16,11 +16,11 @@ struct key
 	inline bool released() { return !currState && prevState; }
 };
 
-static std::vector<key> keys(6);
+static std::vector<key> keys(18);
 
 struct KEYS
 {
-	enum { UP, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE };
+	enum { UP, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE, P2UP, P2LEFT, P2DOWN, P2RIGHT, P1UP, P1LEFT, P1DOWN, P1RIGHT, P2BOMB, P1BOMB };
 };
 
 static std::vector<int> keycodes =
@@ -31,13 +31,33 @@ static std::vector<int> keycodes =
 	VK_RIGHT,
 	VK_NUMPAD0,
 	VK_RBUTTON,
-	VK_SPACE
+	VK_SPACE,
+	VK_NUMPAD5,
+	VK_NUMPAD1,
+	VK_NUMPAD2,
+	VK_NUMPAD3,
+	'I',
+	'J',
+	'K',
+	'L',
+	VK_NUMPAD6,
+	'O'
 };
 
 
 key fullScreenButton;
 key GameStateButton;
 key SFXButton;
+key P1BOMB;
+key P2BOMB;
+
+bool Player1 = false;
+bool Player2 = false;
+bool P1EXISTS = false;
+bool P2EXISTS = false;
+float3 P1POS = { -10.0f, 0.0f, 10.0f };
+float3 P2POS = { 10.0f, 0.0f, -5.0f };
+
 
 
 bool CGame::Initialize()
@@ -71,9 +91,9 @@ void CGame::Run()
 	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY)
 	{
 		fullScreenButton.prevState = fullScreenButton.currState;
-		
+
 		fullScreenButton.currState = GetAsyncKeyState('F') & 0x8000;
-		
+
 		GameStateButton.prevState = GameStateButton.currState;
 
 		GameStateButton.currState = GetAsyncKeyState('G') & 0x8000;
@@ -86,23 +106,31 @@ void CGame::Run()
 			FullScreen = !FullScreen;
 			this->WindowResize();
 		}
-		
+
 		if (GameStateButton.pressed())
 		{
 
 			if (curGameState == 0)
+			{
 				curGameState = 3;
-			else if(curGameState == 3)
+				Player1 = true;
+				Player2 = true;
+			}
+			else if (curGameState == 3)
+			{
 				curGameState = 0;
+				Player1 = false;
+				Player2 = false;
+			}
 
 		}
-		
+
 		if (G_FAIL(g_pWindow->ProcessWindowEvents()))
 			break;
 		prevCursor = currCursor;
 		GetCursorPos(&currCursor);
 
-		for (int i = 0; i < 6; ++i)
+		for (int i = 0; i < keycodes.size(); ++i)
 		{
 			keys[i].prevState = keys[i].currState;
 			keys[i].currState = GetAsyncKeyState(keycodes[i]) & 0x8000;
@@ -117,6 +145,120 @@ void CGame::Run()
 		if (keys[KEYS::RIGHT].held())
 			g_d3dData->debugCamDelta.x += 0.1f;
 
+
+		if (P2EXISTS)
+		{
+			float deltaP2X = 0.0f, deltaP2Z = 0.0f;
+			if (keys[KEYS::P2UP].held())
+				deltaP2Z += 0.1f;
+			if (keys[KEYS::P2DOWN].held())
+				deltaP2Z += -0.1f;
+			if (keys[KEYS::P2LEFT].held())
+				deltaP2X += -0.1f;
+			if (keys[KEYS::P2RIGHT].held())
+				deltaP2X += 0.1f;
+			if (keys[KEYS::P2BOMB].pressed() && p2B == nullptr)
+			{
+				p2B = p_cEntityManager->DropBomb(p2);
+				p2BTimer = 0.0f;
+			}
+			if (deltaP2X != 0.0f || deltaP2Z != 0.0f)
+				p2->Move(deltaP2X, deltaP2Z);
+
+
+			/*
+			OBJLoadInfo loadInfo;
+			loadInfo.position = { P2POS.x, 0.0f, P2POS.z };
+			loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+			loadInfo.meshID = 0;
+			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
+			loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+			loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+			loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+			loadInfo.usedGeo = -1;
+			loadInfo.LoadState = 3;
+			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+			if(!P2EXISTS)
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+			else
+				objects.at(objects.size() - 2) = p_cEntityManager->CreateOBJFromTemplate(loadInfo)
+
+			P2EXISTS = true;
+
+			*/
+			//TComponent* cRenderer = nullptr;
+			//TTransformComponent* renderer = nullptr;
+			//if (objects[objects.size() - 1]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+			//{
+			//	renderer = (TTransformComponent*)cRenderer;
+			//	if (curGameState == 3)
+			//	{
+			//		if (keys[KEYS::P2UP].held())
+			//			renderer->fPosition.y += 0.1f;
+			//		if (keys[KEYS::P2DOWN].held())
+			//			renderer->fPosition.y += -0.1f;
+			//		if (keys[KEYS::P2LEFT].held())
+			//			renderer->fPosition.x += -0.1f;
+			//		if (keys[KEYS::P2RIGHT].held())
+			//			renderer->fPosition.x += 0.1f;
+			//		objects[0].
+			//	}
+			//}
+		}
+		if (P1EXISTS)
+		{
+			float deltaP1X = 0.0f, deltaP1Z = 0.0f;
+			if (keys[KEYS::P1UP].held())
+				deltaP1Z += 0.1f;
+			if (keys[KEYS::P1DOWN].held())
+				deltaP1Z += -0.1f;
+			if (keys[KEYS::P1LEFT].held())
+				deltaP1X += -0.1f;
+			if (keys[KEYS::P1RIGHT].held())
+				deltaP1X += 0.1f;
+			if (keys[KEYS::P1BOMB].pressed() && p1B == nullptr)
+			{
+				p1B = p_cEntityManager->DropBomb(p1);
+				p1BTimer = 0.0f;
+			}
+			if (deltaP1X != 0.0f || deltaP1Z != 0.0f)
+				p1->Move(deltaP1X, deltaP1Z);
+			/*
+			OBJLoadInfo loadInfo;
+			loadInfo.position = { P1POS.x, 0.0f, P1POS.z };
+			loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+			loadInfo.meshID = 0;
+			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
+			loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+			loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+			loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+			loadInfo.usedGeo = -1;
+			loadInfo.LoadState = 3;
+			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+			P1EXISTS = true;
+			*/
+
+			//TComponent* cRenderer = nullptr;
+			//TTransformComponent* renderer = nullptr;
+			//if (objects[2]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+			//{
+			//	renderer = (TTransformComponent*)cRenderer;
+			//	if (curGameState == 3)
+			//	{
+			//		if (keys[KEYS::P1UP].held())
+			//			renderer->fPosition.y += 0.1f;
+			//		if (keys[KEYS::P1DOWN].held())
+			//			renderer->fPosition.y += -0.1f;
+			//		if (keys[KEYS::P1LEFT].held())
+			//			renderer->fPosition.x += -0.1f;
+			//		if (keys[KEYS::P1RIGHT].held())
+			//			renderer->fPosition.x += 0.1f;
+			//	}
+			//}
+		}
+
+
 		if (keys[KEYS::ZERO].pressed())
 			g_d3dData->ToggleUseDebugCamera();
 
@@ -127,25 +269,72 @@ void CGame::Run()
 		}
 		g_d3dData->updateCameras();
 
+		if (p2B)
+		{
+			p2BTimer += 0.1f;
+			if (p2BTimer >= 18)
+			{
+
+				delete p2B;
+				p2B = nullptr;
+			}
+		}
+
+		if (p1B)
+		{
+			p1BTimer += 0.1f;
+			if (p1BTimer >= 18)
+			{
+
+				delete p1B;
+				p1B = nullptr;
+			}
+		}
+
 		for (int i = 0; i < objects.size(); ++i)
 		{
 			if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
 			{
-				//TComponent* cRenderer = nullptr;
+				TComponent* cRenderer = nullptr;
 				TRendererComponent* renderer = nullptr;
-				if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, renderer))
+				if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
 				{
-					//renderer = (TRendererComponent*)cRenderer;
-					if(renderer->iUsedLoadState == curGameState)
+					renderer = (TRendererComponent*)cRenderer;
+					if (renderer->iUsedLoadState == curGameState)
 						p_cRendererManager->RenderObject(*objects[i]);
 				}
 
-				
-				
+
+
 			}
 		}
 
-	
+		if (p1B)
+		{
+
+			TComponent* cRenderer = nullptr;
+			TRendererComponent* renderer = nullptr;
+			if (p1B->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+			{
+				renderer = (TRendererComponent*)cRenderer;
+				if (renderer->iUsedLoadState == curGameState)
+					p_cRendererManager->RenderObject(*p1B);
+			}
+		}
+		if (p2B)
+		{
+
+			TComponent* cRenderer = nullptr;
+			TRendererComponent* renderer = nullptr;
+			if (p2B->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+			{
+				renderer = (TRendererComponent*)cRenderer;
+				if (renderer->iUsedLoadState == curGameState)
+					sp_cRendererManager->RenderObject(*p2B);
+			}
+		}
+
+
 #pragma region Input
 
 		if (g_pInputRecord->GetState(G_KEY_SPACE, errorCode) == 1)
@@ -167,13 +356,13 @@ void CGame::Run()
 #pragma endregion
 
 
-		if (!p_cRendererManager->Draw())
-		{
-			g_pLogger->LogCatergorized("FAILURE", "Failed to draw");
-		}
 		if (GetAsyncKeyState('A'))
 		{
 			LoadLines();
+		}
+		if (!p_cRendererManager->Draw())
+		{
+			g_pLogger->LogCatergorized("FAILURE", "Failed to draw");
 		}
 
 	}
@@ -203,7 +392,7 @@ void CGame::LoadObject()
 
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { -5.0f, 0.0f, 0.0f };
+	loadInfo.position = { 12.0f, 0.0f, 0.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	loadInfo.meshID = 1;
@@ -218,7 +407,7 @@ void CGame::LoadObject()
 
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { -5.0f, 0.0f, -2.0f };
+	loadInfo.position = { -12.0f, 0.0f, 0.0f };
 
 	//collider data
 	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
@@ -230,72 +419,91 @@ void CGame::LoadObject()
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 
-	
-		loadInfo.position = { 0.0f, 0.0f, 0.0f };
-		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-		loadInfo.meshID = 0;
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
-		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-		loadInfo.usedGeo = -1;
-		loadInfo.LoadState = 3;
-		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 
-		
-	
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	loadInfo.position = { 0.0f, 0.0f, 2.5f };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.meshID = 0;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.LoadState = 3;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 
 
-		loadInfo.position = { -5.0f, 0.0f, 0.0f };
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
-		loadInfo.LoadState = 3;
-		loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-		loadInfo.meshID = 1;
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { 0.0f, 0.0f, 15.0f };
-		loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::NAMES_HUD;
-
-		loadInfo.scale = DirectX::XMFLOAT3(2.4f, 0.25f, 1.0f);
-		loadInfo.meshID = 2;
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
-		loadInfo.position = { 2.5f, 0.0f, 0.0f };
-		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-		loadInfo.meshID = 0;
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
-		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-		loadInfo.usedGeo = -1;
-		loadInfo.LoadState = 3;
-		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
-		loadInfo.position = { -2.5f, 0.0f, 0.0f };
-		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-		loadInfo.meshID = 0;
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
-		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-		loadInfo.usedGeo = -1;
-		loadInfo.LoadState = 3;
-		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 
-	
-		loadInfo.position = { 0.0f, 0.77f, 5.0f };
-		loadInfo.forwardVec = { 0.0f, 0.85f, -1.0f };
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::MAIN_MENU;
-		loadInfo.scale = DirectX::XMFLOAT3(1.75f, 1.99f, 1.0f);
-		loadInfo.meshID = 2;
-		loadInfo.LoadState = 0;
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	
+	//loadInfo.position = { -5.0f, 0.0f, 0.0f };
+	//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
+	//loadInfo.LoadState = 3;
+	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//loadInfo.meshID = 1;
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, -0.8f, 20.0f };
+	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::NAMES_HUD;
+
+	loadInfo.scale = DirectX::XMFLOAT3(2.4f, 0.25f, 1.0f);
+	loadInfo.meshID = 2;
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+
+	loadInfo.position = { 0.0f, -2.4f, 3.0f };
+	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::MAIN_MENU;
+	loadInfo.scale = DirectX::XMFLOAT3(1.75f, 1.99f, 1.0f);
+	loadInfo.meshID = 2;
+	loadInfo.LoadState = 0;
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	for (float x = -10; x <= 10; x += 2.5f)
+	{
+		for (float z = -5; z <= 10; z += 2.5f)
+		{
+			loadInfo.position = { x, -2.5f, z };
+			loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+			loadInfo.meshID = 0;
+			loadInfo.LoadState = 3;
+			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+		}
+
+	}
+
+	loadInfo.position = { P2POS.x, 0.0f, P2POS.z };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.meshID = 0;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.LoadState = 3;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	p2 = objects.at(objects.size() - 1);
+	P2EXISTS = true;
+
+	loadInfo.position = { P1POS.x, 0.0f, P1POS.z };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.meshID = 0;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.LoadState = 3;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	p1 = objects.at(objects.size() - 1);
+	P1EXISTS = true;
+
+
 }
 
 CGame::CGame()
@@ -310,11 +518,11 @@ CGame::~CGame()
 
 void CGame::WindowResize()
 {
-	
 
 
 
-	if (FullScreen )
+
+	if (FullScreen)
 	{
 		g_pWindow->GetClientWidth(width);
 		g_pWindow->GetClientHeight(height);
