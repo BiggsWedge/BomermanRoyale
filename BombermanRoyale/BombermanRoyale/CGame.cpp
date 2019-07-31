@@ -254,7 +254,7 @@ void CGame::LoadObject()
 		loadInfo.meshID = 1;
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { 0.0f, -13.3f, 15.0f };
+		loadInfo.position = { 0.0f, 0.0f, 25.0f };
 		loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::NAMES_HUD;
 
