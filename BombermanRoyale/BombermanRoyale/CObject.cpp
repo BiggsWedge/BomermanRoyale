@@ -93,7 +93,4 @@ void CObject::Draw()
 	g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC]);
 
 	g_d3dData->d3dContext->DrawIndexed(mesh->indexCount, 0, 0);
-
-
-
 }

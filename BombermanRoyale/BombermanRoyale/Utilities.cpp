@@ -4,6 +4,13 @@ using namespace std;
 using namespace GW;
 using namespace SYSTEM;
 
+// Maximum number of debug lines at one time (i.e: Capacity)
+constexpr size_t MAX_LINE_VERTS = 4096;
+
+// CPU-side buffer of debug-line verts
+// Copied to the GPU and reset every frame.
+size_t line_vert_count = 0;
+std::array< TLineVertex, MAX_LINE_VERTS> line_verts;
 
 std::vector<const wchar_t*> diffuseTextures =
 {
@@ -132,4 +139,120 @@ void LoadTextures()
 }
 
 
+void add_line(float3 point_a, float3 point_b, float4 color_a, float4 color_b)
+{
+	// Add points to debug_verts, increments debug_vert_count
+	line_verts[line_vert_count].pos = point_a;
+	line_verts[line_vert_count].color = color_a;
+	line_vert_count += 1;
 
+	line_verts[line_vert_count].pos = point_b;
+	line_verts[line_vert_count].color = color_b;
+	line_vert_count += 1;
+}
+
+void clear_lines()
+{
+	// Resets debug_vert_count
+	line_vert_count = 0;
+}
+
+const TLineVertex* get_line_verts()
+{
+	// Does just what it says in the name
+	return line_verts.data();
+}
+
+size_t get_line_vert_count()
+{
+	// Does just what it says in the name
+	return line_vert_count;
+}
+
+size_t get_line_vert_capacity()
+{
+	// Does just what it says in the name
+	return MAX_LINE_VERTS;
+}
+
+void drawAABB(float3 point_a, float3 point_b, float3 point_c, float3 point_d, float3 point_e, float3 point_f, float3 point_g, float3 point_h, float4 color1, float4 color2)
+{
+	add_line(point_a, point_b, color1, color2);
+	add_line(point_b, point_c, color1, color2);
+	add_line(point_c, point_d, color1, color2);
+	add_line(point_d, point_a, color1, color2);
+	add_line(point_e, point_f, color1, color2);
+	add_line(point_f, point_g, color1, color2);
+	add_line(point_g, point_h, color1, color2);
+	add_line(point_h, point_e, color1, color2);
+	add_line(point_a, point_e, color1, color2);
+	add_line(point_b, point_f, color1, color2);
+	add_line(point_c, point_g, color1, color2);
+	add_line(point_d, point_h, color1, color2);
+}
+
+float3 XMVector2Float3(DirectX::XMVECTOR vector)
+{
+	float3 point;
+	point.x = DirectX::XMVectorGetX(vector);
+	point.y = DirectX::XMVectorGetY(vector);
+	point.z = DirectX::XMVectorGetZ(vector);
+	return point;
+}
+
+DirectX::XMVECTOR Float32XMVector(float3 point)
+{
+	DirectX::XMVECTOR vector = { point.x, point.y, point.z, 1.0f };
+	return vector;
+}
+
+void LoadLines() {
+	drawAABB(v_tMeshTemplates[0].v_tVertices.at(0).fPosition, v_tMeshTemplates[0].v_tVertices.at(1).fPosition, v_tMeshTemplates[0].v_tVertices.at(2).fPosition, v_tMeshTemplates[0].v_tVertices.at(3).fPosition,
+		v_tMeshTemplates[0].v_tVertices.at(5).fPosition, v_tMeshTemplates[0].v_tVertices.at(6).fPosition, v_tMeshTemplates[0].v_tVertices.at(9).fPosition, v_tMeshTemplates[0].v_tVertices.at(10).fPosition, float4{ 0,0,1,1 }, float4{ 0,0,1,1 });
+
+}
+
+TCollider GetCenter(TMeshTemplate _verts) {
+	TCollider collider;
+	float3 center;
+	float minX, maxX, minY, maxY, minZ, maxZ;
+
+	minX = maxX = _verts.v_tVertices.at(0).fPosition.x;
+	minY = maxY = _verts.v_tVertices.at(0).fPosition.y;
+	minZ = maxZ = _verts.v_tVertices.at(0).fPosition.z;
+
+	for (int i = 0; i < _verts.v_tVertices.size(); i++) {
+		if (_verts.v_tVertices.at(i).fPosition.x < minX) {
+			minX = _verts.v_tVertices.at(i).fPosition.x;
+		} else if (_verts.v_tVertices.at(i).fPosition.x > maxX) {
+			maxX = _verts.v_tVertices.at(i).fPosition.x;
+		} else if (_verts.v_tVertices.at(i).fPosition.y < minY) {
+			minY = _verts.v_tVertices.at(i).fPosition.y;
+		} else if (_verts.v_tVertices.at(i).fPosition.y > maxY) {
+			maxY = _verts.v_tVertices.at(i).fPosition.y;
+		} else if (_verts.v_tVertices.at(i).fPosition.z < minZ) {
+			minZ = _verts.v_tVertices.at(i).fPosition.z;
+		} else if (_verts.v_tVertices.at(i).fPosition.z > maxZ) {
+			maxZ = _verts.v_tVertices.at(i).fPosition.z;
+		}
+	}
+
+	center.x = (minX + maxX) * 0.5f;
+	center.y = (minY + maxY) * 0.5f;
+	center.z = (minZ + maxZ) * 0.5f;
+	
+	collider.center = center;
+	collider.extents = GetExtents(minX, maxX, minY, maxY, minZ, maxZ);
+
+	return collider;
+}
+
+DirectX::XMFLOAT3 GetExtents(float _minX, float _maxX, float _minY, float _maxY, float _minZ, float _maxZ) {
+	float3 extents;
+
+	extents.x = (_maxX - _minX) * 0.5f;
+	extents.y = (_maxY - _minY) * 0.5f;
+	extents.z = (_maxZ - _minZ) * 0.5f;
+
+	return extents;
+}

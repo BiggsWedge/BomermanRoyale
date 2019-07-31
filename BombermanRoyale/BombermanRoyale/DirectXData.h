@@ -33,7 +33,7 @@ struct VIEWPORT
 
 struct CONSTANT_BUFFER
 {
-	enum { V_BASIC = 0, P_BASIC, COUNT };
+	enum { V_BASIC = 0, V_LINE, P_BASIC, P_LINE, COUNT };
 };
 
 struct INDEX_BUFFER
@@ -43,17 +43,17 @@ struct INDEX_BUFFER
 
 struct VERTEX_BUFFER
 {
-	enum { DEFAULT = 0, COUNT };
+	enum { DEFAULT = 0, LINE, COUNT };
 };
 
 struct VERTEX_SHADER
 {
-	enum { BASIC = 0, COUNT };
+	enum { BASIC = 0, LINE, COUNT };
 };
 
 struct PIXEL_SHADER
 {
-	enum { BASIC = 0, COUNT };
+	enum { BASIC = 0, LINE, COUNT };
 };
 
 struct GEOMETRY_SHADER
@@ -63,7 +63,7 @@ struct GEOMETRY_SHADER
 
 struct INPUT_LAYOUT
 {
-	enum { BASIC = 0, COUNT };
+	enum { BASIC = 0, LINE, COUNT };
 };
 
 struct RASTERIZER_STATE
@@ -106,6 +106,7 @@ public:
 	ID3D11GeometryShader*				d3dGeometryShader[GEOMETRY_SHADER::COUNT] = {};
 
 	ID3D11Buffer*						d3dConstBuffers[CONSTANT_BUFFER::COUNT] = {};
+	ID3D11Buffer*						d3dVertexBuffers[VERTEX_BUFFER::COUNT] = {};
 	ID3D11RenderTargetView*				d3dRenderTargetView = nullptr;
 	ID3D11DepthStencilView*				d3dDepthStencilView = nullptr;
 	ID3D11RasterizerState*				d3dRasterizerState = nullptr;

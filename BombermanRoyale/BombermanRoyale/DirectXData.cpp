@@ -60,11 +60,23 @@ bool DirectXData::Initialize()
 		return false;
 	}
 
+	if (FAILED(d3dDevice->CreateVertexShader(LineVertex, sizeof(LineVertex), nullptr, &d3dVertexShader[VERTEX_SHADER::LINE])))
+	{
+		//log failure
+		return false;
+	}
+
 #pragma endregion
 
 #pragma region Pixel
 
 	if (FAILED(d3dDevice->CreatePixelShader(BasicPixel, sizeof(BasicPixel), nullptr, &d3dPixelShader[PIXEL_SHADER::BASIC])))
+	{
+		//log failure
+		return false;
+	}
+
+	if (FAILED(d3dDevice->CreatePixelShader(LinePixel, sizeof(LinePixel), nullptr, &d3dPixelShader[PIXEL_SHADER::LINE])))
 	{
 		//log failure
 		return false;
@@ -95,6 +107,16 @@ bool DirectXData::Initialize()
 		return false;
 	}
 
+	std::vector<D3D11_INPUT_ELEMENT_DESC> d3dLineShaderDesc = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	
+	if (FAILED(d3dDevice->CreateInputLayout(d3dLineShaderDesc.data(), d3dLineShaderDesc.size(), LineVertex, sizeof(LineVertex), &d3dInputLayout[INPUT_LAYOUT::LINE])))
+	{
+		//log failure
+		return false;
+	}
 #pragma endregion
 
 #pragma region Sampler State Creation
@@ -140,7 +162,7 @@ bool DirectXData::Initialize()
 	BasicVConstBuffDesc.StructureByteStride = 0;
 	BasicVConstBuffDesc.Usage = D3D11_USAGE_DEFAULT;
 
-	d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::V_BASIC]);
+	HRESULT result = d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::V_BASIC]);
 
 	D3D11_BUFFER_DESC BasicPConstBuffDesc;
 	ZeroMemory(&BasicPConstBuffDesc, sizeof(BasicPConstBuffDesc));
@@ -153,6 +175,19 @@ bool DirectXData::Initialize()
 	BasicPConstBuffDesc.Usage = D3D11_USAGE_DEFAULT;
 
 	d3dDevice->CreateBuffer(&BasicPConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::P_BASIC]);
+
+	D3D11_BUFFER_DESC bd = {};
+	D3D11_SUBRESOURCE_DATA bdsd = {};
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(TLineVertex) * get_line_vert_capacity();
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+	bd.MiscFlags = 0;
+	bd.StructureByteStride = 0;
+
+	bdsd.pSysMem = get_line_verts();
+
+	d3dDevice->CreateBuffer(&bd, NULL, &d3dVertexBuffers[VERTEX_BUFFER::LINE]);
 
 #pragma endregion
 
