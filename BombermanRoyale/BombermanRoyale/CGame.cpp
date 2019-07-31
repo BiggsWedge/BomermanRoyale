@@ -29,16 +29,6 @@ static std::vector<int> keycodes =
 	VK_RBUTTON
 };
 
-struct key
-{
-	bool prevState = false;
-	bool currState = false;
-
-	inline bool pressed() { return currState && !prevState; }
-	inline bool held() { return currState && prevState; }
-	inline bool idle() { return !currState && !prevState; }
-	inline bool released() { return !currState && prevState; }
-};
 
 key fullScreenButton;
 key GameStateButton;
@@ -138,6 +128,8 @@ void CGame::Run()
 
 void CGame::LoadObject()
 {
+	OBJLoadInfo loadInfo;
+
 	g_pWindow->GetClientWidth(width);
 	g_pWindow->GetClientHeight(height);
 
