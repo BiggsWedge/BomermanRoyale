@@ -65,6 +65,11 @@
     </ClCompile>
     <ClCompile Include="CGame.cpp">
       <Filter>Source Files</Filter>
+    <ClCompile Include="..\Gateware\Source\G_System\GInput.cpp">
+      <Filter>Gateware</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Gateware\Source\G_Audio\GAudio.cpp">
+      <Filter>Gateware</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

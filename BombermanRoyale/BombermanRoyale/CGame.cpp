@@ -1,5 +1,9 @@
 #include "CGame.h"
 #include <DirectXCollision.h>
+#include <iostream>
+
+const char* backgroundMusicFilePath = ".//Assets//Music//Level_Music1.wav";
+const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
 
 struct key
 {
@@ -44,6 +48,22 @@ void CGame::Run()
 {
 	POINT currCursor, prevCursor;
 	GetCursorPos(&currCursor);
+
+#pragma region Audio
+
+	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicStream)))
+	{
+		if (G_SUCCESS(g_pMusicStream->SetVolume(0.5f)))
+		{
+			g_pMusicStream->StreamStart(true);
+		}
+	}
+
+#pragma endregion
+
+
+	float errorCode = 0;
+
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
 	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY)
 	{
@@ -118,11 +138,34 @@ void CGame::Run()
 				
 			}
 		}
+
+	
+#pragma region Input
+
+		if (g_pInputRecord->GetState(G_KEY_SPACE, errorCode) == 1)
+		{
+			std::cout << "SPACE WAS PRESSED, G INPUT STYLE";
+		}
+
+		if (GetAsyncKeyState(VK_SPACE))
+		{
+			if (G_SUCCESS(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer)))
+			{
+				g_pSoundPlayer->Play();
+				std::cout << "SPACE WAS PRESSED";
+			}
+		}
+
+#pragma endregion
+
+
 		if (!p_cRendererManager->Draw())
 		{
 			g_pLogger->LogCatergorized("FAILURE", "Failed to draw");
 		}
+
 	}
+
 }
 
 
