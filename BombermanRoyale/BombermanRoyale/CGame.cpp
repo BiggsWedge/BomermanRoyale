@@ -2,6 +2,7 @@
 #include <iostream>
 
 const char* backgroundMusicFilePath = ".//Assets//Music//BackgroundMusic.wav";
+const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
 
 bool CGame::Initialize()
 {
@@ -28,15 +29,36 @@ void CGame::Run()
 		}
 
 	
+#pragma region Input
+
 		if (g_pInputRecord->GetState(G_KEY_SPACE, errorCode) == 1)
+		{
+			std::cout << "SPACE WAS PRESSED, G INPUT STYLE";
+		}
+
+		if (GetAsyncKeyState(VK_SPACE))
 		{
 			std::cout << "SPACE WAS PRESSED";
 		}
-		
-		if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicHolder)))
+
+#pragma endregion
+
+#pragma region Audio
+
+		if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicStream)))
 		{
-			g_pMusicHolder->StreamStart(false);
+			if (G_SUCCESS(g_pMusicStream->SetVolume(0.1f)))
+			{
+				g_pMusicStream->StreamStart(false);
+			}
 		}
+		
+		/*if (G_SUCCESS(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer)))
+		{
+			g_pSoundPlayer->Play();
+		}*/
+		
+#pragma endregion
 
 		p_cRendererManager->Draw();
 	}

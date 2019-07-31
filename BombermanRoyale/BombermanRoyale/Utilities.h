@@ -20,7 +20,8 @@ extern GW::SYSTEM::GLog* g_pLogger;
 extern GW::SYSTEM::GWindow* g_pWindow;
 extern GW::SYSTEM::GInput* g_pInputRecord;
 extern GW::AUDIO::GAudio* g_pAudioHolder;
-extern GW::AUDIO::GMusic* g_pMusicHolder;
+extern GW::AUDIO::GMusic* g_pMusicStream;
+extern GW::AUDIO::GSound* g_pSoundPlayer;
 
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the

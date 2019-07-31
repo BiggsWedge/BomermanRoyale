@@ -18,7 +18,8 @@ GLog* g_pLogger = nullptr;
 GWindow* g_pWindow = nullptr;
 GInput* g_pInputRecord = nullptr;
 GAudio* g_pAudioHolder = nullptr;
-GMusic* g_pMusicHolder = nullptr;
+GMusic* g_pMusicStream = nullptr;
+GSound* g_pSoundPlayer = nullptr;
 
 std::vector<TMeshTemplate> v_tMeshTemplates = {};
 
@@ -99,10 +100,15 @@ bool InitializeAudio()
 
 	if (G_SUCCESS(CreateGAudio(&g_pAudioHolder)))
 	{
-		if (G_SUCCESS(g_pAudioHolder->Init(1)))
+		if (G_SUCCESS(g_pAudioHolder->Init(2)))
 		{
 			g_pLogger->LogCatergorized("SUCCESS", "Audio Manager successfully created.");
 			return true;
+		}
+		else
+		{
+			g_pLogger->LogCatergorized("FAILURE", "Audio Manager unsuccessfully created.");
+			return false;
 		}
 	}
 	else
