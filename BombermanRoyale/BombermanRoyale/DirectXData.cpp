@@ -46,6 +46,7 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully retrieved the swap chain description");
 
+
 #pragma region Viewport Creation
 
 	ZeroMemory(&d3dViewport, sizeof(d3dViewport));
@@ -169,7 +170,7 @@ bool DirectXData::Initialize()
 	debugCamMat = DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(30)) * debugCamMat;
 
 	viewMat = camMat;// DirectX::XMMatrixInverse(nullptr, camMat);
-	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 50.0f);
+	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 100.0f);
 
 #pragma endregion
 
