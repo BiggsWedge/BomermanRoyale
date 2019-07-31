@@ -8,12 +8,43 @@ bool DirectXData::Initialize()
 {
 	GW::GRAPHICS::CreateGDirectX11Surface(g_pWindow, GW::GRAPHICS::DEPTH_BUFFER_SUPPORT, &d3dSurface);
 
-	d3dSurface->GetDevice((void**)&d3dDevice);
-	d3dSurface->GetSwapchain((void**)&d3dSwapChain);
-	d3dSurface->GetContext((void**)&d3dContext);
+	GW::GReturn gresult;
+
+	gresult = d3dSurface->GetDevice((void**)&d3dDevice);
+	if (G_FAIL(gresult))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to get the Device");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully retrieved the device");
+
+	gresult = d3dSurface->GetSwapchain((void**)&d3dSwapChain);
+	if (G_FAIL(gresult))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to get the swapchain");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully retrieved the Swapchain");
+
+	gresult = d3dSurface->GetContext((void**)&d3dContext);
+	if (G_FAIL(gresult))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to get the context");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully retrieved the context");
 
 	DXGI_SWAP_CHAIN_DESC d3dSwapChainDesc;
-	d3dSwapChain->GetDesc(&d3dSwapChainDesc);
+	if (FAILED(d3dSwapChain->GetDesc(&d3dSwapChainDesc)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to get the swap chain description");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully retrieved the swap chain description");
 
 #pragma region Viewport Creation
 
@@ -44,9 +75,11 @@ bool DirectXData::Initialize()
 
 	if (FAILED(d3dDevice->CreateRasterizerState(&d3dRasterDesc, &d3dRasterizerState)))
 	{
-		//Log Failure
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the rasterizer state");
 		return false;
 	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created rasterizer state");
 
 #pragma endregion
 
@@ -56,9 +89,11 @@ bool DirectXData::Initialize()
 
 	if (FAILED(d3dDevice->CreateVertexShader(BasicVertex, sizeof(BasicVertex), nullptr, &d3dVertexShader[VERTEX_SHADER::BASIC])))
 	{
-		//log failure
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the basic vertex shader");
 		return false;
 	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the basic vertex shader");
 
 #pragma endregion
 
@@ -66,9 +101,11 @@ bool DirectXData::Initialize()
 
 	if (FAILED(d3dDevice->CreatePixelShader(BasicPixel, sizeof(BasicPixel), nullptr, &d3dPixelShader[PIXEL_SHADER::BASIC])))
 	{
-		//log failure
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the basic pixel shader");
 		return false;
 	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the basic pixel shader");
 
 #pragma endregion
 
@@ -91,9 +128,11 @@ bool DirectXData::Initialize()
 
 	if (FAILED(d3dDevice->CreateInputLayout(d3dBasicShaderDesc.data(), d3dBasicShaderDesc.size(), BasicVertex, sizeof(BasicVertex), &d3dInputLayout[INPUT_LAYOUT::BASIC])))
 	{
-		//log failure
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the basic vertex input layout");
 		return false;
 	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the basic vertex input layout");
 
 #pragma endregion
 
@@ -109,19 +148,24 @@ bool DirectXData::Initialize()
 
 	if (FAILED(d3dDevice->CreateSamplerState(&d3dSamStateDesc, &d3dSamplerState)))
 	{
-		//log failure
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the sampler state");
 		return false;
 	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the sampler state");
 
 #pragma endregion
 
 #pragma region Camera Creation
 
+	debugCamPos = { 0.0f, 15.0f, -15.0f };
 	camPos = { 0.0f, 15.0f, -15.0f };
 	DirectX::XMFLOAT3 at = { 0.0f, 0.0f, 0.0f };
 	DirectX::XMFLOAT3 up = { 0.0f, 1.0f, 0.0f };
 
 	camMat = DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat3(&camPos), DirectX::XMLoadFloat3(&at), DirectX::XMLoadFloat3(&up));
+
+	debugCamMat = DirectX::XMMatrixTranslation(debugCamPos.x, debugCamPos.y, debugCamPos.z) * DirectX::XMMatrixIdentity();
 
 	viewMat = camMat;// DirectX::XMMatrixInverse(nullptr, camMat);
 	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 50.0f);
@@ -140,7 +184,13 @@ bool DirectXData::Initialize()
 	BasicVConstBuffDesc.StructureByteStride = 0;
 	BasicVConstBuffDesc.Usage = D3D11_USAGE_DEFAULT;
 
-	d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::V_BASIC]);
+	if (FAILED(d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::V_BASIC])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the basic vertex constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the basic vertex constant buffer");
 
 	D3D11_BUFFER_DESC BasicPConstBuffDesc;
 	ZeroMemory(&BasicPConstBuffDesc, sizeof(BasicPConstBuffDesc));
@@ -152,7 +202,13 @@ bool DirectXData::Initialize()
 	BasicPConstBuffDesc.StructureByteStride = 0;
 	BasicPConstBuffDesc.Usage = D3D11_USAGE_DEFAULT;
 
-	d3dDevice->CreateBuffer(&BasicPConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::P_BASIC]);
+	if (FAILED(d3dDevice->CreateBuffer(&BasicPConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::P_BASIC])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the basic pixel constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the basic pixel constant buffer");
 
 #pragma endregion
 
@@ -204,4 +260,33 @@ void DirectXData::Cleanup()
 	}
 
 	SAFE_RELEASE(_debugger);
+}
+
+void DirectXData::updateCameras()
+{
+	if (!DirectX::XMColorEqual(DirectX::XMLoadFloat3(&newCamPos), DirectX::XMLoadFloat3(&camPos)))
+	{
+
+	}
+
+	if (debugCamDelta.x != 0 || debugCamDelta.y != 0 || debugCursorRot.x != 0 || debugCursorRot.y != 0)
+	{
+		debugCamMat = DirectX::XMMatrixTranslation(debugCamDelta.x, 0.0f, debugCamDelta.y) * debugCamMat;
+
+		DirectX::XMFLOAT4 debugPos;
+		DirectX::XMStoreFloat4(&debugPos, debugCamMat.r[3]);
+		debugCamMat.r[3] = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+
+
+
+
+		debugCamMat = DirectX::XMMatrixRotationX(debugCursorRot.y) * debugCamMat;
+		debugCamMat = debugCamMat * DirectX::XMMatrixRotationY(debugCursorRot.x) ;
+
+		debugCamMat.r[3] = DirectX::XMLoadFloat4(&debugPos);
+
+
+		debugCursorRot = { 0.0f, 0.0f };
+
+	}
 }

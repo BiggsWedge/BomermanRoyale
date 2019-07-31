@@ -19,9 +19,6 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{cb44c8ed-441b-409f-883e-93fea8811c11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DEPRICATED">
-      <UniqueIdentifier>{3038d1d7-5dea-4eec-a13d-65f426cf1daf}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

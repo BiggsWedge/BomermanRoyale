@@ -1,6 +1,5 @@
 /****************************************************
 *	Filename:			BasicVertex.hlsl
-*	Date:				07/16/2019
 *	Mod. Date:			07/16/2019
 *	Mod. Initials:		D.S.
 *	Author:				Dominic Sondgeroth
@@ -13,8 +12,6 @@ cbuffer wvp
     matrix view;
     matrix projection;
 };
-
-
 
 struct inVertex
 {
@@ -32,8 +29,6 @@ struct outVertex
     float2 texCoord : TEXCOORD0;
 };
 
-
-
 outVertex main(in inVertex _inVert)
 {
     outVertex outVert = (outVertex) 0;
@@ -41,7 +36,7 @@ outVertex main(in inVertex _inVert)
     outVert.position = mul(outVert.position, view);
     outVert.position = mul(outVert.position, projection);
 
-    outVert.normal = normalize(mul(float4(_inVert.normal, 1.0f), world));
+    outVert.normal = normalize(mul(float4(_inVert.normal.xyz, 1.0f), world));
     outVert.texCoord = _inVert.texCoord;
     return outVert;
 }

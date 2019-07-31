@@ -65,7 +65,7 @@ void CObject::Draw()
 		g_d3dData->d3dContext->GSSetShader(g_d3dData->d3dGeometryShader[renderer->iUsedGeometryShaderIndex], 0, 0);
 
 	TBasicPixelConstBuff pConst;
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 8; ++i)
 		pConst.flags[i] = -1;
 
 	if (tex->iUsedDiffuseIndex >= 0)
@@ -73,17 +73,23 @@ void CObject::Draw()
 		g_d3dData->d3dContext->PSSetShaderResources(0, 1, &g_d3dData->d3dDiffuseTextures[tex->iUsedDiffuseIndex]);
 		pConst.flags[0] = 1;
 	}
+	else
+		g_d3dData->d3dContext->PSSetShaderResources(0, 0, nullptr);
 
 	if (tex->iUsedNormalIndex >= 0)
 	{
 		pConst.flags[1] = 1;
 	}
 
-
 	g_d3dData->d3dContext->PSSetSamplers(0, 1, &g_d3dData->d3dSamplerState);
 
 	g_d3dData->basicConstBuff.mModelMatrix = DirectX::XMMatrixTranspose(transform->mObjMatrix);
-	g_d3dData->basicConstBuff.mViewMatrix = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
+
+	if (g_d3dData->bUseDebugRenderCamera)
+		g_d3dData->basicConstBuff.mViewMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
+	else
+		g_d3dData->basicConstBuff.mViewMatrix = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
+
 	g_d3dData->basicConstBuff.mProjMatrix = DirectX::XMMatrixTranspose(g_d3dData->projMat);
 
 	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_BASIC], 0, nullptr, &g_d3dData->basicConstBuff, 0, 0);
@@ -93,7 +99,5 @@ void CObject::Draw()
 	g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC]);
 
 	g_d3dData->d3dContext->DrawIndexed(mesh->indexCount, 0, 0);
-
-
 
 }

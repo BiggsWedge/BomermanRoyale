@@ -15,7 +15,6 @@ Texture2D _specular : register(t3);
 
 SamplerState _samState : register(s0);
 
-
 struct inPixel
 {
     float4 position : SV_POSITION;
@@ -25,17 +24,31 @@ struct inPixel
 
 cbuffer textureFlags
 {
-    int4 texFlags;
+    int texFlags[8];
 };
+
+float3 lightDir = { -1.0f, -1.0f, -1.0f};
+float4 lightColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 
 float4 main(in inPixel _inPix) : SV_TARGET
 {
     float4 outColor = (float4) 0;
-    if (texFlags[0] == 1)
-        outColor += _diffuse.Sample(_samState, _inPix.texCoord);
+    float4 diff = (float4) 0;
+    float3 norm = normalize(_inPix.normal);
 
-    return outColor;
+    if (texFlags[0]==1)
+        diff += _diffuse.Sample(_samState, _inPix.texCoord);
+    else
+        diff = float4(1.0f, 1.0f, 1.0f, 1.0f);
+
+    float lightRatio = saturate(dot(normalize(lightDir), norm));
+    outColor += lightRatio * lightColor ;
+
+    return diff;
+   // return saturate(outColor * diff);
+    //saturate(outColor * diff);
+
 }
 
 

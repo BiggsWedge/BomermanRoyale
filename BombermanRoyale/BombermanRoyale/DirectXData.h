@@ -18,7 +18,7 @@ struct TBasicVertexConstBuff
 
 struct TBasicPixelConstBuff
 {
-	int flags[4];
+	int flags[8];
 };
 
 struct RENDER_TARGET_VIEW
@@ -113,12 +113,18 @@ public:
 
 	ID3D11ShaderResourceView*			d3dDiffuseTextures[DIFFUSE_TEXTURES::COUNT] = {};
 
+	bool								bUseDebugRenderCamera = false;
 
 
 	DirectX::XMMATRIX					camMat;
+	DirectX::XMMATRIX					debugCamMat;
+	DirectX::XMFLOAT3					debugCamPos;
+	DirectX::XMFLOAT2					debugCamDelta;
+	DirectX::XMFLOAT2					debugCursorRot;
 	DirectX::XMMATRIX					viewMat;
 	DirectX::XMMATRIX					projMat;
 	DirectX::XMFLOAT3					camPos;
+	DirectX::XMFLOAT3					newCamPos;
 
 	TBasicVertexConstBuff					basicConstBuff;
 
@@ -130,6 +136,8 @@ public:
 	DirectXData();
 	~DirectXData();
 	void Cleanup();
+	inline void ToggleUseDebugCamera() { bUseDebugRenderCamera = !bUseDebugRenderCamera; }
+	void updateCameras();
 };
 
 extern DirectXData* g_d3dData;

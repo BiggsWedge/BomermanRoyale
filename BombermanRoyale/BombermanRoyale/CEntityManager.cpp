@@ -1,3 +1,15 @@
+/****************************************************
+*	Filename:			CEntityManager.cpp
+*	Mod. Date:			07/27/2019;
+*	Mod. Initials:		D.S.
+*	Author:				Dominic Sondgeroth
+*	Purpose:			This file contains the
+*						implementation for the
+*						CEntityManger class and
+*						all of its internals and
+*						useful classes and structures
+****************************************************/
+
 #include "CEntityManager.h"
 
 CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
