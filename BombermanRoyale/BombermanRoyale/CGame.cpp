@@ -34,7 +34,7 @@ void CGame::Run()
 void CGame::LoadObject()
 {
 	OBJLoadInfo loadInfo;
-	TCollider collider;
+	TCollider collider = GetCenter(v_tMeshTemplates[0]);
 	loadInfo.position = { 0.0f, 0.0f,0.0f };
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.meshID = 0;
@@ -55,15 +55,15 @@ void CGame::LoadObject()
 	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
 	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
 	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
-	loadInfo.Collider.Center = collider.center;
-	loadInfo.Collider.Extents = collider.extents;
+	loadInfo.collider.Center = collider.center;
+	loadInfo.collider.Extents = collider.extents;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { -5.0f, 0.0f, -2.0f };
 	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
 	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
 	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
-	loadInfo.Collider.Center = collider.center;
+	loadInfo.collider.Center = collider.center;
 
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
