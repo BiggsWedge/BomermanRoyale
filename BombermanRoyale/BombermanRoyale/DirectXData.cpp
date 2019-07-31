@@ -166,6 +166,7 @@ bool DirectXData::Initialize()
 	camMat = DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat3(&camPos), DirectX::XMLoadFloat3(&at), DirectX::XMLoadFloat3(&up));
 
 	debugCamMat = DirectX::XMMatrixTranslation(debugCamPos.x, debugCamPos.y, debugCamPos.z) * DirectX::XMMatrixIdentity();
+	debugCamMat = DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(30)) * debugCamMat;
 
 	viewMat = camMat;// DirectX::XMMatrixInverse(nullptr, camMat);
 	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 50.0f);
