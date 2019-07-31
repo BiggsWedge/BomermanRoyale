@@ -1,7 +1,7 @@
 #include "CGame.h"
 #include <iostream>
 
-const char* backgroundMusicFilePath = ".//Assets//Music//BackgroundMusic.wav";
+const char* backgroundMusicFilePath = ".//Assets//Music//Level_Music1.wav";
 const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
 
 bool CGame::Initialize()
@@ -13,6 +13,19 @@ bool CGame::Initialize()
 
 void CGame::Run()
 {
+
+#pragma region Audio
+
+	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicStream)))
+	{
+		if (G_SUCCESS(g_pMusicStream->SetVolume(0.5f)))
+		{
+			g_pMusicStream->StreamStart(true);
+		}
+	}
+
+#pragma endregion
+
 
 	float errorCode = 0;
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
@@ -38,30 +51,20 @@ void CGame::Run()
 
 		if (GetAsyncKeyState(VK_SPACE))
 		{
-			std::cout << "SPACE WAS PRESSED";
-		}
-
-#pragma endregion
-
-#pragma region Audio
-
-		if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicStream)))
-		{
-			if (G_SUCCESS(g_pMusicStream->SetVolume(0.1f)))
+			if (G_SUCCESS(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer)))
 			{
-				g_pMusicStream->StreamStart(false);
+				g_pSoundPlayer->Play();
+				std::cout << "SPACE WAS PRESSED";
 			}
 		}
-		
-		/*if (G_SUCCESS(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer)))
-		{
-			g_pSoundPlayer->Play();
-		}*/
-		
+
 #pragma endregion
+
+
 
 		p_cRendererManager->Draw();
 	}
+
 }
 
 void CGame::LoadObject()
