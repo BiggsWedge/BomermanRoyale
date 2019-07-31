@@ -8,13 +8,14 @@ TRendererComponent::TRendererComponent()
 	componentType = COMPONENT_TYPE::RENDERER;
 }
 
-TRendererComponent::TRendererComponent(int _usedVertexShader, int _usedPixelShader, int _usedInputLayout, int _usedGeometryShader)
+TRendererComponent::TRendererComponent(int _usedVertexShader, int _usedPixelShader, int _usedInputLayout, int _usedGeometryShader, int _usedLoadState)
 {
 	componentType = COMPONENT_TYPE::RENDERER;
 	iUsedVertexShaderIndex = _usedVertexShader;
 	iUsedPixelShaderIndex = _usedPixelShader;
 	iUsedGeometryShaderIndex = _usedGeometryShader;
 	iUsedInputLayout = _usedInputLayout;
+	iUsedLoadState = _usedLoadState;
 }
 
 TRendererComponent::~TRendererComponent()
@@ -38,7 +39,12 @@ TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, Direct
 	fPosition = spawnPosition;
 	fForwardVector = forwardVector;
 	DirectX::XMFLOAT3 up = { 0.0f, 1.0f, 0.0f };
-	mObjMatrix = DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat3(&fPosition), DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&fForwardVector))), DirectX::XMLoadFloat3(&up));
+	DirectX::XMVECTOR at = DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&fForwardVector)));
+	DirectX::XMVECTOR origin = { 0.0f, 0.0f, 0.0f };
+
+
+	mObjMatrix = DirectX::XMMatrixLookAtLH(origin, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&forwardVector)), DirectX::XMLoadFloat3(&up));
+	mObjMatrix = mObjMatrix * DirectX::XMMatrixTranslation(spawnPosition.x, spawnPosition.y, spawnPosition.z);
 	mObjMatrix = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) * mObjMatrix;
 }
 
