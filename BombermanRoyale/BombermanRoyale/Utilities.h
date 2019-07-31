@@ -17,6 +17,9 @@ using file_path_t = std::array<char, 260>;
 extern GW::SYSTEM::GLog* g_pLogger;
 extern GW::SYSTEM::GWindow* g_pWindow;
 
+//bool FullScreen = false;
+
+
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the
 *								current date and time.
@@ -78,6 +81,7 @@ bool InitializeWindow();
 *	Mod. Date:					07/19/2019
 *	Mod. Initials:				D.S.
 ***********************************************************************/
+
 bool InitializeGlobals();
 
 struct TSimpleVertex

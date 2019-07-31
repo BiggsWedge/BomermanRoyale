@@ -9,7 +9,7 @@ struct OBJLoadInfo
 	DirectX::XMFLOAT3 forwardVec;
 	DirectX::XMFLOAT3 scale;
 
-	int usedVertex, usedPixel, usedGeo, usedInput, usedDiffuse;
+	int usedVertex, usedPixel, usedGeo, usedInput, usedDiffuse, LoadState;
 
 };
 

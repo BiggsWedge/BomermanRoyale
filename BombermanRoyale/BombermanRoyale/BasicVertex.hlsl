@@ -37,6 +37,7 @@ struct outVertex
 outVertex main(in inVertex _inVert)
 {
     outVertex outVert = (outVertex) 0;
+	//outVert.position = float4(_inVert.position, 0.0f);
     outVert.position = mul(float4(_inVert.position, 1.0f), world);
     outVert.position = mul(outVert.position, view);
     outVert.position = mul(outVert.position, projection);

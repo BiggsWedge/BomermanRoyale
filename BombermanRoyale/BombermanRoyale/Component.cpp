@@ -8,13 +8,14 @@ TRendererComponent::TRendererComponent()
 	componentType = COMPONENT_TYPE::RENDERER;
 }
 
-TRendererComponent::TRendererComponent(int _usedVertexShader, int _usedPixelShader, int _usedInputLayout, int _usedGeometryShader)
+TRendererComponent::TRendererComponent(int _usedVertexShader, int _usedPixelShader, int _usedInputLayout, int _usedGeometryShader, int _usedLoadState)
 {
 	componentType = COMPONENT_TYPE::RENDERER;
 	iUsedVertexShaderIndex = _usedVertexShader;
 	iUsedPixelShaderIndex = _usedPixelShader;
 	iUsedGeometryShaderIndex = _usedGeometryShader;
 	iUsedInputLayout = _usedInputLayout;
+	iUsedLoadState = _usedLoadState;
 }
 
 TRendererComponent::~TRendererComponent()

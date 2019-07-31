@@ -14,6 +14,7 @@ bool DirectXData::Initialize()
 
 	DXGI_SWAP_CHAIN_DESC d3dSwapChainDesc;
 	d3dSwapChain->GetDesc(&d3dSwapChainDesc);
+	
 
 #pragma region Viewport Creation
 
@@ -124,7 +125,7 @@ bool DirectXData::Initialize()
 	camMat = DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat3(&camPos), DirectX::XMLoadFloat3(&at), DirectX::XMLoadFloat3(&up));
 
 	viewMat = camMat;// DirectX::XMMatrixInverse(nullptr, camMat);
-	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 50.0f);
+	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 100.0f);
 
 #pragma endregion
 

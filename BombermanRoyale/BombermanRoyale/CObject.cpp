@@ -97,3 +97,18 @@ void CObject::Draw()
 
 
 }
+
+bool CObject::GetComponent(int componentType, TRendererComponent* & component)
+{
+	TRendererComponent* renderer;
+	for (TComponent* c : v_tComponents)
+	{
+		if (c->GetComponentType() == componentType)
+		{
+			component = (TRendererComponent*)c;
+			//component = new TRendererComponent(component->iUsedVertexShaderIndex, component->iUsedPixelShaderIndex, component->iUsedInputLayout, component->iUsedGeometryShaderIndex, component->iUsedLoadState);
+			return true;
+		}
+	}
+	return false;
+}

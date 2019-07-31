@@ -9,7 +9,11 @@ std::vector<const wchar_t*> diffuseTextures =
 {
 	L".//Assets//Cube.fbm//Crate.jpg",
 	L".//Assets//BattleMage.fbm//PPG_3D_Player_D.png",
-	L".//Assets//Menus.fbm//Menu.png"
+	L".//Assets//Menus.fbm//Menu.png",
+	L".//Assets//Menus.fbm//In-Game Barnyard Blast.png",
+	L".//Assets//Menus.fbm//Playe Status.png",
+	L".//Assets//Cube.fbm//red_texture.jpg",
+	L".//Assets//Cube.fbm//blue_texture.jpg"
 
 };
 
@@ -60,17 +64,35 @@ bool InitializeLogger()
 
 bool InitializeWindow()
 {
-	if (G_SUCCESS(CreateGWindow(100, 100, 1024, 720, GWindowStyle::WINDOWEDBORDERED, &g_pWindow)))
-	{
-		g_pLogger->LogCatergorized("SUCCESS", "Window successfully created.");
-		return true;
-	}
-	else
-	{
-		g_pLogger->LogCatergorized("FAILURE", "Window unsuccessfully created.");
-		return false;
-	}
+
+	//if (!FullScreen)
+	//{
+		if (G_SUCCESS(CreateGWindow(100, 100, 1024, 720, GWindowStyle::WINDOWEDBORDERED, &g_pWindow)))
+		{
+			g_pLogger->LogCatergorized("SUCCESS", "Window successfully created.");
+			return true;
+		}
+		else
+		{
+			g_pLogger->LogCatergorized("FAILURE", "Window unsuccessfully created.");
+			return false;
+		}
+	//}
+	//if (FullScreen)
+	//{
+	//	if (G_SUCCESS(CreateGWindow(100, 100, 1024, 720, GWindowStyle::FULLSCREENBORDERLESS, &g_pWindow)))
+	//	{
+	//		g_pLogger->LogCatergorized("SUCCESS", "Window successfully created.");
+	//		return true;
+	//	}
+	//	else
+	//	{
+	//		g_pLogger->LogCatergorized("FAILURE", "Window unsuccessfully created.");
+	//		return false;
+	//	}
+	//}
 }
+
 
 bool InitializeGlobals()
 {
@@ -137,8 +159,29 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile)
 
 			int numIndices = 6;
 			int numVerts = 4;
+			/*
+			temp.v_iIndices.resize(numIndices);
+			temp.v_tVertices.resize(numVerts);
+
+			temp.v_tVertices.at(0).fPosition = DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f);
+			temp.v_tVertices.at(1).fPosition = DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f);
+			temp.v_tVertices.at(2).fPosition = DirectX::XMFLOAT3(-1.0f, -0.75f, 0.0f);
+			temp.v_tVertices.at(3).fPosition = DirectX::XMFLOAT3(1.0f, -0.75f, 0.0f);
+
+			temp.v_tVertices.at(0).fTexCoord = DirectX::XMFLOAT2(0.0f, 0.0f);
+			temp.v_tVertices.at(1).fTexCoord = DirectX::XMFLOAT2(0.0f, 1.0f);
+			temp.v_tVertices.at(2).fTexCoord = DirectX::XMFLOAT2(1.0f, 0.0f);
+			temp.v_tVertices.at(3).fTexCoord = DirectX::XMFLOAT2(1.0f, 1.0f);
+
+			temp.v_iIndices.at(0) = 0;
+			temp.v_iIndices.at(1) = 2;
+			temp.v_iIndices.at(2) = 1;
+			temp.v_iIndices.at(3) = 1;
+			temp.v_iIndices.at(4) = 2;
+			temp.v_iIndices.at(5) = 3;
 
 
+			*/
 
 			temp.v_iIndices.resize(numIndices);
 			temp.v_tVertices.resize(numVerts);
