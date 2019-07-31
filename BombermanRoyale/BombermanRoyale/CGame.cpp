@@ -20,7 +20,7 @@ static std::vector<key> keys(6);
 
 struct KEYS
 {
-	enum { UP, DOWN, LEFT, RIGHT, ZERO, RMB };
+	enum { UP, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE };
 };
 
 static std::vector<int> keycodes =
@@ -30,12 +30,14 @@ static std::vector<int> keycodes =
 	VK_LEFT,
 	VK_RIGHT,
 	VK_NUMPAD0,
-	VK_RBUTTON
+	VK_RBUTTON,
+	VK_SPACE
 };
 
 
 key fullScreenButton;
 key GameStateButton;
+key SFXButton;
 
 bool CGame::Initialize()
 {
@@ -74,6 +76,9 @@ void CGame::Run()
 		GameStateButton.prevState = GameStateButton.currState;
 
 		GameStateButton.currState = GetAsyncKeyState('G') & 0x8000;
+
+		SFXButton.prevState = SFXButton.currState;
+		SFXButton.currState = GetAsyncKeyState(keycodes[KEYS::SPACE]) & 0x8000;
 
 		if (fullScreenButton.pressed())
 		{
@@ -147,13 +152,15 @@ void CGame::Run()
 			std::cout << "SPACE WAS PRESSED, G INPUT STYLE";
 		}
 
-		if (GetAsyncKeyState(VK_SPACE))
+		if (SFXButton.pressed())
 		{
 			if (G_SUCCESS(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer)))
 			{
 				g_pSoundPlayer->Play();
 				std::cout << "SPACE WAS PRESSED";
 			}
+			else
+				g_pLogger->LogCatergorized("FAILURE", "Failed to play SFX");
 		}
 
 #pragma endregion
