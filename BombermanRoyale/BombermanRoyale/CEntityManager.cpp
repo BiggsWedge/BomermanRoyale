@@ -42,8 +42,30 @@ CObject* CEntityManager::DropBomb(CObject* playerSource)
 	OBJLoadInfo loadInfo;
 
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
-	//pos.x = floorf(pos.x) + (1.25f * (pos.x / abs(pos.x)));
-	//pos.z = floorf(pos.z) + (1.25f * (pos.z / abs(pos.z)));
+	int x = 0;
+	int z = 0;
+	if (pos.x >= 0)
+	{
+		 x = (pos.x + 1.25f) / 2.5f;
+		pos.x = ((float)x * 2.5f);
+	}
+	else
+	{
+		x = (pos.x - 1.25f) / 2.5f;
+		pos.x = ((float)x * 2.5f);
+	}
+	if (pos.z >= 0)
+	{
+		z = (pos.z + 1.25f) / 2.5f;
+		pos.z = ((float)z * 2.5f);
+	}
+	else
+	{
+		z = (pos.z - 1.25f) / 2.5f;
+		pos.z = ((float)z * 2.5f);
+	}
+	//pos.x = floorf(pos.x) + (2.5f * (pos.x / abs(pos.x)));
+	//pos.z = floorf(pos.z) + (2.5f * (pos.z / abs(pos.z)));
 
 	loadInfo.position = pos;
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
@@ -57,4 +79,59 @@ CObject* CEntityManager::DropBomb(CObject* playerSource)
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 75.0f, 1.0f / 75.0f, 1.0f / 75.0f);
 	bomb = CreateOBJFromTemplate(loadInfo);
 	return bomb;
+}
+
+
+CObject* CEntityManager::BombExplosionX(CObject* BombSource)
+{
+	CObject* explosion;
+	TComponent* transform;
+	TTransformComponent* cTransform;
+	BombSource->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
+	cTransform = (TTransformComponent*)transform;
+
+	OBJLoadInfo loadInfo;
+
+	DirectX::XMFLOAT3 pos = cTransform->fPosition;
+
+	loadInfo.position = pos;
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.meshID = 0;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.LoadState = 3;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 15.0f, 1.0f / 75.0f, 1.0f / 75.0f);
+	explosion = CreateOBJFromTemplate(loadInfo);
+
+	return explosion;
+}
+
+CObject* CEntityManager::BombExplosionZ(CObject* BombSource)
+{
+	CObject* explosion;
+	TComponent* transform;
+	TTransformComponent* cTransform;
+	BombSource->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
+	cTransform = (TTransformComponent*)transform;
+
+	OBJLoadInfo loadInfo;
+
+	DirectX::XMFLOAT3 pos = cTransform->fPosition;
+
+	loadInfo.position = pos;
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.meshID = 0;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.LoadState = 3;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 75.0f, 1.0f / 75.0f, 1.0f / 15.0f);
+	explosion = CreateOBJFromTemplate(loadInfo);
+
+	return explosion;
 }

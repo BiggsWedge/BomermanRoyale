@@ -39,5 +39,7 @@ public:
 
 	CObject* DropBomb(CObject* playerSource);
 
+	CObject* BombExplosionX(CObject* BombSource);
+	CObject* BombExplosionZ(CObject* BombSource);
 };
 

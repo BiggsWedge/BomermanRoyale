@@ -280,8 +280,25 @@ void CGame::Run()
 			{
 
 				g_pSoundPlayer->Play();
+				p2Ex = p_cEntityManager->BombExplosionX(p2B);
+				p2Ez = p_cEntityManager->BombExplosionZ(p2B);
+				p2ETimer = 0.0f;
 				delete p2B;
 				p2B = nullptr;
+			}
+		}
+
+		if (p2Ex)
+		{
+			p2ETimer += 0.1f;
+			if (p2ETimer >= 6)
+			{
+
+				
+				delete p2Ex;
+				delete p2Ez;
+				p2Ex = nullptr;
+				p2Ez = nullptr;
 			}
 		}
 
@@ -292,8 +309,25 @@ void CGame::Run()
 			{
 
 				g_pSoundPlayer->Play();
+				p1Ex = p_cEntityManager->BombExplosionX(p1B);
+				p1Ez = p_cEntityManager->BombExplosionZ(p1B);
+				p1ETimer = 0.0f;
 				delete p1B;
 				p1B = nullptr;
+			}
+		}
+
+		if (p1Ex)
+		{
+			p1ETimer += 0.1f;
+			if (p1ETimer >= 6)
+			{
+
+
+				delete p1Ex;
+				delete p1Ez;
+				p1Ex = nullptr;
+				p1Ez = nullptr;
 			}
 		}
 
@@ -337,6 +371,42 @@ void CGame::Run()
 				renderer = (TRendererComponent*)cRenderer;
 				if (renderer->iUsedLoadState == curGameState)
 					p_cRendererManager->RenderObject(*p2B);
+			}
+		}
+		if (p1Ex)
+		{
+
+			TComponent* cRenderer = nullptr;
+			TRendererComponent* renderer = nullptr;
+			if (p1Ex->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+			{
+				renderer = (TRendererComponent*)cRenderer;
+				if (renderer->iUsedLoadState == curGameState)
+					p_cRendererManager->RenderObject(*p1Ex);
+			}
+			if (p1Ez->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+			{
+				renderer = (TRendererComponent*)cRenderer;
+				if (renderer->iUsedLoadState == curGameState)
+					p_cRendererManager->RenderObject(*p1Ez);
+			}
+		}
+		if (p2Ex)
+		{
+
+			TComponent* cRenderer = nullptr;
+			TRendererComponent* renderer = nullptr;
+			if (p2Ex->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+			{
+				renderer = (TRendererComponent*)cRenderer;
+				if (renderer->iUsedLoadState == curGameState)
+					p_cRendererManager->RenderObject(*p2Ex);
+			}
+			if (p2Ez->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+			{
+				renderer = (TRendererComponent*)cRenderer;
+				if (renderer->iUsedLoadState == curGameState)
+					p_cRendererManager->RenderObject(*p2Ez);
 			}
 		}
 

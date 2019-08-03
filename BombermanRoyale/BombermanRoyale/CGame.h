@@ -23,7 +23,9 @@ class CGame
 	std::vector<CObject*> objects;
 	CObject* p2, *p1;
 	CObject* p1B = nullptr, *p2B = nullptr;
+	CObject* p1Ex = nullptr, *p1Ez = nullptr,*p2Ex = nullptr, *p2Ez = nullptr;
 	float p1BTimer = 0.0f, p2BTimer = 0.0f;
+	float p1ETimer = 0.0f, p2ETimer = 0.0f;
 	int p1BIndex, p2BIndex;
 
 

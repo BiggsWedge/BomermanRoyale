@@ -18,7 +18,8 @@ std::vector<const wchar_t*> diffuseTextures = {
 	L".//Assets//Menus.fbm//Playe Status.png",
 	L".//Assets//Cube.fbm//red_texture.jpg",
 	L".//Assets//Cube.fbm//blue_texture.jpg",
-	L".//Assets//Cube.fbm//black_texture.jpg"
+	L".//Assets//Cube.fbm//black_texture.jpg",
+	L".//Assets//Cube.fbm//fire.jpg"
 };
 
 GLog* g_pLogger = nullptr;
