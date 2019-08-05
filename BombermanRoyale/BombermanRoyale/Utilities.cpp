@@ -17,10 +17,12 @@ std::vector<const wchar_t*> diffuseTextures = {
 	L".//Assets//Menus.fbm//In-Game Barnyard Blast.png",
 	L".//Assets//Menus.fbm//Playe Status.png",
 	L".//Assets//Menus.fbm//Win_Screen.png",
+	L".//Assets//Menus.fbm//Controls.png",
 	L".//Assets//Cube.fbm//red_texture.jpg",
 	L".//Assets//Cube.fbm//blue_texture.jpg",
 	L".//Assets//Cube.fbm//black_texture.jpg",
-	L".//Assets//Cube.fbm//fire.jpg"
+	L".//Assets//Cube.fbm//fire.jpg",
+	L".//Assets//Cube.fbm//Hay.jpg"
 
 };
 

@@ -16,11 +16,11 @@ struct key
 	inline bool released() { return !currState && prevState; }
 };
 
-static std::vector<key> keys(18);
+static std::vector<key> keys(19);
 
 struct KEYS
 {
-	enum { UP, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE, P2UP, P2LEFT, P2DOWN, P2RIGHT, P1UP, P1LEFT, P1DOWN, P1RIGHT, P2BOMB, P1BOMB };
+	enum { UP, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE, P2UP, P2LEFT, P2DOWN, P2RIGHT, P1UP, P1LEFT, P1DOWN, P1RIGHT, P2BOMB, P1BOMB, HELP_MENU };
 };
 
 static std::vector<int> keycodes =
@@ -41,7 +41,8 @@ static std::vector<int> keycodes =
 	'K',
 	'L',
 	VK_NUMPAD6,
-	'O'
+	'O',
+	VK_F11
 };
 
 
@@ -50,11 +51,13 @@ key GameStateButton;
 key SFXButton;
 key P1BOMB;
 key P2BOMB;
+key ControlScreenButton;
 
 bool Player1 = false;
 bool Player2 = false;
 bool P1EXISTS = false;
 bool P2EXISTS = false;
+bool ControlScreenToggle = false;
 float3 P1POS = { -10.0f, 0.0f, 10.0f };
 float3 P2POS = { 10.0f, 0.0f, -5.0f };
 
@@ -105,6 +108,10 @@ void CGame::Run()
 		SFXButton.prevState = SFXButton.currState;
 		SFXButton.currState = GetAsyncKeyState(keycodes[KEYS::SPACE]) & 0x8000;
 
+		ControlScreenButton.prevState = ControlScreenButton.currState;
+
+		ControlScreenButton.currState = GetAsyncKeyState(keycodes[KEYS::HELP_MENU]) & 0x8000;
+
 		if (fullScreenButton.pressed())
 		{
 			FullScreen = !FullScreen;
@@ -145,6 +152,14 @@ void CGame::Run()
 				P2EXISTS = true;
 			}
 
+		}
+
+		if (ControlScreenButton.pressed())
+		{
+			if (ControlScreenToggle == false)
+				ControlScreenToggle = true;
+			else
+				ControlScreenToggle = false;
 		}
 
 		if (G_FAIL(g_pWindow->ProcessWindowEvents()))
@@ -691,7 +706,15 @@ void CGame::Run()
 					if (renderer->iUsedLoadState == curGameState)
 						p_cRendererManager->RenderObject(*objects[i]);
 				}
-
+				if (ControlScreenToggle == true)
+				{
+					if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+					{
+						renderer = (TRendererComponent*)cRenderer;
+						if (renderer->iUsedLoadState == GameState::CONTROLS_SCREEN)
+							p_cRendererManager->RenderObject(*objects[i]);
+					}
+				}
 
 
 			}
@@ -932,7 +955,7 @@ void CGame::LoadObject()
 	loadInfo.position = { 0.0f, 0.0f,0.0f };
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.meshID = 0;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
@@ -974,7 +997,7 @@ void CGame::LoadObject()
 	loadInfo.position = { 0.0f, 0.0f, 2.5f };
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.meshID = 0;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
@@ -1017,6 +1040,14 @@ void CGame::LoadObject()
 	loadInfo.scale = DirectX::XMFLOAT3(1.75f, 1.99f, 1.0f);
 	loadInfo.meshID = 2;
 	loadInfo.LoadState = 5;
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 5.0f, -4.5f };
+	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HELP_MENU;
+	loadInfo.scale = DirectX::XMFLOAT3(0.8f, 1.0f, 1.0f);
+	loadInfo.meshID = 2;
+	loadInfo.LoadState = 6;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	for (float x = -10; x <= 10; x += 2.5f)
