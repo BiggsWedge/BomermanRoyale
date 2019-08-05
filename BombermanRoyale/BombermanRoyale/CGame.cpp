@@ -42,7 +42,7 @@ static std::vector<int> keycodes =
 	'L',
 	VK_NUMPAD6,
 	'O',
-	VK_F11
+	VK_F1
 };
 
 

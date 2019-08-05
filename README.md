@@ -1,7 +1,7 @@
 # BombermanRoyale
 
 -In-Game Control Help Screen
-	-F11(Toggle) : Help Menu
+	-F1(Toggle) : Help Menu
 -Audio Input
 	-Space Bar : SFX place holder
 
