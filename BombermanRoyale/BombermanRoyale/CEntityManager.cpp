@@ -15,7 +15,7 @@
 CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 {
 	CObject* temp = new CObject();
-	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale);
+	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor);
 	temp->AddComponent((TComponent*)transform);
 
 	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);

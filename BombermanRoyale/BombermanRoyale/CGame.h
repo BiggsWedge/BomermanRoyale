@@ -27,6 +27,8 @@ class CGame
 	float p1BTimer = 0.0f, p2BTimer = 0.0f;
 	float p1ETimer = 0.0f, p2ETimer = 0.0f;
 	int p1BIndex, p2BIndex;
+	bool p1Move = true;
+	bool p2Move = true;
 
 
 public:

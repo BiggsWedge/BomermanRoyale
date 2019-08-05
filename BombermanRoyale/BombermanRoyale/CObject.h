@@ -9,6 +9,7 @@ struct OBJLoadInfo
 	DirectX::XMFLOAT3 scale;
 	DirectX::BoundingBox collider;
 	int usedVertex, usedPixel, usedGeo, usedInput, usedDiffuse, LoadState;
+	bool floor;
 };
 
 class CObject

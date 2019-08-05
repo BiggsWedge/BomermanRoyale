@@ -117,14 +117,20 @@ void CGame::Run()
 			if (curGameState == 0)
 			{
 				curGameState = 3;
-				Player1 = true;
-				Player2 = true;
+				P1EXISTS = true;
+				P2EXISTS = true;
 			}
 			else if (curGameState == 3)
 			{
 				curGameState = 0;
-				Player1 = false;
-				Player2 = false;
+				P1EXISTS = true;
+				P2EXISTS = true;
+			}
+			else if (curGameState == 5)
+			{
+				curGameState = 0;
+				P1EXISTS = true;
+				P2EXISTS = true;
 			}
 
 		}
@@ -149,6 +155,22 @@ void CGame::Run()
 		if (keys[KEYS::RIGHT].held())
 			g_d3dData->debugCamDelta.x += 0.1f;
 
+		if (!P2EXISTS && P1EXISTS)
+		{
+			curGameState = 5;
+			p2 = objects.at(objects.size() - 2);
+		}
+		if (!P1EXISTS && P2EXISTS)
+		{
+			curGameState = 5;
+			p1 = objects.at(objects.size() - 1);
+		}
+		if (!P2EXISTS && !P1EXISTS)
+		{
+			curGameState = 5;
+			p2 = objects.at(objects.size() - 2);
+			p1 = objects.at(objects.size() - 1);
+		}
 
 		if (P2EXISTS)
 		{
@@ -211,15 +233,170 @@ void CGame::Run()
 		}
 		if (P1EXISTS)
 		{
+			TComponent* p1Component;
+			p1->GetComponent(COMPONENT_TYPE::TRANSFORM, p1Component);
+			TTransformComponent* p1Transform = (TTransformComponent*)p1Component;
+			//TComponent* p2Component;
+			//TTransformComponent* p2Transform;
+			//if (P2EXISTS)
+			//{
+			//	p2->GetComponent(COMPONENT_TYPE::TRANSFORM, p2Component);
+			//	p2Transform = (TTransformComponent*)p2Component;
+			//}
+			p1Move = true;
 			float deltaP1X = 0.0f, deltaP1Z = 0.0f;
 			if (keys[KEYS::P1UP].held())
-				deltaP1Z += 0.1f;
+			{
+				for (int i = 0; i < objects.size() - 2; ++i)
+				{
+					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+					{
+						TComponent* cRenderer = nullptr;
+						TTransformComponent* renderer = nullptr;
+						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+						{
+							renderer = (TTransformComponent*)cRenderer;
+							float dZ = abs(p1Transform->fPosition.z - abs(renderer->fPosition.z));
+							float dX = abs(p1Transform->fPosition.x - abs(renderer->fPosition.x));
+							if (dZ < 2.0f && !renderer->nFloor && dX < 2.05f)
+							{
+								if (p1Transform->fPosition.z < renderer->fPosition.z)
+								{
+									p1Move = false;
+									break;
+								}
+							}
+							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
+							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
+							//if(dZ < 0.2f && dX < 1.25f)
+							//{
+							//	p1Move = false;
+							//	break;
+							//}
+						}
+
+
+
+					}
+				}
+				if(p1Move == true)
+					deltaP1Z += 0.1f;
+				
+			}
 			if (keys[KEYS::P1DOWN].held())
-				deltaP1Z += -0.1f;
+			{
+				p1Move = true;
+				for (int i = 0; i < objects.size() - 2; ++i)
+				{
+					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+					{
+						TComponent* cRenderer = nullptr;
+						TTransformComponent* renderer = nullptr;
+						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+						{
+							renderer = (TTransformComponent*)cRenderer;
+							float dZ = abs(p1Transform->fPosition.z - abs(renderer->fPosition.z));
+							float dX = abs(p1Transform->fPosition.x - abs(renderer->fPosition.x));
+							if (dZ < 1.6f && !renderer->nFloor && dX < 2.05f)
+							{
+								if (p1Transform->fPosition.z > renderer->fPosition.z)
+								{
+									p1Move = false;
+									break;
+								}
+							}
+							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
+							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
+							//if(dZ < 0.2f && dX < 1.25f)
+							//{
+							//	p1Move = false;
+							//	break;
+							//}
+						}
+
+
+
+					}
+				}
+				if (p1Move == true)
+					deltaP1Z += -0.1f;
+			}
 			if (keys[KEYS::P1LEFT].held())
-				deltaP1X += -0.1f;
+			{
+				p1Move = true;
+				for (int i = 0; i < objects.size() - 2; ++i)
+				{
+					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+					{
+						TComponent* cRenderer = nullptr;
+						TTransformComponent* renderer = nullptr;
+						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+						{
+							renderer = (TTransformComponent*)cRenderer;
+							float dZ = abs(p1Transform->fPosition.z - abs(renderer->fPosition.z));
+							float dX = abs(p1Transform->fPosition.x - abs(renderer->fPosition.x));
+							if (dX < 2.2f && !renderer->nFloor && dZ < 1.5f)
+							{
+								if (p1Transform->fPosition.x > renderer->fPosition.x)
+								{
+									p1Move = false;
+									break;
+								}
+							}
+							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
+							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
+							//if(dZ < 0.2f && dX < 1.25f)
+							//{
+							//	p1Move = false;
+							//	break;
+							//}
+						}
+
+
+
+					}
+				}
+				if (p1Move == true)
+					deltaP1X += -0.1f;
+			}
 			if (keys[KEYS::P1RIGHT].held())
-				deltaP1X += 0.1f;
+			{
+				p1Move = true;
+				for (int i = 0; i < objects.size() - 2; ++i)
+				{
+					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+					{
+						TComponent* cRenderer = nullptr;
+						TTransformComponent* renderer = nullptr;
+						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+						{
+							renderer = (TTransformComponent*)cRenderer;
+							float dZ = abs(p1Transform->fPosition.z - abs(renderer->fPosition.z));
+							float dX = abs(p1Transform->fPosition.x - abs(renderer->fPosition.x));
+							if (dX < 2.1f && !renderer->nFloor && dZ < 1.5f)
+							{
+								if (p1Transform->fPosition.x < renderer->fPosition.x)
+								{
+									p1Move = false;
+									break;
+								}
+							}
+							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
+							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
+							//if(dZ < 0.2f && dX < 1.25f)
+							//{
+							//	p1Move = false;
+							//	break;
+							//}
+						}
+
+
+
+					}
+				}
+				if (p1Move == true)
+					deltaP1X += 0.1f;
+			}
 			if (keys[KEYS::P1BOMB].pressed() && p1B == nullptr)
 			{
 				p1B = p_cEntityManager->DropBomb(p1);
@@ -410,6 +587,137 @@ void CGame::Run()
 			}
 		}
 
+		TComponent* Component;
+		TTransformComponent* p1Transform;
+		TTransformComponent* p2Transform;
+		TTransformComponent* p1ExTransform;
+		TTransformComponent* p2ExTransform;
+		float p1x;
+		float p1z;
+		float p2x;
+		float p2z;
+		float p1EXx;
+		float p1EXz;
+		float p2EXx;
+		float p2EXz;
+		if (p1)
+		{
+			p1->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
+			p1Transform = (TTransformComponent*)Component;
+			p1x = p1Transform->fPosition.x;
+			p1z = p1Transform->fPosition.z;
+		}
+		if (p2)
+		{
+			p2->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
+			p2Transform = (TTransformComponent*)Component;
+			p2x = p2Transform->fPosition.x;
+			p2z = p2Transform->fPosition.z;
+		}
+		if (p1Ex)
+		{
+			p1Ex->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
+			p1ExTransform = (TTransformComponent*)Component;
+			p1EXx = p1ExTransform->fPosition.x;
+			p1EXz = p1ExTransform->fPosition.z;
+
+			//p1Ez->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
+			//TTransformComponent* p1EzTransform = (TTransformComponent*)Component;
+			//float p1EZx = p1EzTransform->fPosition.x;
+			//float p1EZz = p1EzTransform->fPosition.z;
+		}
+		if (p2Ex)
+		{
+			p2Ex->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
+			p2ExTransform = (TTransformComponent*)Component;
+			p2EXx = p2ExTransform->fPosition.x;
+			p2EXz = p2ExTransform->fPosition.z;
+
+			//p2Ez->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
+			//TTransformComponent* p2EzTransform = (TTransformComponent*)Component;
+			//float p2EZx = p2EzTransform->fPosition.x;
+			//float p2EZz = p2EzTransform->fPosition.z;
+		}
+		
+
+		if (P1EXISTS && curGameState == 3)
+		{
+			if (p1Ex)
+			{
+				if (abs(p1x - p1EXx) < 4.9f && abs(p1z - p1EXz) < 2.0f)
+				{
+
+					delete p1;
+					p1 = nullptr;
+					P1EXISTS = false;
+
+				}
+				else if (abs(p1z - p1EXz) < 4.9f && abs(p1x - p1EXx) < 2.0f)
+				{
+					delete p1;
+					p1 = nullptr;
+					P1EXISTS = false;
+				}
+			}
+			if (p2Ex)
+			{
+				if (abs(p1x - p2EXx) < 4.9f && abs(p1z - p2EXz) < 2.0f)
+				{
+
+					delete p1;
+					p1 = nullptr;
+					P1EXISTS = false;
+
+				}
+				else if (abs(p1z - p2EXz) < 4.9f && abs(p1x - p2EXx) < 2.0f)
+				{
+					delete p1;
+					p1 = nullptr;
+					P1EXISTS = false;
+				}
+			}
+
+		}
+		if (P2EXISTS && curGameState ==3)
+		{
+			if (p1Ex)
+			{
+				if (abs(p2x - p1EXx) < 4.9f && abs(p2z - p1EXz) < 2.0f)
+				{
+
+					delete p2;
+					p2 = nullptr;
+					P2EXISTS = false;
+
+				}
+				else if (abs(p2z - p1EXz) < 4.9f && abs(p2x - p1EXx) < 2.0f)
+				{
+					delete p2;
+					p2 = nullptr;
+					P2EXISTS = false;
+				}
+			}
+			if (p2Ex)
+			{
+				if (abs(p2x - p2EXx) < 4.9f && abs(p2z - p2EXz) < 2.0f)
+				{
+
+					delete p2;
+					p2 = nullptr;
+					P2EXISTS = false;
+
+				}
+				else if (abs(p2z - p2EXz) < 4.9f && abs(p2x - p2EXx) < 2.0f)
+				{
+					delete p2;
+					p2 = nullptr;
+					P2EXISTS = false;
+				}
+			}
+
+		}
+		
+
 
 #pragma region Input
 
@@ -458,6 +766,8 @@ void CGame::LoadObject()
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
+	loadInfo.floor = false;
+	loadInfo.LoadState = 3;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -530,6 +840,14 @@ void CGame::LoadObject()
 	loadInfo.LoadState = 0;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+	loadInfo.position = { 0.0f, -2.4f, 3.0f };
+	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::WIN_SCREEN;
+	loadInfo.scale = DirectX::XMFLOAT3(1.75f, 1.99f, 1.0f);
+	loadInfo.meshID = 2;
+	loadInfo.LoadState = 5;
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 	for (float x = -10; x <= 10; x += 2.5f)
 	{
 		for (float z = -5; z <= 10; z += 2.5f)
@@ -539,6 +857,7 @@ void CGame::LoadObject()
 			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
 			loadInfo.meshID = 0;
 			loadInfo.LoadState = 3;
+			loadInfo.floor = true;
 			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 		}
@@ -554,6 +873,7 @@ void CGame::LoadObject()
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	p2 = objects.at(objects.size() - 1);
@@ -568,6 +888,7 @@ void CGame::LoadObject()
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	p1 = objects.at(objects.size() - 1);
