@@ -21,7 +21,7 @@ CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
 	temp->AddComponent((TComponent*)renderer);
 
-	TMeshComponent* mesh = new TMeshComponent(v_tMeshTemplates.at(loadInfo.meshID));
+	TMeshComponent* mesh = new TMeshComponent(v_tMeshTemplates.at(loadInfo.meshID), loadInfo.collider, loadInfo.hasCollider);
 	temp->AddComponent((TComponent*)mesh);
 
 	TTextureComponent* tex = new TTextureComponent(loadInfo.usedDiffuse);

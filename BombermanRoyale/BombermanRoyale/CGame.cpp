@@ -838,7 +838,7 @@ void CGame::Run()
 		{
 			if (p1Ex)
 			{
-				if (abs(p1x - p1EXx) < 4.9f && abs(p1z - p1EXz) < 2.0f)
+				if (abs(p1x - p1EXx) < 4.5f && abs(p1z - p1EXz) < 1.8f)
 				{
 
 					//delete p1;
@@ -846,7 +846,7 @@ void CGame::Run()
 					P1EXISTS = false;
 
 				}
-				else if (abs(p1z - p1EXz) < 4.9f && abs(p1x - p1EXx) < 2.0f)
+				else if (abs(p1z - p1EXz) < 4.5f && abs(p1x - p1EXx) < 1.8f)
 				{
 					//delete p1;
 					p1 = nullptr;
@@ -855,7 +855,7 @@ void CGame::Run()
 			}
 			if (p2Ex)
 			{
-				if (abs(p1x - p2EXx) < 4.9f && abs(p1z - p2EXz) < 2.0f)
+				if (abs(p1x - p2EXx) < 4.5f && abs(p1z - p2EXz) < 1.8f)
 				{
 
 					//delete p1;
@@ -863,7 +863,7 @@ void CGame::Run()
 					P1EXISTS = false;
 
 				}
-				else if (abs(p1z - p2EXz) < 4.9f && abs(p1x - p2EXx) < 2.0f)
+				else if (abs(p1z - p2EXz) < 4.5f && abs(p1x - p2EXx) < 1.8f)
 				{
 					//delete p1;
 					p1 = nullptr;
@@ -876,7 +876,7 @@ void CGame::Run()
 		{
 			if (p1Ex)
 			{
-				if (abs(p2x - p1EXx) < 4.9f && abs(p2z - p1EXz) < 2.0f)
+				if (abs(p2x - p1EXx) < 4.5f && abs(p2z - p1EXz) < 1.8f)
 				{
 
 					//delete p2;
@@ -884,7 +884,7 @@ void CGame::Run()
 					P2EXISTS = false;
 
 				}
-				else if (abs(p2z - p1EXz) < 4.9f && abs(p2x - p1EXx) < 2.0f)
+				else if (abs(p2z - p1EXz) < 4.5f && abs(p2x - p1EXx) < 1.8f)
 				{
 					//delete p2;
 					p2 = nullptr;
@@ -893,7 +893,7 @@ void CGame::Run()
 			}
 			if (p2Ex)
 			{
-				if (abs(p2x - p2EXx) < 4.9f && abs(p2z - p2EXz) < 2.0f)
+				if (abs(p2x - p2EXx) < 4.5f && abs(p2z - p2EXz) < 1.8f)
 				{
 
 					//delete p2;
@@ -901,7 +901,7 @@ void CGame::Run()
 					P2EXISTS = false;
 
 				}
-				else if (abs(p2z - p2EXz) < 4.9f && abs(p2x - p2EXx) < 2.0f)
+				else if (abs(p2z - p2EXz) < 4.5f && abs(p2x - p2EXx) < 1.8f)
 				{
 					//delete p2;
 					p2 = nullptr;
@@ -961,6 +961,13 @@ void CGame::LoadObject()
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.floor = false;
+	loadInfo.hasCollider = true;
+	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
+	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
+	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
+
+	loadInfo.collider.center = collider.center;
+	loadInfo.collider.extents = collider.extents;
 	loadInfo.LoadState = 3;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 
@@ -972,23 +979,24 @@ void CGame::LoadObject()
 	loadInfo.meshID = 1;
 
 	//collider data
-	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
-	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
-	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
+	collider = GetCenter(v_tMeshTemplates[1]);
+	collider.center.x = GetCenter(v_tMeshTemplates[1]).center.x + loadInfo.position.x;
+	collider.center.y = GetCenter(v_tMeshTemplates[1]).center.y + loadInfo.position.y;
+	collider.center.z = GetCenter(v_tMeshTemplates[1]).center.z + loadInfo.position.z;
 
-	loadInfo.collider.Center = collider.center;
-	loadInfo.collider.Extents = collider.extents;
+	loadInfo.collider.center = collider.center;
+	loadInfo.collider.extents = collider.extents;
 
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { -12.0f, 0.0f, 0.0f };
 
-	//collider data
-	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
-	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
-	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
+	collider.center.x = GetCenter(v_tMeshTemplates[1]).center.x + loadInfo.position.x;
+	collider.center.y = GetCenter(v_tMeshTemplates[1]).center.y + loadInfo.position.y;
+	collider.center.z = GetCenter(v_tMeshTemplates[1]).center.z + loadInfo.position.z;
 
-	loadInfo.collider.Center = collider.center;
+	loadInfo.collider.center = collider.center;
+	loadInfo.collider.extents = collider.extents;
 
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -1020,7 +1028,7 @@ void CGame::LoadObject()
 	loadInfo.position = { 0.0f, -0.8f, 20.0f };
 	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::NAMES_HUD;
-
+	loadInfo.hasCollider = false;
 	loadInfo.scale = DirectX::XMFLOAT3(2.4f, 0.25f, 1.0f);
 	loadInfo.meshID = 2;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -1050,6 +1058,14 @@ void CGame::LoadObject()
 	loadInfo.LoadState = 6;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+	loadInfo.position = { 0.0f, -2.4f, 2.93f };
+	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_BUTTON;
+	loadInfo.scale = DirectX::XMFLOAT3(1.75f, 1.99f, 1.0f);
+	loadInfo.meshID = 3;
+	loadInfo.LoadState = 0;
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 	for (float x = -10; x <= 10; x += 2.5f)
 	{
 		for (float z = -5; z <= 10; z += 2.5f)
@@ -1060,6 +1076,14 @@ void CGame::LoadObject()
 			loadInfo.meshID = 0;
 			loadInfo.LoadState = 3;
 			loadInfo.floor = true;
+			loadInfo.hasCollider = true;
+			collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
+			collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
+			collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
+
+			loadInfo.collider.center = collider.center;
+			loadInfo.collider.extents = collider.extents;
+
 			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 		}
