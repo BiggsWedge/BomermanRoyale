@@ -6,6 +6,7 @@
 #include <experimental/filesystem>
 #include "..\Gateware\Interface\G_System\GLog.h"
 #include "..\Gateware\Interface\G_System\GWindow.h"
+#include "..\Gateware\Interface\G_System\GController.h"
 #include "..\Gateware\Interface\G_System\GInput.h"
 #include "..\Gateware\Interface\G_Audio\GAudio.h"
 #include "WICTextureLoader.h"
@@ -25,6 +26,7 @@ extern GW::SYSTEM::GInput* g_pInputRecord;
 extern GW::AUDIO::GAudio* g_pAudioHolder;
 extern GW::AUDIO::GMusic* g_pMusicStream;
 extern GW::AUDIO::GSound* g_pSoundPlayer;
+extern GW::SYSTEM::GController* g_pControllerInput;
 
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the
@@ -56,6 +58,22 @@ std::string GetCurrentDateAndTime();
 *	Mod. Initials:				D.R.
 ***********************************************************************/
 bool InitializeInput();
+
+/***********************************************************************
+*	InitializeControllerInput():	Initializes the Controller InputManager.
+									Returns true if successfully initialized
+									or false if not.
+*	Ins:
+*								None
+*	Outs:
+*								None
+*	Returns:
+*								Bool
+*
+*	Mod. Date:					08/4/2019
+*	Mod. Initials:				D.R.
+***********************************************************************/
+bool InitializeControllerInput();
 
 /***********************************************************************
 *	InitializeInput():	Initializes the AudioManager.

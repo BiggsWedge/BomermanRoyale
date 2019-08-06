@@ -58,9 +58,10 @@ bool Player2 = false;
 bool P1EXISTS = false;
 bool P2EXISTS = false;
 bool ControlScreenToggle = false;
+bool Controller1Alive = false;
 float3 P1POS = { -10.0f, 0.0f, 10.0f };
 float3 P2POS = { 10.0f, 0.0f, -5.0f };
-
+float isControllerButtonPressed = 0.0f;
 
 
 bool CGame::Initialize()
@@ -924,6 +925,18 @@ void CGame::Run()
 		{
 				g_pSoundPlayer->Play();
 		}
+
+		if (g_pControllerInput->IsConnected(0,Controller1Alive))
+		{
+
+			g_pControllerInput->StartVibration(0.0f, 2.0f, 0.5f, 0);
+			if (g_pControllerInput->GetState(0, G_NORTH_BTN, isControllerButtonPressed) == 1)
+			{
+				std::cout << "TRIANGLE WAS PRESSED";
+			}
+		}
+		
+
 
 #pragma endregion
 
