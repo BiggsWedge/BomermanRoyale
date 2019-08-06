@@ -18,7 +18,8 @@ int main(void)
 	LoadTextures();
 	LoadModel(".//Assets//Cube.mesh", ".//Assets//Cube.mat");
 	LoadModel(".//Assets//BattleMage.mesh", ".//Assets//BattleMage.mat");
-	LoadMenuScreen(19, 11, 0, ".//Assets//Menu.mat");
+	LoadMenuScreen(15, 11, 0, ".//Assets//Menu.mat");
+	LoadMenuScreen(19, 11, 1, ".//Assets//Menu.mat");
 
 
 

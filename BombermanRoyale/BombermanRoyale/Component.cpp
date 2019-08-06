@@ -84,13 +84,15 @@ TMeshComponent::TMeshComponent()
 	componentType = COMPONENT_TYPE::MESH;
 }
 
-TMeshComponent::TMeshComponent(TMeshTemplate _template)
+TMeshComponent::TMeshComponent(TMeshTemplate _template, TCollider tCollider, bool noCollider)
 {
 	componentType = COMPONENT_TYPE::MESH;
 
 	indexCount = _template.v_iIndices.size();
 	vertexCount = _template.v_tVertices.size();
 
+	mCollider = tCollider;
+	hasCollider = noCollider;
 
 	D3D11_BUFFER_DESC vBuffDesc;
 	D3D11_SUBRESOURCE_DATA vBuffSub;

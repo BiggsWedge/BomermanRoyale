@@ -1,6 +1,7 @@
 #include "CGame.h"
 #include <DirectXCollision.h>
 #include <iostream>
+#include "pools.h"
 
 const char* backgroundMusicFilePath = ".//Assets//Music//Level_Music1.wav";
 const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
@@ -60,6 +61,7 @@ bool P2EXISTS = false;
 bool ControlScreenToggle = false;
 float3 P1POS = { -10.0f, 0.0f, 10.0f };
 float3 P2POS = { 10.0f, 0.0f, -5.0f };
+
 
 
 
@@ -228,8 +230,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p2Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p2Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
 							if (dZ < 2.0f && !renderer->nFloor && dX < 2.05f)
 							{
 								if (p2Transform->fPosition.z < renderer->fPosition.z)
@@ -267,8 +269,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p2Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p2Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p2Transform->fPosition.z -renderer->fPosition.z);
+							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
 							if (dZ < 1.6f && !renderer->nFloor && dX < 2.05f)
 							{
 								if (p2Transform->fPosition.z > renderer->fPosition.z)
@@ -305,8 +307,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p2Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p2Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
 							if (dX < 2.2f && !renderer->nFloor && dZ < 1.5f)
 							{
 								if (p2Transform->fPosition.x > renderer->fPosition.x)
@@ -343,8 +345,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p2Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p2Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
 							if (dX < 2.3f && !renderer->nFloor && dZ < 1.5f)
 							{
 								if (p2Transform->fPosition.x < renderer->fPosition.x)
@@ -442,8 +444,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p1Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p1Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
 							if (dZ < 2.0f && !renderer->nFloor && dX < 2.05f)
 							{
 								if (p1Transform->fPosition.z < renderer->fPosition.z)
@@ -481,8 +483,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p1Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p1Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
 							if (dZ < 1.6f && !renderer->nFloor && dX < 2.05f)
 							{
 								if (p1Transform->fPosition.z > renderer->fPosition.z)
@@ -519,8 +521,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p1Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p1Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
 							if (dX < 2.2f && !renderer->nFloor && dZ < 1.5f)
 							{
 								if (p1Transform->fPosition.x > renderer->fPosition.x)
@@ -557,8 +559,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p1Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p1Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
 							if (dX < 2.1f && !renderer->nFloor && dZ < 1.5f)
 							{
 								if (p1Transform->fPosition.x < renderer->fPosition.x)
@@ -706,6 +708,7 @@ void CGame::Run()
 					if (renderer->iUsedLoadState == curGameState)
 						p_cRendererManager->RenderObject(*objects[i]);
 				}
+
 				if (ControlScreenToggle == true)
 				{
 					if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
@@ -715,6 +718,7 @@ void CGame::Run()
 							p_cRendererManager->RenderObject(*objects[i]);
 					}
 				}
+
 
 
 			}
@@ -764,7 +768,6 @@ void CGame::Run()
 		}
 		if (p2Ex)
 		{
-
 			TComponent* cRenderer = nullptr;
 			TRendererComponent* renderer = nullptr;
 			if (p2Ex->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
@@ -794,6 +797,7 @@ void CGame::Run()
 		float p1EXz;
 		float p2EXx;
 		float p2EXz;
+
 		if (p1)
 		{
 			p1->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
@@ -838,7 +842,7 @@ void CGame::Run()
 		{
 			if (p1Ex)
 			{
-				if (abs(p1x - p1EXx) < 4.9f && abs(p1z - p1EXz) < 2.0f)
+				if (abs(p1x - p1EXx) < 4.5f && abs(p1z - p1EXz) < 1.8f)
 				{
 
 					//delete p1;
@@ -846,7 +850,7 @@ void CGame::Run()
 					P1EXISTS = false;
 
 				}
-				else if (abs(p1z - p1EXz) < 4.9f && abs(p1x - p1EXx) < 2.0f)
+				else if (abs(p1z - p1EXz) < 4.5f && abs(p1x - p1EXx) < 1.8f)
 				{
 					//delete p1;
 					p1 = nullptr;
@@ -855,7 +859,7 @@ void CGame::Run()
 			}
 			if (p2Ex)
 			{
-				if (abs(p1x - p2EXx) < 4.9f && abs(p1z - p2EXz) < 2.0f)
+				if (abs(p1x - p2EXx) < 4.5f && abs(p1z - p2EXz) < 1.8f)
 				{
 
 					//delete p1;
@@ -863,7 +867,7 @@ void CGame::Run()
 					P1EXISTS = false;
 
 				}
-				else if (abs(p1z - p2EXz) < 4.9f && abs(p1x - p2EXx) < 2.0f)
+				else if (abs(p1z - p2EXz) < 4.5f && abs(p1x - p2EXx) < 1.8f)
 				{
 					//delete p1;
 					p1 = nullptr;
@@ -876,7 +880,7 @@ void CGame::Run()
 		{
 			if (p1Ex)
 			{
-				if (abs(p2x - p1EXx) < 4.9f && abs(p2z - p1EXz) < 2.0f)
+				if (abs(p2x - p1EXx) < 4.5f && abs(p2z - p1EXz) < 1.8f)
 				{
 
 					//delete p2;
@@ -884,7 +888,7 @@ void CGame::Run()
 					P2EXISTS = false;
 
 				}
-				else if (abs(p2z - p1EXz) < 4.9f && abs(p2x - p1EXx) < 2.0f)
+				else if (abs(p2z - p1EXz) < 4.5f && abs(p2x - p1EXx) < 1.8f)
 				{
 					//delete p2;
 					p2 = nullptr;
@@ -893,7 +897,7 @@ void CGame::Run()
 			}
 			if (p2Ex)
 			{
-				if (abs(p2x - p2EXx) < 4.9f && abs(p2z - p2EXz) < 2.0f)
+				if (abs(p2x - p2EXx) < 4.5f && abs(p2z - p2EXz) < 1.8f)
 				{
 
 					//delete p2;
@@ -901,7 +905,7 @@ void CGame::Run()
 					P2EXISTS = false;
 
 				}
-				else if (abs(p2z - p2EXz) < 4.9f && abs(p2x - p2EXx) < 2.0f)
+				else if (abs(p2z - p2EXz) < 4.5f && abs(p2x - p2EXx) < 1.8f)
 				{
 					//delete p2;
 					p2 = nullptr;
@@ -936,15 +940,14 @@ void CGame::Run()
 		{
 			g_pLogger->LogCatergorized("FAILURE", "Failed to draw");
 		}
-
 	}
-
 }
 
 
 void CGame::LoadObject()
 {
 	OBJLoadInfo loadInfo;
+
 
 	TCollider collider = GetCenter(v_tMeshTemplates[0]);
 
@@ -961,36 +964,47 @@ void CGame::LoadObject()
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.floor = false;
+	loadInfo.hasCollider = true;
+	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
+	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
+	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
+
+	loadInfo.collider.center = collider.center;
+	loadInfo.collider.extents = collider.extents;
 	loadInfo.LoadState = 3;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { 12.0f, 0.0f, 0.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	loadInfo.meshID = 1;
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	//collider data
-	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
-	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
-	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
+	//loadInfo.position = { 12.0f, 0.0f, 0.0f };
+	//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
+	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//loadInfo.meshID = 1;
 
-	loadInfo.collider.Center = collider.center;
-	loadInfo.collider.Extents = collider.extents;
-
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
-	loadInfo.position = { -12.0f, 0.0f, 0.0f };
 
 	//collider data
-	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
-	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
-	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
+	collider = GetCenter(v_tMeshTemplates[1]);
+	collider.center.x = GetCenter(v_tMeshTemplates[1]).center.x + loadInfo.position.x;
+	collider.center.y = GetCenter(v_tMeshTemplates[1]).center.y + loadInfo.position.y;
+	collider.center.z = GetCenter(v_tMeshTemplates[1]).center.z + loadInfo.position.z;
 
-	loadInfo.collider.Center = collider.center;
+	loadInfo.collider.center = collider.center;
+	loadInfo.collider.extents = collider.extents;
 
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	//loadInfo.position = { -12.0f, 0.0f, 0.0f };
+
+
+	collider.center.x = GetCenter(v_tMeshTemplates[1]).center.x + loadInfo.position.x;
+	collider.center.y = GetCenter(v_tMeshTemplates[1]).center.y + loadInfo.position.y;
+	collider.center.z = GetCenter(v_tMeshTemplates[1]).center.z + loadInfo.position.z;
+
+	loadInfo.collider.center = collider.center;
+	loadInfo.collider.extents = collider.extents;
+
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 
 
@@ -1003,11 +1017,11 @@ void CGame::LoadObject()
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-
-
-
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+
 
 
 	//loadInfo.position = { -5.0f, 0.0f, 0.0f };
@@ -1020,7 +1034,7 @@ void CGame::LoadObject()
 	loadInfo.position = { 0.0f, -0.8f, 20.0f };
 	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::NAMES_HUD;
-
+	loadInfo.hasCollider = false;
 	loadInfo.scale = DirectX::XMFLOAT3(2.4f, 0.25f, 1.0f);
 	loadInfo.meshID = 2;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -1042,6 +1056,7 @@ void CGame::LoadObject()
 	loadInfo.LoadState = 5;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+
 	loadInfo.position = { 0.0f, 5.0f, -4.5f };
 	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HELP_MENU;
@@ -1050,26 +1065,45 @@ void CGame::LoadObject()
 	loadInfo.LoadState = 6;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	for (float x = -10; x <= 10; x += 2.5f)
+	//loadInfo.position = { 0.0f, -2.4f, 2.93f };
+	//loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
+	//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_BUTTON;
+	//loadInfo.scale = DirectX::XMFLOAT3(1.75f, 1.99f, 1.0f);
+	//loadInfo.meshID = 3;
+	//loadInfo.LoadState = 0;
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	for (float x = -12.5; x <= 12.5; x += 2.5f)
 	{
-		for (float z = -5; z <= 10; z += 2.5f)
+		for (float z = -7.5; z <= 12.5; z += 2.5f)
 		{
 			loadInfo.position = { x, -2.5f, z };
 			loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
 			loadInfo.meshID = 0;
 			loadInfo.LoadState = 3;
 			loadInfo.floor = true;
+			loadInfo.hasCollider = true;
+			collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
+			collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
+			collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
+
+			loadInfo.collider.center = collider.center;
+			loadInfo.collider.extents = collider.extents;
+
 			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 		}
 
 	}
-
-	loadInfo.position = { P2POS.x, 0.0f, P2POS.z };
+	for (float x = -7.5; x <= 7.5; x += 2.5f)
+	{
+		for (float z = -2.5; z <= 7.5; z += 2.5f)
+		{
+	loadInfo.position = { x, 0.0f, z };
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.meshID = 0;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
@@ -1078,20 +1112,249 @@ void CGame::LoadObject()
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	p2 = objects.at(objects.size() - 1);
-	P2EXISTS = true;
+		}
 
-	loadInfo.position = { P1POS.x, 0.0f, P1POS.z };
+	}
+
+	for (float x = -7.5; x <= 7.5; x += 2.5f)
+	{
+		loadInfo.position = { x, 0.0f, 10 };
+		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+		loadInfo.meshID = 0;
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
+		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+		loadInfo.usedGeo = -1;
+		loadInfo.LoadState = 3;
+		loadInfo.floor = false;
+		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+		loadInfo.position = { x, 0.0f, -10 };
+		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+		loadInfo.meshID = 0;
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
+		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+		loadInfo.usedGeo = -1;
+		loadInfo.LoadState = 3;
+		loadInfo.floor = false;
+		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	}
+	for (float x = -15; x <= 15; x += 2.5f)
+	{
+		loadInfo.position = { x, 0, -10 };
+		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+		loadInfo.meshID = 0;
+		loadInfo.LoadState = 3;
+		loadInfo.floor = false;
+		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+		loadInfo.position = { x, 0, 15 };
+		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+		loadInfo.meshID = 0;
+		loadInfo.LoadState = 3;
+		loadInfo.floor = false;
+		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	}
+	for (float z = -7.5; z <= 12.5; z += 2.5f)
+	{
+		loadInfo.position = { -15, 0, z };
+		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+		loadInfo.meshID = 0;
+		loadInfo.LoadState = 3;
+		loadInfo.floor = false;
+		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+		loadInfo.position = {15, 0, z };
+		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+		loadInfo.meshID = 0;
+		loadInfo.LoadState = 3;
+		loadInfo.floor = false;
+		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	}
+
+	loadInfo.position = { 5, 0, -5 };
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
 	loadInfo.meshID = 0;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { -5, 0, -5 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0, 0, -5 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 10, 0, 0 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { -10, 0, 0 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 10, 0, 5 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { -10, 0, 5 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 5, 0, 0 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { -5, 0, 0 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 5, 0, 5 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { -5, 0, 5 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 5, 0, 10 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { -5, 0, 10 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0, 0, 10 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 10, 0, 10 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { -10, 0, -5 };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	loadInfo.meshID = 0;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { P2POS.x, 0.0f, P2POS.z };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.meshID = 1;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	p2 = objects.at(objects.size() - 1);
+	P2EXISTS = true;
+
+	loadInfo.position = { P1POS.x, 0.0f, P1POS.z };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.meshID = 1;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f , 1.0f, 1.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	p1 = objects.at(objects.size() - 1);
 	P1EXISTS = true;
@@ -1142,6 +1405,90 @@ void CGame::WindowResize()
 		//g_d3dData->d3dSwapChain->SetFullscreenState(FullScreen, nullptr);
 	}
 }
+
+//void InitSortedParticles(sorted_pool_t<particle, 1000>& sortedPool, float deltaTime) {
+//	//Init number of particles as loop
+//	for (size_t i = 0; i < 1; i++) {
+//		int count = sortedPool.alloc();
+//
+//		if (count != -1) {
+//			sortedPool[count].pos.x = 0;
+//			sortedPool[count].pos.y = 0;
+//			sortedPool[count].pos.z = 0;
+//			sortedPool[count].speed.x = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX)) / 3;
+//			sortedPool[count].speed.y = (0.0f + (2.0f - 0.0f) * ((float)rand() / (float)RAND_MAX)) / 2;
+//			sortedPool[count].speed.z = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX)) / 3;
+//			sortedPool[count].speed.y *= particleSpeed;
+//			sortedPool[count].timer = 1.5f + (1.8f - 1.5f) * ((float)rand() / (float)RAND_MAX);
+//			sortedPool[count].color = { 1,0,0,1 };
+//		}
+//	}
+//
+//	for (size_t i = 0; i < sortedPool.size(); i++) {
+//		sortedPool[i].prev_pos = sortedPool[i].pos;
+//		sortedPool[i].pos.x += (sortedPool[i].speed.x * deltaTime);
+//		sortedPool[i].pos.y += (sortedPool[i].speed.y * deltaTime);
+//		sortedPool[i].pos.z += (sortedPool[i].speed.z * deltaTime);
+//		sortedPool[i].speed.y -= particleGravity * deltaTime;
+//		sortedPool[i].timer -= deltaTime;
+//		add_line(sortedPool[i].pos, sortedPool[i].prev_pos, sortedPool[i].color);
+//
+//		if (sortedPool[i].timer <= 0) {
+//			sortedPool.free(i);
+//			i--;
+//		}
+//	}
+//}
+//
+//void InitFreeParticles(emitter& emitter, pool_t<particle, 1024>& freePool, float deltaTime) {
+//	//init emitters
+//	firstEmit.spawn_pos = { 5,0,5 };
+//	secondEmit.spawn_pos = { 0,0,10 };
+//	thirdEmit.spawn_pos = { 5,0,0 };
+//	firstEmit.spawn_color = { 0,1,0,0 };
+//	secondEmit.spawn_color = { 0,0,1,0 };
+//	thirdEmit.spawn_color = { 0,1,1,0 };
+//
+//	//alloc space
+//	int count = freePool.alloc();
+//	int emitCount = emitter.indices.alloc();
+//
+//	emitter.indices[emitCount] = count;
+//	freePool[count].pos = emitter.spawn_pos;
+//	freePool[count].prev_pos = emitter.spawn_pos;
+//	freePool[count].speed.x = (-5.0f + (5.0f - -5.0f) * ((float)rand() / (float)RAND_MAX)) / 3;
+//	freePool[count].speed.y = (0.0f + (2.0f - 0.0f) * ((float)rand() / (float)RAND_MAX)) / 2;
+//	freePool[count].speed.z = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX)) / 3;
+//	freePool[count].speed.x *= particleSpeed;
+//	freePool[count].timer = ((float)rand() / (float)RAND_MAX);
+//	freePool[count].color = { 0,1,1,0 };
+//
+//	for (size_t i = 0; i < emitter.indices.size(); i++) {
+//		int Ecount = emitter.indices[i];
+//
+//		if (Ecount <= -1 || Ecount > 1024) {
+//			break;
+//		}
+//
+//		if (Ecount != -1) {
+//			freePool[Ecount].timer -= deltaTime;
+//
+//			if (freePool[Ecount].timer <= 0.0f) {
+//				freePool.free(Ecount);
+//				emitter.indices.free(i);
+//				i--;
+//				continue;
+//			}
+//
+//			freePool[Ecount].prev_pos = freePool[Ecount].pos;
+//			freePool[Ecount].pos.x += (freePool[Ecount].speed.x * deltaTime);
+//			freePool[Ecount].pos.y += (freePool[Ecount].speed.y * deltaTime);
+//			freePool[Ecount].pos.z += (freePool[Ecount].speed.z * deltaTime);
+//			freePool[Ecount].speed.y -= particleGravity * deltaTime;
+//			add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
+//		}
+//	}
+//}
 
 void CGame::GamePlayLoop()
 {
