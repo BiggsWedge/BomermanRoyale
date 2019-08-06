@@ -16,6 +16,8 @@
 #include "LineVertex.csh"
 #include "DirectXData.h"
 #include "SharedDefines.h"
+#include <d2d1.h>
+#include <dwrite.h>
 #include <fstream>
 
 using file_path_t = std::array<char, 260>;
