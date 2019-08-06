@@ -2,6 +2,8 @@
 
 #include "CRendererManager.h"
 #include "CEntityManager.h"
+#include "pools.h"
+#include "Utilities.h"
 
 enum GameState
 {
@@ -40,7 +42,8 @@ public:
 
 	bool Initialize();
 	void Run();
-
+	//void InitFreeParticles(emitter& emitter, pool_t<particle, 1024>& freePool, float deltaTime);
+	//void InitSortedParticles(sorted_pool_t<particle, 1000>& sortedPool, float deltaTime);
 	
 	void LoadObject();
 

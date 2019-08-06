@@ -57,8 +57,10 @@ public:
 	UINT vertexCount;
 	ID3D11Buffer*		d3dVertexBuffer;
 	ID3D11Buffer*		d3dIndexBuffer;
+	TCollider mCollider;
+	bool hasCollider;
 	TMeshComponent();
-	TMeshComponent(TMeshTemplate _template);
+	TMeshComponent(TMeshTemplate _template, TCollider tCollider, bool noCollider);
 	~TMeshComponent();
 };
 

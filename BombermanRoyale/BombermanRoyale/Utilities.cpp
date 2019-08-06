@@ -18,6 +18,10 @@ std::vector<const wchar_t*> diffuseTextures = {
 	L".//Assets//Menus.fbm//Playe Status.png",
 	L".//Assets//Menus.fbm//Win_Screen.png",
 	L".//Assets//Menus.fbm//Controls.png",
+	L".//Assets//Menus.fbm//ArcadeButton.png",
+	L".//Assets//Menus.fbm//BattleButton.png",
+	L".//Assets//Menus.fbm//OptionsButton.png",
+	L".//Assets//Menus.fbm//ExitButton.png",
 	L".//Assets//Cube.fbm//red_texture.jpg",
 	L".//Assets//Cube.fbm//blue_texture.jpg",
 	L".//Assets//Cube.fbm//black_texture.jpg",
@@ -191,7 +195,7 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) 
 	temp.v_iIndices.resize(numIndices);
 	temp.v_tVertices.resize(numVerts);
 	
-	temp.v_tVertices.at(0).fPosition = DirectX::XMFLOAT3( -(SSpaceWidth), -(SSpaceHeight), 0.0f);
+	temp.v_tVertices.at(0).fPosition = DirectX::XMFLOAT3(-(SSpaceWidth), -(SSpaceHeight), 0.0f);
 	temp.v_tVertices.at(1).fPosition = DirectX::XMFLOAT3((SSpaceWidth), -(SSpaceHeight), 0.0f);
 	temp.v_tVertices.at(2).fPosition = DirectX::XMFLOAT3(-(SSpaceWidth), (SSpaceHeight), 0.0f);
 	temp.v_tVertices.at(3).fPosition = DirectX::XMFLOAT3((SSpaceWidth), (SSpaceHeight), 0.0f);
@@ -214,6 +218,43 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) 
 	temp.v_iIndices.at(5) = 3;
 	
 	v_tMeshTemplates.push_back(temp);
+
+	for (int i = 0; i < numbuttons; ++i)
+	{
+		float bWidth = width / 3.0f;
+		float bHeight = height / 10.0f;
+		bWidth = bWidth / 2.0f;
+		bHeight = bHeight / 2.0f;
+
+		temp.uID = index;
+		temp.v_iIndices.resize(numIndices);
+		temp.v_tVertices.resize(numVerts);
+
+		temp.v_tVertices.at(0).fPosition = DirectX::XMFLOAT3(-(bWidth), -(bHeight), 0.0f);
+		temp.v_tVertices.at(1).fPosition = DirectX::XMFLOAT3((bWidth), -(bHeight), 0.0f);
+		temp.v_tVertices.at(2).fPosition = DirectX::XMFLOAT3(-(bWidth), (bHeight), 0.0f);
+		temp.v_tVertices.at(3).fPosition = DirectX::XMFLOAT3((bWidth), (bHeight), 0.0f);
+
+		temp.v_tVertices.at(0).fNormal = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+		temp.v_tVertices.at(1).fNormal = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+		temp.v_tVertices.at(2).fNormal = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+		temp.v_tVertices.at(3).fNormal = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+
+		temp.v_tVertices.at(0).fTexCoord = DirectX::XMFLOAT2(1.0f, 1.0f);
+		temp.v_tVertices.at(1).fTexCoord = DirectX::XMFLOAT2(0.0f, 1.0f);
+		temp.v_tVertices.at(2).fTexCoord = DirectX::XMFLOAT2(1.0f, 0.0f);
+		temp.v_tVertices.at(3).fTexCoord = DirectX::XMFLOAT2(0.0f, 0.0f);
+
+		temp.v_iIndices.at(0) = 0;
+		temp.v_iIndices.at(1) = 2;
+		temp.v_iIndices.at(2) = 1;
+		temp.v_iIndices.at(3) = 1;
+		temp.v_iIndices.at(4) = 2;
+		temp.v_iIndices.at(5) = 3;
+
+		v_tMeshTemplates.push_back(temp);
+
+	}
 }
 
 

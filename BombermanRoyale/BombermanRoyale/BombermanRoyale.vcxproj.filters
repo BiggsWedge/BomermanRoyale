@@ -93,6 +93,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="SharedDefines.h" />
+    <ClInclude Include="pools.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertex.hlsl">

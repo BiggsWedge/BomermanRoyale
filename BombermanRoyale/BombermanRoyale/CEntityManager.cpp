@@ -21,7 +21,7 @@ CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
 	temp->AddComponent((TComponent*)renderer);
 
-	TMeshComponent* mesh = new TMeshComponent(v_tMeshTemplates.at(loadInfo.meshID));
+	TMeshComponent* mesh = new TMeshComponent(v_tMeshTemplates.at(loadInfo.meshID), loadInfo.collider, loadInfo.hasCollider);
 	temp->AddComponent((TComponent*)mesh);
 
 	TTextureComponent* tex = new TTextureComponent(loadInfo.usedDiffuse);
@@ -76,6 +76,7 @@ CObject* CEntityManager::DropBomb(CObject* playerSource)
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 75.0f, 1.0f / 75.0f, 1.0f / 75.0f);
 	bomb = CreateOBJFromTemplate(loadInfo);
 	return bomb;
