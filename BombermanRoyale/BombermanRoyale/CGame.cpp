@@ -214,8 +214,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p2Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p2Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
 							if (dZ < 2.0f && !renderer->nFloor && dX < 2.05f)
 							{
 								if (p2Transform->fPosition.z < renderer->fPosition.z)
@@ -253,8 +253,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p2Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p2Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p2Transform->fPosition.z -renderer->fPosition.z);
+							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
 							if (dZ < 1.6f && !renderer->nFloor && dX < 2.05f)
 							{
 								if (p2Transform->fPosition.z > renderer->fPosition.z)
@@ -291,8 +291,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p2Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p2Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
 							if (dX < 2.2f && !renderer->nFloor && dZ < 1.5f)
 							{
 								if (p2Transform->fPosition.x > renderer->fPosition.x)
@@ -329,8 +329,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p2Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p2Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
 							if (dX < 2.3f && !renderer->nFloor && dZ < 1.5f)
 							{
 								if (p2Transform->fPosition.x < renderer->fPosition.x)
@@ -428,8 +428,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p1Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p1Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
 							if (dZ < 2.0f && !renderer->nFloor && dX < 2.05f)
 							{
 								if (p1Transform->fPosition.z < renderer->fPosition.z)
@@ -467,8 +467,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p1Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p1Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
 							if (dZ < 1.6f && !renderer->nFloor && dX < 2.05f)
 							{
 								if (p1Transform->fPosition.z > renderer->fPosition.z)
@@ -505,8 +505,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p1Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p1Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
 							if (dX < 2.2f && !renderer->nFloor && dZ < 1.5f)
 							{
 								if (p1Transform->fPosition.x > renderer->fPosition.x)
@@ -543,8 +543,8 @@ void CGame::Run()
 						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 						{
 							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p1Transform->fPosition.z - abs(renderer->fPosition.z));
-							float dX = abs(p1Transform->fPosition.x - abs(renderer->fPosition.x));
+							float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
 							if (dX < 2.1f && !renderer->nFloor && dZ < 1.5f)
 							{
 								if (p1Transform->fPosition.x < renderer->fPosition.x)
@@ -976,6 +976,7 @@ void CGame::LoadObject()
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 	
 
