@@ -223,22 +223,22 @@ void CGame::Run()
 			TComponent* p2Component;
 			p2->GetComponent(COMPONENT_TYPE::TRANSFORM, p2Component);
 			TTransformComponent* p2Transform = (TTransformComponent*)p2Component;
-			if (g_pControllerInput->IsConnected(0,Controller1Alive))
+			if (g_pControllerInput->IsConnected(1,Controller1Alive))
 			{
-				g_pControllerInput->GetState(0, G_DPAD_UP_BTN, isUDPADPressed);
-				g_pControllerInput->GetState(0, G_DPAD_DOWN_BTN, isDDPADPressed);
-				g_pControllerInput->GetState(0, G_DPAD_LEFT_BTN, isLDPADPressed);
-				g_pControllerInput->GetState(0, G_DPAD_RIGHT_BTN, isRDPADPressed);
-				g_pControllerInput->GetState(0, G_SOUTH_BTN, isSouthButtonPressed);
+				g_pControllerInput->GetState(1, G_DPAD_UP_BTN, isUDPADPressed);
+				g_pControllerInput->GetState(1, G_DPAD_DOWN_BTN, isDDPADPressed);
+				g_pControllerInput->GetState(1, G_DPAD_LEFT_BTN, isLDPADPressed);
+				g_pControllerInput->GetState(1, G_DPAD_RIGHT_BTN, isRDPADPressed);
+				g_pControllerInput->GetState(1, G_SOUTH_BTN, isSouthButtonPressed);
 			}
 
-			if (g_pControllerInput->IsConnected(1, Controller2Alive))
+			if (g_pControllerInput->IsConnected(0, Controller2Alive))
 			{
-				g_pControllerInput->GetState(1, G_DPAD_UP_BTN, isP1UDPADPressed);
-				g_pControllerInput->GetState(1, G_DPAD_DOWN_BTN, isP1DDPADPressed);
-				g_pControllerInput->GetState(1, G_DPAD_LEFT_BTN, isP1LDPADPressed);
-				g_pControllerInput->GetState(1, G_DPAD_RIGHT_BTN, isP1RDPADPressed);
-				g_pControllerInput->GetState(1, G_SOUTH_BTN, isP1SouthButtonPressed);
+				g_pControllerInput->GetState(0, G_DPAD_UP_BTN, isP1UDPADPressed);
+				g_pControllerInput->GetState(0, G_DPAD_DOWN_BTN, isP1DDPADPressed);
+				g_pControllerInput->GetState(0, G_DPAD_LEFT_BTN, isP1LDPADPressed);
+				g_pControllerInput->GetState(0, G_DPAD_RIGHT_BTN, isP1RDPADPressed);
+				g_pControllerInput->GetState(0, G_SOUTH_BTN, isP1SouthButtonPressed);
 			}
 			
 			//TComponent* p1Component;
