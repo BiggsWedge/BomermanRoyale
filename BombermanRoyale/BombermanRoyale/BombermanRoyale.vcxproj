@@ -140,6 +140,7 @@
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CRendererManager.h" />
+    <ClInclude Include="pools.h" />
     <ClInclude Include="SharedDefines.h" />
     <ClInclude Include="TObjectTemplate.h" />
     <ClInclude Include="Utilities.h" />

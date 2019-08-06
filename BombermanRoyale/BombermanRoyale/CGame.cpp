@@ -1,6 +1,7 @@
 #include "CGame.h"
 #include <DirectXCollision.h>
 #include <iostream>
+#include "pools.h"
 
 const char* backgroundMusicFilePath = ".//Assets//Music//Level_Music1.wav";
 const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
@@ -1290,6 +1291,90 @@ void CGame::WindowResize()
 		g_d3dData->d3dViewport.Height = static_cast<float>(height);
 		g_d3dData->d3dViewport.Width = static_cast<float>(width);
 		//g_d3dData->d3dSwapChain->SetFullscreenState(FullScreen, nullptr);
+	}
+}
+
+void InitSortedParticles(sorted_pool_t<particle, 1000>& sortedPool, float deltaTime) {
+	//Init number of particles as loop
+	for (size_t i = 0; i < 1; i++) {
+		int count = sortedPool.alloc();
+
+		if (count != -1) {
+			sortedPool[count].pos.x = 0;
+			sortedPool[count].pos.y = 0;
+			sortedPool[count].pos.z = 0;
+			sortedPool[count].speed.x = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX)) / 3;
+			sortedPool[count].speed.y = (0.0f + (2.0f - 0.0f) * ((float)rand() / (float)RAND_MAX)) / 2;
+			sortedPool[count].speed.z = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX)) / 3;
+			sortedPool[count].speed.y *= particleSpeed;
+			sortedPool[count].timer = 1.5f + (1.8f - 1.5f) * ((float)rand() / (float)RAND_MAX);
+			sortedPool[count].color = { 1,0,0,1 };
+		}
+	}
+
+	for (size_t i = 0; i < sortedPool.size(); i++) {
+		sortedPool[i].prev_pos = sortedPool[i].pos;
+		sortedPool[i].pos.x += (sortedPool[i].speed.x * deltaTime);
+		sortedPool[i].pos.y += (sortedPool[i].speed.y * deltaTime);
+		sortedPool[i].pos.z += (sortedPool[i].speed.z * deltaTime);
+		sortedPool[i].speed.y -= particleGravity * deltaTime;
+		sortedPool[i].timer -= deltaTime;
+		add_line(sortedPool[i].pos, sortedPool[i].prev_pos, sortedPool[i].color);
+
+		if (sortedPool[i].timer <= 0) {
+			sortedPool.free(i);
+			i--;
+		}
+	}
+}
+
+void InitFreeParticles(emitter& emitter, pool_t<particle, 1024>& freePool, float deltaTime) {
+	//init emitters
+	firstEmit.spawn_pos = { 5,0,5 };
+	secondEmit.spawn_pos = { 0,0,10 };
+	thirdEmit.spawn_pos = { 5,0,0 };
+	firstEmit.spawn_color = { 0,1,0,0 };
+	secondEmit.spawn_color = { 0,0,1,0 };
+	thirdEmit.spawn_color = { 0,1,1,0 };
+
+	//alloc space
+	int count = freePool.alloc();
+	int emitCount = emitter.indices.alloc();
+
+	emitter.indices[emitCount] = count;
+	freePool[count].pos = emitter.spawn_pos;
+	freePool[count].prev_pos = emitter.spawn_pos;
+	freePool[count].speed.x = (-5.0f + (5.0f - -5.0f) * ((float)rand() / (float)RAND_MAX)) / 3;
+	freePool[count].speed.y = (0.0f + (2.0f - 0.0f) * ((float)rand() / (float)RAND_MAX)) / 2;
+	freePool[count].speed.z = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX)) / 3;
+	freePool[count].speed.x *= particleSpeed;
+	freePool[count].timer = ((float)rand() / (float)RAND_MAX);
+	freePool[count].color = { 0,1,1,0 };
+
+	for (size_t i = 0; i < emitter.indices.size(); i++) {
+		int Ecount = emitter.indices[i];
+
+		if (Ecount <= -1 || Ecount > 1024) {
+			break;
+		}
+
+		if (Ecount != -1) {
+			freePool[Ecount].timer -= deltaTime;
+
+			if (freePool[Ecount].timer <= 0.0f) {
+				freePool.free(Ecount);
+				emitter.indices.free(i);
+				i--;
+				continue;
+			}
+
+			freePool[Ecount].prev_pos = freePool[Ecount].pos;
+			freePool[Ecount].pos.x += (freePool[Ecount].speed.x * deltaTime);
+			freePool[Ecount].pos.y += (freePool[Ecount].speed.y * deltaTime);
+			freePool[Ecount].pos.z += (freePool[Ecount].speed.z * deltaTime);
+			freePool[Ecount].speed.y -= particleGravity * deltaTime;
+			add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
+		}
 	}
 }
 
