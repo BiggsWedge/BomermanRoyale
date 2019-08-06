@@ -1115,6 +1115,34 @@ void CGame::LoadObject()
 		}
 
 	}
+	for (float x = -7.5; x <= 7.5; x += 2.5f)
+	{
+		loadInfo.position = { x, 0.0f, 10 };
+		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+		loadInfo.meshID = 0;
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
+		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+		loadInfo.usedGeo = -1;
+		loadInfo.LoadState = 3;
+		loadInfo.floor = false;
+		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+		loadInfo.position = { x, 0.0f, -10 };
+		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+		loadInfo.meshID = 0;
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
+		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+		loadInfo.usedGeo = -1;
+		loadInfo.LoadState = 3;
+		loadInfo.floor = false;
+		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	}
 	for (float x = -15; x <= 15; x += 2.5f)
 	{
 		loadInfo.position = { x, 0, -10 };
