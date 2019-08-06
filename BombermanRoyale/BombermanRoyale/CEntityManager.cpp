@@ -76,6 +76,7 @@ CObject* CEntityManager::DropBomb(CObject* playerSource)
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 75.0f, 1.0f / 75.0f, 1.0f / 75.0f);
 	bomb = CreateOBJFromTemplate(loadInfo);
 	return bomb;
