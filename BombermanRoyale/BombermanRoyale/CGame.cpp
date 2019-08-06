@@ -61,6 +61,7 @@ bool P2EXISTS = false;
 bool ControlScreenToggle = false;
 bool Controller1Alive = false;
 bool Controller2Alive = false;
+float bCollisionIgnore = 1.0f;
 float3 P1POS = { -10.0f, 0.0f, 10.0f };
 float3 P2POS = { 10.0f, 0.0f, -5.0f };
 
@@ -272,11 +273,51 @@ void CGame::Run()
 									break;
 								}
 							}
-							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
-							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
+							if (p1B && p1BTimer > bCollisionIgnore)
+							{
+								if (p1B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+									if (dZ < 1.3f && !renderer->nFloor && dX < 1.35f)
+									{
+
+										if (p2Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p2->Move(0.0f, -0.1f);
+											p2Move = false;
+											break;
+										}
+									}
+								}
+
+							}
+							if (p2B && p2BTimer > bCollisionIgnore)
+							{
+								if (p2B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+									if (dZ < 1.3f && !renderer->nFloor && dX < 1.35f)
+									{
+
+										if (p2Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p2->Move(0.0f, -0.1f);
+											p2Move = false;
+											break;
+										}
+									}
+								}
+
+							}
+							//dZ = abs(p2Transform->fPosition.z - p2Transform->fPosition.z);
+							//dX = abs(p2Transform->fPosition.x - p2Transform->fPosition.x);
 							//if(dZ < 0.2f && dX < 1.25f)
 							//{
-							//	p1Move = false;
+							//	p2Move = false;
 							//	break;
 							//}
 						}
@@ -311,11 +352,52 @@ void CGame::Run()
 									break;
 								}
 							}
-							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
-							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
+							if (p1B && p1BTimer > bCollisionIgnore)
+							{
+								if (p1B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+									if (dZ < 0.8f && !renderer->nFloor && dX < 1.35f)
+									{
+
+										if (p2Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p2->Move(0.0f, 0.1f);
+											p2Move = false;
+											break;
+										}
+									}
+								}
+
+							}
+							if (p2B && p2BTimer > bCollisionIgnore)
+							{
+								if (p2B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+									if (dZ < 0.8f && !renderer->nFloor && dX < 1.35f)
+									{
+
+
+										if (p2Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p2->Move(0.0f, 0.1f);
+											p2Move = false;
+											break;
+										}
+									}
+								}
+
+							}
+							//dZ = abs(p2Transform->fPosition.z - p2Transform->fPosition.z);
+							//dX = abs(p2Transform->fPosition.x - p2Transform->fPosition.x);
 							//if(dZ < 0.2f && dX < 1.25f)
 							//{
-							//	p1Move = false;
+							//	p2Move = false;
 							//	break;
 							//}
 						}
@@ -349,11 +431,52 @@ void CGame::Run()
 									break;
 								}
 							}
-							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
-							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
+							if (p1B && p1BTimer > 0.5f)
+							{
+
+								if (p1B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+									if (dX < 1.1f && !renderer->nFloor && dZ < 1.15f)
+									{
+										if (p2Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p2->Move(0.1f, 0.0f);
+											p2Move = false;
+											break;
+										}
+									}
+								}
+
+							}
+							if (p2B && p2BTimer > 0.5f)
+							{
+								if (p2B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+
+
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+									if (dX < 1.1f && !renderer->nFloor && dZ < 1.15f)
+									{
+										if (p2Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p2->Move(0.1f, 0.0f);
+											p2Move = false;
+											break;
+										}
+									}
+								}
+
+							}
+							//dZ = abs(p2Transform->fPosition.z - p2Transform->fPosition.z);
+							//dX = abs(p2Transform->fPosition.x - p2Transform->fPosition.x);
 							//if(dZ < 0.2f && dX < 1.25f)
 							//{
-							//	p1Move = false;
+							//	p2Move = false;
 							//	break;
 							//}
 						}
@@ -387,11 +510,52 @@ void CGame::Run()
 									break;
 								}
 							}
-							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
-							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
+							if (p1B && p1BTimer > 0.5f)
+							{
+
+								if (p1B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+									if (dX < 1.1f && !renderer->nFloor && dZ < 1.15f)
+									{
+
+										if (p2Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p2->Move(-0.1f, 0.0f);
+											p2Move = false;
+											break;
+										}
+									}
+								}
+
+							}
+							if (p2B && p2BTimer > 0.5f)
+							{
+								if (p2B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+									if (dX < 1.1f && !renderer->nFloor && dZ < 1.15f)
+									{
+										if (p2Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p2->Move(-0.1f, 0.0f);
+											p2Move = false;
+											break;
+										}
+									}
+								}
+
+							}
+							//dZ = abs(p2Transform->fPosition.z - p2Transform->fPosition.z);
+							//dX = abs(p2Transform->fPosition.x - p2Transform->fPosition.x);
 							//if(dZ < 0.2f && dX < 1.25f)
 							//{
-							//	p1Move = false;
+							//	p2Move = false;
 							//	break;
 							//}
 						}
@@ -480,11 +644,52 @@ void CGame::Run()
 							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
 							if (dZ < 2.0f && !renderer->nFloor && dX < 2.05f)
 							{
+								
 								if (p1Transform->fPosition.z < renderer->fPosition.z)
 								{
 									p1Move = false;
 									break;
 								}
+							}
+							if (p1B && p1BTimer > bCollisionIgnore)
+							{
+								if (p1B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+									if (dZ < 1.3f && !renderer->nFloor && dX < 1.35f)
+									{
+
+										if (p1Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p1->Move(0.0f, -0.1f);
+											p1Move = false;
+											break;
+										}
+									}
+								}
+
+							}
+							if (p2B && p2BTimer > bCollisionIgnore)
+							{
+								if (p2B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+									if (dZ < 1.3f && !renderer->nFloor && dX < 1.35f)
+									{
+
+										if (p1Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p1->Move(0.0f, -0.1f);
+											p1Move = false;
+											break;
+										}
+									}
+								}
+
 							}
 							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
 							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
@@ -519,11 +724,53 @@ void CGame::Run()
 							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
 							if (dZ < 1.6f && !renderer->nFloor && dX < 2.05f)
 							{
+								
 								if (p1Transform->fPosition.z > renderer->fPosition.z)
 								{
 									p1Move = false;
 									break;
 								}
+							}
+							if (p1B && p1BTimer > bCollisionIgnore)
+							{
+								if (p1B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+									if (dZ < 0.8f && !renderer->nFloor && dX < 1.35f)
+									{
+
+										if (p1Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p1->Move(0.0f, 0.1f);
+											p1Move = false;
+											break;
+										}
+									}
+								}
+
+							}
+							if (p2B && p2BTimer > bCollisionIgnore)
+							{
+								if (p2B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+									if (dZ < 0.8f && !renderer->nFloor && dX < 1.35f)
+									{	
+
+										
+										if (p1Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p1->Move(0.0f, 0.1f);
+											p1Move = false;
+											break;
+										}
+									}
+								}
+
 							}
 							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
 							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
@@ -563,6 +810,47 @@ void CGame::Run()
 									break;
 								}
 							}
+							if (p1B && p1BTimer > 0.5f)
+							{
+
+								if (p1B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+									if (dX < 1.1f && !renderer->nFloor && dZ < 1.15f)
+									{
+										if (p1Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p1->Move(0.1f, 0.0f);
+											p1Move = false;
+											break;
+										}
+									}
+								}
+
+							}
+							if (p2B && p2BTimer > 0.5f)
+							{
+								if (p2B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+
+									
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+									if (dX < 1.1f && !renderer->nFloor && dZ < 1.15f)
+									{
+										if (p1Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p1->Move(0.1f, 0.0f);
+											p1Move = false;
+											break;
+										}
+									}
+								}
+
+							}
 							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
 							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
 							//if(dZ < 0.2f && dX < 1.25f)
@@ -600,6 +888,47 @@ void CGame::Run()
 									p1Move = false;
 									break;
 								}
+							}
+							if (p1B && p1BTimer > 0.5f)
+							{
+								
+								if (p1B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+									if (dX < 1.1f && !renderer->nFloor && dZ < 1.15f)
+									{
+										
+										if (p1Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p1->Move(-0.1f, 0.0f);
+											p1Move = false;
+											break;
+										}
+									}
+								}
+								
+							}
+							if (p2B && p2BTimer > 0.5f)
+							{
+								if (p2B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+								{
+
+									renderer = (TTransformComponent*)cRenderer;
+									float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+									float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+									if (dX < 1.1f && !renderer->nFloor && dZ < 1.15f)
+									{
+										if (p1Transform->fPosition.x < renderer->fPosition.x)
+										{
+											p1->Move(-0.1f, 0.0f);
+											p1Move = false;
+											break;
+										}
+									}
+								}
+
 							}
 							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
 							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
