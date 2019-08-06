@@ -1115,6 +1115,7 @@ void CGame::LoadObject()
 		}
 
 	}
+
 	for (float x = -7.5; x <= 7.5; x += 2.5f)
 	{
 		loadInfo.position = { x, 0.0f, 10 };
