@@ -33,6 +33,7 @@ class CGame
 
 
 public:
+	
 	bool FullScreen = false;
 	unsigned int curGameState = 0;
 	unsigned int width;
