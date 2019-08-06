@@ -7,7 +7,7 @@ struct OBJLoadInfo
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT3 forwardVec;
 	DirectX::XMFLOAT3 scale;
-	DirectX::BoundingBox collider;
+	TCollider collider;
 	int usedVertex, usedPixel, usedGeo, usedInput, usedDiffuse, LoadState;
 	bool floor;
 };

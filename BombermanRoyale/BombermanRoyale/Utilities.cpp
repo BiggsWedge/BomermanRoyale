@@ -170,7 +170,7 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) 
 	temp.v_iIndices.resize(numIndices);
 	temp.v_tVertices.resize(numVerts);
 	
-	temp.v_tVertices.at(0).fPosition = DirectX::XMFLOAT3( -(SSpaceWidth), -(SSpaceHeight), 0.0f);
+	temp.v_tVertices.at(0).fPosition = DirectX::XMFLOAT3(-(SSpaceWidth), -(SSpaceHeight), 0.0f);
 	temp.v_tVertices.at(1).fPosition = DirectX::XMFLOAT3((SSpaceWidth), -(SSpaceHeight), 0.0f);
 	temp.v_tVertices.at(2).fPosition = DirectX::XMFLOAT3(-(SSpaceWidth), (SSpaceHeight), 0.0f);
 	temp.v_tVertices.at(3).fPosition = DirectX::XMFLOAT3((SSpaceWidth), (SSpaceHeight), 0.0f);
