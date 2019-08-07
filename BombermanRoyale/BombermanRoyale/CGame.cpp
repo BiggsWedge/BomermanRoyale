@@ -1153,7 +1153,9 @@ void CGame::LoadObject()
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
 
+
 		loadInfo.destroyable = true;
+
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -1167,7 +1169,9 @@ void CGame::LoadObject()
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
+
 		loadInfo.destroyable = true;
+
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -1181,7 +1185,9 @@ void CGame::LoadObject()
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
+
 		loadInfo.destroyable = true;
+
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -1195,7 +1201,9 @@ void CGame::LoadObject()
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
+
 		loadInfo.destroyable = true;
+
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
@@ -1211,7 +1219,9 @@ void CGame::LoadObject()
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
+
 		loadInfo.destroyable = true;
+
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -1225,7 +1235,9 @@ void CGame::LoadObject()
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
+
 		loadInfo.destroyable = true;
+
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -1239,7 +1251,9 @@ void CGame::LoadObject()
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
+
 		loadInfo.destroyable = true;
+
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -1254,11 +1268,11 @@ void CGame::LoadObject()
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
 
+
 		loadInfo.destroyable = true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
-
 	for (float x = -15; x <= 15; x += 2.5f)
 	{
 		loadInfo.position = { x, 0, -10 };
@@ -1426,23 +1440,23 @@ void CGame::LoadObject()
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { 10, 0, 10 };
-	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
-	loadInfo.meshID = 0;
-	loadInfo.LoadState = 3;
-	loadInfo.floor = false;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.position = { 10, 0, 10 };
+	//loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	//loadInfo.meshID = 0;
+	//loadInfo.LoadState = 3;
+	//loadInfo.floor = false;
+	//loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { -10, 0, -5 };
-	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
-	loadInfo.meshID = 0;
-	loadInfo.LoadState = 3;
-	loadInfo.floor = false;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.position = { -10, 0, -5 };
+	//loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
+	//loadInfo.meshID = 0;
+	//loadInfo.LoadState = 3;
+	//loadInfo.floor = false;
+	//loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { P2POS.x, 0.0f, P2POS.z };
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
