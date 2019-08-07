@@ -52,8 +52,10 @@ key SFXButton;
 key P1BOMB;
 key P2BOMB;
 key ControlScreenButton;
-key ControllerGameStateButton;
-key ControllerHelpButton;
+key Controller1GameStateButton;
+key Controller1HelpButton;
+key Controller2GameStateButton;
+key Controller2HelpButton;
 
 bool Player1 = false;
 bool Player2 = false;
@@ -72,8 +74,11 @@ float isUDPADPressed = 0.0f;
 float isDDPADPressed = 0.0f;
 float isSouthButtonPressed = 0.0f;
 
-float isStartButtonPressed = 0.0f;
-float isSelectButtonPressed = 0.0f;
+float isP1StartButtonPressed = 0.0f;
+float isP1SelectButtonPressed = 0.0f;
+float isP2StartButtonPressed = 0.0f;
+float isP2SelectButtonPressed = 0.0f;
+
 
 float isP1LDPADPressed = 0.0f;
 float isP1RDPADPressed = 0.0f;
@@ -131,11 +136,17 @@ void CGame::Run()
 
 		ControlScreenButton.currState = GetAsyncKeyState(keycodes[KEYS::HELP_MENU]) & 0x8000;
 
-		ControllerGameStateButton.prevState = ControllerGameStateButton.currState;
-		ControllerGameStateButton.currState = isStartButtonPressed;
+		Controller1GameStateButton.prevState = Controller1GameStateButton.currState;
+		Controller1GameStateButton.currState = isP1StartButtonPressed;
 
-		ControllerHelpButton.prevState = ControllerHelpButton.currState;
-		ControllerHelpButton.currState = isSelectButtonPressed;
+		Controller1HelpButton.prevState = Controller1HelpButton.currState;
+		Controller1HelpButton.currState = isP1SelectButtonPressed;
+
+		Controller2GameStateButton.prevState = Controller2GameStateButton.currState;
+		Controller2GameStateButton.currState = isP2StartButtonPressed;
+
+		Controller2HelpButton.prevState = Controller2HelpButton.currState;
+		Controller2HelpButton.currState = isP2SelectButtonPressed;
 
 		if (fullScreenButton.pressed())
 		{
@@ -143,7 +154,7 @@ void CGame::Run()
 			this->WindowResize();
 		}
 
-		if (GameStateButton.pressed() || ControllerGameStateButton.pressed())
+		if (GameStateButton.pressed() || Controller2GameStateButton.pressed() || Controller1GameStateButton.pressed())
 		{
 			if (curGameState == 0)
 			{
@@ -184,7 +195,7 @@ void CGame::Run()
 
 		}
 
-		if (ControlScreenButton.pressed() || ControllerHelpButton.pressed())
+		if (ControlScreenButton.pressed() || Controller1HelpButton.pressed() || Controller2HelpButton.pressed())
 		{
 			if (ControlScreenToggle == false)
 				ControlScreenToggle = true;
@@ -686,8 +697,8 @@ void CGame::GamePlayLoop()
 				g_pControllerInput->GetState(1, G_DPAD_LEFT_BTN, isLDPADPressed);
 				g_pControllerInput->GetState(1, G_DPAD_RIGHT_BTN, isRDPADPressed);
 				g_pControllerInput->GetState(1, G_SOUTH_BTN, isSouthButtonPressed);
-				g_pControllerInput->GetState(1, G_START_BTN, isStartButtonPressed);
-				g_pControllerInput->GetState(1, G_SELECT_BTN, isSelectButtonPressed);
+				g_pControllerInput->GetState(1, G_START_BTN, isP2StartButtonPressed);
+				g_pControllerInput->GetState(1, G_SELECT_BTN, isP2SelectButtonPressed);
 			}
 
 			if (g_pControllerInput->IsConnected(0, Controller2Alive))
@@ -697,8 +708,8 @@ void CGame::GamePlayLoop()
 				g_pControllerInput->GetState(0, G_DPAD_LEFT_BTN, isP1LDPADPressed);
 				g_pControllerInput->GetState(0, G_DPAD_RIGHT_BTN, isP1RDPADPressed);
 				g_pControllerInput->GetState(0, G_SOUTH_BTN, isP1SouthButtonPressed);
-				g_pControllerInput->GetState(0, G_START_BTN, isStartButtonPressed);
-				g_pControllerInput->GetState(0, G_SELECT_BTN, isSelectButtonPressed);
+				g_pControllerInput->GetState(0, G_START_BTN, isP1StartButtonPressed);
+				g_pControllerInput->GetState(0, G_SELECT_BTN, isP1SelectButtonPressed);
 			}
 			
 			
