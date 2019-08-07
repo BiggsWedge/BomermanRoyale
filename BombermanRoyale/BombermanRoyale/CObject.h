@@ -11,6 +11,7 @@ struct OBJLoadInfo
 	bool hasCollider;
 	int usedVertex, usedPixel, usedGeo, usedInput, usedDiffuse, LoadState;
 	bool floor;
+	bool destroyable;
 };
 
 class CObject

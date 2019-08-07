@@ -52,6 +52,8 @@ key SFXButton;
 key P1BOMB;
 key P2BOMB;
 key ControlScreenButton;
+key ControllerGameStateButton;
+key ControllerHelpButton;
 
 bool Player1 = false;
 bool Player2 = false;
@@ -69,6 +71,9 @@ float isRDPADPressed = 0.0f;
 float isUDPADPressed = 0.0f;
 float isDDPADPressed = 0.0f;
 float isSouthButtonPressed = 0.0f;
+
+float isStartButtonPressed = 0.0f;
+float isSelectButtonPressed = 0.0f;
 
 float isP1LDPADPressed = 0.0f;
 float isP1RDPADPressed = 0.0f;
@@ -126,21 +131,31 @@ void CGame::Run()
 
 		ControlScreenButton.currState = GetAsyncKeyState(keycodes[KEYS::HELP_MENU]) & 0x8000;
 
+		ControllerGameStateButton.prevState = ControllerGameStateButton.currState;
+		ControllerGameStateButton.currState = isStartButtonPressed;
+
+		ControllerHelpButton.prevState = ControllerHelpButton.currState;
+		ControllerHelpButton.currState = isSelectButtonPressed;
+
 		if (fullScreenButton.pressed())
 		{
 			FullScreen = !FullScreen;
 			this->WindowResize();
 		}
 
-		if (GameStateButton.pressed())
+		if (GameStateButton.pressed() || ControllerGameStateButton.pressed())
 		{
 			if (curGameState == 0)
 			{
 				curGameState = 3;
 
+				if (!objects.empty())
+					objects.clear();
+				this->LoadObject();
+
 				P1EXISTS = true;
 				P2EXISTS = true;
-
+				
 				TComponent* cTransform = nullptr;
 				TTransformComponent* Transform = nullptr;
 				p2->GetComponent(COMPONENT_TYPE::TRANSFORM, cTransform);
@@ -169,7 +184,7 @@ void CGame::Run()
 
 		}
 
-		if (ControlScreenButton.pressed())
+		if (ControlScreenButton.pressed() || ControllerHelpButton.pressed())
 		{
 			if (ControlScreenToggle == false)
 				ControlScreenToggle = true;
@@ -277,6 +292,7 @@ void CGame::LoadObject()
 	loadInfo.usedGeo = -1;
 	loadInfo.floor = false;
 	loadInfo.hasCollider = true;
+	loadInfo.destroyable = false;
 	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
 	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
 	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
@@ -350,6 +366,7 @@ void CGame::LoadObject()
 		for (float x = -12.5f; x < 15.0f; x += 2.5f)
 		{
 			loadInfo.position = { x, -2.5f, z };
+
 			loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
 			loadInfo.meshID = MODELS::CUBE;
@@ -380,6 +397,7 @@ void CGame::LoadObject()
 			loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 			loadInfo.usedGeo = -1;
 			loadInfo.LoadState = 3;
+			loadInfo.destroyable = true;
 			loadInfo.floor = false;
 			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -394,6 +412,7 @@ void CGame::LoadObject()
 		loadInfo.meshID = MODELS::CUBE;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
+		loadInfo.destroyable = false;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -526,6 +545,7 @@ void CGame::LoadObject()
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+
 	loadInfo.position = { 5, 0, 10 };
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
@@ -579,6 +599,7 @@ void CGame::LoadObject()
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
+
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
@@ -597,6 +618,7 @@ void CGame::LoadObject()
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	p1 = objects.at(objects.size() - 1);
 	P1EXISTS = true;
@@ -664,6 +686,8 @@ void CGame::GamePlayLoop()
 				g_pControllerInput->GetState(1, G_DPAD_LEFT_BTN, isLDPADPressed);
 				g_pControllerInput->GetState(1, G_DPAD_RIGHT_BTN, isRDPADPressed);
 				g_pControllerInput->GetState(1, G_SOUTH_BTN, isSouthButtonPressed);
+				g_pControllerInput->GetState(1, G_START_BTN, isStartButtonPressed);
+				g_pControllerInput->GetState(1, G_SELECT_BTN, isSelectButtonPressed);
 			}
 
 			if (g_pControllerInput->IsConnected(0, Controller2Alive))
@@ -673,6 +697,8 @@ void CGame::GamePlayLoop()
 				g_pControllerInput->GetState(0, G_DPAD_LEFT_BTN, isP1LDPADPressed);
 				g_pControllerInput->GetState(0, G_DPAD_RIGHT_BTN, isP1RDPADPressed);
 				g_pControllerInput->GetState(0, G_SOUTH_BTN, isP1SouthButtonPressed);
+				g_pControllerInput->GetState(0, G_START_BTN, isStartButtonPressed);
+				g_pControllerInput->GetState(0, G_SELECT_BTN, isSelectButtonPressed);
 			}
 			
 			
@@ -890,6 +916,7 @@ void CGame::GamePlayLoop()
 				p2->Move(deltaP2X, deltaP2Z);
 
 
+
 	}
 	if (P1EXISTS)
 	{
@@ -901,6 +928,7 @@ void CGame::GamePlayLoop()
 		float deltaP1X = 0.0f, deltaP1Z = 0.0f;
 		if (keys[KEYS::P1UP].held() || isP1UDPADPressed == 1.0f)
 		{
+
 			for (int i = 0; i < objects.size() - 2; ++i)
 			{
 				if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
@@ -931,6 +959,7 @@ void CGame::GamePlayLoop()
 			if (p1Move == true)
 				deltaP1Z += 0.1f;
 
+
 		}
 		if (keys[KEYS::P1DOWN].held() || isP1DDPADPressed == 1.0f)
 		{
@@ -958,7 +987,6 @@ void CGame::GamePlayLoop()
 						
 					}
 
-
 				}
 			}
 			if (p1Move == true)
@@ -966,6 +994,7 @@ void CGame::GamePlayLoop()
 		}
 		if (keys[KEYS::P1LEFT].held() || isP1LDPADPressed == 1.0f)
 		{
+
 
 			p1Move = true;
 			for (int i = 0; i < objects.size() - 2; ++i)
@@ -1289,6 +1318,7 @@ void CGame::GamePlayLoop()
 				p1EXx = p1ExTransform->fPosition.x;
 				p1EXz = p1ExTransform->fPosition.z;
 
+
 				
 			}
 			if (p2Ex)
@@ -1376,6 +1406,62 @@ void CGame::GamePlayLoop()
 				}
 
 			}
+
+			if (p1Ex)
+			{
+				for (int i = 0; i < objects.size() - 2; ++i)
+				{
+					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+					{
+						TComponent* cRenderer = nullptr;
+						TTransformComponent* renderer = nullptr;
+						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+						{
+							renderer = (TTransformComponent*)cRenderer;
+							if (renderer->destroyable)
+							{
+								if (abs(renderer->fPosition.x - p1EXx) < 4.5f && abs(renderer->fPosition.z - p1EXz) < 1.8f)
+								{
+									objects.erase(objects.begin() + i, objects.begin() + i + 1);
+								}
+								else if (abs(renderer->fPosition.z - p1EXz) < 4.5f && abs(renderer->fPosition.x - p1EXx) < 1.8f)
+								{
+									objects.erase(objects.begin() + i, objects.begin() + i + 1);
+								}
+							}
+						}
+
+					}
+				}
+			}
+			if (p2Ex)
+			{
+				for (int i = 0; i < objects.size() - 2; ++i)
+				{
+					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+					{
+						TComponent* cRenderer = nullptr;
+						TTransformComponent* renderer = nullptr;
+						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+						{
+							renderer = (TTransformComponent*)cRenderer;
+							if (renderer->destroyable)
+							{
+								if (abs(renderer->fPosition.x - p2EXx) < 4.5f && abs(renderer->fPosition.z - p2EXz) < 1.8f)
+								{
+									objects.erase(objects.begin() + i, objects.begin() + i + 1);
+								}
+								else if (abs(renderer->fPosition.z - p2EXz) < 4.5f && abs(renderer->fPosition.x - p2EXx) < 1.8f)
+								{
+									objects.erase(objects.begin() + i, objects.begin() + i + 1);
+								}
+							}
+						}
+
+					}
+				}
+			}
+			
 }
 
 //void InitSortedParticles(sorted_pool_t<particle, 1000>& sortedPool, float deltaTime) {
