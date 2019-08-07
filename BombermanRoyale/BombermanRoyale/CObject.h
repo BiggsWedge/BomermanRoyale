@@ -10,6 +10,7 @@ struct OBJLoadInfo
 	TCollider collider;
 	int usedVertex, usedPixel, usedGeo, usedInput, usedDiffuse, LoadState;
 	bool floor;
+	bool destroyable;
 };
 
 class CObject
