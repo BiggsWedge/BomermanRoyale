@@ -60,6 +60,7 @@ bool P2EXISTS = false;
 bool ControlScreenToggle = false;
 bool Controller1Alive = false;
 bool Controller2Alive = false;
+float bCollisionIgnore = 0.5f;
 float3 P1POS = { -10.0f, 0.0f, 10.0f };
 float3 P2POS = { 10.0f, 0.0f, -5.0f };
 
@@ -215,328 +216,8 @@ void CGame::Run()
 
 		}
 
-		if (P2EXISTS)
-		{
-			TComponent* p2Component;
-			p2->GetComponent(COMPONENT_TYPE::TRANSFORM, p2Component);
-			TTransformComponent* p2Transform = (TTransformComponent*)p2Component;
-			if (g_pControllerInput->IsConnected(1, Controller1Alive))
-			{
-				g_pControllerInput->GetState(1, G_DPAD_UP_BTN, isUDPADPressed);
-				g_pControllerInput->GetState(1, G_DPAD_DOWN_BTN, isDDPADPressed);
-				g_pControllerInput->GetState(1, G_DPAD_LEFT_BTN, isLDPADPressed);
-				g_pControllerInput->GetState(1, G_DPAD_RIGHT_BTN, isRDPADPressed);
-				g_pControllerInput->GetState(1, G_SOUTH_BTN, isSouthButtonPressed);
-			}
-
-			if (g_pControllerInput->IsConnected(0, Controller2Alive))
-			{
-				g_pControllerInput->GetState(0, G_DPAD_UP_BTN, isP1UDPADPressed);
-				g_pControllerInput->GetState(0, G_DPAD_DOWN_BTN, isP1DDPADPressed);
-				g_pControllerInput->GetState(0, G_DPAD_LEFT_BTN, isP1LDPADPressed);
-				g_pControllerInput->GetState(0, G_DPAD_RIGHT_BTN, isP1RDPADPressed);
-				g_pControllerInput->GetState(0, G_SOUTH_BTN, isP1SouthButtonPressed);
-			}
-
-			//TComponent* p1Component;
-			//TTransformComponent* p1Transform;
-			//if (P1EXISTS)
-			//{
-			//	p1->GetComponent(COMPONENT_TYPE::TRANSFORM, p1Component);
-			//	p1Transform = (TTransformComponent*)p1Component;
-			//}
-			p2Move = true;
-			float deltaP2X = 0.0f, deltaP2Z = 0.0f;
-			if (keys[KEYS::P2UP].held() || isUDPADPressed == 1.0f)
-			{
-				//std::cout << isUDPADPressed;
-				for (int i = 0; i < objects.size() - 2; ++i)
-				{
-					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-					{
-						TComponent* cRenderer = nullptr;
-						TTransformComponent* renderer = nullptr;
-						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
-						{
-							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
-							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
-							if (dZ < 2.0f && !renderer->nFloor && dX < 2.05f)
-							{
-								if (p2Transform->fPosition.z < renderer->fPosition.z)
-								{
-									p2Move = false;
-									break;
-								}
-							}
-							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
-							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
-							//if(dZ < 0.2f && dX < 1.25f)
-							//{
-							//	p1Move = false;
-							//	break;
-							//}
-						}
-
-
-
-					}
-				}
-				if (p2Move == true)
-					deltaP2Z += 0.1f;
-
-			}
-			if (keys[KEYS::P2DOWN].held() || isDDPADPressed == 1.0f)
-			{
-				p2Move = true;
-				for (int i = 0; i < objects.size() - 2; ++i)
-				{
-					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-					{
-						TComponent* cRenderer = nullptr;
-						TTransformComponent* renderer = nullptr;
-						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
-						{
-							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
-							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
-							if (dZ < 1.6f && !renderer->nFloor && dX < 2.05f)
-							{
-								if (p2Transform->fPosition.z > renderer->fPosition.z)
-								{
-									p2Move = false;
-									break;
-								}
-							}
-							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
-							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
-							//if(dZ < 0.2f && dX < 1.25f)
-							//{
-							//	p1Move = false;
-							//	break;
-							//}
-						}
-
-
-
-					}
-				}
-				if (p2Move == true)
-					deltaP2Z += -0.1f;
-			}
-			if (keys[KEYS::P2LEFT].held() || isLDPADPressed == 1.0f)
-			{
-				p2Move = true;
-				for (int i = 0; i < objects.size() - 2; ++i)
-				{
-					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-					{
-						TComponent* cRenderer = nullptr;
-						TTransformComponent* renderer = nullptr;
-						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
-						{
-							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
-							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
-							if (dX < 2.2f && !renderer->nFloor && dZ < 1.5f)
-							{
-								if (p2Transform->fPosition.x > renderer->fPosition.x)
-								{
-									p2Move = false;
-									break;
-								}
-							}
-							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
-							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
-							//if(dZ < 0.2f && dX < 1.25f)
-							//{
-							//	p1Move = false;
-							//	break;
-							//}
-						}
-
-
-
-					}
-				}
-				if (p2Move == true)
-					deltaP2X += -0.1f;
-			}
-			if (keys[KEYS::P2RIGHT].held() || isRDPADPressed == 1.0f)
-			{
-				p2Move = true;
-				for (int i = 0; i < objects.size() - 2; ++i)
-				{
-					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-					{
-						TComponent* cRenderer = nullptr;
-						TTransformComponent* renderer = nullptr;
-						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
-						{
-							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
-							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
-							if (dX < 2.3f && !renderer->nFloor && dZ < 1.5f)
-							{
-								if (p2Transform->fPosition.x < renderer->fPosition.x)
-								{
-									p2Move = false;
-									break;
-								}
-							}
-							//dZ = abs(p1Transform->fPosition.z - p2Transform->fPosition.z);
-							//dX = abs(p1Transform->fPosition.x - p2Transform->fPosition.x);
-							//if(dZ < 0.2f && dX < 1.25f)
-							//{
-							//	p1Move = false;
-							//	break;
-							//}
-						}
-
-
-
-					}
-				}
-				if (p2Move == true)
-					deltaP2X += 0.1f;
-			}
-			if ((keys[KEYS::P2BOMB].pressed() && p2B == nullptr) || (isSouthButtonPressed == 1.0f && p2B == nullptr))
-			{
-				p2B = p_cEntityManager->DropBomb(p2);
-				p2BTimer = 0.0f;
-			}
-			if (deltaP2X != 0.0f || deltaP2Z != 0.0f)
-				p2->Move(deltaP2X, deltaP2Z);
-
-		}
-		if (P1EXISTS)
-		{
-			TComponent* p1Component;
-			p1->GetComponent(COMPONENT_TYPE::TRANSFORM, p1Component);
-			TTransformComponent* p1Transform = (TTransformComponent*)p1Component;
-			p1Move = true;
-			float deltaP1X = 0.0f, deltaP1Z = 0.0f;
-			if (keys[KEYS::P1UP].held() || isP1UDPADPressed == 1.0f)
-			{
-				for (int i = 0; i < objects.size() - 2; ++i)
-				{
-					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-					{
-						TComponent* cRenderer = nullptr;
-						TTransformComponent* renderer = nullptr;
-						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
-						{
-							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
-							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
-							if (dZ < 2.0f && !renderer->nFloor && dX < 2.05f)
-							{
-								if (p1Transform->fPosition.z < renderer->fPosition.z)
-								{
-									p1Move = false;
-									break;
-								}
-							}
-						}
-					}
-				}
-				if (p1Move == true)
-					deltaP1Z += 0.1f;
-
-			}
-			if (keys[KEYS::P1DOWN].held() || isP1DDPADPressed == 1.0f)
-			{
-				p1Move = true;
-				for (int i = 0; i < objects.size() - 2; ++i)
-				{
-					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-					{
-						TComponent* cRenderer = nullptr;
-						TTransformComponent* renderer = nullptr;
-						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
-						{
-							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
-							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
-							if (dZ < 1.6f && !renderer->nFloor && dX < 2.05f)
-							{
-								if (p1Transform->fPosition.z > renderer->fPosition.z)
-								{
-									p1Move = false;
-									break;
-								}
-							}
-						}
-					}
-				}
-				if (p1Move == true)
-					deltaP1Z += -0.1f;
-			}
-			if (keys[KEYS::P1LEFT].held() || isP1LDPADPressed == 1.0f)
-			{
-				p1Move = true;
-				for (int i = 0; i < objects.size() - 2; ++i)
-				{
-					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-					{
-						TComponent* cRenderer = nullptr;
-						TTransformComponent* renderer = nullptr;
-						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
-						{
-							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
-							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
-							if (dX < 2.2f && !renderer->nFloor && dZ < 1.5f)
-							{
-								if (p1Transform->fPosition.x > renderer->fPosition.x)
-								{
-									p1Move = false;
-									break;
-								}
-							}
-						}
-					}
-				}
-				if (p1Move == true)
-					deltaP1X += -0.1f;
-			}
-			if (keys[KEYS::P1RIGHT].held() || isP1RDPADPressed == 1.0f)
-			{
-				p1Move = true;
-				for (int i = 0; i < objects.size() - 2; ++i)
-				{
-					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-					{
-						TComponent* cRenderer = nullptr;
-						TTransformComponent* renderer = nullptr;
-						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
-						{
-							renderer = (TTransformComponent*)cRenderer;
-							float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
-							float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
-							if (dX < 2.1f && !renderer->nFloor && dZ < 1.5f)
-							{
-								if (p1Transform->fPosition.x < renderer->fPosition.x)
-								{
-									p1Move = false;
-									break;
-								}
-							}
-						}
-					}
-				}
-				if (p1Move == true)
-					deltaP1X += 0.1f;
-			}
-			if ((keys[KEYS::P1BOMB].pressed() && p1B == nullptr) || (isP1SouthButtonPressed == 1.0f && p1B == nullptr))
-			{
-				p1B = p_cEntityManager->DropBomb(p1);
-				p1BTimer = 0.0f;
-			}
-			if (deltaP1X != 0.0f || deltaP1Z != 0.0f)
-				p1->Move(deltaP1X, deltaP1Z);
-		}
-
+		this->GamePlayLoop();
+		
 		if (keys[KEYS::ZERO].pressed())
 			g_d3dData->ToggleUseDebugCamera();
 
@@ -547,278 +228,6 @@ void CGame::Run()
 		}
 		g_d3dData->updateCameras();
 
-		if (p2B)
-		{
-			p2BTimer += 0.1f;
-			if (p2BTimer >= 18)
-			{
-
-				g_pSoundPlayer->Play();
-				p2Ex = p_cEntityManager->BombExplosionX(p2B);
-				p2Ez = p_cEntityManager->BombExplosionZ(p2B);
-				p2ETimer = 0.0f;
-				delete p2B;
-				p2B = nullptr;
-			}
-		}
-
-		if (p2Ex)
-		{
-			p2ETimer += 0.1f;
-			if (p2ETimer >= 6)
-			{
-
-
-				delete p2Ex;
-				delete p2Ez;
-				p2Ex = nullptr;
-				p2Ez = nullptr;
-			}
-		}
-
-		if (p1B)
-		{
-			p1BTimer += 0.1f;
-			if (p1BTimer >= 18)
-			{
-
-				g_pSoundPlayer->Play();
-				p1Ex = p_cEntityManager->BombExplosionX(p1B);
-				p1Ez = p_cEntityManager->BombExplosionZ(p1B);
-				p1ETimer = 0.0f;
-				delete p1B;
-				p1B = nullptr;
-			}
-		}
-
-		if (p1Ex)
-		{
-			p1ETimer += 0.1f;
-			if (p1ETimer >= 6)
-			{
-
-
-				delete p1Ex;
-				delete p1Ez;
-				p1Ex = nullptr;
-				p1Ez = nullptr;
-			}
-		}
-
-		for (int i = 0; i < objects.size(); ++i)
-		{
-			if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-			{
-				TComponent* cRenderer = nullptr;
-				TRendererComponent* renderer = nullptr;
-				if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-				{
-					renderer = (TRendererComponent*)cRenderer;
-					if (renderer->iUsedLoadState == curGameState)
-						p_cRendererManager->RenderObject(*objects[i]);
-				}
-				if (ControlScreenToggle == true)
-				{
-					if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-					{
-						renderer = (TRendererComponent*)cRenderer;
-						if (renderer->iUsedLoadState == GameState::CONTROLS_SCREEN)
-							p_cRendererManager->RenderObject(*objects[i]);
-					}
-				}
-			}
-		}
-
-		if (p1B)
-		{
-			TComponent* cRenderer = nullptr;
-			TRendererComponent* renderer = nullptr;
-			if (p1B->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-			{
-				renderer = (TRendererComponent*)cRenderer;
-				if (renderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(*p1B);
-			}
-		}
-		if (p2B)
-		{
-			TComponent* cRenderer = nullptr;
-			TRendererComponent* renderer = nullptr;
-			if (p2B->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-			{
-				renderer = (TRendererComponent*)cRenderer;
-				if (renderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(*p2B);
-			}
-		}
-		if (p1Ex)
-		{
-			TComponent* cRenderer = nullptr;
-			TRendererComponent* renderer = nullptr;
-			if (p1Ex->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-			{
-				renderer = (TRendererComponent*)cRenderer;
-				if (renderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(*p1Ex);
-			}
-			if (p1Ez->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-			{
-				renderer = (TRendererComponent*)cRenderer;
-				if (renderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(*p1Ez);
-			}
-		}
-		if (p2Ex)
-		{
-			TComponent* cRenderer = nullptr;
-			TRendererComponent* renderer = nullptr;
-			if (p2Ex->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-			{
-				renderer = (TRendererComponent*)cRenderer;
-				if (renderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(*p2Ex);
-			}
-			if (p2Ez->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-			{
-				renderer = (TRendererComponent*)cRenderer;
-				if (renderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(*p2Ez);
-			}
-		}
-
-		TComponent* Component;
-		TTransformComponent* p1Transform;
-		TTransformComponent* p2Transform;
-		TTransformComponent* p1ExTransform;
-		TTransformComponent* p2ExTransform;
-		float p1x;
-		float p1z;
-		float p2x;
-		float p2z;
-		float p1EXx;
-		float p1EXz;
-		float p2EXx;
-		float p2EXz;
-
-		if (p1)
-		{
-			p1->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
-			p1Transform = (TTransformComponent*)Component;
-			p1x = p1Transform->fPosition.x;
-			p1z = p1Transform->fPosition.z;
-		}
-		if (p2)
-		{
-			p2->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
-			p2Transform = (TTransformComponent*)Component;
-			p2x = p2Transform->fPosition.x;
-			p2z = p2Transform->fPosition.z;
-		}
-		if (p1Ex)
-		{
-			p1Ex->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
-			p1ExTransform = (TTransformComponent*)Component;
-			p1EXx = p1ExTransform->fPosition.x;
-			p1EXz = p1ExTransform->fPosition.z;
-
-			//p1Ez->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
-			//TTransformComponent* p1EzTransform = (TTransformComponent*)Component;
-			//float p1EZx = p1EzTransform->fPosition.x;
-			//float p1EZz = p1EzTransform->fPosition.z;
-		}
-		if (p2Ex)
-		{
-			p2Ex->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
-			p2ExTransform = (TTransformComponent*)Component;
-			p2EXx = p2ExTransform->fPosition.x;
-			p2EXz = p2ExTransform->fPosition.z;
-
-			//p2Ez->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
-			//TTransformComponent* p2EzTransform = (TTransformComponent*)Component;
-			//float p2EZx = p2EzTransform->fPosition.x;
-			//float p2EZz = p2EzTransform->fPosition.z;
-		}
-
-
-		if (P1EXISTS && curGameState == 3)
-		{
-			if (p1Ex)
-			{
-				if (abs(p1x - p1EXx) < 4.5f && abs(p1z - p1EXz) < 1.8f)
-				{
-
-					//delete p1;
-					p1 = nullptr;
-					P1EXISTS = false;
-
-				}
-				else if (abs(p1z - p1EXz) < 4.5f && abs(p1x - p1EXx) < 1.8f)
-				{
-					//delete p1;
-					p1 = nullptr;
-					P1EXISTS = false;
-				}
-			}
-			if (p2Ex)
-			{
-				if (abs(p1x - p2EXx) < 4.5f && abs(p1z - p2EXz) < 1.8f)
-				{
-
-					//delete p1;
-					p1 = nullptr;
-					P1EXISTS = false;
-
-				}
-				else if (abs(p1z - p2EXz) < 4.5f && abs(p1x - p2EXx) < 1.8f)
-				{
-					//delete p1;
-					p1 = nullptr;
-					P1EXISTS = false;
-				}
-			}
-
-		}
-		if (P2EXISTS && curGameState == 3)
-		{
-			if (p1Ex)
-			{
-				if (abs(p2x - p1EXx) < 4.5f && abs(p2z - p1EXz) < 1.8f)
-				{
-
-					//delete p2;
-					p2 = nullptr;
-					P2EXISTS = false;
-
-				}
-				else if (abs(p2z - p1EXz) < 4.5f && abs(p2x - p1EXx) < 1.8f)
-				{
-					//delete p2;
-					p2 = nullptr;
-					P2EXISTS = false;
-				}
-			}
-			if (p2Ex)
-			{
-				if (abs(p2x - p2EXx) < 4.5f && abs(p2z - p2EXz) < 1.8f)
-				{
-
-					//delete p2;
-					p2 = nullptr;
-					P2EXISTS = false;
-
-				}
-				else if (abs(p2z - p2EXz) < 4.5f && abs(p2x - p2EXx) < 1.8f)
-				{
-					//delete p2;
-					p2 = nullptr;
-					P2EXISTS = false;
-				}
-			}
-
-		}
-
-
-
 #pragma region Input
 
 		if (g_pInputRecord->GetState(G_KEY_SPACE, errorCode) == 1)
@@ -828,10 +237,8 @@ void CGame::Run()
 
 		if (SFXButton.pressed())
 		{
-			g_pSoundPlayer->Play();
+				g_pSoundPlayer->Play();
 		}
-
-
 
 
 #pragma endregion
@@ -954,7 +361,6 @@ void CGame::LoadObject()
 	loadInfo.LoadState = 5;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-
 	loadInfo.position = { 0.0f, 5.0f, -4.5f };
 	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HELP_MENU;
@@ -963,56 +369,29 @@ void CGame::LoadObject()
 	loadInfo.LoadState = 6;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	//loadInfo.position = { 0.0f, -2.4f, 2.93f };
-	//loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
-	//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_BUTTON;
-	//loadInfo.scale = DirectX::XMFLOAT3(1.75f, 1.99f, 1.0f);
-	//loadInfo.meshID = 3;
-	//loadInfo.LoadState = 0;
-	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	loadInfo.position = { x, -2.5f, z };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
+	loadInfo.meshID = MODELS::CUBE;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = true;
+	loadInfo.hasCollider = true;
+	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
+	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
+	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
 
-	for (float x = -12.5; x <= 12.5; x += 2.5f)
-	{
-		for (float z = -7.5; z <= 12.5; z += 2.5f)
-		{
-			loadInfo.position = { x, -2.5f, z };
-			loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
-			loadInfo.meshID = MODELS::CUBE;
-			loadInfo.LoadState = 3;
-			loadInfo.floor = true;
-			loadInfo.hasCollider = true;
-			collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
-			collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
-			collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
-
-			loadInfo.collider.center = collider.center;
-			loadInfo.collider.extents = collider.extents;
-
-			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
-			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-		}
-
-	}
-	for (float x = -7.5; x <= 7.5; x += 2.5f)
-	{
-		for (float z = -2.5; z <= 7.5; z += 2.5f)
-		{
-			loadInfo.position = { x, 0.0f, z };
-			loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-			loadInfo.meshID = MODELS::CUBE;
-			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
-			loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-			loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-			loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-			loadInfo.usedGeo = -1;
-			loadInfo.LoadState = 3;
-			loadInfo.floor = false;
-			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-		}
-
-	}
+	loadInfo.position = { x, 0.0f, z };
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.meshID = MODELS::CUBE;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.LoadState = 3;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	for (float x = -7.5; x <= 7.5; x += 2.5f)
 	{
@@ -1267,33 +646,771 @@ CGame::CGame()
 
 CGame::~CGame()
 {
-	/*
 	delete p_cRendererManager;
-	delete p_cEntityManager;
-	delete p1;
-	delete p2;
-	*/
 }
 
 void CGame::WindowResize()
 {
 
-	g_pWindow->GetClientWidth(width);
-	g_pWindow->GetClientHeight(height);
-	g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+
+
 
 	if (FullScreen)
-		g_pWindow->ChangeWindowStyle(GW::SYSTEM::FULLSCREENBORDERLESS);
-	else
+	{
+		g_pWindow->GetClientWidth(width);
+		g_pWindow->GetClientHeight(height);
+		g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+		g_pWindow->ChangeWindowStyle(GW::SYSTEM::GWindowStyle::FULLSCREENBORDERLESS);
+		g_pWindow->GetClientWidth(width);
+		g_pWindow->GetClientHeight(height);
+		g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+		g_d3dData->d3dViewport.Height = static_cast<float>(height);
+		g_d3dData->d3dViewport.Width = static_cast<float>(width);
+		//g_d3dData->d3dSwapChain->SetFullscreenState(FullScreen, nullptr);
+	}
+	if (!FullScreen)
+	{
+		g_pWindow->GetClientWidth(width);
+		g_pWindow->GetClientHeight(height);
+		g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
 		g_pWindow->ChangeWindowStyle(GW::SYSTEM::GWindowStyle::WINDOWEDBORDERED);
+		g_pWindow->GetClientWidth(width);
+		g_pWindow->GetClientHeight(height);
+		g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+		g_d3dData->d3dViewport.Height = static_cast<float>(height);
+		g_d3dData->d3dViewport.Width = static_cast<float>(width);
+		//g_d3dData->d3dSwapChain->SetFullscreenState(FullScreen, nullptr);
+	}
 
-	g_pWindow->GetClientWidth(width);
-	g_pWindow->GetClientHeight(height);
-	g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
-	g_d3dData->d3dViewport.Height = static_cast<float>(height);
-	g_d3dData->d3dViewport.Width = static_cast<float>(width);
+}
+
+void CGame::GamePlayLoop()
+{
+	if (P2EXISTS)
+	{
+
+			TComponent* p2Component;
+			p2->GetComponent(COMPONENT_TYPE::TRANSFORM, p2Component);
+			TTransformComponent* p2Transform = (TTransformComponent*)p2Component;
+			if (g_pControllerInput->IsConnected(1,Controller1Alive))
+			{
+				g_pControllerInput->GetState(1, G_DPAD_UP_BTN, isUDPADPressed);
+				g_pControllerInput->GetState(1, G_DPAD_DOWN_BTN, isDDPADPressed);
+				g_pControllerInput->GetState(1, G_DPAD_LEFT_BTN, isLDPADPressed);
+				g_pControllerInput->GetState(1, G_DPAD_RIGHT_BTN, isRDPADPressed);
+				g_pControllerInput->GetState(1, G_SOUTH_BTN, isSouthButtonPressed);
+			}
+
+			if (g_pControllerInput->IsConnected(0, Controller2Alive))
+			{
+				g_pControllerInput->GetState(0, G_DPAD_UP_BTN, isP1UDPADPressed);
+				g_pControllerInput->GetState(0, G_DPAD_DOWN_BTN, isP1DDPADPressed);
+				g_pControllerInput->GetState(0, G_DPAD_LEFT_BTN, isP1LDPADPressed);
+				g_pControllerInput->GetState(0, G_DPAD_RIGHT_BTN, isP1RDPADPressed);
+				g_pControllerInput->GetState(0, G_SOUTH_BTN, isP1SouthButtonPressed);
+			}
+			
+			
+			p2Move = true;
+			float deltaP2X = 0.0f, deltaP2Z = 0.0f;
+			if (keys[KEYS::P2UP].held() || isUDPADPressed == 1.0f)
+			{
+				//std::cout << isUDPADPressed;
+				for (int i = 0; i < objects.size() - 2; ++i)
+				{
+					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+					{
+						TComponent* cRenderer = nullptr;
+						TTransformComponent* renderer = nullptr;
+						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+						{
+							renderer = (TTransformComponent*)cRenderer;
+							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+							if (dZ < 2.0f && !renderer->nFloor && dX < 2.05f)
+							{
+								if (p2Transform->fPosition.z < renderer->fPosition.z)
+								{
+									p2Move = false;
+									break;
+								}
+							}
+
+						
+						}
+					}
+				}
+				if (p2Move == true)
+					deltaP2Z += 0.1f;
+
+			}
+			if (keys[KEYS::P2DOWN].held() || isDDPADPressed == 1.0f)
+			{
+				p2Move = true;
+				for (int i = 0; i < objects.size() - 2; ++i)
+				{
+					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+					{
+						TComponent* cRenderer = nullptr;
+						TTransformComponent* renderer = nullptr;
+						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+						{
+							renderer = (TTransformComponent*)cRenderer;
+							float dZ = abs(p2Transform->fPosition.z -renderer->fPosition.z);
+							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+							if (dZ < 1.6f && !renderer->nFloor && dX < 2.05f)
+							{
+								if (p2Transform->fPosition.z > renderer->fPosition.z)
+								{
+									p2Move = false;
+									break;
+								}
+							}
+
+							
+						}
 
 
+
+					}
+				}
+				if (p2Move == true)
+					deltaP2Z += -0.1f;
+			}
+			if (keys[KEYS::P2LEFT].held() || isLDPADPressed == 1.0f)
+			{
+				p2Move = true;
+				for (int i = 0; i < objects.size() - 2; ++i)
+				{
+					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+					{
+						TComponent* cRenderer = nullptr;
+						TTransformComponent* renderer = nullptr;
+						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+						{
+							renderer = (TTransformComponent*)cRenderer;
+							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+							if (dX < 2.2f && !renderer->nFloor && dZ < 1.5f)
+							{
+								if (p2Transform->fPosition.x > renderer->fPosition.x)
+								{
+									p2Move = false;
+									break;
+								}
+							}
+							
+						}
+
+
+
+					}
+				}
+				if (p2Move == true)
+					deltaP2X += -0.1f;
+			}
+
+			if (keys[KEYS::P2RIGHT].held() || isRDPADPressed == 1.0f)
+			{
+				p2Move = true;
+				for (int i = 0; i < objects.size() - 2; ++i)
+				{
+					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+					{
+						TComponent* cRenderer = nullptr;
+						TTransformComponent* renderer = nullptr;
+						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+						{
+							renderer = (TTransformComponent*)cRenderer;
+							float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+							float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+							if (dX < 2.3f && !renderer->nFloor && dZ < 1.5f)
+							{
+								if (p2Transform->fPosition.x < renderer->fPosition.x)
+								{
+									p2Move = false;
+									break;
+								}
+							}
+							
+						}
+
+
+
+					}
+				}
+				if (p2Move == true)
+					deltaP2X += 0.1f;
+			}
+			if (p1B)
+			{
+				TComponent* cRenderer = nullptr;
+				TTransformComponent* renderer = nullptr;
+				if (p1B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+				{
+					renderer = (TTransformComponent*)cRenderer;
+					float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+					float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+					if (dZ < 1.5f && dX < 1.5f)
+					{
+						if (dZ < dX)
+						{
+							if (p2Transform->fPosition.x < renderer->fPosition.x)
+							{
+								p2->Move(-0.1f, 0.0f - (p2Transform->fPosition.z - renderer->fPosition.z));
+							}
+							else if (p2Transform->fPosition.x > renderer->fPosition.x)
+							{
+								p2->Move(0.1f, 0.0f - (p2Transform->fPosition.z - renderer->fPosition.z));
+							}
+						}
+						else if (dX < dZ)
+						{
+							if (p2Transform->fPosition.z < renderer->fPosition.z)
+							{
+								p2->Move(0.0f - (p2Transform->fPosition.x - renderer->fPosition.x), -0.1f);
+							}
+							else if (p2Transform->fPosition.z > renderer->fPosition.z)
+							{
+								p2->Move(0.0f - (p2Transform->fPosition.x - renderer->fPosition.x), 0.1f);
+							}
+						}
+					}
+				}
+				
+			}
+			if (p2B)
+			{
+				TComponent* cRenderer = nullptr;
+				TTransformComponent* renderer = nullptr;
+				if (p2B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+				{
+					renderer = (TTransformComponent*)cRenderer;
+					float dZ = abs(p2Transform->fPosition.z - renderer->fPosition.z);
+					float dX = abs(p2Transform->fPosition.x - renderer->fPosition.x);
+					if (dZ < 1.5f && dX < 1.5f)
+					{
+						if (dZ < dX)
+						{
+							if (p2Transform->fPosition.x < renderer->fPosition.x)
+							{
+								p2->Move(-0.1f, 0.0f - (p2Transform->fPosition.z - renderer->fPosition.z));
+							}
+							else if (p2Transform->fPosition.x > renderer->fPosition.x)
+							{
+								p2->Move(0.1f, 0.0f - (p2Transform->fPosition.z - renderer->fPosition.z));
+							}
+						}
+						else if (dX < dZ)
+						{
+							if (p2Transform->fPosition.z < renderer->fPosition.z)
+							{
+								p2->Move(0.0f - (p2Transform->fPosition.x - renderer->fPosition.x), -0.1f);
+							}
+							else if (p2Transform->fPosition.z > renderer->fPosition.z)
+							{
+								p2->Move(0.0f - (p2Transform->fPosition.x - renderer->fPosition.x), 0.1f);
+							}
+						}
+					}
+				}
+				
+			}
+			if ((keys[KEYS::P2BOMB].pressed() && p2B == nullptr ) || (isSouthButtonPressed == 1.0f && p2B == nullptr))
+			{
+				p2B = p_cEntityManager->DropBomb(p2);
+				p2BTimer = 0.0f;
+			}
+			if (deltaP2X != 0.0f || deltaP2Z != 0.0f)
+				p2->Move(deltaP2X, deltaP2Z);
+
+
+	}
+	if (P1EXISTS)
+	{
+		TComponent* p1Component;
+		p1->GetComponent(COMPONENT_TYPE::TRANSFORM, p1Component);
+		TTransformComponent* p1Transform = (TTransformComponent*)p1Component;
+		
+		p1Move = true;
+		float deltaP1X = 0.0f, deltaP1Z = 0.0f;
+		if (keys[KEYS::P1UP].held() || isP1UDPADPressed == 1.0f)
+		{
+			for (int i = 0; i < objects.size() - 2; ++i)
+			{
+				if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+				{
+					TComponent* cRenderer = nullptr;
+					TTransformComponent* renderer = nullptr;
+					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+					{
+						renderer = (TTransformComponent*)cRenderer;
+						float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+						float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+						if (dZ < 2.0f && !renderer->nFloor && dX < 2.05f)
+						{
+
+
+							if (p1Transform->fPosition.z < renderer->fPosition.z)
+							{
+								p1Move = false;
+								break;
+							}
+						}
+						
+					}
+
+
+				}
+			}
+			if (p1Move == true)
+				deltaP1Z += 0.1f;
+
+		}
+		if (keys[KEYS::P1DOWN].held() || isP1DDPADPressed == 1.0f)
+		{
+			p1Move = true;
+			for (int i = 0; i < objects.size() - 2; ++i)
+			{
+				if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+				{
+					TComponent* cRenderer = nullptr;
+					TTransformComponent* renderer = nullptr;
+					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+					{
+						renderer = (TTransformComponent*)cRenderer;
+						float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+						float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+						if (dZ < 1.6f && !renderer->nFloor && dX < 2.05f)
+						{
+
+							if (p1Transform->fPosition.z > renderer->fPosition.z)
+							{
+								p1Move = false;
+								break;
+							}
+						}
+						
+					}
+
+
+				}
+			}
+			if (p1Move == true)
+				deltaP1Z += -0.1f;
+		}
+		if (keys[KEYS::P1LEFT].held() || isP1LDPADPressed == 1.0f)
+		{
+
+			p1Move = true;
+			for (int i = 0; i < objects.size() - 2; ++i)
+			{
+				if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+				{
+					TComponent* cRenderer = nullptr;
+					TTransformComponent* renderer = nullptr;
+					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+					{
+						renderer = (TTransformComponent*)cRenderer;
+						float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+						float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+						if (dX < 2.2f && !renderer->nFloor && dZ < 1.5f)
+						{
+							if (p1Transform->fPosition.x > renderer->fPosition.x)
+							{
+								p1Move = false;
+								break;
+							}
+						}
+						
+					}
+				}
+			}
+			if (p1Move == true)
+				deltaP1X += -0.1f;
+		}
+		if (keys[KEYS::P1RIGHT].held() || isP1RDPADPressed == 1.0f)
+		{
+			p1Move = true;
+			for (int i = 0; i < objects.size() - 2; ++i)
+			{
+				if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+				{
+					TComponent* cRenderer = nullptr;
+					TTransformComponent* renderer = nullptr;
+					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+					{
+						renderer = (TTransformComponent*)cRenderer;
+						float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+						float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+						if (dX < 2.1f && !renderer->nFloor && dZ < 1.5f)
+						{
+							if (p1Transform->fPosition.x < renderer->fPosition.x)
+							{
+								p1Move = false;
+								break;
+							}
+						}
+						
+					}
+
+
+
+				}
+			}
+			if (p1Move == true)
+				deltaP1X += 0.1f;
+		}
+		if (p1B)
+		{
+			TComponent* cRenderer = nullptr;
+			TTransformComponent* renderer = nullptr;
+			if (p1B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+			{
+				renderer = (TTransformComponent*)cRenderer;
+				float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+				float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+				if (dZ < 1.5f && dX < 1.5f)
+				{
+					if (dZ < dX)
+					{
+						if (p1Transform->fPosition.x < renderer->fPosition.x)
+						{
+							p1->Move(-0.1f, 0.0f - (p1Transform->fPosition.z - renderer->fPosition.z));
+						}
+						else if (p1Transform->fPosition.x > renderer->fPosition.x)
+						{
+							p1->Move(0.1f, 0.0f - (p1Transform->fPosition.z - renderer->fPosition.z));
+						}
+					}
+					else if (dX < dZ)
+					{
+						if (p1Transform->fPosition.z < renderer->fPosition.z)
+						{
+							p1->Move(0.0f - (p1Transform->fPosition.x - renderer->fPosition.x), -0.1f);
+						}
+						else if (p1Transform->fPosition.z > renderer->fPosition.z)
+						{
+							p1->Move(0.0f - (p1Transform->fPosition.x - renderer->fPosition.x), 0.1f);
+						}
+					}
+				}
+			}
+		}
+		if (p2B)
+		{
+			TComponent* cRenderer = nullptr;
+			TTransformComponent* renderer = nullptr;
+			if (p2B->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+			{
+				renderer = (TTransformComponent*)cRenderer;
+				float dZ = abs(p1Transform->fPosition.z - renderer->fPosition.z);
+				float dX = abs(p1Transform->fPosition.x - renderer->fPosition.x);
+				if (dZ < 1.5f && dX < 1.5f)
+				{
+					if (dZ < dX)
+					{
+						if (p1Transform->fPosition.x < renderer->fPosition.x)
+						{
+							p1->Move(-0.1f, 0.0f - (p1Transform->fPosition.z - renderer->fPosition.z));
+						}
+						else if (p1Transform->fPosition.x > renderer->fPosition.x)
+						{
+							p1->Move(0.1f, 0.0f - (p1Transform->fPosition.z - renderer->fPosition.z));
+						}
+					}
+					else if (dX < dZ)
+					{
+						if (p1Transform->fPosition.z < renderer->fPosition.z)
+						{
+							p1->Move(0.0f - (p1Transform->fPosition.x - renderer->fPosition.x), -0.1f);
+						}
+						else if (p1Transform->fPosition.z > renderer->fPosition.z)
+						{
+							p1->Move(0.0f - (p1Transform->fPosition.x - renderer->fPosition.x), 0.1f);
+						}
+					}
+				}
+			}
+		}
+			if ((keys[KEYS::P1BOMB].pressed() && p1B == nullptr) || (isP1SouthButtonPressed == 1.0f && p1B == nullptr))
+			{
+				p1B = p_cEntityManager->DropBomb(p1);
+				p1BTimer = 0.0f;
+			}
+			if (deltaP1X != 0.0f || deltaP1Z != 0.0f)
+				p1->Move(deltaP1X, deltaP1Z);
+			
+		
+	}
+			if (p2B)
+			{
+				p2BTimer += 0.1f;
+				if (p2BTimer >= 18)
+				{
+
+					g_pSoundPlayer->Play();
+					p2Ex = p_cEntityManager->BombExplosionX(p2B);
+					p2Ez = p_cEntityManager->BombExplosionZ(p2B);
+					p2ETimer = 0.0f;
+					delete p2B;
+					p2B = nullptr;
+				}
+			}
+
+			if (p2Ex)
+			{
+				p2ETimer += 0.1f;
+				if (p2ETimer >= 6)
+				{
+
+
+					delete p2Ex;
+					delete p2Ez;
+					p2Ex = nullptr;
+					p2Ez = nullptr;
+				}
+			}
+
+			if (p1B)
+			{
+				p1BTimer += 0.1f;
+				if (p1BTimer >= 18)
+				{
+
+					g_pSoundPlayer->Play();
+					p1Ex = p_cEntityManager->BombExplosionX(p1B);
+					p1Ez = p_cEntityManager->BombExplosionZ(p1B);
+					p1ETimer = 0.0f;
+					delete p1B;
+					p1B = nullptr;
+				}
+			}
+
+			if (p1Ex)
+			{
+				p1ETimer += 0.1f;
+				if (p1ETimer >= 6)
+				{
+
+
+					delete p1Ex;
+					delete p1Ez;
+					p1Ex = nullptr;
+					p1Ez = nullptr;
+				}
+			}
+
+			for (int i = 0; i < objects.size(); ++i)
+			{
+				if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+				{
+					TComponent* cRenderer = nullptr;
+					TRendererComponent* renderer = nullptr;
+					if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+					{
+						renderer = (TRendererComponent*)cRenderer;
+						if (renderer->iUsedLoadState == curGameState)
+							p_cRendererManager->RenderObject(*objects[i]);
+					}
+
+					if (ControlScreenToggle == true)
+					{
+						if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+						{
+							renderer = (TRendererComponent*)cRenderer;
+							if (renderer->iUsedLoadState == GameState::CONTROLS_SCREEN)
+								p_cRendererManager->RenderObject(*objects[i]);
+						}
+					}
+
+
+
+				}
+			}
+
+			if (p1B)
+			{
+
+				TComponent* cRenderer = nullptr;
+				TRendererComponent* renderer = nullptr;
+				if (p1B->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				{
+					renderer = (TRendererComponent*)cRenderer;
+					if (renderer->iUsedLoadState == curGameState)
+						p_cRendererManager->RenderObject(*p1B);
+				}
+			}
+			if (p2B)
+			{
+
+				TComponent* cRenderer = nullptr;
+				TRendererComponent* renderer = nullptr;
+				if (p2B->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				{
+					renderer = (TRendererComponent*)cRenderer;
+					if (renderer->iUsedLoadState == curGameState)
+						p_cRendererManager->RenderObject(*p2B);
+				}
+			}
+			if (p1Ex)
+			{
+
+				TComponent* cRenderer = nullptr;
+				TRendererComponent* renderer = nullptr;
+				if (p1Ex->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				{
+					renderer = (TRendererComponent*)cRenderer;
+					if (renderer->iUsedLoadState == curGameState)
+						p_cRendererManager->RenderObject(*p1Ex);
+				}
+				if (p1Ez->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				{
+					renderer = (TRendererComponent*)cRenderer;
+					if (renderer->iUsedLoadState == curGameState)
+						p_cRendererManager->RenderObject(*p1Ez);
+				}
+			}
+			if (p2Ex)
+			{
+				TComponent* cRenderer = nullptr;
+				TRendererComponent* renderer = nullptr;
+				if (p2Ex->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				{
+					renderer = (TRendererComponent*)cRenderer;
+					if (renderer->iUsedLoadState == curGameState)
+						p_cRendererManager->RenderObject(*p2Ex);
+				}
+				if (p2Ez->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				{
+					renderer = (TRendererComponent*)cRenderer;
+					if (renderer->iUsedLoadState == curGameState)
+						p_cRendererManager->RenderObject(*p2Ez);
+				}
+			}
+
+			TComponent* Component;
+			TTransformComponent* p1Transform;
+			TTransformComponent* p2Transform;
+			TTransformComponent* p1ExTransform;
+			TTransformComponent* p2ExTransform;
+			float p1x;
+			float p1z;
+			float p2x;
+			float p2z;
+			float p1EXx;
+			float p1EXz;
+			float p2EXx;
+			float p2EXz;
+
+			if (p1)
+			{
+				p1->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
+				p1Transform = (TTransformComponent*)Component;
+				p1x = p1Transform->fPosition.x;
+				p1z = p1Transform->fPosition.z;
+			}
+			if (p2)
+			{
+				p2->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
+				p2Transform = (TTransformComponent*)Component;
+				p2x = p2Transform->fPosition.x;
+				p2z = p2Transform->fPosition.z;
+			}
+			if (p1Ex)
+			{
+				p1Ex->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
+				p1ExTransform = (TTransformComponent*)Component;
+				p1EXx = p1ExTransform->fPosition.x;
+				p1EXz = p1ExTransform->fPosition.z;
+
+				
+			}
+			if (p2Ex)
+			{
+				p2Ex->GetComponent(COMPONENT_TYPE::TRANSFORM, Component);
+				p2ExTransform = (TTransformComponent*)Component;
+				p2EXx = p2ExTransform->fPosition.x;
+				p2EXz = p2ExTransform->fPosition.z;
+
+				
+			}
+
+
+			if (P1EXISTS && curGameState == 3)
+			{
+				if (p1Ex)
+				{
+					if (abs(p1x - p1EXx) < 4.5f && abs(p1z - p1EXz) < 1.8f)
+					{
+
+						//delete p1;
+						p1 = nullptr;
+						P1EXISTS = false;
+
+					}
+					else if (abs(p1z - p1EXz) < 4.5f && abs(p1x - p1EXx) < 1.8f)
+					{
+						//delete p1;
+						p1 = nullptr;
+						P1EXISTS = false;
+					}
+				}
+				if (p2Ex)
+				{
+					if (abs(p1x - p2EXx) < 4.5f && abs(p1z - p2EXz) < 1.8f)
+
+						//delete p1;
+						p1 = nullptr;
+						P1EXISTS = false;
+					}
+					else if (abs(p1z - p2EXz) < 4.5f && abs(p1x - p2EXx) < 1.8f)
+					{
+						//delete p1;
+						p1 = nullptr;
+						P1EXISTS = false;
+					}
+				}
+
+			}
+			if (P2EXISTS && curGameState == 3)
+			{
+				if (p1Ex)
+				{
+					if (abs(p2x - p1EXx) < 4.5f && abs(p2z - p1EXz) < 1.8f)
+					{
+
+						//delete p2;
+						p2 = nullptr;
+						P2EXISTS = false;
+
+					}
+					else if (abs(p2z - p1EXz) < 4.5f && abs(p2x - p1EXx) < 1.8f)
+					{
+						//delete p2;
+						p2 = nullptr;
+						P2EXISTS = false;
+					}
+				}
+				if (p2Ex)
+				{
+					if (abs(p2x - p2EXx) < 4.5f && abs(p2z - p2EXz) < 1.8f)
+					{
+
+						//delete p2;
+						p2 = nullptr;
+						P2EXISTS = false;
+
+					}
+					else if (abs(p2z - p2EXz) < 4.5f && abs(p2x - p2EXx) < 1.8f)
+					{
+						//delete p2;
+						p2 = nullptr;
+						P2EXISTS = false;
+					}
+				}
+
+			}
 }
 
 //void InitSortedParticles(sorted_pool_t<particle, 1000>& sortedPool, float deltaTime) {
@@ -1380,10 +1497,7 @@ void CGame::WindowResize()
 //	}
 //}
 
-void CGame::GamePlayLoop()
-{
 
-}
 
 /*
 void CGame::ExplodeBomb(int bombToExplodeIndex)
