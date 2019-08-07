@@ -297,10 +297,6 @@ void CGame::LoadObject()
 	loadInfo.collider.center = collider.center;
 	loadInfo.collider.extents = collider.extents;
 
-	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
-	//loadInfo.position = { -12.0f, 0.0f, 0.0f };
-
 
 	collider.center.x = GetCenter(v_tMeshTemplates[1]).center.x + loadInfo.position.x;
 	collider.center.y = GetCenter(v_tMeshTemplates[1]).center.y + loadInfo.position.y;
@@ -309,35 +305,15 @@ void CGame::LoadObject()
 	loadInfo.collider.center = collider.center;
 	loadInfo.collider.extents = collider.extents;
 
-	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
-
-
-	loadInfo.position = { 0.0f, 0.0f, 2.5f };
-	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-	loadInfo.meshID = MODELS::CUBE;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-	loadInfo.usedGeo = -1;
-	loadInfo.LoadState = 3;
-	loadInfo.floor = false;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
-
-
-
-	//loadInfo.position = { -5.0f, 0.0f, 0.0f };
+	//loadInfo.position = { -12.5f, 0.0f, 0.0f };
 	//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
 	//loadInfo.LoadState = 3;
 	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	//loadInfo.meshID = 1;
 	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { 0.0f, -0.8f, 20.0f };
-	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
+	loadInfo.position = { 0.0f, 2.5f, 20.0f };
+	loadInfo.forwardVec = { 0.0f, 1.1f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::NAMES_HUD;
 	loadInfo.hasCollider = false;
 	loadInfo.scale = DirectX::XMFLOAT3(2.4f, 0.25f, 1.0f);
@@ -345,82 +321,71 @@ void CGame::LoadObject()
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 
-	loadInfo.position = { 0.0f, -2.4f, 3.0f };
-	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
+	loadInfo.position = { 0.0f, 5.4f, -5.0f };
+	loadInfo.forwardVec = { 0.0f, 1.1f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::MAIN_MENU;
-	loadInfo.scale = DirectX::XMFLOAT3(1.75f, 1.99f, 1.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(2.6f, 2.1f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = 0;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { 0.0f, -2.4f, 3.0f };
-	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
+	loadInfo.position = { 0.0f, 5.4f, -5.0f };
+	loadInfo.forwardVec = { 0.0f, 1.1f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::WIN_SCREEN;
-	loadInfo.scale = DirectX::XMFLOAT3(1.75f, 1.99f, 1.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(2.6f, 2.1f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = 5;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { 0.0f, 5.0f, -4.5f };
-	loadInfo.forwardVec = { 0.0f, 0.95f, -1.0f };
+	loadInfo.position = { 0.0f, 12.0f, -10.5f };
+	loadInfo.forwardVec = { 0.0f, 1.1f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HELP_MENU;
 	loadInfo.scale = DirectX::XMFLOAT3(0.8f, 1.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU2;
 	loadInfo.LoadState = 6;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { x, -2.5f, z };
-	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
-	loadInfo.meshID = MODELS::CUBE;
-	loadInfo.LoadState = 3;
-	loadInfo.floor = true;
-	loadInfo.hasCollider = true;
-	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
-	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
-	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
-
-	loadInfo.position = { x, 0.0f, z };
-	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-	loadInfo.meshID = MODELS::CUBE;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-	loadInfo.usedGeo = -1;
-	loadInfo.LoadState = 3;
-	loadInfo.floor = false;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
-	for (float x = -7.5; x <= 7.5; x += 2.5f)
+	for (float z = -7.5f; z < 15.0f; z += 2.5f)
 	{
-		loadInfo.position = { x, 0.0f, 10 };
-		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-		loadInfo.meshID = MODELS::CUBE;
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
-		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-		loadInfo.usedGeo = -1;
-		loadInfo.LoadState = 3;
-		loadInfo.floor = false;
-		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+		for (float x = -12.5f; x < 15.0f; x += 2.5f)
+		{
+			loadInfo.position = { x, -2.5f, z };
+			loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
+			loadInfo.meshID = MODELS::CUBE;
+			loadInfo.LoadState = 3;
+			loadInfo.floor = true;
+			loadInfo.hasCollider = true;
+			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
+			collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
+			collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
+			collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { x, 0.0f, -10 };
-		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-		loadInfo.meshID = MODELS::CUBE;
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
-		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-		loadInfo.usedGeo = -1;
-		loadInfo.LoadState = 3;
-		loadInfo.floor = false;
-		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+			
+		}
 	}
+
+	for (float z = -2.5f; z < 10.0f; z+=2.5f)
+	{
+		for (float x = -7.5f; x < 10.0f; x += 2.5f)
+		{
+
+			loadInfo.position = { x, 0.0f, z };
+			loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+			loadInfo.meshID = MODELS::CUBE;
+			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
+			loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+			loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+			loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+			loadInfo.usedGeo = -1;
+			loadInfo.LoadState = 3;
+			loadInfo.floor = false;
+			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+		}
+	}
+	
 	for (float x = -15; x <= 15; x += 2.5f)
 	{
 		loadInfo.position = { x, 0, -10 };
@@ -1359,7 +1324,7 @@ void CGame::GamePlayLoop()
 				if (p2Ex)
 				{
 					if (abs(p1x - p2EXx) < 4.5f && abs(p1z - p2EXz) < 1.8f)
-
+					{
 						//delete p1;
 						p1 = nullptr;
 						P1EXISTS = false;
