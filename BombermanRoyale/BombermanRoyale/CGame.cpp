@@ -882,17 +882,18 @@ void CGame::Run()
 						{
 							if (abs(renderer->fPosition.x - p1EXx) < 4.5f && abs(renderer->fPosition.z - p1EXz) < 1.8f)
 							{
-								objects.at(i) = nullptr;
+								objects.erase(objects.begin() + i , objects.begin() + i+1);
 							}
 							else if (abs(renderer->fPosition.z - p1EXz) < 4.5f && abs(renderer->fPosition.x - p1EXx) < 1.8f)
 							{
-								objects.at(i) = nullptr;
+								objects.erase(objects.begin() + i, objects.begin() + i + 1);
 							}
 						}
 					}
 
 				}
 			}
+		}
 		if (P1EXISTS && curGameState == 3)
 		{
 			if (p1Ex)
@@ -1021,6 +1022,7 @@ void CGame::LoadObject()
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.floor = false;
+	loadInfo.destroyable = true;
 	loadInfo.hasCollider = true;
 	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
 	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
@@ -1075,6 +1077,7 @@ void CGame::LoadObject()
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
+	loadInfo.destroyable = true;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -1094,6 +1097,7 @@ void CGame::LoadObject()
 	loadInfo.hasCollider = false;
 	loadInfo.scale = DirectX::XMFLOAT3(2.4f, 0.25f, 1.0f);
 	loadInfo.meshID = 2;
+	loadInfo.destroyable = false;
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 
@@ -1316,6 +1320,7 @@ void CGame::LoadObject()
 		loadInfo.meshID = 0;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
+		loadInfo.destroyable = false;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -1503,6 +1508,7 @@ void CGame::LoadObject()
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
+	loadInfo.destroyable = false;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	p2 = objects.at(objects.size() - 1);
