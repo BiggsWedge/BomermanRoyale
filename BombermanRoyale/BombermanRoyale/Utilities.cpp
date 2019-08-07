@@ -36,6 +36,7 @@ GInput* g_pInputRecord = nullptr;
 GAudio* g_pAudioHolder = nullptr;
 GMusic* g_pMusicStream = nullptr;
 GSound* g_pSoundPlayer = nullptr;
+GController* g_pControllerInput = nullptr;
 
 std::vector<TMeshTemplate> v_tMeshTemplates = {};
 
@@ -99,6 +100,22 @@ bool InitializeInput() {
 }
 
 
+bool InitializeControllerInput() 
+{
+	
+	if (G_SUCCESS(CreateGController(G_XBOX_CONTROLLER, &g_pControllerInput))) 
+	{
+		g_pLogger->LogCatergorized("SUCCESS", "Controller Input Manager successfully created.");
+		return true;
+	}
+	else 
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Controller Input Manager unsuccessfully created.");
+		return false;
+	}
+}
+
+
 bool InitializeAudio() {
 	if (G_SUCCESS(CreateGAudio(&g_pAudioHolder))) {
 		if (G_SUCCESS(g_pAudioHolder->Init(2))) {
@@ -122,6 +139,8 @@ bool InitializeGlobals() {
 	if (!InitializeInput())
 		return false;
 	if (!InitializeAudio())
+		return false;
+	if (!InitializeControllerInput())
 		return false;
 	g_d3dData = new DirectXData();
 	if (!g_d3dData->Initialize())

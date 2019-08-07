@@ -60,6 +60,9 @@
     <ClCompile Include="..\Gateware\Source\G_System\GInput.cpp">
       <Filter>Gateware</Filter>
     </ClCompile>
+    <ClCompile Include="..\Gateware\Source\G_System\GController.cpp">
+      <Filter>Gateware</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGame.h">
