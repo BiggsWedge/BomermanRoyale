@@ -578,8 +578,6 @@ void CGame::Run()
 							//}
 						}
 
-
-
 					}
 				}
 				if (p1Move == true)
