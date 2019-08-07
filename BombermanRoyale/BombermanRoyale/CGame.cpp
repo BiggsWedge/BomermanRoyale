@@ -1139,8 +1139,6 @@ void CGame::LoadObject()
 		}
 
 	}
-<<<<<<< Updated upstream
-=======
 
 	for (float x = -7.5; x <= 7.5; x += 2.5f)
 	{
@@ -1154,6 +1152,7 @@ void CGame::LoadObject()
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
+
 		loadInfo.destroyable = true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -1254,11 +1253,12 @@ void CGame::LoadObject()
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
+
 		loadInfo.destroyable = true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
->>>>>>> Stashed changes
+
 	for (float x = -15; x <= 15; x += 2.5f)
 	{
 		loadInfo.position = { x, 0, -10 };
