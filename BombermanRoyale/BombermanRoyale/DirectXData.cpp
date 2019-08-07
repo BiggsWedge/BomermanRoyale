@@ -151,7 +151,7 @@ bool DirectXData::Initialize()
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	
+
 	if (FAILED(d3dDevice->CreateInputLayout(d3dLineShaderDesc.data(), d3dLineShaderDesc.size(), LineVertex, sizeof(LineVertex), &d3dInputLayout[INPUT_LAYOUT::LINE])))
 	{
 		//log failure
@@ -268,7 +268,6 @@ void DirectXData::Cleanup()
 	ID3D11Debug* _debugger;
 	d3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&_debugger));
 
-
 	SAFE_RELEASE(d3dSamplerState);
 	SAFE_RELEASE(d3dRasterizerState);
 	SAFE_RELEASE(d3dDepthStencilView);
@@ -302,11 +301,6 @@ void DirectXData::Cleanup()
 
 void DirectXData::updateCameras()
 {
-	if (!DirectX::XMColorEqual(DirectX::XMLoadFloat3(&newCamPos), DirectX::XMLoadFloat3(&camPos)))
-	{
-
-	}
-
 	if (debugCamDelta.x != 0 || debugCamDelta.y != 0 || debugCursorRot.x != 0 || debugCursorRot.y != 0)
 	{
 		debugCamMat = DirectX::XMMatrixTranslation(debugCamDelta.x, 0.0f, debugCamDelta.y) * debugCamMat;
@@ -315,11 +309,8 @@ void DirectXData::updateCameras()
 		DirectX::XMStoreFloat4(&debugPos, debugCamMat.r[3]);
 		debugCamMat.r[3] = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 
-
-
-
 		debugCamMat = DirectX::XMMatrixRotationX(debugCursorRot.y) * debugCamMat;
-		debugCamMat = debugCamMat * DirectX::XMMatrixRotationY(debugCursorRot.x) ;
+		debugCamMat = debugCamMat * DirectX::XMMatrixRotationY(debugCursorRot.x);
 
 		debugCamMat.r[3] = DirectX::XMLoadFloat4(&debugPos);
 
