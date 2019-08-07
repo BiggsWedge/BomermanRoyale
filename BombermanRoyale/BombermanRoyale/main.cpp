@@ -16,8 +16,7 @@ int main(void)
 	InitializeGlobals();
 
 	LoadTextures();
-	LoadModel(".//Assets//Cube.mesh", ".//Assets//Cube.mat");
-	LoadModel(".//Assets//BattleMage.mesh", ".//Assets//BattleMage.mat");
+	LoadModels();
 	LoadMenuScreen(15, 11, 0, ".//Assets//Menu.mat");
 	LoadMenuScreen(19, 11, 1, ".//Assets//Menu.mat");
 
@@ -36,6 +35,10 @@ int main(void)
 
 	delete p_cGame;
 	g_d3dData->Cleanup();
+
+	v_tMeshTemplates.clear();
+
+
 
 	g_pWindow->DecrementCount();
 	g_pLogger->DecrementCount();
