@@ -155,6 +155,7 @@ struct TMaterial {
 
 struct TMeshTemplate {
 	UINT uID;
+	std::string						sName;
 	std::vector<TSimpleVertex>		v_tVertices;
 	std::vector<int>				v_iIndices;
 };
@@ -169,7 +170,9 @@ struct TCollider {
 
 extern std::vector<TMeshTemplate> v_tMeshTemplates;
 
-void LoadModel(const char* meshFile, const char* matFile);
+void LoadModels();
+
+void LoadModel(TMeshLoadInfo loadInfo);
 
 void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile);
 

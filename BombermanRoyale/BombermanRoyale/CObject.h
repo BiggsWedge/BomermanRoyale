@@ -14,7 +14,7 @@ struct OBJLoadInfo
 
 class CObject
 {
-
+protected:
 	std::vector<TComponent*>			v_tComponents;
 	ID3D11DeviceContext*			d3dDeferredContext;
 

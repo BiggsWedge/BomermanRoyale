@@ -2,6 +2,7 @@
 
 #include "CRendererManager.h"
 #include "CEntityManager.h"
+#include "CPlayer.h"
 
 enum GameState
 {
@@ -12,8 +13,9 @@ enum GameState
 	BATTLE_GAME,
 	WIN_SCREEN,
 	CREDIT_SCREEN
-
 };
+
+
 
 class CGame
 {
@@ -21,9 +23,16 @@ class CGame
 	CRendererManager* p_cRendererManager;
 	CEntityManager* p_cEntityManager;
 	std::vector<CObject*> objects;
-	CObject* p2, *p1;
+
+	//CPlayer *p1 = nullptr, *p2 = nullptr;
+
+	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
+	std::vector<CBomb*> v_cBombs;
+	CObject* p1, *p2;
+
+
 	CObject* p1B = nullptr, *p2B = nullptr;
-	CObject* p1Ex = nullptr, *p1Ez = nullptr,*p2Ex = nullptr, *p2Ez = nullptr;
+	CObject* p1Ex = nullptr, *p1Ez = nullptr, *p2Ex = nullptr, *p2Ez = nullptr;
 	float p1BTimer = 0.0f, p2BTimer = 0.0f;
 	float p1ETimer = 0.0f, p2ETimer = 0.0f;
 	int p1BIndex, p2BIndex;
@@ -40,7 +49,7 @@ public:
 	bool Initialize();
 	void Run();
 
-	
+
 	void LoadObject();
 
 
@@ -49,5 +58,6 @@ public:
 	~CGame();
 	void WindowResize();
 	void GamePlayLoop();
+	void ExplodeBomb(int bombToExplodeIndex);
 };
 

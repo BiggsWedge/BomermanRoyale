@@ -46,7 +46,7 @@ CObject* CEntityManager::DropBomb(CObject* playerSource)
 	int z = 0;
 	if (pos.x >= 0)
 	{
-		 x = (pos.x + 1.25f) / 2.5f;
+		x = (pos.x + 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
 	}
 	else
@@ -64,19 +64,17 @@ CObject* CEntityManager::DropBomb(CObject* playerSource)
 		z = (pos.z - 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
 	}
-	//pos.x = floorf(pos.x) + (2.5f * (pos.x / abs(pos.x)));
-	//pos.z = floorf(pos.z) + (2.5f * (pos.z / abs(pos.z)));
 
 	loadInfo.position = pos;
-	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-	loadInfo.meshID = 0;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLACK_TEX;
+	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
+	loadInfo.meshID = MODELS::BOMB;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB;
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 75.0f, 1.0f / 75.0f, 1.0f / 75.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
 	bomb = CreateOBJFromTemplate(loadInfo);
 	return bomb;
 }
@@ -96,7 +94,7 @@ CObject* CEntityManager::BombExplosionX(CObject* BombSource)
 
 	loadInfo.position = pos;
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-	loadInfo.meshID = 0;
+	loadInfo.meshID = MODELS::CUBE;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
@@ -123,7 +121,7 @@ CObject* CEntityManager::BombExplosionZ(CObject* BombSource)
 
 	loadInfo.position = pos;
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-	loadInfo.meshID = 0;
+	loadInfo.meshID = MODELS::CUBE;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;

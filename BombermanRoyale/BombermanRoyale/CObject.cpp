@@ -105,30 +105,27 @@ void CObject::Draw()
 
 bool CObject::GetComponent(int componentType, TComponent* & component)
 {
-	if(componentType == 0)
+	if (componentType == COMPONENT_TYPE::RENDERER)
 		TRendererComponent* renderer;
-	if (componentType == 1)
+	if (componentType == COMPONENT_TYPE::MESH)
 		TMeshComponent* renderer;
-	if (componentType == 2)
-		TTransformComponent* renderer;
-	if (componentType == 3)
-		TTextureComponent* renderer;
+	if (componentType == COMPONENT_TYPE::TRANSFORM)
+		TTransformComponent* transform;
+	if (componentType == COMPONENT_TYPE::TEXTURE)
+		TTextureComponent* texture;
 
-	
 	for (TComponent* c : v_tComponents)
 	{
 		if (c->GetComponentType() == componentType)
 		{
-			if (componentType == 0)
+			if (componentType == COMPONENT_TYPE::RENDERER)
 				component = (TRendererComponent*)c;
-			else if (componentType == 1)
+			else if (componentType == COMPONENT_TYPE::MESH)
 				component = (TMeshComponent*)c;
-			else if (componentType == 2)
+			else if (componentType == COMPONENT_TYPE::TRANSFORM)
 				component = (TTransformComponent*)c;
-			else
+			else if (componentType = COMPONENT_TYPE::TEXTURE)
 				component = (TTextureComponent*)c;
-			//component = (TRendererComponent*)c;
-			//component = new TRendererComponent(component->iUsedVertexShaderIndex, component->iUsedPixelShaderIndex, component->iUsedInputLayout, component->iUsedGeometryShaderIndex, component->iUsedLoadState);
 			return true;
 		}
 	}
@@ -144,7 +141,7 @@ bool CObject::Move(float _x, float _z)
 	transform = (TTransformComponent*)cTransform;
 
 	transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
-	
+
 	DirectX::XMFLOAT4 pos;
 	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
 	transform->fPosition = DirectX::XMFLOAT3(pos.x, pos.y, pos.z);

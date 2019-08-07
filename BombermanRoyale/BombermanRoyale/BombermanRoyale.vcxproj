@@ -123,9 +123,11 @@
     <ClCompile Include="..\Gateware\Source\G_System\GI_Static.cpp" />
     <ClCompile Include="..\Gateware\Source\G_System\GLog.cpp" />
     <ClCompile Include="..\Gateware\Source\G_System\GWindow.cpp" />
+    <ClCompile Include="CBomb.cpp" />
     <ClCompile Include="CEntityManager.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="CPlayer.cpp" />
     <ClCompile Include="DirectXData.cpp" />
     <ClCompile Include="CGame.cpp" />
     <ClCompile Include="main.cpp" />
@@ -134,12 +136,15 @@
     <ClCompile Include="WICTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CBomb.h" />
     <ClInclude Include="CEntityManager.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="CPlayer.h" />
     <ClInclude Include="DirectXData.h" />
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CRendererManager.h" />
+    <ClInclude Include="ConstDefines.h" />
     <ClInclude Include="SharedDefines.h" />
     <ClInclude Include="TObjectTemplate.h" />
     <ClInclude Include="Utilities.h" />

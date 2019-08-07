@@ -60,6 +60,8 @@
     <ClCompile Include="..\Gateware\Source\G_System\GInput.cpp">
       <Filter>Gateware</Filter>
     </ClCompile>
+    <ClCompile Include="CPlayer.cpp" />
+    <ClCompile Include="CBomb.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGame.h">
@@ -90,6 +92,11 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="SharedDefines.h" />
+    <ClInclude Include="ConstDefines.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayer.h" />
+    <ClInclude Include="CBomb.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertex.hlsl">

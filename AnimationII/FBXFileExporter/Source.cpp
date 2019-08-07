@@ -298,7 +298,6 @@ void Compactify(std::vector<SimpleVertex>* vertices, std::vector<int>* indices, 
 	*numVertices = vertexList.size();
 }
 
-
 void ConvertFBX(FileSet files)
 {
 #pragma region Setup
@@ -743,8 +742,8 @@ void main()
 {
 	FileSet fileset;
 
-	fileset.meshFile = ".//Assets//BaseLevel.fbx";
-	fileset.bastFile = "BaseLevel";
+	fileset.meshFile = ".//Assets//black-handbomb.fbx";
+	fileset.bastFile = "Bomb";
 
 	ConvertFBX(fileset);
 
