@@ -51,8 +51,14 @@ bool InitializeLogger()
 	cOutFileName.append(GetCurrentDateAndTime());
 	cOutFileName.append(".log");
 
-	if (G_SUCCESS(CreateGLog(cOutFileName.c_str(), &g_pLogger))) {
+	if (G_SUCCESS(CreateGLog(cOutFileName.c_str(), &g_pLogger)))
+	{
+#ifdef _DEBUG
 		g_pLogger->EnableConsoleLogging(true);
+#else
+		g_pLogger->EnableConsoleLogging(false);
+#endif // !_DEBUG
+
 		g_pLogger->EnableVerboseLogging(true);
 		g_pLogger->LogCatergorized("SUCCESS", "Error Logging system successfully initialized.");
 		return true;
@@ -84,7 +90,6 @@ bool InitializeInput()
 		return false;
 	}
 }
-
 
 bool InitializeControllerInput()
 {
@@ -260,7 +265,6 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) 
 	}
 }
 
-
 void LoadTextures()
 {
 	for (int i = 0; i < diffuseTextures.size(); ++i)
@@ -269,7 +273,6 @@ void LoadTextures()
 			g_pLogger->LogCatergorized("FAILURE", "Failed to load texture");
 	}
 }
-
 
 void add_line(float3 point_a, float3 point_b, float4 color_a, float4 color_b)
 {
@@ -424,3 +427,4 @@ void GetCorners(float3 _center, float3 _extents, float3*& corners)
 	corners[6] = { corners[1].x,corners[0].y,corners[1].z };
 	corners[7] = { corners[1].x,corners[1].y,corners[0].z };
 }
+

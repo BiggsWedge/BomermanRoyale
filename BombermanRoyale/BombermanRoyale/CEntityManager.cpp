@@ -30,10 +30,45 @@ CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 	return temp;
 }
 
-
-CObject* CEntityManager::DropBomb(CObject* playerSource)
+CPlayer* CEntityManager::CreatePlayerFromTemplate(OBJLoadInfo loadInfo)
 {
-	CObject* bomb;
+	CPlayer* temp = new CPlayer();
+	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable);
+	temp->AddComponent((TComponent*)transform);
+
+	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
+	temp->AddComponent((TComponent*)renderer);
+
+	TMeshComponent* mesh = new TMeshComponent(v_tMeshTemplates.at(loadInfo.meshID), loadInfo.collider, loadInfo.hasCollider);
+	temp->AddComponent((TComponent*)mesh);
+
+	TTextureComponent* tex = new TTextureComponent(loadInfo.usedDiffuse);
+	temp->AddComponent((TComponent*)tex);
+
+	return temp;
+}
+
+CBomb * CEntityManager::CreateBombFromTemplate(OBJLoadInfo loadInfo)
+{
+	CBomb* temp = new CBomb();
+	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable);
+	temp->AddComponent((TComponent*)transform);
+
+	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
+	temp->AddComponent((TComponent*)renderer);
+
+	TMeshComponent* mesh = new TMeshComponent(v_tMeshTemplates.at(loadInfo.meshID), loadInfo.collider, loadInfo.hasCollider);
+	temp->AddComponent((TComponent*)mesh);
+
+	TTextureComponent* tex = new TTextureComponent(loadInfo.usedDiffuse);
+	temp->AddComponent((TComponent*)tex);
+
+	return temp;
+}
+
+CBomb* CEntityManager::DropBomb(CPlayer* playerSource)
+{
+	CBomb* bomb;
 	TComponent* transform;
 	TTransformComponent* cTransform;
 	playerSource->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
@@ -76,12 +111,13 @@ CObject* CEntityManager::DropBomb(CObject* playerSource)
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
-	bomb = CreateOBJFromTemplate(loadInfo);
+	bomb = CreateBombFromTemplate(loadInfo);
+	bomb->initialize(playerSource);
+
 	return bomb;
 }
 
-
-CObject* CEntityManager::BombExplosionX(CObject* BombSource)
+CObject* CEntityManager::BombExplosionX(CBomb* BombSource)
 {
 	CObject* explosion;
 	TComponent* transform;
@@ -108,7 +144,7 @@ CObject* CEntityManager::BombExplosionX(CObject* BombSource)
 	return explosion;
 }
 
-CObject* CEntityManager::BombExplosionZ(CObject* BombSource)
+CObject* CEntityManager::BombExplosionZ(CBomb* BombSource)
 {
 	CObject* explosion;
 	TComponent* transform;
@@ -133,4 +169,26 @@ CObject* CEntityManager::BombExplosionZ(CObject* BombSource)
 	explosion = CreateOBJFromTemplate(loadInfo);
 
 	return explosion;
+}
+
+CPlayer* CEntityManager::InstantiatePlayer(int numPlayer, int playerModel, DirectX::XMFLOAT3 spawnPos)
+{
+	OBJLoadInfo pLoadInfo;
+	pLoadInfo.meshID = MODELS::CHICKEN;
+	pLoadInfo.position = spawnPos;
+	pLoadInfo.forwardVec = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+	pLoadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	pLoadInfo.hasCollider = false;
+	pLoadInfo.usedDiffuse = playerModel;
+	pLoadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	pLoadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	pLoadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	pLoadInfo.usedGeo = -1;
+	pLoadInfo.LoadState = 3;
+
+	CPlayer* player;
+	player = CreatePlayerFromTemplate(pLoadInfo);
+	player->resetStats();
+	player->setControllerIndex(numPlayer - 1);
+	return player;
 }

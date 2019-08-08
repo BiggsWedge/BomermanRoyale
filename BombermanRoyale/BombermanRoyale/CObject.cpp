@@ -105,6 +105,18 @@ void CObject::Draw()
 
 bool CObject::GetComponent(int componentType, TComponent* & component)
 {
+	for (TComponent* c : v_tComponents)
+	{
+		if (c->GetComponentType() == componentType)
+		{
+			component = c;
+			return true;
+		}
+	}
+	return false;
+
+
+	/*
 	if (componentType == COMPONENT_TYPE::RENDERER)
 		TRendererComponent* renderer;
 	if (componentType == COMPONENT_TYPE::MESH)
@@ -130,6 +142,7 @@ bool CObject::GetComponent(int componentType, TComponent* & component)
 		}
 	}
 	return false;
+	*/
 }
 
 bool CObject::Move(float _x, float _z)

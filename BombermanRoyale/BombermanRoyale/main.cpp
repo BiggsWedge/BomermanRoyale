@@ -13,14 +13,16 @@
 
 int main(void)
 {
+
+#ifndef _DEBUG
+	ShowWindow(GetConsoleWindow(), SW_HIDE);
+#endif
 	InitializeGlobals();
 
 	LoadTextures();
 	LoadModels();
 	LoadMenuScreen(15, 11, 0, ".//Assets//Menu.mat");
 	LoadMenuScreen(19, 11, 1, ".//Assets//Menu.mat");
-
-
 
 	CGame* p_cGame = new CGame();
 	bool result = p_cGame->Initialize();

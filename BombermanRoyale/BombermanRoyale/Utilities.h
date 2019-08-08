@@ -221,3 +221,5 @@ TCollider GetCenter(TMeshTemplate _verts);
 DirectX::XMFLOAT3 GetExtents(float _minX, float _maxX, float _minY, float _maxY, float _minZ, float _maxZ);
 
 void GetCorners(float3 _center, float3 _extents, float3*& corners);
+
+
