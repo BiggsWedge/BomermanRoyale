@@ -127,6 +127,7 @@
     <ClCompile Include="CEntityManager.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Direct2DData.cpp" />
     <ClCompile Include="DirectXData.cpp" />
     <ClCompile Include="CGame.cpp" />
     <ClCompile Include="main.cpp" />
@@ -137,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="CEntityManager.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Direct2DData.h" />
     <ClInclude Include="DirectXData.h" />
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CObject.h" />

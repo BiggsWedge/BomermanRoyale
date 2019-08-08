@@ -10,10 +10,12 @@ bool CRendererManager::HasComponent(CObject _objToCheck, int _componentToCheck)
 	return false;
 }
 
+
 void CRendererManager::RenderObject(CObject _objToDraw)
 {
 	rendereableObjects.push_back(_objToDraw);
 }
+
 
 bool CRendererManager::Draw()
 {

@@ -61,6 +61,7 @@ bool P2EXISTS = false;
 bool ControlScreenToggle = false;
 bool Controller1Alive = false;
 bool Controller2Alive = false;
+
 float3 P1POS = { -10.0f, 0.0f, 10.0f };
 float3 P2POS = { 10.0f, 0.0f, -5.0f };
 
@@ -951,10 +952,10 @@ void CGame::Run()
 
 #pragma region Input
 
-		if (g_pInputRecord->GetState(G_KEY_SPACE, errorCode) == 1)
+	/*	if (g_pInputRecord->GetState(G_KEY_SPACE, errorCode) == 1)
 		{
 			std::cout << "SPACE WAS PRESSED, G INPUT STYLE";
-		}
+		}*/
 
 		if (SFXButton.pressed())
 		{

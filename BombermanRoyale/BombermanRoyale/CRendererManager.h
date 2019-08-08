@@ -1,6 +1,8 @@
 #pragma once
 #include "CObject.h"
 
+
+
 class CRendererManager
 {
 private:

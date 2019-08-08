@@ -28,6 +28,8 @@ extern GW::AUDIO::GMusic* g_pMusicStream;
 extern GW::AUDIO::GSound* g_pSoundPlayer;
 extern GW::SYSTEM::GController* g_pControllerInput;
 
+
+
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the
 *								current date and time.

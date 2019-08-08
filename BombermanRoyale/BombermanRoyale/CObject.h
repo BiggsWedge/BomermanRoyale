@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.h"
 
+
+
 struct OBJLoadInfo
 {
 	int meshID;

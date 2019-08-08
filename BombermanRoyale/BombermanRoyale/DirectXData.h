@@ -9,6 +9,7 @@
 
 #define SAFE_RELEASE(ptr){if(ptr){ptr->Release(); ptr = nullptr;}}
 
+
 struct TBasicVertexConstBuff
 {
 	DirectX::XMMATRIX mModelMatrix;

@@ -63,6 +63,9 @@
     <ClCompile Include="..\Gateware\Source\G_System\GController.cpp">
       <Filter>Gateware</Filter>
     </ClCompile>
+    <ClCompile Include="Direct2DData.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGame.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="SharedDefines.h" />
     <ClInclude Include="pools.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Direct2DData.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
