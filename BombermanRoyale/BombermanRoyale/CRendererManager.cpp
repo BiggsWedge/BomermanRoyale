@@ -62,6 +62,8 @@ bool CRendererManager::Draw()
 	g_d3dData->d3dContext->Draw(get_line_vert_count(), 0);
 	clear_lines();
 
+
+
 	g_d3dData->d3dSwapChain->Present(1, 0);
 
 	rendereableObjects.clear();

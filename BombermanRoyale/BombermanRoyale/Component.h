@@ -2,7 +2,7 @@
 
 #include "Utilities.h"
 
-struct COMPONENT_TYPE { enum { RENDERER = 0, MESH, TRANSFORM, TEXTURE, MATERIAL }; };
+struct COMPONENT_TYPE { enum { RENDERER = 0, MESH, TRANSFORM, TEXTURE, MATERIAL, ANIM }; };
 
 struct TComponent
 {
@@ -72,6 +72,15 @@ private:
 public:
 	TMaterialComponent();
 	~TMaterialComponent();
+};
+
+struct TAnimComponent : TComponent
+{
+private:
+	int componentType = COMPONENT_TYPE::ANIM;
+public:
+	TAnimComponent();
+	~TAnimComponent();
 };
 
 

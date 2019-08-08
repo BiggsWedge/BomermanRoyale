@@ -152,3 +152,17 @@ TMaterialComponent::~TMaterialComponent()
 
 #pragma endregion
 
+#pragma region TAnim
+
+TAnimComponent::TAnimComponent()
+{
+	
+}
+
+TAnimComponent::~TAnimComponent()
+{
+
+}
+
+#pragma endregion
+
