@@ -7,7 +7,6 @@
 *						entrypoint for the game
 ****************************************************/
 #include "CGame.h"
-#include "Direct2DData.h"
 #include <DirectXCollision.h>
 
 
@@ -16,8 +15,8 @@ int main(void)
 {
 	InitializeGlobals();
 
-	UI::CreateDeviceIndependentResources();
-	UI::CreateDeviceDependentResources();
+	/*UI::CreateDeviceIndependentResources();
+	UI::CreateDeviceDependentResources();*/
 
 	LoadTextures();
 	LoadModel(".//Assets//Cube.mesh", ".//Assets//Cube.mat");

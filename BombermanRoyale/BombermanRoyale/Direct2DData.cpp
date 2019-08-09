@@ -1,3 +1,11 @@
+/****************************************************
+*	Filename:			Direct2Data.cpp
+*	Mod. Date:			08/8/2019;
+*	Mod. Initials:		D.R.
+*	Author:				Drew Byh-Reeves
+*	Purpose:			This creates and facilitates all aspects of the UI.
+						Direct2D and DirectWrite
+****************************************************/
 #include "Direct2DData.h"
 
  bool UI::CreateDeviceIndependentResources()
