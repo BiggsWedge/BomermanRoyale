@@ -1,13 +1,15 @@
 #include "Direct2DData.h"
 
-
-
-HRESULT CreateDeviceIndependentResources()
+ bool UI::CreateDeviceIndependentResources()
 {
+	hr = S_OK;
 	g_pWindow->GetWidth(width);
 	g_pWindow->GetWidth(height);
 	
-	g_pWindow->GetWindowHandle(sizeof(HWND), );
+	RECT rc;
+	g_pWindow->GetWindowHandle(sizeof(HWND), (void**)_hwnd);
+	GetClientRect(_hwnd, &rc);
+
 	hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory_);
 	if (SUCCEEDED(hr))
 	{
@@ -24,7 +26,8 @@ HRESULT CreateDeviceIndependentResources()
 
 	if (SUCCEEDED(hr))
 	{
-		hr = pDWriteFactory_->CreateTextFormat(
+		hr = pDWriteFactory_->CreateTextFormat
+		(
 			L"Gabriola",                // Font family name.
 			NULL,                       // Font collection (NULL sets it to use the system font collection).
 			DWRITE_FONT_WEIGHT_REGULAR,
@@ -45,35 +48,48 @@ HRESULT CreateDeviceIndependentResources()
 	{
 		hr = pTextFormat_->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 	}
-	return hr;
+	return hr == S_OK;
 }
 
 
-HRESULT CreateDeviceDependentResources()
+ bool UI::CreateDeviceDependentResources()
 {
 	D2D1_SIZE_U size = D2D1::SizeU(width, height);
+	
 
 	if (!pRT_)
 	{
-		 Create a Direct2D render target.
-		hr = pD2DFactory_->CreateHwndRenderTarget(
+		//Create a Direct2D render target.
+		hr = pD2DFactory_->CreateHwndRenderTarget
+		(
 			D2D1::RenderTargetProperties(),
-			D2D1::HwndRenderTargetProperties(_hwnd, size), &pRT_);
+			D2D1::HwndRenderTargetProperties
+			(
+				_hwnd,
+				size
+			)
+			, &pRT_
+		);
 
-		 Create a black brush.
+		//Create a black brush.
 		if (SUCCEEDED(hr))
 		{
-			hr = pRT_->CreateSolidColorBrush(
+			hr = pRT_->CreateSolidColorBrush
+			(
 				D2D1::ColorF(D2D1::ColorF::Black),
 				&pBlackBrush_
 			);
 		}
 	}
-	return hr;
+
+	/*SAFE_RELEASE(&pRT_);
+	SAFE_RELEASE(&pBlackBrush_);*/
+
+	return hr == S_OK;
 }
 
 
-HRESULT DrawUI()
+ void UI::DrawUI()
 {
 	hr = CreateDeviceIndependentResources();
 	hr = CreateDeviceDependentResources();
@@ -86,8 +102,14 @@ HRESULT DrawUI()
 
 		pRT_->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
-		//Actual DRAW
-		D2D1_RECT_F layoutRect = D2D1::RectF(static_cast<FLOAT>);
+		//Actual Starts DRAW
+		D2D1_RECT_F layoutRect = D2D1::RectF
+		(
+			static_cast<FLOAT>(rc.left),
+			static_cast<FLOAT>(rc.top),
+			static_cast<FLOAT>(rc.right - rc.left),
+			static_cast<FLOAT>(rc.bottom - rc.top)
+		);
 
 
 		pRT_->DrawTextW(
@@ -106,5 +128,5 @@ HRESULT DrawUI()
 		}
 	}
 
-	return hr;
+	
 }
