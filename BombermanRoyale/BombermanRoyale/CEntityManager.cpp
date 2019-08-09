@@ -15,7 +15,7 @@
 CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 {
 	CObject* temp = new CObject();
-	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable);
+	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, loadInfo.item);
 	temp->AddComponent((TComponent*)transform);
 
 	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
@@ -44,23 +44,18 @@ CObject* CEntityManager::DropBomb(CObject* playerSource)
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
 	int x = 0;
 	int z = 0;
-	if (pos.x >= 0)
-	{
+	if (pos.x >= 0){
 		 x = (pos.x + 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
-	}
-	else
-	{
+	} else {
 		x = (pos.x - 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
 	}
-	if (pos.z >= 0)
-	{
+
+	if (pos.z >= 0) {
 		z = (pos.z + 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
-	}
-	else
-	{
+	} else {
 		z = (pos.z - 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
 	}

@@ -33,9 +33,10 @@ public:
 	DirectX::XMFLOAT3				fScale;
 	bool nFloor;
 	bool destroyable;
+	bool item;
 
 	TTransformComponent();
-	TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector, DirectX::XMFLOAT3 scale, bool floor, bool ndestroyable);
+	TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector, DirectX::XMFLOAT3 scale, bool floor, bool ndestroyable, bool nitem);
 	~TTransformComponent();
 };
 

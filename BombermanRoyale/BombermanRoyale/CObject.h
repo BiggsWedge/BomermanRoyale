@@ -12,6 +12,7 @@ struct OBJLoadInfo
 	int usedVertex, usedPixel, usedGeo, usedInput, usedDiffuse, LoadState;
 	bool floor;
 	bool destroyable;
+	bool item;
 };
 
 class CObject

@@ -1181,6 +1181,7 @@ void CGame::LoadObject()
 
 	for (float x = -7.5; x <= 7.5; x += 2.5f)
 	{
+
 		loadInfo.position = { x, 0.0f, 10 };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
@@ -1248,6 +1249,7 @@ void CGame::LoadObject()
 	}
 	for (float z = -2.5; z <= 7.5; z += 2.5f)
 	{
+
 		loadInfo.position = { -12.5, 0.0f, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
@@ -1314,6 +1316,14 @@ void CGame::LoadObject()
 	}
 	for (float x = -15; x <= 15; x += 2.5f)
 	{
+		loadInfo.item == false;
+		if (x == -7.5 || x == 7.5)
+		{
+			if (rand() % 4 > 0)
+			{
+				loadInfo.item == true;
+			}
+		}
 		loadInfo.position = { x, 0, -10 };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
@@ -1335,6 +1345,14 @@ void CGame::LoadObject()
 	}
 	for (float z = -7.5; z <= 12.5; z += 2.5f)
 	{
+		loadInfo.item == false;
+		if (z == -2.5 || z == 7.5)
+		{
+			if (rand() % 4 > 0)
+			{
+				loadInfo.item == true;
+			}
+		}
 		loadInfo.position = { -15, 0, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
