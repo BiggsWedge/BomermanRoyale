@@ -13,6 +13,16 @@
 
 int main(void)
 {
+	//float timePassed = 0;
+	//float frameTime = 0;
+	//long long prevFrame = 0;
+	//long long currFrame = 0;
+	//
+	//prevFrame = currFrame;
+	//currFrame = clock();
+	//
+	//frameTime = ((float)currFrame - (float)prevFrame) / 1000.0f;
+
 	InitializeGlobals();
 
 	LoadTextures();

@@ -42,10 +42,11 @@ bool CRendererManager::Draw()
 
 	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView, bg_green);
 	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
-	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState);
+	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
 
 	/*********DRAW OTHER STUFF HERE************/
-
+	v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext);
+	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState);
 	for (CObject c : rendereableObjects)
 		c.Draw();
 
@@ -61,8 +62,6 @@ bool CRendererManager::Draw()
 	g_d3dData->d3dContext->PSSetShader(g_d3dData->d3dPixelShader[PIXEL_SHADER::LINE], nullptr, 0);
 	g_d3dData->d3dContext->Draw(get_line_vert_count(), 0);
 	clear_lines();
-
-
 
 	g_d3dData->d3dSwapChain->Present(1, 0);
 

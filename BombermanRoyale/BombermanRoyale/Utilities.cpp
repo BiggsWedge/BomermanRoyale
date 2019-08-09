@@ -452,7 +452,6 @@ void TMeshTemplate::loadModel(const char* modelFile, const char* matFile, const 
 	for (auto& v : v_tVertices)
 	{
 		v.fPosition.x = v.fPosition.x;
-		v.fNormal.x = -v.fNormal.x;
 	}
 
 	std::fstream inMatFile{ matFile, std::ios_base::in | std::ios_base::binary };
@@ -641,4 +640,68 @@ void TMeshTemplate::initialize(ID3D11Device* _device)
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	_device->CreateSamplerState(&sampDesc, &_samState);
 
+}
+
+void TMeshTemplate::render(ID3D11DeviceContext* _context)
+{
+	UINT strides = sizeof(TSimpleVertex);
+	UINT offsets = 0;
+	
+	MVP_t debugConstBuff;
+	debugConstBuff.world = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
+	debugConstBuff.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
+	debugConstBuff.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, g_d3dData->viewMat));
+
+#pragma endregion
+
+	Light pointLight;
+	pointLight.position = DirectX::XMFLOAT3(0.0, 6.0f, -2.0f);
+	pointLight.color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	pointLight.intensity = 0.25f;
+	pointLight.type = 0;
+
+	LightBuffer _light;
+	_light.light = pointLight;
+
+	//MatBuffer mat;
+	//mat.material = _mat;
+
+	jointCB _jointsConst;
+	_jointsConst.numJoints = _bindPose.size();
+	for (int i = 0; i < _bindPose.size(); ++i)
+	{
+		_jointsConst._joints[i] = _bindPose[i]._mat;
+	}
+
+	debugConstBuff.world = DirectX::XMMatrixIdentity();
+	debugConstBuff.world = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
+	debugConstBuff.world = debugConstBuff.world * DirectX::XMMatrixTranslation(6.0f, 0.0f, 0.0f);
+	debugConstBuff.world = DirectX::XMMatrixTranspose(debugConstBuff.world);
+
+	_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MVP_t], 0, nullptr, &debugConstBuff, 0, 0);
+
+	_context->IASetInputLayout(g_d3dData->d3dInputLayout[INPUT_LAYOUT::BASIC]);
+
+	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::LIGHTS], 0, nullptr, &_light, 0, 0);
+	_context->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::LIGHTS]);
+	
+	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MATERIAL], 0, nullptr, &_mat, 0, 0);
+	_context->PSSetConstantBuffers(1, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MATERIAL]);
+
+	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::JOINTS], 0, nullptr, &_jointsConst, 0, 0);
+	_context->VSSetConstantBuffers(1, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::JOINTS]);
+
+	_context->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	_context->IASetVertexBuffers(0, 1, &_vertexBuffer, &strides, &offsets);
+
+	_context->VSSetShader(g_d3dData->d3dVertexShader[VERTEX_SHADER::ANIM], 0, 0);
+	_context->PSSetShader(g_d3dData->d3dPixelShader[PIXEL_SHADER::ANIM], 0, 0);
+	_context->PSSetSamplers(0, 1, &_samState);
+	_context->PSSetShaderResources(0, 1, &_srv[DIFFUSE]);
+	_context->PSSetShaderResources(1, 1, &_srv[EMISSIVE]);
+	_context->PSSetShaderResources(2, 1, &_srv[SPECULAR]);
+
+	_context->DrawIndexed(numIndices, 0, 0);
 }

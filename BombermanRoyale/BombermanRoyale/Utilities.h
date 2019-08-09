@@ -14,6 +14,8 @@
 #include "BasicPixel.csh"
 #include "LinePixel.csh"
 #include "LineVertex.csh"
+#include "AnimPixel.csh"
+#include "AnimVertex.csh"
 #include "DirectXData.h"
 #include "SharedDefines.h"
 #include <fstream>
@@ -241,6 +243,7 @@ struct TMeshTemplate {
 
 	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr);
 	void initialize(ID3D11Device* _device);
+	void render(ID3D11DeviceContext* _context);
 };
 
 struct TCollider {
@@ -249,6 +252,40 @@ struct TCollider {
 	DirectX::XMFLOAT3* corners;
 
 	TCollider() { corners = new float3[8](); }
+};
+
+struct MVP_t
+{
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX projection;
+};
+
+struct joints
+{
+	int numJoints;
+	DirectX::XMMATRIX joints[30];
+};
+
+struct Light
+{
+	DirectX::XMFLOAT3 dir;
+	float intensity;
+	DirectX::XMFLOAT3 position;
+	int type;
+	DirectX::XMFLOAT3 color;
+private:
+	float pad2;
+};
+
+struct LightBuffer
+{
+	Light light;
+};
+
+struct MatBuffer
+{
+	TMaterial material;
 };
 
 extern std::vector<TMeshTemplate> v_tMeshTemplates;
