@@ -62,17 +62,17 @@ bool Player2 = false;
 bool P1EXISTS = false;
 bool P2EXISTS = false;
 bool ControlScreenToggle = false;
-bool Controller1Alive = false;
 bool Controller2Alive = false;
+bool Controller1Alive = false;
 float bCollisionIgnore = 0.5f;
 float3 P1POS = { -10.0f, 0.0f, 10.0f };
 float3 P2POS = { 10.0f, 0.0f, -5.0f };
 
-float isLDPADPressed = 0.0f;
-float isRDPADPressed = 0.0f;
-float isUDPADPressed = 0.0f;
-float isDDPADPressed = 0.0f;
-float isSouthButtonPressed = 0.0f;
+float isP2LDPADPressed = 0.0f;
+float isP2RDPADPressed = 0.0f;
+float isP2UDPADPressed = 0.0f;
+float isP2DDPADPressed = 0.0f;
+float isP2SouthButtonPressed = 0.0f;
 
 float isP1StartButtonPressed = 0.0f;
 float isP1SelectButtonPressed = 0.0f;
@@ -113,7 +113,12 @@ void CGame::Run()
 
 
 	float errorCode = 0;
-	if (G_FAIL(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer)))
+	if (G_FAIL(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pP1SFXPlayer)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+
+	if (G_FAIL(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pP2SFXPlayer)))
 	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
@@ -260,12 +265,6 @@ void CGame::Run()
 		{
 			std::cout << "SPACE WAS PRESSED, G INPUT STYLE";
 		}
-
-		if (SFXButton.pressed())
-		{
-				g_pSoundPlayer->Play();
-		}
-
 
 #pragma endregion
 
@@ -650,9 +649,6 @@ CGame::~CGame()
 void CGame::WindowResize()
 {
 
-
-
-
 	if (FullScreen)
 	{
 		g_pWindow->GetClientWidth(width);
@@ -685,19 +681,25 @@ void CGame::WindowResize()
 void CGame::GamePlayLoop()
 {
 
-	if (g_pControllerInput->IsConnected(1, Controller1Alive))
+	if (g_pControllerInput->IsConnected(1, Controller2Alive))
 	{
-		g_pControllerInput->GetState(1, G_DPAD_UP_BTN, isUDPADPressed);
-		g_pControllerInput->GetState(1, G_DPAD_DOWN_BTN, isDDPADPressed);
-		g_pControllerInput->GetState(1, G_DPAD_LEFT_BTN, isLDPADPressed);
-		g_pControllerInput->GetState(1, G_DPAD_RIGHT_BTN, isRDPADPressed);
-		g_pControllerInput->GetState(1, G_SOUTH_BTN, isSouthButtonPressed);
+		ShowCursor(true);
+		g_pControllerInput->GetState(1, G_DPAD_UP_BTN, isP2UDPADPressed);
+		g_pControllerInput->GetState(1, G_DPAD_DOWN_BTN, isP2DDPADPressed);
+		g_pControllerInput->GetState(1, G_DPAD_LEFT_BTN, isP2LDPADPressed);
+		g_pControllerInput->GetState(1, G_DPAD_RIGHT_BTN, isP2RDPADPressed);
+		g_pControllerInput->GetState(1, G_SOUTH_BTN, isP2SouthButtonPressed);
 		g_pControllerInput->GetState(1, G_START_BTN, isP2StartButtonPressed);
 		g_pControllerInput->GetState(1, G_SELECT_BTN, isP2SelectButtonPressed);
 	}
-
-	if (g_pControllerInput->IsConnected(0, Controller2Alive))
+	else
 	{
+		ShowCursor(false);
+	}
+
+	if (g_pControllerInput->IsConnected(0, Controller1Alive))
+	{
+		ShowCursor(true);
 		g_pControllerInput->GetState(0, G_DPAD_UP_BTN, isP1UDPADPressed);
 		g_pControllerInput->GetState(0, G_DPAD_DOWN_BTN, isP1DDPADPressed);
 		g_pControllerInput->GetState(0, G_DPAD_LEFT_BTN, isP1LDPADPressed);
@@ -706,6 +708,11 @@ void CGame::GamePlayLoop()
 		g_pControllerInput->GetState(0, G_START_BTN, isP1StartButtonPressed);
 		g_pControllerInput->GetState(0, G_SELECT_BTN, isP1SelectButtonPressed);
 	}
+	else
+	{
+		ShowCursor(false);
+	}
+
 	if (P2EXISTS)
 	{
 
@@ -717,7 +724,7 @@ void CGame::GamePlayLoop()
 			
 			p2Move = true;
 			float deltaP2X = 0.0f, deltaP2Z = 0.0f;
-			if (keys[KEYS::P2UP].held() || isUDPADPressed == 1.0f)
+			if (keys[KEYS::P2UP].held() || isP2UDPADPressed == 1.0f)
 			{
 				//std::cout << isUDPADPressed;
 				for (int i = 0; i < objects.size() - 2; ++i)
@@ -748,7 +755,7 @@ void CGame::GamePlayLoop()
 					deltaP2Z += 0.1f;
 
 			}
-			if (keys[KEYS::P2DOWN].held() || isDDPADPressed == 1.0f)
+			if (keys[KEYS::P2DOWN].held() || isP2DDPADPressed == 1.0f)
 			{
 				p2Move = true;
 				for (int i = 0; i < objects.size() - 2; ++i)
@@ -775,13 +782,12 @@ void CGame::GamePlayLoop()
 						}
 
 
-
 					}
 				}
 				if (p2Move == true)
 					deltaP2Z += -0.1f;
 			}
-			if (keys[KEYS::P2LEFT].held() || isLDPADPressed == 1.0f)
+			if (keys[KEYS::P2LEFT].held() || isP2LDPADPressed == 1.0f)
 			{
 				p2Move = true;
 				for (int i = 0; i < objects.size() - 2; ++i)
@@ -814,7 +820,7 @@ void CGame::GamePlayLoop()
 					deltaP2X += -0.1f;
 			}
 
-			if (keys[KEYS::P2RIGHT].held() || isRDPADPressed == 1.0f)
+			if (keys[KEYS::P2RIGHT].held() || isP2RDPADPressed == 1.0f)
 			{
 				p2Move = true;
 				for (int i = 0; i < objects.size() - 2; ++i)
@@ -920,7 +926,7 @@ void CGame::GamePlayLoop()
 				}
 				
 			}
-			if ((keys[KEYS::P2BOMB].pressed() && p2B == nullptr ) || (isSouthButtonPressed == 1.0f && p2B == nullptr))
+			if ((keys[KEYS::P2BOMB].pressed() && p2B == nullptr ) || (isP2SouthButtonPressed == 1.0f && p2B == nullptr))
 			{
 				p2B = p_cEntityManager->DropBomb(p2);
 				p2BTimer = 0.0f;
@@ -1156,7 +1162,7 @@ void CGame::GamePlayLoop()
 				if (p2BTimer >= 18)
 				{
 
-					g_pSoundPlayer->Play();
+					g_pP1SFXPlayer->Play();
 					p2Ex = p_cEntityManager->BombExplosionX(p2B);
 					p2Ez = p_cEntityManager->BombExplosionZ(p2B);
 					p2ETimer = 0.0f;
@@ -1185,7 +1191,7 @@ void CGame::GamePlayLoop()
 				if (p1BTimer >= 18)
 				{
 
-					g_pSoundPlayer->Play();
+					g_pP2SFXPlayer->Play();
 					p1Ex = p_cEntityManager->BombExplosionX(p1B);
 					p1Ez = p_cEntityManager->BombExplosionZ(p1B);
 					p1ETimer = 0.0f;

@@ -25,7 +25,8 @@ extern GW::SYSTEM::GWindow* g_pWindow;
 extern GW::SYSTEM::GInput* g_pInputRecord;
 extern GW::AUDIO::GAudio* g_pAudioHolder;
 extern GW::AUDIO::GMusic* g_pMusicStream;
-extern GW::AUDIO::GSound* g_pSoundPlayer;
+extern GW::AUDIO::GSound* g_pP1SFXPlayer;
+extern GW::AUDIO::GSound* g_pP2SFXPlayer;
 extern GW::SYSTEM::GController* g_pControllerInput;
 
 /***********************************************************************

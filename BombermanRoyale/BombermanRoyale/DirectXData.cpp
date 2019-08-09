@@ -182,7 +182,7 @@ bool DirectXData::Initialize()
 #pragma region Camera Creation
 
 	debugCamPos = { 0.0f, 25.0f, -22.0f };
-	camPos = { 0.0f, 25.0f, -22.0f };
+	camPos = { 0.0f, 29.5f, -15.0f };
 	DirectX::XMFLOAT3 at = { 0.0f, 0.0f, 0.0f };
 	DirectX::XMFLOAT3 up = { 0.0f, 1.0f, 0.0f };
 

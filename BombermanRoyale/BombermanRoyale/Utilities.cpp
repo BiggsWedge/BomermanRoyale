@@ -16,7 +16,8 @@ GWindow* g_pWindow = nullptr;
 GInput* g_pInputRecord = nullptr;
 GAudio* g_pAudioHolder = nullptr;
 GMusic* g_pMusicStream = nullptr;
-GSound* g_pSoundPlayer = nullptr;
+GSound* g_pP1SFXPlayer = nullptr;
+GSound* g_pP2SFXPlayer = nullptr;
 GController* g_pControllerInput = nullptr;
 
 std::vector<TMeshTemplate> v_tMeshTemplates = {};
