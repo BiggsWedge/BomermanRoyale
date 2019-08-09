@@ -424,3 +424,221 @@ void GetCorners(float3 _center, float3 _extents, float3*& corners)
 	corners[6] = { corners[1].x,corners[0].y,corners[1].z };
 	corners[7] = { corners[1].x,corners[1].y,corners[0].z };
 }
+
+void TMeshTemplate::loadModel(const char* modelFile, const char* matFile, const char* animFile)
+{
+	using namespace DirectX;
+	std::fstream file{ modelFile, std::ios_base::in | std::ios_base::binary };
+
+	assert(file.is_open());
+
+	if (!file.is_open())
+	{
+		assert(false);
+		return;
+	}
+
+	file.read((char*)&numIndices, sizeof(int));
+	v_iIndices.resize(numIndices);
+	file.read((char*)v_iIndices.data(), sizeof(int) * numIndices);
+
+	file.read((char*)&numVerts, sizeof(int));
+	v_tVertices.resize(numVerts);
+	file.read((char*)v_tVertices.data(), sizeof(TSimpleVertex) * numVerts);
+
+	file.close();
+
+
+	for (auto& v : v_tVertices)
+	{
+		v.fPosition.x = v.fPosition.x;
+		v.fNormal.x = -v.fNormal.x;
+	}
+
+	std::fstream inMatFile{ matFile, std::ios_base::in | std::ios_base::binary };
+
+	assert(inMatFile.is_open());
+
+	if (!inMatFile.is_open())
+	{
+		assert(false);
+		return;
+	}
+
+	int numMatFiles;
+	inMatFile.read((char*)&numMatFiles, sizeof(int));
+
+
+	for (int i = 0; i < numMatFiles; ++i)
+	{
+		material_t temp;
+		for (int j = 0; j < 4; ++j)
+		{
+			XMVECTOR temp2;
+			inMatFile.read((char*)&temp[j].value, sizeof(float) * 3);
+			inMatFile.read((char*)&temp[j].factor, sizeof(float));
+			inMatFile.read((char*)&temp[j].input, sizeof(int64_t));
+			if (j == material_t::COMPONENT::DIFFUSE)
+			{
+				temp2.m128_f32[0] = temp[j].value[0];
+				temp2.m128_f32[1] = temp[j].value[1];
+				temp2.m128_f32[2] = temp[j].value[2];
+				XMStoreFloat3(&_mat.fSurfaceDiffuse, temp2);
+				_mat.fDiffuseFactor = temp[j].factor;
+			}
+			if (j == material_t::COMPONENT::EMISSIVE)
+			{
+				temp2.m128_f32[0] = temp[j].value[0];
+				temp2.m128_f32[1] = temp[j].value[1];
+				temp2.m128_f32[2] = temp[j].value[2];
+				XMStoreFloat3(&_mat.fSurfaceEmissive, temp2);
+				_mat.fEmissiveFactor = temp[j].factor;
+			}
+			if (j == material_t::COMPONENT::SPECULAR)
+			{
+				temp2.m128_f32[0] = temp[j].value[0];
+				temp2.m128_f32[1] = temp[j].value[1];
+				temp2.m128_f32[2] = temp[j].value[2];
+				XMStoreFloat3(&_mat.fSurfaceSpecular, temp2);
+				_mat.fSpecularFactor = temp[j].factor;
+			}
+			if (j == material_t::COMPONENT::SHININESS)
+			{
+				temp2.m128_f32[0] = temp[j].value[0];
+				temp2.m128_f32[1] = temp[j].value[1];
+				temp2.m128_f32[2] = temp[j].value[2];
+				XMStoreFloat3(&_mat.fSurfaceShiny, temp2);
+				_mat.fShinyFactor = temp[j].factor;
+			}
+		}
+		mats.push_back(temp);
+	}
+
+	int numPathsFiles;
+	inMatFile.read((char*)&numPathsFiles, sizeof(int));
+
+	for (int i = 0; i < numPathsFiles; ++i)
+	{
+		file_path_t _file;
+		inMatFile.read(_file.data(), sizeof(char) * 260);
+		filePaths.push_back(_file);
+	}
+	inMatFile.close();
+
+
+	if (animFile)
+	{
+		std::fstream inAnimFile(animFile, std::ios_base::in | std::ios_base::binary);
+
+		assert(inAnimFile.is_open());
+
+		int num;
+		inAnimFile.read((char*)&num, sizeof(int));
+		_bindPose.resize(num);
+		for (int i = 0; i < num; ++i)
+		{
+			inAnimFile.read((char*)&_bindPose[i].parentIndex, sizeof(int));
+			DirectX::XMFLOAT4X4 mat;
+			inAnimFile.read((char*)mat.m, sizeof(float) * 16);
+			_bindPose[i]._mat = DirectX::XMLoadFloat4x4(&mat);
+		}
+
+
+
+
+		double _dur;
+		inAnimFile.read((char*)&_dur, sizeof(double));
+		_anim.duration = _dur;
+		int numFrames;
+		inAnimFile.read((char*)&numFrames, sizeof(int));
+
+		_anim.frames.resize(numFrames);
+		for (int i = 0; i < numFrames; ++i)
+		{
+			KeyFrame _key;
+			inAnimFile.read((char*)&_key.time, sizeof(double));
+			int numJoints;
+			inAnimFile.read((char*)&numJoints, sizeof(int));
+			_key.joints.resize(numJoints);
+
+			for (int j = 0; j < numJoints; ++j)
+			{
+				inAnimFile.read((char*)&_key.joints[j].parentIndex, sizeof(int));
+				DirectX::XMFLOAT4X4 _j;
+				inAnimFile.read((char*)_j.m, sizeof(float) * 16);
+				_key.joints[j]._mat = DirectX::XMLoadFloat4x4(&_j);
+			}
+			_anim.frames[i] = _key;
+		}
+		inAnimFile.close();
+		_anim.frames.push_back(_anim.frames[0]);
+		_anim.frames[_anim.frames.size() - 1].time = _anim.duration;
+	}
+
+}
+
+void TMeshTemplate::initialize(ID3D11Device* _device)
+{
+	D3D11_BUFFER_DESC vertBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertBuffSubResc;
+
+	ZeroMemory(&vertBufferDesc, sizeof(vertBufferDesc));
+	ZeroMemory(&vertBuffSubResc, sizeof(vertBuffSubResc));
+
+	vertBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertBufferDesc.ByteWidth = sizeof(TSimpleVertex) * v_tVertices.size();
+	vertBufferDesc.CPUAccessFlags = 0;
+	vertBufferDesc.MiscFlags = 0;
+	vertBufferDesc.StructureByteStride = 0;
+	vertBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	vertBuffSubResc.pSysMem = v_tVertices.data();
+
+	_device->CreateBuffer(&vertBufferDesc, &vertBuffSubResc, &_vertexBuffer);
+
+	D3D11_BUFFER_DESC indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA indexBufferSubResourceData;
+
+	ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
+	ZeroMemory(&indexBufferSubResourceData, sizeof(indexBufferSubResourceData));
+
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.ByteWidth = sizeof(uint32_t) * v_iIndices.size();
+	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.MiscFlags = 0;
+	indexBufferDesc.StructureByteStride = 0;
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	indexBufferSubResourceData.pSysMem = v_iIndices.data();
+
+	_device->CreateBuffer(&indexBufferDesc, &indexBufferSubResourceData, &_indexBuffer);
+
+
+	for (int i = 0; i < mats.size(); ++i)
+	{
+		for (int j = 0; j < material_t::COMPONENT::COUNT; ++j)
+		{
+			if (mats[i][j].input < 0)
+				continue;
+			std::experimental::filesystem::path filePath;
+			filePath = filePaths[mats[i][j].input].data();
+			HRESULT result = DirectX::CreateWICTextureFromFile(_device, filePath.wstring().c_str(), nullptr, &_srv[j]);
+			if (!SUCCEEDED(result))
+			{
+				std::string fail = "Failed to make texture! " + this->sName;
+				g_pLogger->LogCatergorized("FAILURE", fail.c_str());
+			}
+		}
+	}
+
+	D3D11_SAMPLER_DESC sampDesc = {};
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	_device->CreateSamplerState(&sampDesc, &_samState);
+
+}

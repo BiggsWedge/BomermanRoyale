@@ -159,6 +159,30 @@ struct TLineVertex {
 	inline TLineVertex(const float3& p, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) : pos{ p }, color{ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f } {}
 };
 
+struct jointCB
+{
+	int numJoints;
+	DirectX::XMMATRIX _joints[30];
+};
+
+struct material_t
+{
+	enum COMPONENT { DIFFUSE = 0, EMISSIVE, SPECULAR, SHININESS, COUNT };
+
+	struct component_t
+	{
+		float value[3] = { 0.0f, 0.0f, 0.0f };
+		float factor = 0.0f;
+		int64_t input = -1;
+	};
+
+	component_t& operator[](int i) { return components[i]; }
+	const component_t& operator[](int i)const { return components[i]; }
+
+private:
+	component_t components[COMPONENT::COUNT];
+};
+
 struct TMaterial {
 	DirectX::XMFLOAT3		fSurfaceDiffuse;
 	float					fDiffuseFactor;
@@ -170,12 +194,53 @@ struct TMaterial {
 	float					fShinyFactor;
 };
 
+struct joint
+{
+	DirectX::XMMATRIX _mat;
+	int parentIndex;
+};
+
+struct KeyFrame
+{
+	double time;
+	std::vector<joint> joints;
+};
+
+struct AnimationClip
+{
+	double duration;
+	std::vector<KeyFrame> frames;
+};
 
 struct TMeshTemplate {
 	UINT uID;
 	std::string						sName;
 	std::vector<TSimpleVertex>		v_tVertices;
 	std::vector<int>				v_iIndices;
+
+	std::vector<joint> _bindPose;
+
+	uint32_t numVerts;
+	uint32_t numIndices;
+
+	TMaterial _mat;
+
+	AnimationClip _anim;
+
+	ID3D11Buffer* _vertexBuffer;
+	ID3D11Buffer* _indexBuffer;
+
+	std::vector<file_path_t> filePaths;
+	std::vector<material_t> mats;
+
+	enum TEXTURES { DIFFUSE = 0, EMISSIVE, SPECULAR, COUNT };
+
+	ID3D11ShaderResourceView*	_srv[TEXTURES::COUNT];
+	ID3D11Resource*				_textures[TEXTURES::COUNT];
+	ID3D11SamplerState*			_samState;
+
+	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr);
+	void initialize(ID3D11Device* _device);
 };
 
 struct TCollider {

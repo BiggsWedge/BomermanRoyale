@@ -16,6 +16,7 @@ void CObject::Draw()
 	TMeshComponent* mesh = nullptr;
 	TTransformComponent* transform = nullptr;
 	TTextureComponent* tex = nullptr;
+	TAnimComponent* anim = nullptr;
 
 	for (TComponent* c : v_tComponents)
 	{
@@ -39,6 +40,10 @@ void CObject::Draw()
 		{
 			tex = (TTextureComponent*)c;
 			break;
+		}
+		case COMPONENT_TYPE::ANIM:
+		{
+			anim = (TAnimComponent*)c;
 		}
 		default:
 			break;
