@@ -41,8 +41,8 @@ public:
 
 	CBomb* DropBomb(CPlayer* playerSource);
 
-	CObject* BombExplosionX(CObject* BombSource);
-	CObject* BombExplosionZ(CObject* BombSource);
+	CObject* BombExplosionX(CBomb* BombSource);
+	CObject* BombExplosionZ(CBomb* BombSource);
 	CObject* ItemDrop(CObject* ItemSource);
 	CObject* SpawnObject(CObject* obj);
 	CPlayer* InstantiatePlayer(int numPlayer, int playerModel, DirectX::XMFLOAT3 spawnPos);

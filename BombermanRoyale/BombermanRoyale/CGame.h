@@ -41,6 +41,7 @@ class CGame
 
 	int maxNumBombs = 24;
 	std::vector<CBomb*> v_cBombs;
+	CObject* item;
 
 	double mouseIdleTimer;
 	bool prevShowMouse = true;

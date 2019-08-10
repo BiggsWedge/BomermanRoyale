@@ -186,72 +186,71 @@ void CGame::Run()
 			{
 				setGameState(GAME_STATE::MAIN_MENU);
 			}
-			if (curGameState == GAME_STATE::ARCADE_GAME)
+		}
+		if (curGameState == GAME_STATE::ARCADE_GAME)
+		{
+
+			updateBombs(timePassed);
+			prevCursor = currCursor;
+			GetCursorPos(&currCursor);
+
+			/*
+			prevShowMouse = showMouse;
+			if (prevCursor.x == currCursor.x && prevCursor.y == currCursor.y)
 			{
-				updateBombs(timePassed);
+				mouseIdleTimer += timePassed;
+				if (mouseIdleTimer >= 3.0)
+					showMouse = false;
 			}
+			else
+			{
+				showMouse = true;
+				mouseIdleTimer = 0.0;
+			}
+			if (prevShowMouse && !showMouse)
+				ShowCursor(false);
+			if (!prevShowMouse && showMouse)
+				ShowCursor(true);
+				f*/
+
+
+			g_d3dData->debugCamDelta = { 0.0f, 0.0f };
+			if (keys[KEYS::ZERO].pressed())
+				g_d3dData->ToggleUseDebugCamera();
+			if (keys[KEYS::UP].held())
+				g_d3dData->debugCamDelta.y += 0.1f;
+			if (keys[KEYS::DOWN].held())
+				g_d3dData->debugCamDelta.y += -0.1f;
+			if (keys[KEYS::LEFT].held())
+				g_d3dData->debugCamDelta.x += -0.1f;
+			if (keys[KEYS::RIGHT].held())
+				g_d3dData->debugCamDelta.x += 0.1f;
+
+			if (keys[KEYS::RMB].held())
+			{
+				g_d3dData->debugCursorRot.y = 0.002f*(currCursor.y - prevCursor.y);
+				g_d3dData->debugCursorRot.x = 0.002f*(currCursor.x - prevCursor.x);
+			}
+
+			static int numPlayersAlive = 0;
+			static int prevNumPlayersAlive = 0;
+			prevNumPlayersAlive = numPlayersAlive;
+			numPlayersAlive = 0;
+			for (int i = 0; i < v_cPlayers.size(); ++i)
+			{
+				if (v_cPlayers[i] && v_cPlayers[i]->isAlive())
+					numPlayersAlive++;
+			}
+
+			if (prevNumPlayersAlive > 1 && numPlayersAlive <= 1)
+			{
+				setGameState(GAME_STATE::WIN_SCREEN);
+			}
+
+			this->GamePlayLoop(timePassed);
 		}
-		prevCursor = currCursor;
-		GetCursorPos(&currCursor);
-
-		/*
-		prevShowMouse = showMouse;
-		if (prevCursor.x == currCursor.x && prevCursor.y == currCursor.y)
-		{
-			mouseIdleTimer += timePassed;
-			if (mouseIdleTimer >= 3.0)
-				showMouse = false;
-		}
-		else
-		{
-			showMouse = true;
-			mouseIdleTimer = 0.0;
-		}
-		if (prevShowMouse && !showMouse)
-			ShowCursor(false);
-		if (!prevShowMouse && showMouse)
-			ShowCursor(true);
-			f*/
-
-
-		g_d3dData->debugCamDelta = { 0.0f, 0.0f };
-		if (keys[KEYS::ZERO].pressed())
-			g_d3dData->ToggleUseDebugCamera();
-		if (keys[KEYS::UP].held())
-			g_d3dData->debugCamDelta.y += 0.1f;
-		if (keys[KEYS::DOWN].held())
-			g_d3dData->debugCamDelta.y += -0.1f;
-		if (keys[KEYS::LEFT].held())
-			g_d3dData->debugCamDelta.x += -0.1f;
-		if (keys[KEYS::RIGHT].held())
-			g_d3dData->debugCamDelta.x += 0.1f;
-
-		if (keys[KEYS::RMB].held())
-		{
-			g_d3dData->debugCursorRot.y = 0.002f*(currCursor.y - prevCursor.y);
-			g_d3dData->debugCursorRot.x = 0.002f*(currCursor.x - prevCursor.x);
-		}
-
-		static int numPlayersAlive = 0;
-		static int prevNumPlayersAlive = 0;
-		prevNumPlayersAlive = numPlayersAlive;
-		numPlayersAlive = 0;
-		for (int i = 0; i < v_cPlayers.size(); ++i)
-		{
-			if (v_cPlayers[i] && v_cPlayers[i]->isAlive())
-				numPlayersAlive++;
-		}
-
-		if (prevNumPlayersAlive > 1 && numPlayersAlive <= 1)
-		{
-			setGameState(GAME_STATE::WIN_SCREEN);
-		}
-
-		this->GamePlayLoop(timePassed);
 
 		//RenderMenus
-
-
 		for (CObject* menu : menuObjects)
 		{
 			TComponent* cRenderer;
@@ -320,90 +319,7 @@ void CGame::Run()
 			}
 		}
 
-		if (p1Ex)
-		{
-			for (int i = 0; i < objects.size(); ++i)
-			{
-				if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-				{
-					TComponent* cRenderer = nullptr;
-					TTransformComponent* renderer = nullptr;
-					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
-					{
-						renderer = (TTransformComponent*)cRenderer;
-
-						if (renderer->destroyable == true && renderer->item == true)
-						{
-							if (abs(renderer->fPosition.x - p1EXx) < 4.5f && abs(renderer->fPosition.z - p1EXz) < 1.8f)
-							{
-								item = p_cEntityManager->ItemDrop(objects.at(i));
-								objects.erase(objects.begin() + i, objects.begin() + i + 1);
-								//SpawnObject(i, objects, p_cRendererManager, p_cEntityManager);
-							}
-							else if (abs(renderer->fPosition.z - p1EXz) < 4.5f && abs(renderer->fPosition.x - p1EXx) < 1.8f)
-							{
-								item = p_cEntityManager->ItemDrop(objects.at(i));
-								objects.erase(objects.begin() + i, objects.begin() + i + 1);
-								//SpawnObject(i, objects, p_cRendererManager, p_cEntityManager);
-							}
-						}
-						else if (renderer->destroyable == true && renderer->item == false)
-						{
-							if (abs(renderer->fPosition.x - p1EXx) < 4.5f && abs(renderer->fPosition.z - p1EXz) < 1.8f)
-							{
-								objects.erase(objects.begin() + i, objects.begin() + i + 1);
-							}
-							else if (abs(renderer->fPosition.z - p1EXz) < 4.5f && abs(renderer->fPosition.x - p1EXx) < 1.8f)
-							{
-								objects.erase(objects.begin() + i, objects.begin() + i + 1);
-							}
-						}
-					}
-				}
-			}
-		}
-		if (p2Ex)
-		{
-			for (int i = 0; i < objects.size(); ++i)
-			{
-				if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-				{
-					TComponent* cRenderer = nullptr;
-					TTransformComponent* renderer = nullptr;
-					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
-					{
-						renderer = (TTransformComponent*)cRenderer;
-
-						if (renderer->destroyable == true && renderer->item == true)
-						{
-							if (abs(renderer->fPosition.x - p2EXx) < 4.5f && abs(renderer->fPosition.z - p2EXz) < 1.8f)
-							{
-								item = p_cEntityManager->ItemDrop(objects.at(i));
-								objects.erase(objects.begin() + i, objects.begin() + i + 1);
-								//SpawnObject(i, objects, p_cRendererManager, p_cEntityManager);
-							}
-							else if (abs(renderer->fPosition.z - p2EXz) < 4.5f && abs(renderer->fPosition.x - p2EXx) < 1.8f)
-							{
-								item = p_cEntityManager->ItemDrop(objects.at(i));
-								objects.erase(objects.begin() + i, objects.begin() + i + 1);
-								//SpawnObject(i, objects, p_cRendererManager, p_cEntityManager);
-							}
-						}
-						else if (renderer->destroyable == true && renderer->item == false)
-						{
-							if (abs(renderer->fPosition.x - p2EXx) < 4.5f && abs(renderer->fPosition.z - p2EXz) < 1.8f)
-							{
-								objects.erase(objects.begin() + i, objects.begin() + i + 1);
-							}
-							else if (abs(renderer->fPosition.z - p2EXz) < 4.5f && abs(renderer->fPosition.x - p2EXx) < 1.8f)
-							{
-								objects.erase(objects.begin() + i, objects.begin() + i + 1);
-							}
-						}
-					}
-				}
-			}
-		}
+		//Render Item
 		if (item)
 		{
 			TComponent* cRenderer = nullptr;
@@ -412,59 +328,158 @@ void CGame::Run()
 			{
 				renderer = (TRendererComponent*)cRenderer;
 				if (renderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(*item);
+					p_cRendererManager->RenderObject(item);
 			}
 		}
-		if (P1EXISTS && curGameState == 3)
-		{
-			if (p1Ex)
-			{
-				if (abs(p1x - p1EXx) < 4.5f && abs(p1z - p1EXz) < 1.8f)
-				{
-					//delete p1;
-					p1 = nullptr;
-					P1EXISTS = false;
-				}
-				else if (abs(p1z - p1EXz) < 4.5f && abs(p1x - p1EXx) < 1.8f)
-				{
-					//delete p1;
-					p1 = nullptr;
-					P1EXISTS = false;
-				}
-			}
-			if (p2Ex)
-			{
-				if (abs(p1x - p2EXx) < 4.5f && abs(p1z - p2EXz) < 1.8f)
-				{
-					//delete p1;
-					p1 = nullptr;
-					P1EXISTS = false;
-				}
-				else if (abs(p1z - p2EXz) < 4.5f && abs(p1x - p2EXx) < 1.8f)
-				{
-					//delete p1;
-					p1 = nullptr;
-					P1EXISTS = false;
-				}
-			}
-		}
-		if (P2EXISTS && curGameState == 3)
-			====== =
-			//Render Players
-			for (CPlayer* player : v_cPlayers)
-				>>>>>> > Month2
-			{
-				if (!player || !player->isAlive())
-					continue;
-				TComponent* renderer = nullptr;
-				if (player->GetComponent(COMPONENT_TYPE::RENDERER, renderer))
-				{
-					TRendererComponent* pRenderer = (TRendererComponent*)renderer;
-					if (pRenderer->iUsedLoadState == curGameState)
-						p_cRendererManager->RenderObject((CObject*)player);
-				}
-			}
 
+
+
+		/*
+
+				if (p1Ex)
+				{
+					for (int i = 0; i < objects.size(); ++i)
+					{
+						if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+						{
+							TComponent* cRenderer = nullptr;
+							TTransformComponent* renderer = nullptr;
+							if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+							{
+								renderer = (TTransformComponent*)cRenderer;
+
+								if (renderer->destroyable == true && renderer->item == true)
+								{
+									if (abs(renderer->fPosition.x - p1EXx) < 4.5f && abs(renderer->fPosition.z - p1EXz) < 1.8f)
+									{
+										item = p_cEntityManager->ItemDrop(objects.at(i));
+										objects.erase(objects.begin() + i, objects.begin() + i + 1);
+										//SpawnObject(i, objects, p_cRendererManager, p_cEntityManager);
+									}
+									else if (abs(renderer->fPosition.z - p1EXz) < 4.5f && abs(renderer->fPosition.x - p1EXx) < 1.8f)
+									{
+										item = p_cEntityManager->ItemDrop(objects.at(i));
+										objects.erase(objects.begin() + i, objects.begin() + i + 1);
+										//SpawnObject(i, objects, p_cRendererManager, p_cEntityManager);
+									}
+								}
+								else if (renderer->destroyable == true && renderer->item == false)
+								{
+									if (abs(renderer->fPosition.x - p1EXx) < 4.5f && abs(renderer->fPosition.z - p1EXz) < 1.8f)
+									{
+										objects.erase(objects.begin() + i, objects.begin() + i + 1);
+									}
+									else if (abs(renderer->fPosition.z - p1EXz) < 4.5f && abs(renderer->fPosition.x - p1EXx) < 1.8f)
+									{
+										objects.erase(objects.begin() + i, objects.begin() + i + 1);
+									}
+								}
+							}
+						}
+					}
+				}
+				if (p2Ex)
+				{
+					for (int i = 0; i < objects.size(); ++i)
+					{
+						if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+						{
+							TComponent* cRenderer = nullptr;
+							TTransformComponent* renderer = nullptr;
+							if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+							{
+								renderer = (TTransformComponent*)cRenderer;
+
+								if (renderer->destroyable == true && renderer->item == true)
+								{
+									if (abs(renderer->fPosition.x - p2EXx) < 4.5f && abs(renderer->fPosition.z - p2EXz) < 1.8f)
+									{
+										item = p_cEntityManager->ItemDrop(objects.at(i));
+										objects.erase(objects.begin() + i, objects.begin() + i + 1);
+										//SpawnObject(i, objects, p_cRendererManager, p_cEntityManager);
+									}
+									else if (abs(renderer->fPosition.z - p2EXz) < 4.5f && abs(renderer->fPosition.x - p2EXx) < 1.8f)
+									{
+										item = p_cEntityManager->ItemDrop(objects.at(i));
+										objects.erase(objects.begin() + i, objects.begin() + i + 1);
+										//SpawnObject(i, objects, p_cRendererManager, p_cEntityManager);
+									}
+								}
+								else if (renderer->destroyable == true && renderer->item == false)
+								{
+									if (abs(renderer->fPosition.x - p2EXx) < 4.5f && abs(renderer->fPosition.z - p2EXz) < 1.8f)
+									{
+										objects.erase(objects.begin() + i, objects.begin() + i + 1);
+									}
+									else if (abs(renderer->fPosition.z - p2EXz) < 4.5f && abs(renderer->fPosition.x - p2EXx) < 1.8f)
+									{
+										objects.erase(objects.begin() + i, objects.begin() + i + 1);
+									}
+								}
+							}
+						}
+					}
+				}
+				if (item)
+				{
+					TComponent* cRenderer = nullptr;
+					TRendererComponent* renderer = nullptr;
+					if (item->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+					{
+						renderer = (TRendererComponent*)cRenderer;
+						if (renderer->iUsedLoadState == curGameState)
+							p_cRendererManager->RenderObject(*item);
+					}
+				}
+				if (P1EXISTS && curGameState == 3)
+				{
+					if (p1Ex)
+					{
+						if (abs(p1x - p1EXx) < 4.5f && abs(p1z - p1EXz) < 1.8f)
+						{
+							//delete p1;
+							p1 = nullptr;
+							P1EXISTS = false;
+						}
+						else if (abs(p1z - p1EXz) < 4.5f && abs(p1x - p1EXx) < 1.8f)
+						{
+							//delete p1;
+							p1 = nullptr;
+							P1EXISTS = false;
+						}
+					}
+					if (p2Ex)
+					{
+						if (abs(p1x - p2EXx) < 4.5f && abs(p1z - p2EXz) < 1.8f)
+						{
+							//delete p1;
+							p1 = nullptr;
+							P1EXISTS = false;
+						}
+						else if (abs(p1z - p2EXz) < 4.5f && abs(p1x - p2EXx) < 1.8f)
+						{
+							//delete p1;
+							p1 = nullptr;
+							P1EXISTS = false;
+						}
+					}
+				}
+				if (P2EXISTS && curGameState == 3)
+					====== =
+					*/
+					//Render Players
+		for (CPlayer* player : v_cPlayers)
+		{
+			if (!player || !player->isAlive())
+				continue;
+			TComponent* renderer = nullptr;
+			if (player->GetComponent(COMPONENT_TYPE::RENDERER, renderer))
+			{
+				TRendererComponent* pRenderer = (TRendererComponent*)renderer;
+				if (pRenderer->iUsedLoadState == curGameState)
+					p_cRendererManager->RenderObject((CObject*)player);
+			}
+		}
 		g_d3dData->updateCameras();
 
 #pragma region Input
@@ -607,7 +622,7 @@ void CGame::LoadObject()
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
 		loadInfo.destroyable = true;
-		loadInfo.item == true;
+		loadInfo.item = true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -623,7 +638,7 @@ void CGame::LoadObject()
 		loadInfo.floor = false;
 
 		loadInfo.destroyable = true;
-		loadInfo.item == true;
+		loadInfo.item = true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -639,7 +654,7 @@ void CGame::LoadObject()
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
 		loadInfo.destroyable = true;
-		loadInfo.item == true;
+		loadInfo.item = true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -657,7 +672,7 @@ void CGame::LoadObject()
 
 		loadInfo.destroyable = true;
 
-		loadInfo.item == true;
+		loadInfo.item = true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
@@ -675,7 +690,7 @@ void CGame::LoadObject()
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
 		loadInfo.destroyable = true;
-		loadInfo.item == true;
+		loadInfo.item = true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -691,7 +706,7 @@ void CGame::LoadObject()
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
 		loadInfo.destroyable = true;
-		loadInfo.item == true;
+		loadInfo.item = true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -706,7 +721,7 @@ void CGame::LoadObject()
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
-		loadInfo.item == true;
+		loadInfo.item = true;
 		loadInfo.destroyable = true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -723,7 +738,7 @@ void CGame::LoadObject()
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
 		loadInfo.destroyable = true;
-		loadInfo.item == true;
+		loadInfo.item = true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
@@ -742,7 +757,7 @@ void CGame::LoadObject()
 			loadInfo.usedGeo = -1;
 			loadInfo.LoadState = 3;
 			loadInfo.destroyable = true;
-			loadInfo.item == true;
+			loadInfo.item = true;
 			loadInfo.collisionLayer = COLLISION_LAYERS::DESTROYABLE;
 			loadInfo.floor = false;
 			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
@@ -1359,7 +1374,7 @@ void CGame::GamePlayLoop(double timePassed)
 //}
 void CGame::SpawnObject(int i, std::vector<CObject*> objects, CRendererManager* p_cRendererManager, CEntityManager* p_cEntityManager) {
 	item = p_cEntityManager->ItemDrop(objects[i]);
-	p_cRendererManager->RenderObject(*item);
+	p_cRendererManager->RenderObject(item);
 }
 
 
@@ -1465,6 +1480,10 @@ void CGame::updateBombs(double timePassed)
 				{
 					if ((abs(objT->fPosition.x - exPos.x) < 4.5f && abs(objT->fPosition.z - exPos.z) < 1.8f) || (abs(objT->fPosition.x - exPos.x) < 1.8f && abs(objT->fPosition.z - exPos.z) < 4.5f))
 					{
+						if (objT->item)
+						{
+							item = p_cEntityManager->ItemDrop(objects[j]);
+						}
 						objects.erase(objects.begin() + j);
 						--j;
 					}
