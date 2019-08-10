@@ -11,7 +11,7 @@
 ****************************************************/
 #pragma once
 
-#include "CObject.h"
+#include "CPlayer.h"
 #include <DirectXCollision.h>
 
 
@@ -36,12 +36,15 @@ public:
 		Mod. Date:						07/27/2019
 	*********************************************************/
 	CObject* CreateOBJFromTemplate(OBJLoadInfo loadInfo);
+	CPlayer* CreatePlayerFromTemplate(OBJLoadInfo loadInfo);
+	CBomb* CreateBombFromTemplate(OBJLoadInfo loadInfo);
 
-	CObject* DropBomb(CObject* playerSource);
+	CBomb* DropBomb(CPlayer* playerSource);
 
 	CObject* BombExplosionX(CObject* BombSource);
 	CObject* BombExplosionZ(CObject* BombSource);
 	CObject* ItemDrop(CObject* ItemSource);
 	CObject* SpawnObject(CObject* obj);
+	CPlayer* InstantiatePlayer(int numPlayer, int playerModel, DirectX::XMFLOAT3 spawnPos);
 };
 

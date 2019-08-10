@@ -13,15 +13,15 @@
 
 int main(void)
 {
-	InitializeGlobals();
 
+#ifndef _DEBUG
+	ShowWindow(GetConsoleWindow(), SW_HIDE);
+#endif
+	InitializeGlobals();
 	LoadTextures();
-	LoadModel(".//Assets//Cube.mesh", ".//Assets//Cube.mat");
-	LoadModel(".//Assets//BattleMage.mesh", ".//Assets//BattleMage.mat");
+	LoadModels();
 	LoadMenuScreen(15, 11, 0, ".//Assets//Menu.mat");
 	LoadMenuScreen(19, 11, 1, ".//Assets//Menu.mat");
-
-
 
 	CGame* p_cGame = new CGame();
 	bool result = p_cGame->Initialize();
@@ -31,15 +31,16 @@ int main(void)
 		return 1;
 	}
 	g_pLogger->LogCatergorized("SUCCESS", "Successfully initialized the game");
-	p_cGame->LoadObject();
+	p_cGame->loadTempMenus();
 	p_cGame->Run();
 
 	delete p_cGame;
 	g_d3dData->Cleanup();
 
+	v_tMeshTemplates.clear();
+
 	g_pWindow->DecrementCount();
 	g_pLogger->DecrementCount();
-
 	return 0;
 }
 

@@ -7,8 +7,17 @@
     <FxCompile Include="BasicVertex.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="LineVertex.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="LinePixel.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CBomb.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
     <ClCompile Include="CEntityManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -19,6 +28,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="CRendererManager.cpp">
@@ -36,6 +48,12 @@
     <ClCompile Include="WICTextureLoader.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\Gateware\Source\G_Audio\GAudio.cpp">
+      <Filter>Gateware</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Gateware\Source\G_System\GController.cpp">
+      <Filter>Gateware</Filter>
+    </ClCompile>
     <ClCompile Include="..\Gateware\Source\G_Graphics\GDirectX11Surface.cpp">
       <Filter>Gateware</Filter>
     </ClCompile>
@@ -48,23 +66,23 @@
     <ClCompile Include="..\Gateware\Source\G_System\GI_Static.cpp">
       <Filter>Gateware</Filter>
     </ClCompile>
+    <ClCompile Include="..\Gateware\Source\G_System\GInput.cpp">
+      <Filter>Gateware</Filter>
+    </ClCompile>
     <ClCompile Include="..\Gateware\Source\G_System\GLog.cpp">
       <Filter>Gateware</Filter>
     </ClCompile>
     <ClCompile Include="..\Gateware\Source\G_System\GWindow.cpp">
       <Filter>Gateware</Filter>
     </ClCompile>
-    <ClCompile Include="..\Gateware\Source\G_Audio\GAudio.cpp">
-      <Filter>Gateware</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Gateware\Source\G_System\GInput.cpp">
-      <Filter>Gateware</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Gateware\Source\G_System\GController.cpp">
-      <Filter>Gateware</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CBomb.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CEntityManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
     <ClInclude Include="CGame.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -74,10 +92,22 @@
     <ClInclude Include="Component.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="ConstDefines.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
     <ClInclude Include="CRendererManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="DirectXData.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="pools.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedDefines.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="TObjectTemplate.h">
@@ -89,38 +119,19 @@
     <ClInclude Include="WICTextureLoader.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="CEntityManager.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="SharedDefines.h" />
-    <ClInclude Include="pools.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="BasicVertex.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="BasicPixel.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="LinePixel.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="LineVertex.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <Filter Include="Headers">
-      <UniqueIdentifier>{0220ba84-0b6d-4ba6-9c15-e93f74ba9716}</UniqueIdentifier>
+    <Filter Include="Source">
+      <UniqueIdentifier>{2d904587-5083-4a4f-808c-b214dcbfa454}</UniqueIdentifier>
     </Filter>
     <Filter Include="Gateware">
-      <UniqueIdentifier>{e99c62a9-d121-4ecd-a826-f30fa50000f4}</UniqueIdentifier>
+      <UniqueIdentifier>{5df6837e-655e-4011-9baf-dbb2545710de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source">
-      <UniqueIdentifier>{0c4da57b-c9c5-40f3-8b7e-1ed30bbadf87}</UniqueIdentifier>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{c2f86d1d-fb00-4dd9-ab95-e7257d88dd49}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shaders">
-      <UniqueIdentifier>{1d7c6fe6-4a8e-4c53-89e4-ca90bbd22fca}</UniqueIdentifier>
+      <UniqueIdentifier>{d1dd8a98-70fb-403b-8b7b-3cb4fd2ec3ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

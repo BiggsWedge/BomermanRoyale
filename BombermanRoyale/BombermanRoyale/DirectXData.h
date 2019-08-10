@@ -4,7 +4,7 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
-#include <vector>
+#include "ConstDefines.h"
 #include "../Gateware/Interface/G_Graphics/GDirectX11Surface.h"
 
 #define SAFE_RELEASE(ptr){if(ptr){ptr->Release(); ptr = nullptr;}}
@@ -81,11 +81,19 @@ struct DEPTH_STENCIL_STATE
 	enum { DEFAULT = 0, COUNT };
 };
 
+struct COLLISION_LAYERS
+{
+	enum { PLAYER, BOMB, EXPLOSION, WALL, DESTROYABLE, FLOOR, COUNT };
+};
+
 struct DIFFUSE_TEXTURES
 {
-	enum {	CRATE = 0, BATTLE_MAGE, MAIN_MENU, HUD, NAMES_HUD, WIN_SCREEN,
-			HELP_MENU, ARCADE_BUTTON, BATTLE_BUTTON, OPTIONS_BUTTON, EXIT_BUTTON,
-			RED_TEX, BLUE_TEX, BLACK_TEX, FIRE_TEX, HAY_TEX, COUNT					};
+	enum {
+		CRATE = 0, BATTLE_MAGE, MAIN_MENU, HUD, NAMES_HUD, WIN_SCREEN,
+		HELP_MENU, ARCADE_BUTTON, BATTLE_BUTTON, OPTIONS_BUTTON, EXIT_BUTTON,
+		RED_TEX, BLUE_TEX, BLACK_TEX, FIRE_TEX, HAY_TEX, BOMB, CHICKEN1, CHICKEN2,
+		COUNT
+	};
 };
 
 struct NORMAL_TEXTURES
@@ -97,6 +105,7 @@ class DirectXData
 {
 public:
 
+	bool collisionMatrix[COLLISION_LAYERS::COUNT][COLLISION_LAYERS::COUNT];
 	GW::GRAPHICS::GDirectX11Surface*	d3dSurface = nullptr;
 	ID3D11Device*						d3dDevice = nullptr;
 	IDXGISwapChain*						d3dSwapChain = nullptr;

@@ -10,9 +10,18 @@ bool CRendererManager::HasComponent(CObject _objToCheck, int _componentToCheck)
 	return false;
 }
 
-void CRendererManager::RenderObject(CObject _objToDraw)
+void CRendererManager::RenderObject(CObject* _objToDraw)
 {
 	rendereableObjects.push_back(_objToDraw);
+}
+
+void CRendererManager::RenderObjectCollider(CObject * _objToDraw)
+{
+	TComponent* tCollider = nullptr;
+	if (_objToDraw->GetComponent(COMPONENT_TYPE::COLLIDER, tCollider))
+	{
+		TColliderComponent* collider = (TColliderComponent*)tCollider;
+	}
 }
 
 bool CRendererManager::Draw()
@@ -46,8 +55,8 @@ bool CRendererManager::Draw()
 
 	/*********DRAW OTHER STUFF HERE************/
 
-	for (CObject c : rendereableObjects)
-		c.Draw();
+	for (CObject* c : rendereableObjects)
+		c->Draw();
 
 	UINT strides[] = { sizeof(TLineVertex) };
 	UINT offsets[] = { 0 };

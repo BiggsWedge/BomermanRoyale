@@ -13,11 +13,12 @@ struct OBJLoadInfo
 	bool floor;
 	bool destroyable;
 	bool item;
+	int collisionLayer;
 };
 
 class CObject
 {
-
+protected:
 	std::vector<TComponent*>			v_tComponents;
 	ID3D11DeviceContext*			d3dDeferredContext;
 
@@ -28,6 +29,7 @@ public:
 	bool GetComponent(int componentType, TComponent* & component);
 	void Draw();
 	bool Move(float _x, float _z);
+	bool Collides(CObject* _other);
 
 };
 

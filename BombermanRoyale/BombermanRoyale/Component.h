@@ -2,7 +2,7 @@
 
 #include "Utilities.h"
 
-struct COMPONENT_TYPE { enum { RENDERER = 0, MESH, TRANSFORM, TEXTURE, MATERIAL }; };
+struct COMPONENT_TYPE { enum { RENDERER = 0, MESH, TRANSFORM, TEXTURE, MATERIAL, COLLIDER }; };
 
 struct TComponent
 {
@@ -74,6 +74,22 @@ public:
 	TMaterialComponent();
 	~TMaterialComponent();
 };
+
+struct TColliderComponent : TComponent
+{
+private:
+public:
+	DirectX::BoundingOrientedBox d3dCollider;
+	bool isStatic;
+	DirectX::XMFLOAT3 TFL, TFR, TBL, TBR, BFL, BFR, BBL, BBR;
+	int collisionLayer;
+	TColliderComponent();
+	TColliderComponent(TMeshTemplate mTemplate, DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 position, int layer);
+
+	inline DirectX::BoundingOrientedBox GetCollider() { return d3dCollider; }
+};
+
+
 
 
 
