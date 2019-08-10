@@ -131,3 +131,77 @@ CObject* CEntityManager::BombExplosionZ(CObject* BombSource)
 
 	return explosion;
 }
+
+CObject* CEntityManager::ItemDrop(CObject* ItemSource)
+{
+	CObject* Item;
+	TComponent* transform;
+	TTransformComponent* cTransform;
+	ItemSource->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
+	cTransform = (TTransformComponent*)transform;
+
+	OBJLoadInfo loadInfo;
+
+	DirectX::XMFLOAT3 pos = cTransform->fPosition;
+
+	loadInfo.position = pos;
+	//int x = 0;
+	//int z = 0;
+	//if (pos.x >= 0) {
+	//	x = (pos.x + 1.25f) / 2.5f;
+	//	pos.x = ((float)x * 2.5f);
+	//}
+	//else {
+	//	x = (pos.x - 1.25f) / 2.5f;
+	//	pos.x = ((float)x * 2.5f);
+	//}
+
+	//if (pos.z >= 0) {
+	//	z = (pos.z + 1.25f) / 2.5f;
+	//	pos.z = ((float)z * 2.5f);
+	//}
+	//else {
+	//	z = (pos.z - 1.25f) / 2.5f;
+	//	pos.z = ((float)z * 2.5f);
+	//}
+	loadInfo.forwardVec = cTransform->fForwardVector;
+	loadInfo.meshID = 0;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.LoadState = 3;
+	loadInfo.destroyable = false;
+	loadInfo.floor = false;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 60.0f, 1.0f / 60.0f, 1.0f / 60.0f);
+	Item = CreateOBJFromTemplate(loadInfo);
+
+	return Item;
+}
+
+CObject* CEntityManager::SpawnObject(CObject* obj) {
+	CObject* Item;
+	TComponent* transform;
+	TTransformComponent* cTransform;
+	obj->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
+	cTransform = (TTransformComponent*)transform;
+
+	OBJLoadInfo loadInfo;
+
+	DirectX::XMFLOAT3 pos = cTransform->fPosition;
+
+	loadInfo.position = pos;
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.meshID = 0;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.LoadState = 3;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 10.0f, 1.0f / 10.0f, 1.0f / 10.0f);
+	Item = CreateOBJFromTemplate(loadInfo);
+
+	return Item;
+}

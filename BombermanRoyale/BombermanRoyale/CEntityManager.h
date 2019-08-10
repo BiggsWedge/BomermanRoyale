@@ -41,5 +41,7 @@ public:
 
 	CObject* BombExplosionX(CObject* BombSource);
 	CObject* BombExplosionZ(CObject* BombSource);
+	CObject* ItemDrop(CObject* ItemSource);
+	CObject* SpawnObject(CObject* obj);
 };
 

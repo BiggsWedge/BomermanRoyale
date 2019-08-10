@@ -61,6 +61,8 @@ bool P2EXISTS = false;
 bool ControlScreenToggle = false;
 bool Controller1Alive = false;
 bool Controller2Alive = false;
+
+int boxDropped;
 float3 P1POS = { -10.0f, 0.0f, 10.0f };
 float3 P2POS = { 10.0f, 0.0f, -5.0f };
 
@@ -494,9 +496,6 @@ void CGame::Run()
 							//	break;
 							//}
 						}
-
-
-
 					}
 				}
 				if(p1Move == true)
@@ -869,7 +868,7 @@ void CGame::Run()
 		
 		if (p1Ex)
 		{
-			for (int i = 0; i < objects.size() - 2; ++i)
+			for (int i = 0; i < objects.size(); ++i)
 			{
 				if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
 				{
@@ -878,20 +877,88 @@ void CGame::Run()
 					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 					{
 						renderer = (TTransformComponent*)cRenderer;
-						if (renderer->destroyable)
+
+						if (renderer->destroyable == true && renderer->item == true) 
 						{
 							if (abs(renderer->fPosition.x - p1EXx) < 4.5f && abs(renderer->fPosition.z - p1EXz) < 1.8f)
 							{
-								objects.erase(objects.begin() + i , objects.begin() + i+1);
+								item = p_cEntityManager->ItemDrop(objects.at(i));
+								objects.erase(objects.begin() + i, objects.begin() + i + 1);
+								//SpawnObject(i, objects, p_cRendererManager, p_cEntityManager);
+							}
+							else if (abs(renderer->fPosition.z - p1EXz) < 4.5f && abs(renderer->fPosition.x - p1EXx) < 1.8f)
+							{
+								item = p_cEntityManager->ItemDrop(objects.at(i));
+								objects.erase(objects.begin() + i, objects.begin() + i + 1);
+								//SpawnObject(i, objects, p_cRendererManager, p_cEntityManager);
+							}
+						}
+						else if (renderer->destroyable == true && renderer->item == false)
+						{
+							if (abs(renderer->fPosition.x - p1EXx) < 4.5f && abs(renderer->fPosition.z - p1EXz) < 1.8f)
+							{
+								objects.erase(objects.begin() + i, objects.begin() + i + 1);
 							}
 							else if (abs(renderer->fPosition.z - p1EXz) < 4.5f && abs(renderer->fPosition.x - p1EXx) < 1.8f)
 							{
 								objects.erase(objects.begin() + i, objects.begin() + i + 1);
 							}
+						}						
+					}
+				}
+			}
+		}
+		if (p2Ex)
+		{
+			for (int i = 0; i < objects.size(); ++i)
+			{
+				if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
+				{
+					TComponent* cRenderer = nullptr;
+					TTransformComponent* renderer = nullptr;
+					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+					{
+						renderer = (TTransformComponent*)cRenderer;
+
+						if (renderer->destroyable == true && renderer->item == true)
+						{
+							if (abs(renderer->fPosition.x - p2EXx) < 4.5f && abs(renderer->fPosition.z - p2EXz) < 1.8f)
+							{
+								item = p_cEntityManager->ItemDrop(objects.at(i));
+								objects.erase(objects.begin() + i, objects.begin() + i + 1);
+								//SpawnObject(i, objects, p_cRendererManager, p_cEntityManager);
+							}
+							else if (abs(renderer->fPosition.z - p2EXz) < 4.5f && abs(renderer->fPosition.x - p2EXx) < 1.8f)
+							{
+								item = p_cEntityManager->ItemDrop(objects.at(i));
+								objects.erase(objects.begin() + i, objects.begin() + i + 1);
+								//SpawnObject(i, objects, p_cRendererManager, p_cEntityManager);
+							}
+						}
+						else if (renderer->destroyable == true && renderer->item == false)
+						{
+							if (abs(renderer->fPosition.x - p2EXx) < 4.5f && abs(renderer->fPosition.z - p2EXz) < 1.8f)
+							{
+								objects.erase(objects.begin() + i, objects.begin() + i + 1);
+							}
+							else if (abs(renderer->fPosition.z - p2EXz) < 4.5f && abs(renderer->fPosition.x - p2EXx) < 1.8f)
+							{
+								objects.erase(objects.begin() + i, objects.begin() + i + 1);
+							}
 						}
 					}
-
 				}
+			}
+		}
+		if (item)
+		{
+			TComponent* cRenderer = nullptr;
+			TRendererComponent* renderer = nullptr;
+			if (item->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+			{
+				renderer = (TRendererComponent*)cRenderer;
+				if (renderer->iUsedLoadState == curGameState)
+					p_cRendererManager->RenderObject(*item);
 			}
 		}
 		if (P1EXISTS && curGameState == 3)
@@ -900,11 +967,9 @@ void CGame::Run()
 			{
 				if (abs(p1x - p1EXx) < 4.5f && abs(p1z - p1EXz) < 1.8f)
 				{
-
 					//delete p1;
 					p1 = nullptr;
 					P1EXISTS = false;
-
 				}
 				else if (abs(p1z - p1EXz) < 4.5f && abs(p1x - p1EXx) < 1.8f)
 				{
@@ -917,11 +982,9 @@ void CGame::Run()
 			{
 				if (abs(p1x - p2EXx) < 4.5f && abs(p1z - p2EXz) < 1.8f)
 				{
-
 					//delete p1;
 					p1 = nullptr;
 					P1EXISTS = false;
-
 				}
 				else if (abs(p1z - p2EXz) < 4.5f && abs(p1x - p2EXx) < 1.8f)
 				{
@@ -1023,6 +1086,7 @@ void CGame::LoadObject()
 	loadInfo.usedGeo = -1;
 	loadInfo.floor = false;
 	loadInfo.destroyable = true;
+	loadInfo.item = true;
 	loadInfo.hasCollider = true;
 	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
 	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
@@ -1078,6 +1142,7 @@ void CGame::LoadObject()
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.destroyable = true;
+	loadInfo.item = true;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -1156,32 +1221,31 @@ void CGame::LoadObject()
 
 			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 		}
-
 	}
 	for (float x = -7.5; x <= 7.5; x += 2.5f)
 	{
 		for (float z = -2.5; z <= 7.5; z += 2.5f)
 		{
-	loadInfo.position = { x, 0.0f, z };
-	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-	loadInfo.meshID = 0;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-	loadInfo.usedGeo = -1;
-	loadInfo.LoadState = 3;
-	loadInfo.floor = false;
-	loadInfo.destroyable = true;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+			loadInfo.position = { x, 0.0f, z };
+			loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+			loadInfo.meshID = 0;
+			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
+			loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+			loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+			loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+			loadInfo.usedGeo = -1;
+			loadInfo.LoadState = 3;
+			loadInfo.floor = false;
+			loadInfo.destroyable = true;
+			loadInfo.item == true;
+			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 		}
 
 	}
 
 	for (float x = -7.5; x <= 7.5; x += 2.5f)
 	{
-
 		loadInfo.position = { x, 0.0f, 10 };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
@@ -1195,6 +1259,8 @@ void CGame::LoadObject()
 
 
 		loadInfo.destroyable = true;
+
+				loadInfo.item == true;
 
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -1211,9 +1277,10 @@ void CGame::LoadObject()
 		loadInfo.floor = false;
 
 		loadInfo.destroyable = true;
-
+		loadInfo.item == true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 
 		loadInfo.position = { x, 0.0f, 12.5 };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
@@ -1228,8 +1295,12 @@ void CGame::LoadObject()
 
 		loadInfo.destroyable = true;
 
+				loadInfo.item == true;
+
+
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 
 		loadInfo.position = { x, 0.0f, -7.5 };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
@@ -1244,6 +1315,7 @@ void CGame::LoadObject()
 
 		loadInfo.destroyable = true;
 
+		loadInfo.item == true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
@@ -1263,8 +1335,13 @@ void CGame::LoadObject()
 
 		loadInfo.destroyable = true;
 
+
+				loadInfo.item == true;
+
+
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 
 		loadInfo.position = { -10, 0.0f, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
@@ -1279,8 +1356,11 @@ void CGame::LoadObject()
 
 		loadInfo.destroyable = true;
 
+				loadInfo.item == true;
+
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 
 		loadInfo.position = { 10, 0.0f, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
@@ -1292,13 +1372,13 @@ void CGame::LoadObject()
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
-
+		loadInfo.item == true;
 		loadInfo.destroyable = true;
-
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = {12.5, 0.0f, z };
+
+		loadInfo.position = { 12.5, 0.0f, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
@@ -1308,22 +1388,15 @@ void CGame::LoadObject()
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
-
-
 		loadInfo.destroyable = true;
+		loadInfo.item == true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
 	for (float x = -15; x <= 15; x += 2.5f)
 	{
-		loadInfo.item == false;
-		if (x == -7.5 || x == 7.5)
-		{
-			if (rand() % 4 > 0)
-			{
-				loadInfo.item == true;
-			}
-		}
+
+
 		loadInfo.position = { x, 0, -10 };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
@@ -1331,6 +1404,7 @@ void CGame::LoadObject()
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
 		loadInfo.destroyable = false;
+
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -1345,24 +1419,18 @@ void CGame::LoadObject()
 	}
 	for (float z = -7.5; z <= 12.5; z += 2.5f)
 	{
-		loadInfo.item == false;
-		if (z == -2.5 || z == 7.5)
-		{
-			if (rand() % 4 > 0)
-			{
-				loadInfo.item == true;
-			}
-		}
+
 		loadInfo.position = { -15, 0, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
 		loadInfo.meshID = 0;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
+
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = {15, 0, z };
+		loadInfo.position = { 15, 0, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
 		loadInfo.meshID = 0;
@@ -1542,7 +1610,7 @@ void CGame::LoadObject()
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f , 1.0f, 1.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	p1 = objects.at(objects.size() - 1);
 	P1EXISTS = true;
@@ -1562,10 +1630,6 @@ CGame::~CGame()
 
 void CGame::WindowResize()
 {
-
-
-
-
 	if (FullScreen)
 	{
 		g_pWindow->GetClientWidth(width);
@@ -1677,7 +1741,10 @@ void CGame::WindowResize()
 //		}
 //	}
 //}
-
+void CGame::SpawnObject(int i, std::vector<CObject*> objects, CRendererManager* p_cRendererManager, CEntityManager* p_cEntityManager) {
+	item = p_cEntityManager->ItemDrop(objects[i]);
+	p_cRendererManager->RenderObject(*item);
+ }
 void CGame::GamePlayLoop()
 {
 

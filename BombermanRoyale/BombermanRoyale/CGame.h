@@ -2,6 +2,7 @@
 
 #include "CRendererManager.h"
 #include "CEntityManager.h"
+#include "CObject.h"
 #include "pools.h"
 #include "Utilities.h"
 
@@ -27,12 +28,13 @@ class CGame
 	CObject* p2, *p1;
 	CObject* p1B = nullptr, *p2B = nullptr;
 	CObject* p1Ex = nullptr, *p1Ez = nullptr,*p2Ex = nullptr, *p2Ez = nullptr;
+	CObject* item = nullptr;
 	float p1BTimer = 0.0f, p2BTimer = 0.0f;
 	float p1ETimer = 0.0f, p2ETimer = 0.0f;
 	int p1BIndex, p2BIndex;
 	bool p1Move = true;
 	bool p2Move = true;
-
+	bool itemDropped = false;
 
 public:
 	bool FullScreen = false;
@@ -46,7 +48,7 @@ public:
 	//void InitSortedParticles(sorted_pool_t<particle, 1000>& sortedPool, float deltaTime);
 	
 	void LoadObject();
-
+	void SpawnObject(int i, std::vector<CObject*> objects, CRendererManager* p_cRendererManager, CEntityManager* p_cEntityManager);
 
 	CGame();
 
