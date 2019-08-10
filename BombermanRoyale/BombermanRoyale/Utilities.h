@@ -210,6 +210,8 @@ size_t get_line_vert_capacity();
 
 void drawAABB(float3 point_a, float3 point_b, float3 point_c, float3 point_d, float3 point_e, float3 point_f, float3 point_g, float3 point_h, float4 color1, float4 color2);
 
+void drawAABB(DirectX::XMFLOAT3 tlf, DirectX::XMFLOAT3 tlb, DirectX::XMFLOAT3 trf, DirectX::XMFLOAT3 trb, DirectX::XMFLOAT3 bfl, DirectX::XMFLOAT3 bfr, DirectX::XMFLOAT3 bbl, DirectX::XMFLOAT3 bbr, DirectX::XMFLOAT4 color);
+
 float3 XMVector2Float3(DirectX::XMVECTOR vector);
 
 DirectX::XMVECTOR Float32XMVector(float3 point);

@@ -44,6 +44,7 @@ void CObject::Draw()
 			break;
 		}
 	}
+
 	const UINT offsets[] = { 0 };
 	const UINT strides[] = { sizeof(TSimpleVertex) };
 
@@ -152,6 +153,12 @@ bool CObject::Move(float _x, float _z)
 	if (!GetComponent(COMPONENT_TYPE::TRANSFORM, cTransform))
 		return false;
 	transform = (TTransformComponent*)cTransform;
+	TColliderComponent* collider;
+	if (!GetComponent(COMPONENT_TYPE::COLLIDER, cTransform))
+		return false;
+	collider = (TColliderComponent*)cTransform;
+	collider->d3dCollider.Center.x += _x;
+	collider->d3dCollider.Center.z += _z;
 
 	transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
 
@@ -160,6 +167,27 @@ bool CObject::Move(float _x, float _z)
 	transform->fPosition = DirectX::XMFLOAT3(pos.x, pos.y, pos.z);
 
 	return true;
+}
+
+bool CObject::Collides(CObject * _other)
+{
+	TComponent* temp = nullptr;
+	if (!_other->GetComponent(COMPONENT_TYPE::COLLIDER, temp))
+		return false;
+	TColliderComponent* theyCollider = (TColliderComponent*)temp;
+	temp = nullptr;
+	if (!GetComponent(COMPONENT_TYPE::COLLIDER, temp))
+		return false;
+	TColliderComponent* thisCollider = (TColliderComponent*)temp;
+
+	if (g_d3dData->collisionMatrix[thisCollider->collisionLayer][theyCollider->collisionLayer])
+	{
+		if (thisCollider->d3dCollider.Intersects(theyCollider->d3dCollider))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 

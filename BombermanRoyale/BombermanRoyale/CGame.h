@@ -30,6 +30,7 @@ class CGame
 	CRendererManager* p_cRendererManager;
 	CEntityManager* p_cEntityManager;
 	std::vector<CObject*> objects;
+	std::vector<CObject*> menuObjects;
 	std::vector<CObject*> Xexplosions;
 	std::vector<CObject*> Zexplosions;
 	std::vector<double> explosionTimers;
@@ -40,12 +41,9 @@ class CGame
 	int maxNumBombs = 24;
 	std::vector<CBomb*> v_cBombs;
 
-	//CObject* p1Ex = nullptr, *p1Ez = nullptr, *p2Ex = nullptr, *p2Ez = nullptr;
-	//float p1BTimer = 0.0f, p2BTimer = 0.0f;
-	//float p1ETimer = 0.0f, p2ETimer = 0.0f;
-	//int p1BIndex, p2BIndex;
-	bool p1Move = true;
-	bool p2Move = true;
+	double mouseIdleTimer;
+	bool prevShowMouse = true;
+	bool showMouse = true;
 
 
 public:
@@ -70,5 +68,7 @@ public:
 	void setGameState(int _gameState);
 	void ClearPlayersAndBombs();
 	void updateBombs(double timePassed);
+	void loadMap(int index);
+	bool loadTempMenus();
 };
 

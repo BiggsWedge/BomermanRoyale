@@ -321,6 +321,19 @@ void drawAABB(float3 point_a, float3 point_b, float3 point_c, float3 point_d, fl
 	add_line(point_d, point_h, color1, color2);
 }
 
+void drawAABB(DirectX::XMFLOAT3 tlf, DirectX::XMFLOAT3 tlb, DirectX::XMFLOAT3 trf, DirectX::XMFLOAT3 trb, DirectX::XMFLOAT3 blf, DirectX::XMFLOAT3 brf, DirectX::XMFLOAT3 blb, DirectX::XMFLOAT3 brb, DirectX::XMFLOAT4 color)
+{
+	add_line(tlf, tlb, color);
+	add_line(tlf, trf, color);
+	add_line(tlf, blf, color);
+
+	add_line(brb, trb, color);
+	add_line(brb, blb, color);
+	add_line(brb, brf, color);
+}
+
+
+
 float3 XMVector2Float3(DirectX::XMVECTOR vector)
 {
 	float3 point;

@@ -15,6 +15,15 @@ void CRendererManager::RenderObject(CObject* _objToDraw)
 	rendereableObjects.push_back(_objToDraw);
 }
 
+void CRendererManager::RenderObjectCollider(CObject * _objToDraw)
+{
+	TComponent* tCollider = nullptr;
+	if (_objToDraw->GetComponent(COMPONENT_TYPE::COLLIDER, tCollider))
+	{
+		TColliderComponent* collider = (TColliderComponent*)tCollider;
+	}
+}
+
 bool CRendererManager::Draw()
 {
 

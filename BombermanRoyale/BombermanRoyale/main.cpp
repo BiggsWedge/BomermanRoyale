@@ -18,7 +18,6 @@ int main(void)
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 #endif
 	InitializeGlobals();
-
 	LoadTextures();
 	LoadModels();
 	LoadMenuScreen(15, 11, 0, ".//Assets//Menu.mat");
@@ -32,7 +31,7 @@ int main(void)
 		return 1;
 	}
 	g_pLogger->LogCatergorized("SUCCESS", "Successfully initialized the game");
-	p_cGame->LoadObject();
+	p_cGame->loadTempMenus();
 	p_cGame->Run();
 
 	delete p_cGame;
@@ -40,11 +39,8 @@ int main(void)
 
 	v_tMeshTemplates.clear();
 
-
-
 	g_pWindow->DecrementCount();
 	g_pLogger->DecrementCount();
-
 	return 0;
 }
 
