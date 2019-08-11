@@ -88,6 +88,7 @@ TMeshComponent::TMeshComponent()
 TMeshComponent::TMeshComponent(TMeshTemplate _template, TCollider tCollider, bool noCollider)
 {
 	componentType = COMPONENT_TYPE::MESH;
+	 mName = _template.sName;
 
 	indexCount = _template.v_iIndices.size();
 	vertexCount = _template.v_tVertices.size();
@@ -142,8 +143,25 @@ TMeshComponent::~TMeshComponent()
 
 TMaterialComponent::TMaterialComponent()
 {
-
+	componentType = COMPONENT_TYPE::MATERIAL;
 }
+
+TMaterialComponent::TMaterialComponent(TMeshTemplate _template)
+{
+	componentType = COMPONENT_TYPE::MATERIAL;
+	filepaths = _template.filePaths;
+	mats = _template.mats;
+	_mat = _template._mat;
+	_textures[TEXTURES::DIFFUSE] = _template._textures[TEXTURES::DIFFUSE];
+	_textures[TEXTURES::EMISSIVE] = _template._textures[TEXTURES::EMISSIVE];
+	_textures[TEXTURES::SPECULAR] = _template._textures[TEXTURES::SPECULAR];
+	_samState = _template._samState;
+	_srv[TEXTURES::DIFFUSE] = _template._srv[TEXTURES::DIFFUSE];
+	_srv[TEXTURES::EMISSIVE] = _template._srv[TEXTURES::EMISSIVE];
+	_srv[TEXTURES::SPECULAR] = _template._srv[TEXTURES::SPECULAR];
+}
+
+
 
 TMaterialComponent::~TMaterialComponent()
 {
@@ -156,7 +174,14 @@ TMaterialComponent::~TMaterialComponent()
 
 TAnimComponent::TAnimComponent()
 {
-	
+	componentType = COMPONENT_TYPE::ANIM;
+}
+
+TAnimComponent::TAnimComponent(TMeshTemplate _template)
+{
+	componentType = COMPONENT_TYPE::ANIM;
+	_anim = _template._anim;
+	_bindPose = _template._bindPose;
 }
 
 TAnimComponent::~TAnimComponent()

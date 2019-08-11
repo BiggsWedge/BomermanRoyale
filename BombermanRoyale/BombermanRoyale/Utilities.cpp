@@ -158,32 +158,194 @@ void LoadModel(TMeshLoadInfo loadInfo)
 	temp.uID = index;
 	temp.sName = loadInfo.name;
 
-	fstream file{ loadInfo.meshFile, ios::in | ios::binary };
-
-	if (!file.is_open())
+	using namespace DirectX;
+	if (loadInfo.meshFile)
 	{
-		std::string fail = "Failed to load " + loadInfo.name;
-		g_pLogger->LogCatergorized("FAILURE", fail.c_str());
-		return;
+		std::fstream file{ loadInfo.meshFile, std::ios_base::in | std::ios_base::binary };
+
+		assert(file.is_open());
+
+		if (!file.is_open())
+		{
+			assert(false);
+			return;
+		}
+
+		file.read((char*)&numIndices, sizeof(int));
+		temp.v_iIndices.resize(numIndices);
+		file.read((char*)temp.v_iIndices.data(), sizeof(int) * numIndices);
+
+		file.read((char*)&numVerts, sizeof(int));
+		temp.v_tVertices.resize(numVerts);
+		file.read((char*)temp.v_tVertices.data(), sizeof(TSimpleVertex) * numVerts);
+
+		file.close();
+
+		if (loadInfo.name == "BattleMage")
+		{
+			for (auto& v : temp.v_tVertices)
+			{
+				v.fPosition.x = v.fPosition.x;
+			}
+		}
+		else
+		{
+			for (auto& v : temp.v_tVertices)
+			{
+				v.fPosition.x = -v.fPosition.x;
+				v.fNormal.x = -v.fNormal.x;
+			}
+		}
 	}
 
-	file.read((char*)&numIndices, sizeof(int));
-	temp.v_iIndices.resize(numIndices);
-	file.read((char*)temp.v_iIndices.data(), sizeof(int) * numIndices);
-
-	file.read((char*)&numVerts, sizeof(int));
-	temp.v_tVertices.resize(numVerts);
-	file.read((char*)temp.v_tVertices.data(), sizeof(TSimpleVertex) * numVerts);
-
-	file.close();
-
-	for (auto& v : temp.v_tVertices)
+	if (loadInfo.matFile)
 	{
-		v.fPosition.x = -v.fPosition.x;
-		v.fNormal.x = -v.fNormal.x;
+		std::fstream inMatFile{ loadInfo.matFile, std::ios_base::in | std::ios_base::binary };
+
+		assert(inMatFile.is_open());
+
+		if (!inMatFile.is_open())
+		{
+			assert(false);
+			return;
+		}
+
+		int numMatFiles;
+		inMatFile.read((char*)&numMatFiles, sizeof(int));
+
+
+		for (int i = 0; i < numMatFiles; ++i)
+		{
+			material_t tempmat;
+			for (int j = 0; j < 4; ++j)
+			{
+				XMVECTOR temp2;
+				inMatFile.read((char*)&tempmat[j].value, sizeof(float) * 3);
+				inMatFile.read((char*)&tempmat[j].factor, sizeof(float));
+				inMatFile.read((char*)&tempmat[j].input, sizeof(int64_t));
+				if (j == material_t::COMPONENT::DIFFUSE)
+				{
+					temp2.m128_f32[0] = tempmat[j].value[0];
+					temp2.m128_f32[1] = tempmat[j].value[1];
+					temp2.m128_f32[2] = tempmat[j].value[2];
+					XMStoreFloat3(&temp._mat.fSurfaceDiffuse, temp2);
+					temp._mat.fDiffuseFactor = tempmat[j].factor;
+				}
+				if (j == material_t::COMPONENT::EMISSIVE)
+				{
+					temp2.m128_f32[0] = tempmat[j].value[0];
+					temp2.m128_f32[1] = tempmat[j].value[1];
+					temp2.m128_f32[2] = tempmat[j].value[2];
+					XMStoreFloat3(&temp._mat.fSurfaceEmissive, temp2);
+					temp._mat.fEmissiveFactor = tempmat[j].factor;
+				}
+				if (j == material_t::COMPONENT::SPECULAR)
+				{
+					temp2.m128_f32[0] = tempmat[j].value[0];
+					temp2.m128_f32[1] = tempmat[j].value[1];
+					temp2.m128_f32[2] = tempmat[j].value[2];
+					XMStoreFloat3(&temp._mat.fSurfaceSpecular, temp2);
+					temp._mat.fSpecularFactor = tempmat[j].factor;
+				}
+				if (j == material_t::COMPONENT::SHININESS)
+				{
+					temp2.m128_f32[0] = tempmat[j].value[0];
+					temp2.m128_f32[1] = tempmat[j].value[1];
+					temp2.m128_f32[2] = tempmat[j].value[2];
+					XMStoreFloat3(&temp._mat.fSurfaceShiny, temp2);
+					temp._mat.fShinyFactor = tempmat[j].factor;
+				}
+			}
+			temp.mats.push_back(tempmat);
+		}
+
+		int numPathsFiles;
+		inMatFile.read((char*)&numPathsFiles, sizeof(int));
+
+		for (int i = 0; i < numPathsFiles; ++i)
+		{
+			file_path_t _file;
+			inMatFile.read(_file.data(), sizeof(char) * 260);
+			temp.filePaths.push_back(_file);
+		}
+		inMatFile.close();
+
+	}
+	if (loadInfo.animFile)
+	{
+		std::fstream inAnimFile(loadInfo.animFile, std::ios_base::in | std::ios_base::binary);
+
+		assert(inAnimFile.is_open());
+
+		int num;
+		inAnimFile.read((char*)&num, sizeof(int));
+		temp._bindPose.resize(num);
+		for (int i = 0; i < num; ++i)
+		{
+			inAnimFile.read((char*)&temp._bindPose[i].parentIndex, sizeof(int));
+			DirectX::XMFLOAT4X4 mat;
+			inAnimFile.read((char*)mat.m, sizeof(float) * 16);
+			temp._bindPose[i]._mat = DirectX::XMLoadFloat4x4(&mat);
+		}
+
+
+
+
+		double _dur;
+		inAnimFile.read((char*)&_dur, sizeof(double));
+		temp._anim.duration = _dur;
+		int numFrames;
+		inAnimFile.read((char*)&numFrames, sizeof(int));
+
+		temp._anim.frames.resize(numFrames);
+		for (int i = 0; i < numFrames; ++i)
+		{
+			KeyFrame _key;
+			inAnimFile.read((char*)&_key.time, sizeof(double));
+			int numJoints;
+			inAnimFile.read((char*)&numJoints, sizeof(int));
+			_key.joints.resize(numJoints);
+
+			for (int j = 0; j < numJoints; ++j)
+			{
+				inAnimFile.read((char*)&_key.joints[j].parentIndex, sizeof(int));
+				DirectX::XMFLOAT4X4 _j;
+				inAnimFile.read((char*)_j.m, sizeof(float) * 16);
+				_key.joints[j]._mat = DirectX::XMLoadFloat4x4(&_j);
+			}
+			temp._anim.frames[i] = _key;
+		}
+		inAnimFile.close();
+		temp._anim.frames.push_back(temp._anim.frames[0]);
+		temp._anim.frames[temp._anim.frames.size() - 1].time = temp._anim.duration;
 	}
 
 	v_tMeshTemplates.push_back(temp);
+
+	//fstream file{ loadInfo.meshFile, ios::in | ios::binary };
+	//
+	//if (!file.is_open())
+	//{
+	//	std::string fail = "Failed to load " + loadInfo.name;
+	//	g_pLogger->LogCatergorized("FAILURE", fail.c_str());
+	//	return;
+	//}
+	//
+	//file.read((char*)&numIndices, sizeof(int));
+	//temp.v_iIndices.resize(numIndices);
+	//file.read((char*)temp.v_iIndices.data(), sizeof(int) * numIndices);
+	//
+	//file.read((char*)&numVerts, sizeof(int));
+	//temp.v_tVertices.resize(numVerts);
+	//file.read((char*)temp.v_tVertices.data(), sizeof(TSimpleVertex) * numVerts);
+	//
+	//file.close();
+	//
+	//for (auto& v : temp.v_tVertices)
+	//{
+	//	v.fPosition.x = -v.fPosition.x;
+	//	v.fNormal.x = -v.fNormal.x;
+	//}
 }
 
 void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) {
@@ -428,103 +590,108 @@ void GetCorners(float3 _center, float3 _extents, float3*& corners)
 void TMeshTemplate::loadModel(const char* modelFile, const char* matFile, const char* animFile)
 {
 	using namespace DirectX;
-	std::fstream file{ modelFile, std::ios_base::in | std::ios_base::binary };
-
-	assert(file.is_open());
-
-	if (!file.is_open())
+	if (modelFile)
 	{
-		assert(false);
-		return;
-	}
+		std::fstream file{ modelFile, std::ios_base::in | std::ios_base::binary };
 
-	file.read((char*)&numIndices, sizeof(int));
-	v_iIndices.resize(numIndices);
-	file.read((char*)v_iIndices.data(), sizeof(int) * numIndices);
+		assert(file.is_open());
 
-	file.read((char*)&numVerts, sizeof(int));
-	v_tVertices.resize(numVerts);
-	file.read((char*)v_tVertices.data(), sizeof(TSimpleVertex) * numVerts);
-
-	file.close();
-
-
-	for (auto& v : v_tVertices)
-	{
-		v.fPosition.x = v.fPosition.x;
-	}
-
-	std::fstream inMatFile{ matFile, std::ios_base::in | std::ios_base::binary };
-
-	assert(inMatFile.is_open());
-
-	if (!inMatFile.is_open())
-	{
-		assert(false);
-		return;
-	}
-
-	int numMatFiles;
-	inMatFile.read((char*)&numMatFiles, sizeof(int));
-
-
-	for (int i = 0; i < numMatFiles; ++i)
-	{
-		material_t temp;
-		for (int j = 0; j < 4; ++j)
+		if (!file.is_open())
 		{
-			XMVECTOR temp2;
-			inMatFile.read((char*)&temp[j].value, sizeof(float) * 3);
-			inMatFile.read((char*)&temp[j].factor, sizeof(float));
-			inMatFile.read((char*)&temp[j].input, sizeof(int64_t));
-			if (j == material_t::COMPONENT::DIFFUSE)
-			{
-				temp2.m128_f32[0] = temp[j].value[0];
-				temp2.m128_f32[1] = temp[j].value[1];
-				temp2.m128_f32[2] = temp[j].value[2];
-				XMStoreFloat3(&_mat.fSurfaceDiffuse, temp2);
-				_mat.fDiffuseFactor = temp[j].factor;
-			}
-			if (j == material_t::COMPONENT::EMISSIVE)
-			{
-				temp2.m128_f32[0] = temp[j].value[0];
-				temp2.m128_f32[1] = temp[j].value[1];
-				temp2.m128_f32[2] = temp[j].value[2];
-				XMStoreFloat3(&_mat.fSurfaceEmissive, temp2);
-				_mat.fEmissiveFactor = temp[j].factor;
-			}
-			if (j == material_t::COMPONENT::SPECULAR)
-			{
-				temp2.m128_f32[0] = temp[j].value[0];
-				temp2.m128_f32[1] = temp[j].value[1];
-				temp2.m128_f32[2] = temp[j].value[2];
-				XMStoreFloat3(&_mat.fSurfaceSpecular, temp2);
-				_mat.fSpecularFactor = temp[j].factor;
-			}
-			if (j == material_t::COMPONENT::SHININESS)
-			{
-				temp2.m128_f32[0] = temp[j].value[0];
-				temp2.m128_f32[1] = temp[j].value[1];
-				temp2.m128_f32[2] = temp[j].value[2];
-				XMStoreFloat3(&_mat.fSurfaceShiny, temp2);
-				_mat.fShinyFactor = temp[j].factor;
-			}
+			assert(false);
+			return;
 		}
-		mats.push_back(temp);
+
+		file.read((char*)&numIndices, sizeof(int));
+		v_iIndices.resize(numIndices);
+		file.read((char*)v_iIndices.data(), sizeof(int) * numIndices);
+
+		file.read((char*)&numVerts, sizeof(int));
+		v_tVertices.resize(numVerts);
+		file.read((char*)v_tVertices.data(), sizeof(TSimpleVertex) * numVerts);
+
+		file.close();
+
+
+		for (auto& v : v_tVertices)
+		{
+			v.fPosition.x = v.fPosition.x;
+		}
 	}
 
-	int numPathsFiles;
-	inMatFile.read((char*)&numPathsFiles, sizeof(int));
-
-	for (int i = 0; i < numPathsFiles; ++i)
+	if (matFile)
 	{
-		file_path_t _file;
-		inMatFile.read(_file.data(), sizeof(char) * 260);
-		filePaths.push_back(_file);
+		std::fstream inMatFile{ matFile, std::ios_base::in | std::ios_base::binary };
+
+		assert(inMatFile.is_open());
+
+		if (!inMatFile.is_open())
+		{
+			assert(false);
+			return;
+		}
+
+		int numMatFiles;
+		inMatFile.read((char*)&numMatFiles, sizeof(int));
+
+
+		for (int i = 0; i < numMatFiles; ++i)
+		{
+			material_t temp;
+			for (int j = 0; j < 4; ++j)
+			{
+				XMVECTOR temp2;
+				inMatFile.read((char*)&temp[j].value, sizeof(float) * 3);
+				inMatFile.read((char*)&temp[j].factor, sizeof(float));
+				inMatFile.read((char*)&temp[j].input, sizeof(int64_t));
+				if (j == material_t::COMPONENT::DIFFUSE)
+				{
+					temp2.m128_f32[0] = temp[j].value[0];
+					temp2.m128_f32[1] = temp[j].value[1];
+					temp2.m128_f32[2] = temp[j].value[2];
+					XMStoreFloat3(&_mat.fSurfaceDiffuse, temp2);
+					_mat.fDiffuseFactor = temp[j].factor;
+				}
+				if (j == material_t::COMPONENT::EMISSIVE)
+				{
+					temp2.m128_f32[0] = temp[j].value[0];
+					temp2.m128_f32[1] = temp[j].value[1];
+					temp2.m128_f32[2] = temp[j].value[2];
+					XMStoreFloat3(&_mat.fSurfaceEmissive, temp2);
+					_mat.fEmissiveFactor = temp[j].factor;
+				}
+				if (j == material_t::COMPONENT::SPECULAR)
+				{
+					temp2.m128_f32[0] = temp[j].value[0];
+					temp2.m128_f32[1] = temp[j].value[1];
+					temp2.m128_f32[2] = temp[j].value[2];
+					XMStoreFloat3(&_mat.fSurfaceSpecular, temp2);
+					_mat.fSpecularFactor = temp[j].factor;
+				}
+				if (j == material_t::COMPONENT::SHININESS)
+				{
+					temp2.m128_f32[0] = temp[j].value[0];
+					temp2.m128_f32[1] = temp[j].value[1];
+					temp2.m128_f32[2] = temp[j].value[2];
+					XMStoreFloat3(&_mat.fSurfaceShiny, temp2);
+					_mat.fShinyFactor = temp[j].factor;
+				}
+			}
+			mats.push_back(temp);
+		}
+
+		int numPathsFiles;
+		inMatFile.read((char*)&numPathsFiles, sizeof(int));
+
+		for (int i = 0; i < numPathsFiles; ++i)
+		{
+			file_path_t _file;
+			inMatFile.read(_file.data(), sizeof(char) * 260);
+			filePaths.push_back(_file);
+		}
+		inMatFile.close();
+
 	}
-	inMatFile.close();
-
-
 	if (animFile)
 	{
 		std::fstream inAnimFile(animFile, std::ios_base::in | std::ios_base::binary);
@@ -644,6 +811,8 @@ void TMeshTemplate::initialize(ID3D11Device* _device)
 
 void TMeshTemplate::render(ID3D11DeviceContext* _context)
 {
+
+
 	UINT strides = sizeof(TSimpleVertex);
 	UINT offsets = 0;
 	

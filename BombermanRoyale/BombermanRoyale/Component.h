@@ -60,6 +60,7 @@ public:
 	ID3D11Buffer*		d3dIndexBuffer;
 	TCollider mCollider;
 	bool hasCollider;
+	std::string mName;
 	TMeshComponent();
 	TMeshComponent(TMeshTemplate _template, TCollider tCollider, bool noCollider);
 	~TMeshComponent();
@@ -68,18 +69,27 @@ public:
 struct TMaterialComponent : TComponent
 {
 private:
-	int componentType = COMPONENT_TYPE::MATERIAL;
 public:
+	std::vector<file_path_t> filepaths;
+	std::vector<material_t> mats;
+	TMaterial _mat;
+	enum TEXTURES { DIFFUSE = 0, EMISSIVE, SPECULAR, COUNT };
+	ID3D11ShaderResourceView*	_srv[TEXTURES::COUNT];
+	ID3D11Resource*				_textures[TEXTURES::COUNT];
+	ID3D11SamplerState*			_samState;
 	TMaterialComponent();
+	TMaterialComponent(TMeshTemplate _template);
 	~TMaterialComponent();
 };
 
 struct TAnimComponent : TComponent
 {
 private:
-	int componentType = COMPONENT_TYPE::ANIM;
 public:
+	std::vector<joint> _bindPose;
+	AnimationClip _anim;
 	TAnimComponent();
+	TAnimComponent(TMeshTemplate _template);
 	~TAnimComponent();
 };
 

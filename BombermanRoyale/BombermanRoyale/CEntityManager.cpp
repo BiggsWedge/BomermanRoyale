@@ -27,6 +27,12 @@ CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 	TTextureComponent* tex = new TTextureComponent(loadInfo.usedDiffuse);
 	temp->AddComponent((TComponent*)tex);
 
+	TMaterialComponent* mat = new TMaterialComponent(v_tMeshTemplates.at(loadInfo.meshID));
+	temp->AddComponent((TComponent*)mat);
+
+	TAnimComponent* anim = new TAnimComponent(v_tMeshTemplates.at(loadInfo.meshID));
+	temp->AddComponent((TComponent*)anim);
+
 	return temp;
 }
 

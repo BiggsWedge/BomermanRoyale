@@ -42,10 +42,10 @@ bool CRendererManager::Draw()
 
 	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView, bg_green);
 	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
-	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
+	//g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
 
 	/*********DRAW OTHER STUFF HERE************/
-	v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext);
+	//v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext);
 	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState);
 	for (CObject c : rendereableObjects)
 		c.Draw();
