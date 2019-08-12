@@ -480,6 +480,8 @@ void CGame::LoadObject()
 			loadInfo.floor = true;
 			loadInfo.hasCollider = true;
 			loadInfo.destroyable = false;
+			loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+			loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 			loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
 			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 			//collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
