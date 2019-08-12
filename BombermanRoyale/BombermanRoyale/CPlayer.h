@@ -7,7 +7,7 @@ class CPlayer : public CObject
 {
 private:
 	std::vector<int> bombs;
-	int numBombs = 1;
+	int numBombs = 2;
 	bool alive;
 	int controllerIndex;
 

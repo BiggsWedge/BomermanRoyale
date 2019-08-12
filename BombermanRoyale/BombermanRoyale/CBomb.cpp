@@ -13,8 +13,7 @@ CBomb::~CBomb()
 
 void CBomb::Explode()
 {
-	g_pSoundPlayer->Play();
-	alive = false;
+	timer = maxTime - 0.01f;
 }
 
 void CBomb::initialize(CPlayer* parent)

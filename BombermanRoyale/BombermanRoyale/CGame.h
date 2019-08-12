@@ -70,5 +70,6 @@ public:
 	void updateBombs(double timePassed);
 	void loadMap(int index);
 	bool loadTempMenus();
+	void PlayerCollision(CPlayer* playerToCheck, CObject* cObj);
 };
 

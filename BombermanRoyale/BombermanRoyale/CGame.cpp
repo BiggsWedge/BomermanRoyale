@@ -18,11 +18,11 @@ struct key
 };
 
 
-
 struct CONTROL_KEYS
 {
 	enum { UP = 0, DOWN, LEFT, RIGHT, BOMB, COUNT };
 };
+
 struct KeyboardInput
 {
 	std::vector<key> controls;
@@ -713,7 +713,6 @@ void CGame::GamePlayLoop(double timePassed)
 		if (!currPlayer)
 			continue;
 
-
 		float isUpPressed = 0.0f, isDownPressed = 0.0f, isLeftPressed = 0.0f, isRightPressed = 0.0f, isSouthPressed = 0.0f;
 		bool controllerConnected;
 		g_pControllerInput->IsConnected(currPlayer->GetControllerIndex(), controllerConnected);
@@ -742,249 +741,50 @@ void CGame::GamePlayLoop(double timePassed)
 		}
 
 		if (isUpPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::UP).held())
-		{
-			canMove = true;
-			for (int i = 0; i < objects.size(); ++i)
-			{
-				if (currPlayer->Collides(objects[i]))
-				{
-					canMove = false;
-				}
-				/*
-				if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-				{
-					TComponent* cTransform = nullptr;
-					TTransformComponent* transform = nullptr;
-					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cTransform))
-					{
-						transform = (TTransformComponent*)cTransform;
-						float dZ = abs(pTransform->fPosition.z - transform->fPosition.z);
-						float dX = abs(pTransform->fPosition.x - transform->fPosition.x);
-						if (dZ < 2.5f && !transform->nFloor && dX < 2.55f)
-						{
-							if (pTransform->fPosition.z < transform->fPosition.z)
-							{
-								canMove = false;
-								break;
-							}
-						}
-					}
-				}
-				*/
-			}
-			if (canMove == true)
-				deltaZ += timePassed * PLAYER_SPEED;
-		}
+			deltaZ += timePassed * PLAYER_SPEED;
+
 		if (isDownPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::DOWN).held())
-		{
-			canMove = true;
+			deltaZ -= timePassed * PLAYER_SPEED;
 
-			for (int i = 0; i < objects.size() - 2; ++i)
-			{
-				if (currPlayer->Collides(objects[i]))
-				{
-					canMove = false;
-				}
-				/*
-					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-					{
-						TComponent* cTransform = nullptr;
-						TTransformComponent* transform = nullptr;
-						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cTransform))
-						{
-							transform = (TTransformComponent*)cTransform;
-							float dZ = abs(pTransform->fPosition.z - transform->fPosition.z);
-							float dX = abs(pTransform->fPosition.x - transform->fPosition.x);
-							if (dZ < 2.5f && !transform->nFloor && dX < 2.55f)
-							{
-								if (pTransform->fPosition.z > transform->fPosition.z)
-								{
-									canMove = false;
-									break;
-								}
-							}
-						}
-					}
-				*/
-			}
-			if (canMove == true)
-				deltaZ -= timePassed * PLAYER_SPEED;
-		}
 		if (isLeftPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::LEFT).held())
-		{
-			canMove = true;
+			deltaX -= timePassed * PLAYER_SPEED;
 
-			for (int i = 0; i < objects.size() - 2; ++i)
-			{
-				if (currPlayer->Collides(objects[i]))
-				{
-					canMove = false;
-				}
-				/*
-					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-					{
-						TComponent* cTransform = nullptr;
-						TTransformComponent* transform = nullptr;
-						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cTransform))
-						{
-							transform = (TTransformComponent*)cTransform;
-							float dZ = abs(pTransform->fPosition.z - transform->fPosition.z);
-							float dX = abs(pTransform->fPosition.x - transform->fPosition.x);
-							if (dZ < 2.2f && !transform->nFloor && dX < 1.5f)
-							{
-								if (pTransform->fPosition.x > transform->fPosition.x)
-								{
-									canMove = false;
-									break;
-								}
-							}
-						}
-					}
-				*/
-			}
-			if (canMove == true)
-				deltaX -= timePassed * PLAYER_SPEED;
-
-		}
 		if (isRightPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::RIGHT).held())
-		{
-			canMove = true;
-
-			for (int i = 0; i < objects.size() - 2; ++i)
-			{
-				if (currPlayer->Collides(objects[i]))
-				{
-					canMove = false;
-				}
-				/*
-					if (p_cRendererManager->HasComponent(*(objects[i]), COMPONENT_TYPE::RENDERER))
-					{
-						TComponent* cTransform = nullptr;
-						TTransformComponent* transform = nullptr;
-						if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cTransform))
-						{
-							transform = (TTransformComponent*)cTransform;
-							float dZ = abs(pTransform->fPosition.z - transform->fPosition.z);
-							float dX = abs(pTransform->fPosition.x - transform->fPosition.x);
-							if (dZ < 2.3f && !transform->nFloor && dX < 1.5f)
-							{
-								if (pTransform->fPosition.x < transform->fPosition.x)
-								{
-									canMove = false;
-									break;
-								}
-							}
-						}
-					}
-				*/
-			}
-
-			if (canMove == true)
-				deltaX += timePassed * PLAYER_SPEED;
-
-		}
-		for (int i = 0; i < v_cBombs.size(); ++i)
-		{
-			if (!v_cBombs[i] || !v_cBombs[i]->isAlive())
-				continue;
-			TComponent* bTransform;
-			if (v_cBombs[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, bTransform))
-			{
-				TTransformComponent* transform = (TTransformComponent*)bTransform;
-				float dz = abs(pTransform->fPosition.z - transform->fPosition.z);
-				float dx = abs(pTransform->fPosition.x - transform->fPosition.x);
-
-				if (dz < 1.5f && dx < 1.5f)
-				{
-					if (dz < dx)
-					{
-						if (pTransform->fPosition.x < transform->fPosition.x)
-						{
-							currPlayer->Move(-0.1f, 0.0f - (pTransform->fPosition.z - transform->fPosition.z));
-						}
-						else if (pTransform->fPosition.x > transform->fPosition.x)
-						{
-							currPlayer->Move(0.1f, 0.0f - (pTransform->fPosition.z - transform->fPosition.z));
-						}
-					}
-					else if (dx < dz)
-					{
-						if (pTransform->fPosition.z < transform->fPosition.z)
-						{
-							currPlayer->Move(0.0f - (pTransform->fPosition.x - transform->fPosition.x), -0.1f);
-						}
-						else if (pTransform->fPosition.z > transform->fPosition.z)
-						{
-							currPlayer->Move(0.0f - (pTransform->fPosition.x - transform->fPosition.x), 0.1f);
-						}
-					}
-				}
-			}
-		}
-		if (isSouthPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::BOMB).held())
-		{
-			for (int i = 0; i < maxNumBombs; ++i)
-			{
-				if (v_cBombs[i] == NULL)
-				{
-					if (currPlayer->hasAvailableBombSlot())
-					{
-
-						currPlayer->AddBombIndex(i);
-						v_cBombs[i] = p_cEntityManager->DropBomb(currPlayer);
-					}
-					continue;
-				}
-
-				if (!v_cBombs[i]->isAlive())
-				{
-					if (currPlayer->hasAvailableBombSlot())
-					{
-						currPlayer->AddBombIndex(i);
-						*v_cBombs[i] = *p_cEntityManager->DropBomb(currPlayer);
-					}
-					continue;
-				}
-			}
-		}
+			deltaX += timePassed * PLAYER_SPEED;
 
 		if (deltaX != 0.0f || deltaZ != 0.0f)
 			currPlayer->Move(deltaX, deltaZ);
 
-
-
-
-		for (int i = 0; i < explosionTimers.size(); ++i)
+		for (CObject* cObj : objects)
 		{
-			if (!currPlayer->isAlive())
-				continue;
-			DirectX::XMFLOAT3 pPos, xPos, zPos;
-			pPos = pTransform->fPosition;
-			TComponent* xT = nullptr;
-			if (Xexplosions[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, xT))
+			if (currPlayer->Collides(cObj))
+				PlayerCollision(currPlayer, cObj);
+		}
+		for (CBomb* bomb : v_cBombs)
+		{
+			if (bomb && bomb->isAlive())
+				if (currPlayer->Collides(bomb))
+					PlayerCollision(currPlayer, (CObject*)bomb);
+		}
+		if (isSouthPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::BOMB).pressed())
+		{
+			if (currPlayer->hasAvailableBombSlot())
 			{
-				TTransformComponent* xTrans = (TTransformComponent*)xT;
-				xPos = xTrans->fPosition;
-				if (abs(pPos.x - xPos.x) < 4.5f && abs(pPos.z - xPos.z) < 1.8f)
+				for (int i = 0; i < maxNumBombs; ++i)
 				{
-					currPlayer->setAlive(false);
-				}
-			}
-			if (!currPlayer->isAlive())
-				continue;
-			if (Zexplosions[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, xT))
-			{
-				TTransformComponent* zTrans = (TTransformComponent*)xT;
-				zPos = zTrans->fPosition;
-
-				if (abs(pPos.z - zPos.z) < 4.5f && abs(pPos.x - zPos.x) < 1.8f)
-				{
-					currPlayer->setAlive(false);
+					if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive())
+					{
+						currPlayer->AddBombIndex(i);
+						if (v_cBombs[i])
+							*v_cBombs[i] = *p_cEntityManager->DropBomb(currPlayer);
+						else
+							v_cBombs[i] = p_cEntityManager->DropBomb(currPlayer);
+						break;
+					}
 				}
 			}
 		}
 	}
-
 }
 
 
@@ -1072,8 +872,6 @@ void CGame::GamePlayLoop(double timePassed)
 //	}
 //}
 
-
-
 /*
 void CGame::ExplodeBomb(int bombToExplodeIndex)
 {
@@ -1160,27 +958,33 @@ void CGame::updateBombs(double timePassed)
 			continue;
 		}
 
-		TComponent* exComp;
-		Xexplosions[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, exComp);
-		TTransformComponent* expTransf = (TTransformComponent*)exComp;
-		DirectX::XMFLOAT3 exPos = expTransf->fPosition;
-		for (int j = 0; j < objects.size(); ++j)
+		for (int j = 0; j < objects.size(); j++)
 		{
-			TComponent* objC = nullptr;
-
-			if (objects[j]->GetComponent(COMPONENT_TYPE::TRANSFORM, objC))
+			if (Xexplosions[i]->Collides(objects[j]) || Zexplosions[i]->Collides(objects[j]))
 			{
-				TTransformComponent* objT = (TTransformComponent*)objC;
-				if (objT->destroyable)
+				objects.erase(objects.begin() + j);
+				--j;
+			}
+		}
+		for (CPlayer* player : v_cPlayers)
+		{
+			if (player)
+			{
+				if (Xexplosions[i]->Collides((CObject*)player) || Zexplosions[i]->Collides((CObject*)player))
+					player->setAlive(false);
+			}
+		}
+		for (CBomb* bomb : v_cBombs)
+		{
+			if (bomb && bomb->isAlive())
+			{
+				if (Xexplosions[i]->Collides((CObject*)bomb) || Zexplosions[i]->Collides((CObject*)bomb))
 				{
-					if ((abs(objT->fPosition.x - exPos.x) < 4.5f && abs(objT->fPosition.z - exPos.z) < 1.8f) || (abs(objT->fPosition.x - exPos.x) < 1.8f && abs(objT->fPosition.z - exPos.z) < 4.5f))
-					{
-						objects.erase(objects.begin() + j);
-						--j;
-					}
+					bomb->Explode();
 				}
 			}
 		}
+
 
 		explosionTimers[i] += timePassed;
 	}
@@ -1197,12 +1001,12 @@ void CGame::updateBombs(double timePassed)
 				for (int j = 0; j < parent->getBombIndices().size(); ++j)
 				{
 					if (parent->getBombIndices()[j] == i)
-						parent->deleteBomb(i);
+						parent->deleteBomb(j);
 				}
 				explosionTimers.push_back(0.0f);
 				Xexplosions.push_back(p_cEntityManager->BombExplosionX(v_cBombs[i]));
 				Zexplosions.push_back(p_cEntityManager->BombExplosionZ(v_cBombs[i]));
-
+				g_pSoundPlayer->Play();
 				v_cBombs[i]->SetAlive(false);
 			}
 			v_cBombs[i]->updateBomb(timePassed);
@@ -1224,7 +1028,6 @@ bool CGame::loadTempMenus()
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
-
 
 	loadInfo.position = { 0.0f, 2.5f, 20.0f };
 	loadInfo.forwardVec = { 0.0f, 1.1f, -1.0f };
@@ -1259,4 +1062,43 @@ bool CGame::loadTempMenus()
 	loadInfo.LoadState = GAME_STATE::CONTROLS_SCREEN;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	return true;
+}
+
+void CGame::PlayerCollision(CPlayer * playerToCheck, CObject* cObj)
+{
+	TComponent* comp = nullptr;
+	TColliderComponent* pCollider;
+	playerToCheck->GetComponent(COMPONENT_TYPE::COLLIDER, comp);
+	pCollider = (TColliderComponent*)comp;
+
+	if (!cObj->GetComponent(COMPONENT_TYPE::COLLIDER, comp))
+		return;
+	TColliderComponent* objCollider = (TColliderComponent*)comp;
+	float xD, zD, mX, mZ;
+
+	int leftRight, upDown;
+
+	if (pCollider->d3dCollider.Center.x > objCollider->d3dCollider.Center.x)
+		leftRight = 1;
+	else
+		leftRight = -1;
+
+	if (pCollider->d3dCollider.Center.z > objCollider->d3dCollider.Center.z)
+		upDown = 1;
+	else
+		upDown = -1;
+
+	xD = abs(pCollider->d3dCollider.Center.x - objCollider->d3dCollider.Center.x);
+	zD = abs(pCollider->d3dCollider.Center.z - objCollider->d3dCollider.Center.z);
+	mX = pCollider->d3dCollider.Extents.x + objCollider->d3dCollider.Extents.x;
+	mZ = pCollider->d3dCollider.Extents.z + objCollider->d3dCollider.Extents.z;
+
+	if (zD < mZ && zD > mZ - 0.25)
+	{
+		playerToCheck->Move(0, ((mZ - zD) + 0.1f) * (float)upDown);
+	}
+	else if (xD < mX && xD > mX - 0.25)
+	{
+		playerToCheck->Move(((mX - xD) + 0.1f) * (float)leftRight, 0);
+	}
 }
