@@ -15,7 +15,7 @@
 CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 {
 	CObject* temp = new CObject();
-	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, loadInfo.item);
+	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, loadInfo.item, loadInfo.itemType);
 	temp->AddComponent((TComponent*)transform);
 
 	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
@@ -36,7 +36,7 @@ CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 CPlayer* CEntityManager::CreatePlayerFromTemplate(OBJLoadInfo loadInfo)
 {
 	CPlayer* temp = new CPlayer();
-	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, false);
+	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, false, loadInfo.itemType);
 	temp->AddComponent((TComponent*)transform);
 
 	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
@@ -57,7 +57,7 @@ CPlayer* CEntityManager::CreatePlayerFromTemplate(OBJLoadInfo loadInfo)
 CBomb * CEntityManager::CreateBombFromTemplate(OBJLoadInfo loadInfo)
 {
 	CBomb* temp = new CBomb();
-	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, loadInfo.item);
+	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, loadInfo.item, loadInfo.itemType);
 	temp->AddComponent((TComponent*)transform);
 
 	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
@@ -180,7 +180,7 @@ CObject* CEntityManager::BombExplosionZ(CBomb* BombSource)
 	return explosion;
 }
 
-CObject* CEntityManager::ItemDrop(CObject* ItemSource)
+CObject* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
 {
 	CObject* Item;
 	TComponent* transform;
@@ -222,6 +222,7 @@ CObject* CEntityManager::ItemDrop(CObject* ItemSource)
 	loadInfo.LoadState = 3;
 	loadInfo.destroyable = false;
 	loadInfo.floor = false;
+	loadInfo.itemType = itemType;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 60.0f, 1.0f / 60.0f, 1.0f / 60.0f);
 	Item = CreateOBJFromTemplate(loadInfo);
 

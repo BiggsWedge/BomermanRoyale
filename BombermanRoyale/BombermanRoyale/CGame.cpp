@@ -1372,10 +1372,10 @@ void CGame::GamePlayLoop(double timePassed)
 //		}
 //	}
 //}
-void CGame::SpawnObject(int i, std::vector<CObject*> objects, CRendererManager* p_cRendererManager, CEntityManager* p_cEntityManager) {
-	item = p_cEntityManager->ItemDrop(objects[i]);
-	p_cRendererManager->RenderObject(item);
-}
+//void CGame::SpawnObject(int i, std::vector<CObject*> objects, CRendererManager* p_cRendererManager, CEntityManager* p_cEntityManager) {
+//	item = p_cEntityManager->ItemDrop(objects[i]);
+//	p_cRendererManager->RenderObject(item);
+//}
 
 
 
@@ -1469,20 +1469,28 @@ void CGame::updateBombs(double timePassed)
 		Xexplosions[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, exComp);
 		TTransformComponent* expTransf = (TTransformComponent*)exComp;
 		DirectX::XMFLOAT3 exPos = expTransf->fPosition;
-		for (int j = 0; j < objects.size(); ++j)
-		{
-			TComponent* objC = nullptr;
 
-			if (objects[j]->GetComponent(COMPONENT_TYPE::TRANSFORM, objC))
-			{
+		for (int j = 0; j < objects.size(); ++j) {
+			TComponent* objC = nullptr;
+			if (objects[j]->GetComponent(COMPONENT_TYPE::TRANSFORM, objC)) {
 				TTransformComponent* objT = (TTransformComponent*)objC;
-				if (objT->destroyable)
-				{
-					if ((abs(objT->fPosition.x - exPos.x) < 4.5f && abs(objT->fPosition.z - exPos.z) < 1.8f) || (abs(objT->fPosition.x - exPos.x) < 1.8f && abs(objT->fPosition.z - exPos.z) < 4.5f))
-					{
-						if (objT->item)
-						{
-							item = p_cEntityManager->ItemDrop(objects[j]);
+				if (objT->destroyable) {
+					if ((abs(objT->fPosition.x - exPos.x) < 4.5f && abs(objT->fPosition.z - exPos.z) < 1.8f) || (abs(objT->fPosition.x - exPos.x) < 1.8f && abs(objT->fPosition.z - exPos.z) < 4.5f)) {
+						if (objT->item) {
+							switch (rand() % 4) {
+							case 0:
+								item = p_cEntityManager->ItemDrop(objects[j], 0);
+								break;
+							case 1:
+								item = p_cEntityManager->ItemDrop(objects[j], 1);
+								break;
+							case 2:
+								item = p_cEntityManager->ItemDrop(objects[j], 2);
+								break;
+							case 3:
+								item = p_cEntityManager->ItemDrop(objects[j], 3);
+								break;
+							}
 						}
 						objects.erase(objects.begin() + j);
 						--j;

@@ -14,6 +14,7 @@ struct OBJLoadInfo
 	bool destroyable;
 	bool item;
 	int collisionLayer;
+	int itemType;
 };
 
 class CObject

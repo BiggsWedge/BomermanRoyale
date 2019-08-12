@@ -43,7 +43,7 @@ public:
 
 	CObject* BombExplosionX(CBomb* BombSource);
 	CObject* BombExplosionZ(CBomb* BombSource);
-	CObject* ItemDrop(CObject* ItemSource);
+	CObject* ItemDrop(CObject* ItemSource, int itemType);
 	CObject* SpawnObject(CObject* obj);
 	CPlayer* InstantiatePlayer(int numPlayer, int playerModel, DirectX::XMFLOAT3 spawnPos);
 };

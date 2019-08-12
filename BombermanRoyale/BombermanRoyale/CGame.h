@@ -60,7 +60,7 @@ public:
 	//void InitSortedParticles(sorted_pool_t<particle, 1000>& sortedPool, float deltaTime);
 
 	void LoadObject();
-	void SpawnObject(int i, std::vector<CObject*> objects, CRendererManager* p_cRendererManager, CEntityManager* p_cEntityManager);
+	//void SpawnObject(int i, std::vector<CObject*> objects, CRendererManager* p_cRendererManager, CEntityManager* p_cEntityManager);
 
 	CGame();
 
