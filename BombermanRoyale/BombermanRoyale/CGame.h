@@ -6,16 +6,20 @@
 #include "Utilities.h"
 #include "CPlayer.h"
 
-enum GameState
+
+struct GAME_STATE
 {
-	MAIN_MENU = 0,
-	ARCADE_MENU,
-	BATTLE_MENU,
-	ARCADE_GAME,
-	BATTLE_GAME,
-	WIN_SCREEN,
-	CONTROLS_SCREEN,
-	CREDIT_SCREEN
+	enum
+	{
+		MAIN_MENU = 0,
+		ARCADE_MENU,
+		BATTLE_MENU,
+		ARCADE_GAME,
+		BATTLE_GAME,
+		WIN_SCREEN,
+		CONTROLS_SCREEN,
+		CREDIT_SCREEN
+	};
 };
 
 
@@ -26,21 +30,20 @@ class CGame
 	CRendererManager* p_cRendererManager;
 	CEntityManager* p_cEntityManager;
 	std::vector<CObject*> objects;
+	std::vector<CObject*> menuObjects;
+	std::vector<CObject*> Xexplosions;
+	std::vector<CObject*> Zexplosions;
+	std::vector<double> explosionTimers;
+	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
 
 	//CPlayer *p1 = nullptr, *p2 = nullptr;
 
-	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
+	int maxNumBombs = 24;
 	std::vector<CBomb*> v_cBombs;
-	CObject* p1, *p2;
 
-
-	CObject* p1B = nullptr, *p2B = nullptr;
-	CObject* p1Ex = nullptr, *p1Ez = nullptr, *p2Ex = nullptr, *p2Ez = nullptr;
-	float p1BTimer = 0.0f, p2BTimer = 0.0f;
-	float p1ETimer = 0.0f, p2ETimer = 0.0f;
-	int p1BIndex, p2BIndex;
-	bool p1Move = true;
-	bool p2Move = true;
+	double mouseIdleTimer;
+	bool prevShowMouse = true;
+	bool showMouse = true;
 
 
 public:
@@ -53,15 +56,19 @@ public:
 	void Run();
 	//void InitFreeParticles(emitter& emitter, pool_t<particle, 1024>& freePool, float deltaTime);
 	//void InitSortedParticles(sorted_pool_t<particle, 1000>& sortedPool, float deltaTime);
-	
-	void LoadObject();
 
+	void LoadObject();
 
 	CGame();
 
 	~CGame();
 	void WindowResize();
-	void GamePlayLoop();
+	void GamePlayLoop(double timePassed);
 	//void ExplodeBomb(int bombToExplodeIndex);
+	void setGameState(int _gameState);
+	void ClearPlayersAndBombs();
+	void updateBombs(double timePassed);
+	void loadMap(int index);
+	bool loadTempMenus();
 };
 

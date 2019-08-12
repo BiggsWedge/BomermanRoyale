@@ -94,6 +94,55 @@ bool DirectXData::Initialize()
 
 #pragma endregion
 
+#pragma region CollisionMatrix
+
+	for (int i = 0; i < COLLISION_LAYERS::COUNT; ++i)
+	{
+		for (int j = 0; j < COLLISION_LAYERS::COUNT; ++j)
+			collisionMatrix[i][j] = false;
+	}
+	for (int i = 0; i < COLLISION_LAYERS::COUNT; ++i)
+	{
+		switch (i)
+		{
+		case COLLISION_LAYERS::PLAYER:
+		{
+			for (int j = 0; j < COLLISION_LAYERS::COUNT; ++j)
+			{
+				collisionMatrix[i][j] = (j == COLLISION_LAYERS::FLOOR) ? false : true;
+				collisionMatrix[j][i] = (j == COLLISION_LAYERS::FLOOR) ? false : true;
+			}
+			break;
+		}
+		case COLLISION_LAYERS::BOMB:
+		{
+			for (int j = 0; j < COLLISION_LAYERS::COUNT; ++j)
+			{
+				collisionMatrix[i][j] = (j == COLLISION_LAYERS::PLAYER) ? true : false;
+				collisionMatrix[j][i] = (j == COLLISION_LAYERS::PLAYER) ? true : false;
+			}
+			break;
+		}
+		case COLLISION_LAYERS::EXPLOSION:
+		{
+			for (int j = 0; j < COLLISION_LAYERS::COUNT; ++j)
+			{
+				collisionMatrix[i][j] = (j == COLLISION_LAYERS::PLAYER || j == COLLISION_LAYERS::DESTROYABLE || j == COLLISION_LAYERS::BOMB) ? true : false;
+				collisionMatrix[j][i] = (j == COLLISION_LAYERS::PLAYER || j == COLLISION_LAYERS::DESTROYABLE || j == COLLISION_LAYERS::BOMB) ? true : false;
+			}
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
+	}
+
+#pragma endregion
+
+
+
 #pragma region Shader Creations
 
 #pragma region Vertex

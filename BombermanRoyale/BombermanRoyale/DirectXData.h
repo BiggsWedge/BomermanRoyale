@@ -83,6 +83,11 @@ struct DEPTH_STENCIL_STATE
 	enum { DEFAULT = 0, COUNT };
 };
 
+struct COLLISION_LAYERS
+{
+	enum { PLAYER, BOMB, EXPLOSION, WALL, DESTROYABLE, FLOOR, COUNT };
+};
+
 struct DIFFUSE_TEXTURES
 {
 	enum {
@@ -102,6 +107,7 @@ class DirectXData
 {
 public:
 
+	bool collisionMatrix[COLLISION_LAYERS::COUNT][COLLISION_LAYERS::COUNT];
 	GW::GRAPHICS::GDirectX11Surface*	d3dSurface = nullptr;
 	ID3D11Device*						d3dDevice = nullptr;
 	IDXGISwapChain*						d3dSwapChain = nullptr;

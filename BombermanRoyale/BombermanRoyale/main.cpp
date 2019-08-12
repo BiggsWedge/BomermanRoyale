@@ -13,26 +13,18 @@
 
 int main(void)
 {
-	//float timePassed = 0;
-	//float frameTime = 0;
-	//long long prevFrame = 0;
-	//long long currFrame = 0;
-	//
-	//prevFrame = currFrame;
-	//currFrame = clock();
-	//
-	//frameTime = ((float)currFrame - (float)prevFrame) / 1000.0f;
 
+
+#ifndef _DEBUG
+	ShowWindow(GetConsoleWindow(), SW_HIDE);
+#endif
 	InitializeGlobals();
-
 	LoadTextures();
 	LoadModels();
 	//v_tMeshTemplates[MODELS::BATTLEMAGE].loadModel(".\\Assets\\BattleMage.mesh", ".\\Assets\\BattleMage.mat", ".\\Assets\\BattleMage.anim");
 	//v_tMeshTemplates[MODELS::BATTLEMAGE].initialize(g_d3dData->d3dDevice);
 	LoadMenuScreen(15, 11, 0, ".//Assets//Menu.mat");
 	LoadMenuScreen(19, 11, 1, ".//Assets//Menu.mat");
-
-
 
 	CGame* p_cGame = new CGame();
 	bool result = p_cGame->Initialize();
@@ -42,7 +34,7 @@ int main(void)
 		return 1;
 	}
 	g_pLogger->LogCatergorized("SUCCESS", "Successfully initialized the game");
-	p_cGame->LoadObject();
+	p_cGame->loadTempMenus();
 	p_cGame->Run();
 
 	delete p_cGame;
@@ -50,11 +42,8 @@ int main(void)
 
 	v_tMeshTemplates.clear();
 
-
-
 	g_pWindow->DecrementCount();
 	g_pLogger->DecrementCount();
-
 	return 0;
 }
 

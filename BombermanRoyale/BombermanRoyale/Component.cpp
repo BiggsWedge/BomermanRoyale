@@ -170,6 +170,7 @@ TMaterialComponent::~TMaterialComponent()
 
 #pragma endregion
 
+
 #pragma region TAnim
 
 TAnimComponent::TAnimComponent()
@@ -191,3 +192,33 @@ TAnimComponent::~TAnimComponent()
 
 #pragma endregion
 
+
+TColliderComponent::TColliderComponent()
+{
+	componentType = COMPONENT_TYPE::COLLIDER;
+}
+
+TColliderComponent::TColliderComponent(TMeshTemplate mtemplate, DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 position, int layer)
+{
+	componentType = COMPONENT_TYPE::COLLIDER;
+	float top, bottom, left, right, front, back;
+	collisionLayer = layer;
+
+	top = bottom = mtemplate.v_tVertices[0].fPosition.y * scale.y;
+	left = right = mtemplate.v_tVertices[0].fPosition.x * scale.y;
+	front = back = mtemplate.v_tVertices[0].fPosition.z * scale.y;
+
+	for (int i = 1; i < mtemplate.v_tVertices.size(); ++i)
+	{
+		left = (mtemplate.v_tVertices[i].fPosition.x * scale.x < left) ? mtemplate.v_tVertices[i].fPosition.x * scale.x : left;
+		right = (mtemplate.v_tVertices[i].fPosition.x * scale.x > right) ? mtemplate.v_tVertices[i].fPosition.x * scale.x : right;
+		top = (mtemplate.v_tVertices[i].fPosition.y * scale.y > top) ? mtemplate.v_tVertices[i].fPosition.y * scale.y : top;
+		bottom = (mtemplate.v_tVertices[i].fPosition.y * scale.y < bottom) ? mtemplate.v_tVertices[i].fPosition.y * scale.y : bottom;
+		front = (mtemplate.v_tVertices[i].fPosition.z * scale.z < front) ? mtemplate.v_tVertices[i].fPosition.z * scale.z : front;
+		back = (mtemplate.v_tVertices[i].fPosition.z * scale.z > back) ? mtemplate.v_tVertices[i].fPosition.z* scale.z : back;
+	}
+
+	d3dCollider.Center = DirectX::XMFLOAT3(((left + right) / 2.0f) + position.x, ((top + bottom) / 2.0f) + position.y, ((front + back) / 2.0f) + position.z);
+	d3dCollider.Extents = DirectX::XMFLOAT3(abs((left + right) / 2.0f + left), abs((top + bottom) / 2.0f + top), abs((front + back) / 2.0f + front));
+	DirectX::XMStoreFloat4(&d3dCollider.Orientation, DirectX::XMQuaternionIdentity());
+}

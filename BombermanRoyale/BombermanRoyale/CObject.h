@@ -12,6 +12,7 @@ struct OBJLoadInfo
 	int usedVertex, usedPixel, usedGeo, usedInput, usedDiffuse, LoadState;
 	bool floor;
 	bool destroyable;
+	int collisionLayer;
 };
 
 class CObject
@@ -27,6 +28,7 @@ public:
 	bool GetComponent(int componentType, TComponent* & component);
 	void Draw();
 	bool Move(float _x, float _z);
+	bool Collides(CObject* _other);
 
 };
 

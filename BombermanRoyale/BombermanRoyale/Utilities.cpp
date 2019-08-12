@@ -51,8 +51,14 @@ bool InitializeLogger()
 	cOutFileName.append(GetCurrentDateAndTime());
 	cOutFileName.append(".log");
 
-	if (G_SUCCESS(CreateGLog(cOutFileName.c_str(), &g_pLogger))) {
+	if (G_SUCCESS(CreateGLog(cOutFileName.c_str(), &g_pLogger)))
+	{
+#ifdef _DEBUG
 		g_pLogger->EnableConsoleLogging(true);
+#else
+		g_pLogger->EnableConsoleLogging(false);
+#endif // !_DEBUG
+
 		g_pLogger->EnableVerboseLogging(true);
 		g_pLogger->LogCatergorized("SUCCESS", "Error Logging system successfully initialized.");
 		return true;
@@ -84,7 +90,6 @@ bool InitializeInput()
 		return false;
 	}
 }
-
 
 bool InitializeControllerInput()
 {
@@ -422,7 +427,6 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) 
 	}
 }
 
-
 void LoadTextures()
 {
 	for (int i = 0; i < diffuseTextures.size(); ++i)
@@ -431,7 +435,6 @@ void LoadTextures()
 			g_pLogger->LogCatergorized("FAILURE", "Failed to load texture");
 	}
 }
-
 
 void add_line(float3 point_a, float3 point_b, float4 color_a, float4 color_b)
 {
@@ -479,6 +482,19 @@ void drawAABB(float3 point_a, float3 point_b, float3 point_c, float3 point_d, fl
 	add_line(point_c, point_g, color1, color2);
 	add_line(point_d, point_h, color1, color2);
 }
+
+void drawAABB(DirectX::XMFLOAT3 tlf, DirectX::XMFLOAT3 tlb, DirectX::XMFLOAT3 trf, DirectX::XMFLOAT3 trb, DirectX::XMFLOAT3 blf, DirectX::XMFLOAT3 brf, DirectX::XMFLOAT3 blb, DirectX::XMFLOAT3 brb, DirectX::XMFLOAT4 color)
+{
+	add_line(tlf, tlb, color);
+	add_line(tlf, trf, color);
+	add_line(tlf, blf, color);
+
+	add_line(brb, trb, color);
+	add_line(brb, blb, color);
+	add_line(brb, brf, color);
+}
+
+
 
 float3 XMVector2Float3(DirectX::XMVECTOR vector)
 {
@@ -874,3 +890,4 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context)
 
 	_context->DrawIndexed(numIndices, 0, 0);
 }
+
