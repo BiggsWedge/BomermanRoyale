@@ -332,7 +332,7 @@ void CGame::LoadObject()
 	loadInfo.collider.center = collider.center;
 	loadInfo.collider.extents = collider.extents;
 
-	loadInfo.position = { -12.5f, 0.0f, 0.0f };
+	loadInfo.position = { -17.5f, 0.0f, 0.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
 	loadInfo.LoadState = 3;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
