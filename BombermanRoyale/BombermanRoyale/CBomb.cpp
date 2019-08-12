@@ -13,7 +13,19 @@ CBomb::~CBomb()
 
 void CBomb::Explode()
 {
-	g_pSoundPlayer->Play();
+	
+	bool soundplaying;
+	explosionSound1->isSoundPlaying(soundplaying);
+	if (!soundplaying)
+	{
+		explosionSound1->Play();
+	}
+	else
+	{	
+		explosionSound2->isSoundPlaying(soundplaying);
+		if(!soundplaying)
+		explosionSound2->Play();
+	}
 	alive = false;
 }
 

@@ -5,6 +5,10 @@
 
 const char* backgroundMusicFilePath = ".//Assets//Music//Level_Music1.wav";
 const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
+const char* bombPlaceSFX = ".//Assets//Music//RD_UI_Scroll_Up.wav";
+const char* walkSFX = ".//Assets//Music//RD_UI_Scroll_Down.wav";
+const char* explosionSFX = ".//Assets//Music//RD_Bomb_Explode_02.wav";
+const char* spawnSFX = ".//Assets//Music//RD_Upgrade_Pickup_01.wav";
 
 struct key
 {
@@ -72,6 +76,7 @@ bool ControlScreenToggle = false;
 bool Controller1Alive = false;
 bool Controller2Alive = false;
 float bCollisionIgnore = 0.5f;
+int numPlayers = 2;
 
 float isLDPADPressed = 0.0f;
 float isRDPADPressed = 0.0f;
@@ -132,6 +137,49 @@ void CGame::Run()
 	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
+	
+	if (G_FAIL(g_pAudioHolder->CreateSound(walkSFX, &walkSound1)))
+	{
+	    g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+	
+	if (G_FAIL(g_pAudioHolder->CreateSound(explosionSFX, &explosionSound1)))
+	{
+	    g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+	
+	if (G_FAIL(g_pAudioHolder->CreateSound(spawnSFX, &spawnSound1)))
+	{
+	    g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+	
+	if (G_FAIL(g_pAudioHolder->CreateSound(bombPlaceSFX, &bombPlaceSound1)))
+	{
+	    g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+
+	if (G_FAIL(g_pAudioHolder->CreateSound(walkSFX, &walkSound2)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+
+	if (G_FAIL(g_pAudioHolder->CreateSound(explosionSFX, &explosionSound2)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+
+	if (G_FAIL(g_pAudioHolder->CreateSound(spawnSFX, &spawnSound2)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+
+	if (G_FAIL(g_pAudioHolder->CreateSound(bombPlaceSFX, &bombPlaceSound2)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+	
+	
+
 
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
 	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY)
@@ -419,14 +467,14 @@ void CGame::LoadObject()
 	loadInfo.collider.extents = collider.extents;
 	*/
 
-	loadInfo.position = { -17.5f, 0.0f, 0.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
-	loadInfo.LoadState = 3;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	loadInfo.usedVertex = VERTEX_SHADER::ANIM;
-	loadInfo.usedPixel = PIXEL_SHADER::ANIM;
-	loadInfo.meshID = 1;
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.position = { -17.5f, 0.0f, 0.0f };
+	//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
+	//loadInfo.LoadState = 3;
+	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//loadInfo.usedVertex = VERTEX_SHADER::ANIM;
+	//loadInfo.usedPixel = PIXEL_SHADER::ANIM;
+	//loadInfo.meshID = 1;
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 
 	//loadInfo.position = { 0.0f, 2.5f, 20.0f };
@@ -1170,6 +1218,16 @@ void CGame::setGameState(int _gameState)
 		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-10.0f, 0.0f, 10.0f));
 		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(10.0f, 0.0f, -5.0f));
 
+		bool soundplaying;
+
+		spawnSound1->isSoundPlaying(soundplaying);
+		if (!soundplaying)
+			spawnSound1->Play();
+
+		spawnSound2->isSoundPlaying(soundplaying);
+		if (!soundplaying)
+			spawnSound2->Play();
+
 		break;
 	}
 	case GAME_STATE::WIN_SCREEN:
@@ -1249,7 +1307,7 @@ void CGame::updateBombs(double timePassed)
 				for (int j = 0; j < parent->getBombIndices().size(); ++j)
 				{
 					if (parent->getBombIndices()[j] == i)
-						parent->deleteBomb(i);
+						parent->deleteBomb(j);
 				}
 				explosionTimers.push_back(0.0f);
 				Xexplosions.push_back(p_cEntityManager->BombExplosionX(v_cBombs[i]));
