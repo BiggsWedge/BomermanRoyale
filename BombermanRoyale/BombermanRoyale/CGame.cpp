@@ -615,6 +615,7 @@ void CGame::LoadObject()
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
+		loadInfo.collisionLayer = COLLISION_LAYERS::DESTROYABLE;
 		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
@@ -686,6 +687,7 @@ void CGame::LoadObject()
 		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+		loadInfo.collisionLayer = COLLISION_LAYERS::DESTROYABLE;
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
@@ -718,6 +720,7 @@ void CGame::LoadObject()
 		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+		loadInfo.collisionLayer = COLLISION_LAYERS::DESTROYABLE;
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
@@ -734,6 +737,7 @@ void CGame::LoadObject()
 		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+		loadInfo.collisionLayer = COLLISION_LAYERS::DESTROYABLE;
 		loadInfo.usedGeo = -1;
 		loadInfo.LoadState = 3;
 		loadInfo.floor = false;
@@ -1263,52 +1267,57 @@ void CGame::updateBombs(double timePassed)
 			continue;
 		}
 
-		for (int j = 0; j < objects.size(); j++)
-		{
+		for (int j = 0; j < objects.size(); j++) {
 			TComponent* obj = nullptr;
 			TTransformComponent* objTrans;
-			if (objects[j]->GetComponent(COMPONENT_TYPE::TRANSFORM, obj))
-			{
+			objTrans = nullptr;
+			if (objects[j]->GetComponent(COMPONENT_TYPE::TRANSFORM, obj)) {
 				objTrans = (TTransformComponent*)obj;
 			}
-			if (Xexplosions[i]->Collides(objects[j]) || Zexplosions[i]->Collides(objects[j]))
-			{
+			if (Xexplosions[i]->Collides(objects[j]) || Zexplosions[i]->Collides(objects[j])) {
 				if (objTrans->item) {
 					switch (rand() % 4) {
 					case 0:
+					{
 						item = p_cEntityManager->ItemDrop(objects[j], 0);
-						break;
-					case 1:
-						item = p_cEntityManager->ItemDrop(objects[j], 1);
-						break;
-					case 2:
-						item = p_cEntityManager->ItemDrop(objects[j], 2);
-						break;
-					case 3:
-						item = p_cEntityManager->ItemDrop(objects[j], 3);
+						objects.erase(objects.begin() + j);
+						--j;
 						break;
 					}
+					case 1: {
+						item = p_cEntityManager->ItemDrop(objects[j], 1);
+						objects.erase(objects.begin() + j);
+						--j;
+						break;
+					}
+					case 2: {
+
+						item = p_cEntityManager->ItemDrop(objects[j], 2);
+						objects.erase(objects.begin() + j);
+						--j;
+						break;
+					}
+					case 3: {
+						item = p_cEntityManager->ItemDrop(objects[j], 3);
+						objects.erase(objects.begin() + j);
+						--j;
+						break;
+					}
+					}
 				}
-				objects.erase(objects.begin() + j);
-				--j;
+
 			}
 		}
-		for (CPlayer* player : v_cPlayers)
-		{
-			if (player)
-			{
+		for (CPlayer* player : v_cPlayers) {
+			if (player) {
 				if (Xexplosions[i]->Collides((CObject*)player) || Zexplosions[i]->Collides((CObject*)player))
 					player->setAlive(false);
 			}
 		}
-		for (CBomb* bomb : v_cBombs)
-		{
-			if (bomb && bomb->isAlive())
-			{
-				if (Xexplosions[i]->Collides((CObject*)bomb) || Zexplosions[i]->Collides((CObject*)bomb))
-				{
+		for (CBomb* bomb : v_cBombs) {
+			if (bomb && bomb->isAlive()) {
+				if (Xexplosions[i]->Collides((CObject*)bomb) || Zexplosions[i]->Collides((CObject*)bomb)) {
 					bomb->Explode();
-
 				}
 			}
 		}
