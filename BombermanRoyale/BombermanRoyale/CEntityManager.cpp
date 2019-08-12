@@ -214,7 +214,21 @@ CObject* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
 	//}
 	loadInfo.forwardVec = cTransform->fForwardVector;
 	loadInfo.meshID = 0;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
+	switch (itemType)
+	{
+	case 0:
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
+		break;
+	case 1:
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLACK_TEX;
+		break;
+	case 2:
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
+		break;
+	case 3:
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
+		break;
+	}
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
