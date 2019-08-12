@@ -6,6 +6,7 @@
 #include "pools.h"
 #include "Utilities.h"
 #include "CPlayer.h"
+#include "CItem.h"
 
 
 struct GAME_STATE
@@ -34,6 +35,7 @@ class CGame
 	std::vector<CObject*> menuObjects;
 	std::vector<CObject*> Xexplosions;
 	std::vector<CObject*> Zexplosions;
+	std::vector<CItem*> items;
 	std::vector<double> explosionTimers;
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
 
@@ -41,7 +43,6 @@ class CGame
 
 	int maxNumBombs = 24;
 	std::vector<CBomb*> v_cBombs;
-	CObject* item;
 
 	double mouseIdleTimer;
 	bool prevShowMouse = true;
