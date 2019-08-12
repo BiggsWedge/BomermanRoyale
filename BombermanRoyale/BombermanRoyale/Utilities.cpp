@@ -891,3 +891,26 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context)
 	_context->DrawIndexed(numIndices, 0, 0);
 }
 
+float lerp(float x, float y, float ratio)
+{
+	return (y - x) * ratio + x;
+
+}
+
+DirectX::XMMATRIX matLerp(DirectX::XMMATRIX x, DirectX::XMMATRIX y, float ratio)
+{
+	DirectX::XMMATRIX toRet = x;
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < 4; ++j)
+		{
+			toRet.r[i].m128_f32[j] = lerp(x.r[i].m128_f32[j], y.r[i].m128_f32[j], ratio);
+		}
+	}
+	/*
+	for (int i = 0; i < 3; ++i)
+		toRet.r[3].m128_f32[i] = lerp(x.r[3].m128_f32[i], y.r[3].m128_f32[i], ratio);
+	*/
+
+	return toRet;
+}

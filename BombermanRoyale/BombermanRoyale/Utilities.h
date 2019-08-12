@@ -326,4 +326,8 @@ DirectX::XMFLOAT3 GetExtents(float _minX, float _maxX, float _minY, float _maxY,
 
 void GetCorners(float3 _center, float3 _extents, float3*& corners);
 
+float lerp(float x, float y, float ratio);
+
+DirectX::XMMATRIX matLerp(DirectX::XMMATRIX x, DirectX::XMMATRIX y, float ratio);
+
 

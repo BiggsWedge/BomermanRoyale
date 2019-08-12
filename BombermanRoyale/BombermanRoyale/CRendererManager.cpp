@@ -24,7 +24,7 @@ void CRendererManager::RenderObjectCollider(CObject * _objToDraw)
 	}
 }
 
-bool CRendererManager::Draw()
+bool CRendererManager::Draw(double timepassed)
 {
 
 	if (!g_d3dData->d3dSurface)
@@ -57,7 +57,7 @@ bool CRendererManager::Draw()
 	//v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext);
 	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState);
 	for (CObject* c : rendereableObjects)
-		c->Draw();
+		c->Draw(timepassed);
 
 	UINT strides[] = { sizeof(TLineVertex) };
 	UINT offsets[] = { 0 };

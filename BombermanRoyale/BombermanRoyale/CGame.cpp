@@ -360,7 +360,7 @@ void CGame::Run()
 		}
 
 
-		if (!p_cRendererManager->Draw())
+		if (!p_cRendererManager->Draw(timePassed))
 		{
 			g_pLogger->LogCatergorized("FAILURE", "Failed to draw");
 		}

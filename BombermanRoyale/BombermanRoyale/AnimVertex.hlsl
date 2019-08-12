@@ -38,16 +38,16 @@ VS_OUT main(VS_IN input)
 	float4 skinnedPos = float4(0, 0, 0, 0);
 	float4 skinnedNorm = float4(0, 0, 0, 0);
 
-	//for (int i = 0; i < 4; ++i)
-	//{
-	//	if (input.joints[i] >= 0)
-	//	{
-	//		skinnedPos += mul(float4(input.pos, 1.0f), joints[input.joints[i]]) * input.weights[i];
-	//		skinnedNorm += mul(float4(input.norm, 0.0f), joints[input.joints[i]]) * input.weights[i];
-	//	}
-	//}
-	skinnedPos = float4(input.pos, 1.0f);
-	skinnedNorm = float4(input.norm, 0.0f);
+	for (int i = 0; i < 4; ++i)
+	{
+		if (input.joints[i] >= 0)
+		{
+			skinnedPos += mul(float4(input.pos, 1.0f), joints[input.joints[i]]) * input.weights[i];
+			skinnedNorm += mul(float4(input.norm, 0.0f), joints[input.joints[i]]) * input.weights[i];
+		}
+	}
+	//skinnedPos = float4(input.pos, 1.0f);
+	//skinnedNorm = float4(input.norm, 0.0f);
 
 	output.pos = mul(float4(skinnedPos.xyz, 1), world);
 	output.wPos = output.pos;
@@ -58,9 +58,9 @@ VS_OUT main(VS_IN input)
 	output.norm = mul(float4(skinnedNorm.xyz, 1), world).xyz;
 
 	output.tex = float2(input.tex.x, input.tex.y);
-	output.eyePos.x = dot(view[3].xyz, view[0].xyz);
-	output.eyePos.y = dot(view[3].xyz, view[1].xyz);
-	output.eyePos.z = dot(view[3].xyz, view[2].xyz);
+	output.eyePos.x = -dot(view[3].xyz, view[0].xyz);
+	output.eyePos.y = -dot(view[3].xyz, view[1].xyz);
+	output.eyePos.z = -dot(view[3].xyz, view[2].xyz);
 	output.eyePos.z = 1.0f;
 
 	return output;

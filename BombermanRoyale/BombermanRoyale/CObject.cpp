@@ -9,8 +9,13 @@ CObject::CObject()
 {
 }
 
-void CObject::Draw()
+void CObject::Draw(double timepassed)
 {
+	animTime += timepassed;
+	totalTime += timepassed;
+
+	float fractionalTime = timepassed - (int)timepassed;
+
 	ID3D11CommandList* d3dCommandList = nullptr;
 	TRendererComponent* renderer = nullptr;
 	TMeshComponent* mesh = nullptr;
@@ -119,6 +124,55 @@ void CObject::Draw()
 	}
 	else
 	{
+
+		if (currKeyFrame == anim->_anim.frames.size())
+			currKeyFrame = 0;
+
+		while (animTime > anim->_anim.frames[currFrameIndex + 1].time)
+		{
+			currFrameIndex++;
+			if (currFrameIndex == anim->_anim.frames.size() - 1)
+			{
+				animTime -= anim->_anim.duration;
+				currFrameIndex = 0;
+			}
+		}
+
+		float startTime, endTime;
+		startTime = anim->_anim.frames[currFrameIndex].time;
+		endTime = anim->_anim.frames[currFrameIndex + 1].time;
+
+		float ratio = (animTime - startTime) / (endTime - startTime);
+
+		KeyFrame _key = anim->_anim.frames[currFrameIndex];
+
+		jointCB _jointsConst;
+		_jointsConst.numJoints = anim->_anim.frames[currFrameIndex].joints.size();
+
+		for (int i = 0; i < anim->_anim.frames[currFrameIndex].joints.size(); ++i)
+		{
+			
+			DirectX::XMMATRIX tween = matLerp(anim->_anim.frames[currFrameIndex].joints[i]._mat, anim->_anim.frames[currFrameIndex + 1].joints[i]._mat, ratio);
+
+			//debug_renderer::drawMatrix(tween);
+
+			_jointsConst._joints[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, anim->_bindPose[i]._mat) * tween);
+
+			if (_key.joints[i].parentIndex >= 0)
+			{
+				DirectX::XMFLOAT4X4 startMat, endMat;
+
+				DirectX::XMStoreFloat4x4(&startMat, matLerp(anim->_anim.frames[currFrameIndex].joints[i]._mat, anim->_anim.frames[currFrameIndex + 1].joints[i]._mat, ratio));
+				DirectX::XMStoreFloat4x4(&endMat, matLerp(anim->_anim.frames[currFrameIndex].joints[anim->_anim.frames[currFrameIndex].joints[i].parentIndex]._mat, anim->_anim.frames[currFrameIndex + 1].joints[anim->_anim.frames[currFrameIndex + 1].joints[i].parentIndex]._mat, ratio));
+
+				float3 start = { startMat._41, startMat._42, startMat._43 };
+				float3 end = { endMat._41, endMat._42, endMat._43 };
+
+				//debug_renderer::add_line(start, end, float4(1.0f, 1.0f, 1.0f, 1.0f));
+			}
+
+
+		}
 		if (mat)
 		{
 			for (int i = 0; i < mat->mats.size(); ++i)
@@ -186,12 +240,12 @@ void CObject::Draw()
 		//MatBuffer mat;
 		//mat.material = _mat;
 
-		jointCB _jointsConst;
-		_jointsConst.numJoints = anim->_bindPose.size();
-		for (int i = 0; i < anim->_bindPose.size(); ++i)
-		{
-			_jointsConst._joints[i] = anim->_bindPose[i]._mat;
-		}
+		//jointCB _jointsConst;
+		//_jointsConst.numJoints = anim->_bindPose.size();
+		//for (int i = 0; i < anim->_bindPose.size(); ++i)
+		//{
+		//	_jointsConst._joints[i] = anim->_bindPose[i]._mat;
+		//}
 
 		g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
 
