@@ -7,9 +7,10 @@ class CPlayer : public CObject
 {
 private:
 	std::vector<int> bombs;
-	int numBombs = 1;
+	int numBombs = 2;
 	bool alive;
 	int controllerIndex;
+	int bombType = 0;
 
 public:
 	CPlayer();
@@ -26,6 +27,7 @@ public:
 	inline bool hasAvailableBombSlot() { return (bombs.size() < numBombs ? true : false); }
 	inline int GetControllerIndex() { return controllerIndex; }
 	inline std::vector<int> getBombIndices() { return bombs; };
+	inline int GetBombType() { return bombType; }
 
 
 	//MUTATORS
@@ -34,6 +36,7 @@ public:
 	inline void incNumBombs() { numBombs++; }
 	inline void setAlive(bool _alive) { alive = _alive; }
 	inline void deleteBomb(int index) { bombs.erase(bombs.begin() + index); }
+	inline void SetBombType(int _bombType) { bombType = _bombType; }
 };
 
 

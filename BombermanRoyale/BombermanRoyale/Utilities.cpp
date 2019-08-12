@@ -75,8 +75,7 @@ bool InitializeLogger()
 	return false;
 }
 
-bool InitializeWindow()
-{
+bool InitializeWindow() {
 	if (G_SUCCESS(CreateGWindow(100, 100, 1024, 720, GWindowStyle::WINDOWEDBORDERED, &g_pWindow))) {
 		g_pLogger->LogCatergorized("SUCCESS", "Window successfully created.");
 		return true;
@@ -99,28 +98,21 @@ bool InitializeInput()
 	}
 }
 
-bool InitializeControllerInput()
-{
-
+bool InitializeControllerInput() {
 	if (G_SUCCESS(CreateGController(G_XBOX_CONTROLLER, &g_pControllerInput)))
 	{
 		g_pLogger->LogCatergorized("SUCCESS", "Controller Input Manager successfully created.");
 		return true;
 	}
-	else
-	{
+	else {
 		g_pLogger->LogCatergorized("FAILURE", "Controller Input Manager unsuccessfully created.");
 		return false;
 	}
 }
 
-bool InitializeAudio()
-{
-	if (G_SUCCESS(CreateGAudio(&g_pAudioHolder)))
-	{
-		if (G_SUCCESS(g_pAudioHolder->Init(2)))
-		{
-
+bool InitializeAudio() {
+	if (G_SUCCESS(CreateGAudio(&g_pAudioHolder))) {
+		if (G_SUCCESS(g_pAudioHolder->Init(2))) {
 			g_pLogger->LogCatergorized("SUCCESS", "Audio Manager successfully created.");
 			return true;
 		}
@@ -398,8 +390,7 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) 
 
 	v_tMeshTemplates.push_back(temp);
 
-	for (int i = 0; i < numbuttons; ++i)
-	{
+	for (int i = 0; i < numbuttons; ++i) {
 		float bWidth = width / 3.0f;
 		float bHeight = height / 10.0f;
 		bWidth = bWidth / 2.0f;
@@ -432,21 +423,17 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) 
 		temp.v_iIndices.at(5) = 3;
 
 		v_tMeshTemplates.push_back(temp);
-
 	}
 }
 
-void LoadTextures()
-{
-	for (int i = 0; i < diffuseTextures.size(); ++i)
-	{
+void LoadTextures() {
+	for (int i = 0; i < diffuseTextures.size(); ++i) {
 		if (FAILED(DirectX::CreateWICTextureFromFile(g_d3dData->d3dDevice, diffuseTextures[i], nullptr, &g_d3dData->d3dDiffuseTextures[i])))
 			g_pLogger->LogCatergorized("FAILURE", "Failed to load texture");
 	}
 }
 
-void add_line(float3 point_a, float3 point_b, float4 color_a, float4 color_b)
-{
+void add_line(float3 point_a, float3 point_b, float4 color_a, float4 color_b) {
 	line_verts[line_vert_count].pos = point_a;
 	line_verts[line_vert_count].color = color_a;
 	line_vert_count += 1;
@@ -523,8 +510,7 @@ DirectX::XMVECTOR Float32XMVector(float3 point)
 	return vector;
 }
 
-void LoadLines()
-{
+void LoadLines() {
 	DirectX::XMFLOAT3 scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 	DirectX::XMFLOAT3 position = { 0.0f, 0.0f, 0.0f };
 	TCollider debugCollider = GetCenter(v_tMeshTemplates[0]);

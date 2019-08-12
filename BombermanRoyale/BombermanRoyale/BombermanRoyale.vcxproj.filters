@@ -81,6 +81,7 @@
     <ClCompile Include="..\Gateware\Source\G_System\GWindow.cpp">
       <Filter>Gateware</Filter>
     </ClCompile>
+    <ClCompile Include="CItem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBomb.h">
@@ -125,6 +126,7 @@
     <ClInclude Include="WICTextureLoader.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="CItem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">

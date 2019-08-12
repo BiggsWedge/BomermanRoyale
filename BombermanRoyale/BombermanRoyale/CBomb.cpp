@@ -27,6 +27,8 @@ void CBomb::Explode()
 		explosionSound2->Play();
 	}
 	alive = false;
+
+	timer = maxTime - 0.01f;
 }
 
 void CBomb::initialize(CPlayer* parent)

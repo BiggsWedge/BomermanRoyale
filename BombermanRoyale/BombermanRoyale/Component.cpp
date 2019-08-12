@@ -33,7 +33,7 @@ TTransformComponent::TTransformComponent()
 
 }
 
-TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector, DirectX::XMFLOAT3 scale, bool floor, bool ndestroyable)
+TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector, DirectX::XMFLOAT3 scale, bool floor, bool ndestroyable, bool nitem, int nitemType)
 {
 	componentType = COMPONENT_TYPE::TRANSFORM;
 	fPosition = spawnPosition;
@@ -43,7 +43,8 @@ TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, Direct
 	DirectX::XMVECTOR origin = { 0.0f, 0.0f, 0.0f };
 	nFloor = floor;
 	destroyable = ndestroyable;
-
+	item = nitem;
+	itemType = nitemType;
 	mObjMatrix = DirectX::XMMatrixLookAtLH(origin, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&forwardVector)), DirectX::XMLoadFloat3(&up));
 	mObjMatrix = mObjMatrix * DirectX::XMMatrixTranslation(spawnPosition.x, spawnPosition.y, spawnPosition.z);
 	mObjMatrix = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) * mObjMatrix;
@@ -219,6 +220,9 @@ TColliderComponent::TColliderComponent(TMeshTemplate mtemplate, DirectX::XMFLOAT
 	}
 
 	d3dCollider.Center = DirectX::XMFLOAT3(((left + right) / 2.0f) + position.x, ((top + bottom) / 2.0f) + position.y, ((front + back) / 2.0f) + position.z);
-	d3dCollider.Extents = DirectX::XMFLOAT3(abs((left + right) / 2.0f + left), abs((top + bottom) / 2.0f + top), abs((front + back) / 2.0f + front));
+	if (mtemplate.uID == MODELS::CHICKEN)
+		d3dCollider.Extents = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	else
+		d3dCollider.Extents = DirectX::XMFLOAT3(abs((left + right) / 2.0f + left), abs((top + bottom) / 2.0f + top), abs((front + back) / 2.0f + front));
 	DirectX::XMStoreFloat4(&d3dCollider.Orientation, DirectX::XMQuaternionIdentity());
 }
