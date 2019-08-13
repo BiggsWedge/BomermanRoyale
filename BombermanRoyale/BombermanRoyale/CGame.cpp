@@ -1107,7 +1107,9 @@ void CGame::GamePlayLoop(double timePassed)
 			if (currPlayer->Collides((CObject*)items[i]))
 			{
 				currPlayer->SetBombType(items[i]->GetItemType());
-				currPlayer->incNumBombs();
+				if (currPlayer->GetNumBombs() <= 6) {
+					currPlayer->incNumBombs();
+				}
 				items.erase(items.begin() + i);
 				--i;
 			}
