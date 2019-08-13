@@ -12,7 +12,6 @@ protected:
 	int componentType;
 public:
 	inline int GetComponentType() { return componentType; }
-
 };
 
 struct TRendererComponent : TComponent
@@ -62,11 +61,10 @@ public:
 	UINT vertexCount;
 	ID3D11Buffer*		d3dVertexBuffer;
 	ID3D11Buffer*		d3dIndexBuffer;
-	TCollider mCollider;
 	bool hasCollider;
 	std::string mName;
 	TMeshComponent();
-	TMeshComponent(TMeshTemplate _template, TCollider tCollider, bool noCollider);
+	TMeshComponent(TMeshTemplate _template);
 	~TMeshComponent();
 };
 
@@ -103,14 +101,13 @@ struct TColliderComponent : TComponent
 {
 private:
 public:
-	DirectX::BoundingOrientedBox d3dCollider;
+	DirectX::BoundingBox d3dCollider;
 	bool isStatic;
-	DirectX::XMFLOAT3 TFL, TFR, TBL, TBR, BFL, BFR, BBL, BBR;
 	int collisionLayer;
 	TColliderComponent();
 	TColliderComponent(TMeshTemplate mTemplate, DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 position, int layer);
 
-	inline DirectX::BoundingOrientedBox GetCollider() { return d3dCollider; }
+	inline DirectX::BoundingBox GetCollider() { return d3dCollider; }
 };
 
 

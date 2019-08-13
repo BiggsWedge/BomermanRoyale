@@ -50,6 +50,7 @@ class CGame
 
 
 public:
+	void Cleanup();
 	bool FullScreen = false;
 	unsigned int curGameState = 0;
 	unsigned int width;

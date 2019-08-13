@@ -8,11 +8,13 @@
 ****************************************************/
 #include "CGame.h"
 #include <DirectXCollision.h>
-
+#define _CRTDBG_MAP_ALLOC
 
 
 int main(void)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetBreakAlloc(-1); //Important!
 
 
 #ifndef _DEBUG
@@ -34,16 +36,16 @@ int main(void)
 		return 1;
 	}
 	g_pLogger->LogCatergorized("SUCCESS", "Successfully initialized the game");
+
 	p_cGame->loadTempMenus();
+
 	p_cGame->Run();
 
+	p_cGame->Cleanup();
 	delete p_cGame;
-	g_d3dData->Cleanup();
+	p_cGame = nullptr;
 
-	v_tMeshTemplates.clear();
-
-	g_pWindow->DecrementCount();
-	g_pLogger->DecrementCount();
+	CleanGlobals();
 	return 0;
 }
 

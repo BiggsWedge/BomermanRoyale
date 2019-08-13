@@ -9,6 +9,14 @@ CObject::CObject()
 {
 }
 
+CObject::~CObject()
+{
+	for (int i = 0; i < v_tComponents.size(); ++i)
+		delete v_tComponents[i];
+
+	v_tComponents.clear();
+}
+
 void CObject::Draw(double timepassed)
 {
 	animTime += timepassed;
@@ -78,7 +86,7 @@ void CObject::Draw(double timepassed)
 
 		g_d3dData->d3dContext->IASetVertexBuffers(0, 1, &mesh->d3dVertexBuffer, strides, offsets);
 		g_d3dData->d3dContext->IASetIndexBuffer(mesh->d3dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-		
+
 
 		g_d3dData->d3dContext->VSSetShader(g_d3dData->d3dVertexShader[renderer->iUsedVertexShaderIndex], 0, 0);
 
@@ -151,7 +159,7 @@ void CObject::Draw(double timepassed)
 
 		for (int i = 0; i < anim->_anim.frames[currFrameIndex].joints.size(); ++i)
 		{
-			
+
 			DirectX::XMMATRIX tween = matLerp(anim->_anim.frames[currFrameIndex].joints[i]._mat, anim->_anim.frames[currFrameIndex + 1].joints[i]._mat, ratio);
 
 			//debug_renderer::drawMatrix(tween);
@@ -216,7 +224,7 @@ void CObject::Draw(double timepassed)
 
 		debugConstBuff.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
 
-		
+
 		//debugConstBuff.world = DirectX::XMMatrixTranspose(transform->mObjMatrix);
 		//debugConstBuff.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
 		//debugConstBuff.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, g_d3dData->viewMat));
@@ -292,35 +300,6 @@ bool CObject::GetComponent(int componentType, TComponent* & component)
 		}
 	}
 	return false;
-
-
-	/*
-	if (componentType == COMPONENT_TYPE::RENDERER)
-		TRendererComponent* renderer;
-	if (componentType == COMPONENT_TYPE::MESH)
-		TMeshComponent* renderer;
-	if (componentType == COMPONENT_TYPE::TRANSFORM)
-		TTransformComponent* transform;
-	if (componentType == COMPONENT_TYPE::TEXTURE)
-		TTextureComponent* texture;
-
-	for (TComponent* c : v_tComponents)
-	{
-		if (c->GetComponentType() == componentType)
-		{
-			if (componentType == COMPONENT_TYPE::RENDERER)
-				component = (TRendererComponent*)c;
-			else if (componentType == COMPONENT_TYPE::MESH)
-				component = (TMeshComponent*)c;
-			else if (componentType == COMPONENT_TYPE::TRANSFORM)
-				component = (TTransformComponent*)c;
-			else if (componentType = COMPONENT_TYPE::TEXTURE)
-				component = (TTextureComponent*)c;
-			return true;
-		}
-	}
-	return false;
-	*/
 }
 
 bool CObject::Move(float _x, float _z)
@@ -338,6 +317,8 @@ bool CObject::Move(float _x, float _z)
 	collider->d3dCollider.Center.z += _z;
 
 	transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
+	DirectX::XMFLOAT3 targetVec = { _x, 0.0f, _z };
+	transform->mObjMatrix = TurnTo(transform->mObjMatrix, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec))), 0.5f);
 
 	DirectX::XMFLOAT4 pos;
 	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
@@ -365,6 +346,13 @@ bool CObject::Collides(CObject * _other)
 		}
 	}
 	return false;
+}
+
+void CObject::Cleanup()
+{
+	for (int i = 0; i < v_tComponents.size(); i++)
+		delete v_tComponents[i];
+	v_tComponents.clear();
 }
 
 

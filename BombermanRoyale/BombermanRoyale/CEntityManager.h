@@ -19,6 +19,10 @@
 class CEntityManager
 {
 private:
+	
+
+
+
 
 public:
 
@@ -46,6 +50,8 @@ public:
 	CBomb* DropBomb1(CPlayer* playerSource);
 	CBomb* DropBomb2(CPlayer* playerSource);
 	CBomb* DropBomb3(CPlayer* playerSource);
+
+	void Cleanup();
 
 	CObject* BombExplosionX(CBomb* BombSource);
 	CObject* BombExplosionZ(CBomb* BombSource);

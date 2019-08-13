@@ -127,6 +127,11 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="CItem.h" />
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterController.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">

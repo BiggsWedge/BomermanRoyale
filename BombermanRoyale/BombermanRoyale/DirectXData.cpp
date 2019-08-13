@@ -6,6 +6,7 @@ DirectXData* g_d3dData = nullptr;
 
 bool DirectXData::Initialize()
 {
+
 	GW::GRAPHICS::CreateGDirectX11Surface(g_pWindow, GW::GRAPHICS::DEPTH_BUFFER_SUPPORT, &d3dSurface);
 
 	GW::GReturn gresult;
@@ -51,8 +52,8 @@ bool DirectXData::Initialize()
 
 	ZeroMemory(&d3dViewport, sizeof(d3dViewport));
 
-	d3dViewport.Height = d3dSwapChainDesc.BufferDesc.Height;
-	d3dViewport.Width = d3dSwapChainDesc.BufferDesc.Width;
+	d3dViewport.Height = (FLOAT)d3dSwapChainDesc.BufferDesc.Height;
+	d3dViewport.Width = (FLOAT)d3dSwapChainDesc.BufferDesc.Width;
 	d3dViewport.TopLeftX = d3dViewport.TopLeftY = 0;
 	d3dViewport.MaxDepth = 1;
 	d3dViewport.MinDepth = 0;
@@ -355,18 +356,6 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the basic pixel constant buffer");
 
-	D3D11_BUFFER_DESC bd = {};
-	D3D11_SUBRESOURCE_DATA bdsd = {};
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(TLineVertex) * get_line_vert_capacity();
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
-	bd.StructureByteStride = 0;
-
-	bdsd.pSysMem = get_line_verts();
-
-	d3dDevice->CreateBuffer(&bd, NULL, &d3dVertexBuffers[VERTEX_BUFFER::LINE]);
 
 #pragma endregion
 
@@ -380,23 +369,19 @@ DirectXData::DirectXData()
 
 DirectXData::~DirectXData()
 {
-	Cleanup();
 }
 
 void DirectXData::Cleanup()
 {
-	ID3D11Debug* _debugger;
-	d3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&_debugger));
-
 	SAFE_RELEASE(d3dSamplerState);
 	SAFE_RELEASE(d3dRasterizerState);
 	SAFE_RELEASE(d3dDepthStencilView);
 	SAFE_RELEASE(d3dRenderTargetView);
 
-	for (int i = 0; i < INPUT_LAYOUT::COUNT; ++i)
-		SAFE_RELEASE(d3dInputLayout[i]);
 	for (int i = 0; i < CONSTANT_BUFFER::COUNT; ++i)
 		SAFE_RELEASE(d3dConstBuffers[i]);
+	for (int i = 0; i < INPUT_LAYOUT::COUNT; ++i)
+		SAFE_RELEASE(d3dInputLayout[i]);
 	for (int i = 0; i < GEOMETRY_SHADER::COUNT; ++i)
 		SAFE_RELEASE(d3dGeometryShader[i]);
 	for (int i = 0; i < PIXEL_SHADER::COUNT; ++i)
@@ -406,17 +391,10 @@ void DirectXData::Cleanup()
 	for (int i = 0; i < DIFFUSE_TEXTURES::COUNT; ++i)
 		SAFE_RELEASE(d3dDiffuseTextures[i]);
 
+	GW_SAFE_RELEASE(d3dSurface);
 	SAFE_RELEASE(d3dSwapChain);
 	SAFE_RELEASE(d3dContext);
 	SAFE_RELEASE(d3dDevice);
-
-	if (d3dSurface)
-	{
-		d3dSurface->DecrementCount();
-		d3dSurface = nullptr;
-	}
-
-	SAFE_RELEASE(_debugger);
 }
 
 void DirectXData::updateCameras()
@@ -434,8 +412,6 @@ void DirectXData::updateCameras()
 
 		debugCamMat.r[3] = DirectX::XMLoadFloat4(&debugPos);
 
-
 		debugCursorRot = { 0.0f, 0.0f };
-
 	}
 }

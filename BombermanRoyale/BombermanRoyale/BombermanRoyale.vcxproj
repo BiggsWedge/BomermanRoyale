@@ -141,6 +141,7 @@
     <ClInclude Include="CBomb.h" />
     <ClInclude Include="CEntityManager.h" />
     <ClInclude Include="CItem.h" />
+    <ClInclude Include="CharacterController.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="CPlayer.h" />
     <ClInclude Include="DirectXData.h" />

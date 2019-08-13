@@ -427,8 +427,10 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) 
 	}
 }
 
-void LoadTextures() {
-	for (int i = 0; i < diffuseTextures.size(); ++i) {
+void LoadTextures()
+{
+	for (int i = 0; i < (int)diffuseTextures.size(); ++i)
+	{
 		if (FAILED(DirectX::CreateWICTextureFromFile(g_d3dData->d3dDevice, diffuseTextures[i], nullptr, &g_d3dData->d3dDiffuseTextures[i])))
 			g_pLogger->LogCatergorized("FAILURE", "Failed to load texture");
 	}
@@ -491,8 +493,6 @@ void drawAABB(DirectX::XMFLOAT3 tlf, DirectX::XMFLOAT3 tlb, DirectX::XMFLOAT3 tr
 	add_line(brb, brf, color);
 }
 
-
-
 float3 XMVector2Float3(DirectX::XMVECTOR vector)
 {
 	float3 point;
@@ -509,70 +509,6 @@ DirectX::XMVECTOR Float32XMVector(float3 point)
 	DirectX::XMVECTOR vector = { point.x, point.y, point.z, 1.0f };
 
 	return vector;
-}
-
-void LoadLines() {
-	DirectX::XMFLOAT3 scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-	DirectX::XMFLOAT3 position = { 0.0f, 0.0f, 0.0f };
-	TCollider debugCollider = GetCenter(v_tMeshTemplates[0]);
-	scale = DirectX::XMFLOAT3(1, 1, 1);
-
-	for (size_t i = 0; i < 8; i++) {
-		debugCollider.corners[i].x = (debugCollider.corners[i].x * scale.x) - position.x; //*25.0f;
-		debugCollider.corners[i].y = (debugCollider.corners[i].y * scale.y) - position.y; //*25.0f;
-		debugCollider.corners[i].z = (debugCollider.corners[i].z * scale.z) - position.z; //*25.0f;
-	}
-
-	drawAABB(debugCollider.corners[2], debugCollider.corners[0], debugCollider.corners[4], debugCollider.corners[6], debugCollider.corners[5], debugCollider.corners[3], debugCollider.corners[7], debugCollider.corners[1], { 1,0,0,1 }, { 1,0,0,1 });
-}
-
-TCollider GetCenter(TMeshTemplate _verts)
-{
-	TCollider collider = TCollider();
-	float3 center;
-	float minX, maxX, minY, maxY, minZ, maxZ;
-
-	minX = maxX = _verts.v_tVertices.at(0).fPosition.x;
-	minY = maxY = _verts.v_tVertices.at(0).fPosition.y;
-	minZ = maxZ = _verts.v_tVertices.at(0).fPosition.z;
-
-	for (int i = 0; i < _verts.v_tVertices.size(); i++)
-	{
-		if (_verts.v_tVertices.at(i).fPosition.x < minX)
-			minX = _verts.v_tVertices.at(i).fPosition.x;
-		else if (_verts.v_tVertices.at(i).fPosition.x > maxX)
-			maxX = _verts.v_tVertices.at(i).fPosition.x;
-		else if (_verts.v_tVertices.at(i).fPosition.y < minY)
-			minY = _verts.v_tVertices.at(i).fPosition.y;
-		else if (_verts.v_tVertices.at(i).fPosition.y > maxY)
-			maxY = _verts.v_tVertices.at(i).fPosition.y;
-		else if (_verts.v_tVertices.at(i).fPosition.z < minZ)
-			minZ = _verts.v_tVertices.at(i).fPosition.z;
-		else if (_verts.v_tVertices.at(i).fPosition.z > maxZ)
-			maxZ = _verts.v_tVertices.at(i).fPosition.z;
-	}
-
-	center.x = (minX + maxX) * 0.5f;
-	center.y = (minY + maxY) * 0.5f;
-	center.z = (minZ + maxZ) * 0.5f;
-
-	collider.center = center;
-	collider.extents = GetExtents(minX, maxX, minY, maxY, minZ, maxZ);
-
-	GetCorners(collider.center, collider.extents, collider.corners);
-
-	return collider;
-}
-
-DirectX::XMFLOAT3 GetExtents(float _minX, float _maxX, float _minY, float _maxY, float _minZ, float _maxZ)
-{
-	float3 extents;
-
-	extents.x = (_maxX - _minX) * 0.5f;
-	extents.y = (_maxY - _minY) * 0.5f;
-	extents.z = (_maxZ - _minZ) * 0.5f;
-
-	return extents;
 }
 
 void GetCorners(float3 _center, float3 _extents, float3*& corners)
@@ -910,3 +846,60 @@ DirectX::XMMATRIX matLerp(DirectX::XMMATRIX x, DirectX::XMMATRIX y, float ratio)
 
 	return toRet;
 }
+
+DirectX::XMVECTOR RPYFromVector(DirectX::XMVECTOR RPY)
+{
+	DirectX::XMFLOAT3 angles = DirectX::XMFLOAT3((RPY.m128_f32[0] * 180.0f) + 180.0f, 0.0f, (RPY.m128_f32[2] * 180.0f) + 180.0f);
+	DirectX::XMVECTOR toRet = DirectX::XMLoadFloat3(&angles);
+	return toRet;
+}
+
+DirectX::XMMATRIX TurnTo(DirectX::XMMATRIX _mat, DirectX::XMVECTOR _target, float speed)
+{
+	DirectX::XMMATRIX toRet = _mat;
+
+	DirectX::XMFLOAT4 _pos;
+	DirectX::XMStoreFloat4(&_pos, _mat.r[3]);
+
+	DirectX::XMFLOAT3 pos = { _pos.x, _pos.y, _pos.z };
+
+	DirectX::XMFLOAT3 targVec = DirectX::XMFLOAT3(_target.m128_f32[0] - pos.x, _target.m128_f32[1] - pos.y, _target.m128_f32[2] - pos.z);
+	DirectX::XMFLOAT3 _t = { targVec.x, targVec.y, targVec.z };
+
+	DirectX::XMVECTOR
+		xAxis = DirectX::XMVector3Normalize(_mat.r[0]),
+		yAxis = DirectX::XMVector3Normalize(_mat.r[1]),
+		zAxis = DirectX::XMVector3Normalize(_mat.r[2]),
+		_targ = DirectX::XMLoadFloat3(&_t);
+
+	float yRotation = DirectX::XMVectorGetX(DirectX::XMVector3Dot(xAxis, _targ));
+	float xRotation = DirectX::XMVectorGetX(DirectX::XMVector3Dot(yAxis, _targ));
+
+	DirectX::XMVECTOR thisPos = toRet.r[3];
+	toRet.r[3] = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+	toRet = toRet * DirectX::XMMatrixRotationY(yRotation * speed);
+	toRet = DirectX::XMMatrixRotationX(xRotation * -speed) * toRet;
+
+	toRet.r[3] = thisPos;
+	return toRet;
+}
+
+void CleanGlobals()
+{
+	GW_SAFE_RELEASE(g_pWindow);
+
+	v_tMeshTemplates.clear();
+	g_d3dData->Cleanup();
+	delete g_d3dData;
+	g_d3dData = nullptr;
+
+	GW_SAFE_RELEASE(g_pControllerInput);
+	GW_SAFE_RELEASE(g_pMusicStream);
+	GW_SAFE_RELEASE(g_pSoundPlayer);
+	GW_SAFE_RELEASE(g_pInputRecord);
+	GW_SAFE_RELEASE(g_pAudioHolder);
+
+	GW_SAFE_RELEASE(g_pLogger);
+}
+

@@ -1,16 +1,18 @@
 #pragma once
 
 #include "CBomb.h"
+#include "CharacterController.h"
 
 
 class CPlayer : public CObject
 {
 private:
 	std::vector<int> bombs;
-	int numBombs = 2;
+	int numBombs = 1;
 	bool alive;
 	int controllerIndex;
 	int bombType = 0;
+	CharacterController controller;
 
 public:
 	CPlayer();
@@ -20,7 +22,6 @@ public:
 	void Initialize();
 
 
-
 	//ACCESSORS
 	inline bool isAlive() { return alive; }
 	inline int GetNumBombs() { return numBombs; }
@@ -28,15 +29,17 @@ public:
 	inline int GetControllerIndex() { return controllerIndex; }
 	inline std::vector<int> getBombIndices() { return bombs; };
 	inline int GetBombType() { return bombType; }
-
+	inline void GetInput() { controller.Update(); }
+	inline CharacterController* GetCharacterController() { return &controller; }
 
 	//MUTATORS
-	inline void setControllerIndex(int index) { controllerIndex = index; }
+	inline void setControllerIndex(int index) { controller.SetControllerIndex(index); }
 	inline void AddBombIndex(int index) { bombs.push_back(index); }
 	inline void incNumBombs() { numBombs++; }
 	inline void setAlive(bool _alive) { alive = _alive; }
 	inline void deleteBomb(int index) { bombs.erase(bombs.begin() + index); }
 	inline void SetBombType(int _bombType) { bombType = _bombType; }
+
 };
 
 
