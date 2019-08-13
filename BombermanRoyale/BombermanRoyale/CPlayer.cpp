@@ -13,7 +13,7 @@ void CPlayer::resetStats()
 {
 	bombs.clear();
 	alive = true;
-	numBombs = 2;
+	numBombs = 1;
 }
 
 void CPlayer::updatePlayer()
