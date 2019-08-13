@@ -50,7 +50,7 @@ static std::vector<KeyboardInput> keyboardInputs;
 
 struct KEYS
 {
-	enum { UP = 0, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE, HELP_MENU, GAME_STATE, FULLSCREEN, COUNT };
+	enum { UP = 0, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE, HELP_MENU, GAME_STATE, FULLSCREEN, PAUSE, COUNT };
 };
 static std::vector<key> keys(KEYS::COUNT);
 
@@ -65,13 +65,17 @@ static std::vector<int> keycodes =
 	VK_SPACE,
 	VK_F1,
 	'G',
-	'F'
+	'F',
+	VK_ESCAPE
 };
 
 bool ControlScreenToggle = false;
 bool Controller1Alive = false;
 bool Controller2Alive = false;
+bool isPaused = false;
 
+static double timePassed = 0.0f;
+double tempTime = 0.0f;
 int boxDropped;
 float bCollisionIgnore = 0.5f;
 
@@ -143,7 +147,6 @@ void CGame::Run()
 
 		static ULONGLONG currFrame = GetTickCount64();
 		static ULONGLONG prevFrame = GetTickCount64();
-		static double timePassed = 0.0;
 
 		prevFrame = currFrame;
 		currFrame = GetTickCount64();
@@ -163,14 +166,22 @@ void CGame::Run()
 			keyboardInputs[0].controls[i].currState = GetAsyncKeyState(keyboardInputs[0].keycodes[i]);
 			keyboardInputs[1].controls[i].currState = GetAsyncKeyState(keyboardInputs[1].keycodes[i]);
 		}
+
 		if (keys[KEYS::FULLSCREEN].pressed())
 		{
 			FullScreen = !FullScreen;
 			this->WindowResize();
 		}
-
-		if (keys[KEYS::HELP_MENU].pressed())
+		if (keys[KEYS::HELP_MENU].pressed()) {
 			ControlScreenToggle = !ControlScreenToggle;
+			isPaused = !isPaused;
+			if (isPaused == false)
+			{
+				g_pAudioHolder->ResumeAll();
+				g_pMusicStream->ResumeStream();
+				timePassed = tempTime;
+			}
+		}
 
 		if (keys[KEYS::GAME_STATE].pressed())
 		{
@@ -186,6 +197,25 @@ void CGame::Run()
 			{
 				setGameState(GAME_STATE::MAIN_MENU);
 			}
+		}
+
+		if (keys[KEYS::PAUSE].pressed())
+		{
+			isPaused = !isPaused;
+			ControlScreenToggle = !ControlScreenToggle;
+			if (isPaused == false)
+			{
+				g_pAudioHolder->ResumeAll();
+				g_pMusicStream->ResumeStream();
+				timePassed = tempTime;
+			}
+		}
+		if (isPaused == true)
+		{
+			g_pMusicStream->PauseStream();
+			g_pAudioHolder->PauseAll();
+			tempTime = timePassed;
+			timePassed = 0;
 		}
 		if (curGameState == GAME_STATE::ARCADE_GAME)
 		{
@@ -1252,7 +1282,6 @@ void CGame::setGameState(int _gameState) {
 	switch (_gameState) {
 	case GAME_STATE::MAIN_MENU:
 		ClearPlayersAndBombs();
-
 		break;
 	case GAME_STATE::ARCADE_GAME:
 		curGameState = 3;
@@ -1262,6 +1291,7 @@ void CGame::setGameState(int _gameState) {
 		break;
 	case GAME_STATE::WIN_SCREEN:
 		ClearPlayersAndBombs();
+		break;
 	}
 	curGameState = _gameState;
 }
