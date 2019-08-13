@@ -13,7 +13,7 @@ CBomb::~CBomb()
 
 void CBomb::Explode()
 {
-	timer = maxTime - 0.01f;
+	timer = maxTime - 0.0001f;
 }
 
 void CBomb::initialize(CPlayer* parent)

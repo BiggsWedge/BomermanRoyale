@@ -85,15 +85,12 @@ TMeshComponent::TMeshComponent()
 	componentType = COMPONENT_TYPE::MESH;
 }
 
-TMeshComponent::TMeshComponent(TMeshTemplate _template, TCollider tCollider, bool noCollider)
+TMeshComponent::TMeshComponent(TMeshTemplate _template)
 {
 	componentType = COMPONENT_TYPE::MESH;
 
 	indexCount = _template.v_iIndices.size();
 	vertexCount = _template.v_tVertices.size();
-
-	mCollider = tCollider;
-	hasCollider = noCollider;
 
 	D3D11_BUFFER_DESC vBuffDesc;
 	D3D11_SUBRESOURCE_DATA vBuffSub;
@@ -127,7 +124,6 @@ TMeshComponent::TMeshComponent(TMeshTemplate _template, TCollider tCollider, boo
 	iBuffSub.pSysMem = _template.v_iIndices.data();
 
 	result = g_d3dData->d3dDevice->CreateBuffer(&iBuffDesc, &iBuffSub, &d3dIndexBuffer);
-
 }
 
 TMeshComponent::~TMeshComponent()
@@ -178,9 +174,8 @@ TColliderComponent::TColliderComponent(TMeshTemplate mtemplate, DirectX::XMFLOAT
 	}
 
 	d3dCollider.Center = DirectX::XMFLOAT3(((left + right) / 2.0f) + position.x, ((top + bottom) / 2.0f) + position.y, ((front + back) / 2.0f) + position.z);
-	if (mtemplate.uID == MODELS::CHICKEN)
-		d3dCollider.Extents = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	else
-		d3dCollider.Extents = DirectX::XMFLOAT3(abs((left + right) / 2.0f + left), abs((top + bottom) / 2.0f + top), abs((front + back) / 2.0f + front));
-	DirectX::XMStoreFloat4(&d3dCollider.Orientation, DirectX::XMQuaternionIdentity());
+	//if (mtemplate.uID == MODELS::CHICKEN)
+	//	d3dCollider.Extents = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//else
+	d3dCollider.Extents = DirectX::XMFLOAT3(abs((left + right) / 2.0f + left), abs((top + bottom) / 2.0f + top), abs((front + back) / 2.0f + front));
 }

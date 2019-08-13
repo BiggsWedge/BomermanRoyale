@@ -178,13 +178,6 @@ struct TMeshTemplate {
 	std::vector<int>				v_iIndices;
 };
 
-struct TCollider {
-	DirectX::XMFLOAT3 center;
-	DirectX::XMFLOAT3 extents;
-	DirectX::XMFLOAT3* corners;
-
-	TCollider() { corners = new float3[8](); }
-};
 
 extern std::vector<TMeshTemplate> v_tMeshTemplates;
 
@@ -216,12 +209,11 @@ float3 XMVector2Float3(DirectX::XMVECTOR vector);
 
 DirectX::XMVECTOR Float32XMVector(float3 point);
 
-void LoadLines();
 
-TCollider GetCenter(TMeshTemplate _verts);
+DirectX::XMVECTOR RPYFromVector(DirectX::XMVECTOR RPY);
 
-DirectX::XMFLOAT3 GetExtents(float _minX, float _maxX, float _minY, float _maxY, float _minZ, float _maxZ);
+DirectX::XMMATRIX TurnTo(DirectX::XMMATRIX _mat, DirectX::XMVECTOR _target, float speed);
 
-void GetCorners(float3 _center, float3 _extents, float3*& corners);
 
+void CleanGlobals();
 

@@ -8,6 +8,7 @@
 #include "../Gateware/Interface/G_Graphics/GDirectX11Surface.h"
 
 #define SAFE_RELEASE(ptr){if(ptr){ptr->Release(); ptr = nullptr;}}
+#define GW_SAFE_RELEASE(ptr){if(ptr){ptr->DecrementCount(); ptr = nullptr;}}
 
 struct TBasicVertexConstBuff
 {
@@ -106,6 +107,7 @@ class DirectXData
 public:
 
 	bool collisionMatrix[COLLISION_LAYERS::COUNT][COLLISION_LAYERS::COUNT];
+
 	GW::GRAPHICS::GDirectX11Surface*	d3dSurface = nullptr;
 	ID3D11Device*						d3dDevice = nullptr;
 	IDXGISwapChain*						d3dSwapChain = nullptr;
@@ -117,7 +119,6 @@ public:
 	ID3D11GeometryShader*				d3dGeometryShader[GEOMETRY_SHADER::COUNT] = {};
 
 	ID3D11Buffer*						d3dConstBuffers[CONSTANT_BUFFER::COUNT] = {};
-	ID3D11Buffer*						d3dVertexBuffers[VERTEX_BUFFER::COUNT] = {};
 	ID3D11RenderTargetView*				d3dRenderTargetView = nullptr;
 	ID3D11DepthStencilView*				d3dDepthStencilView = nullptr;
 	ID3D11RasterizerState*				d3dRasterizerState = nullptr;
@@ -139,8 +140,6 @@ public:
 	DirectX::XMFLOAT3					newCamPos;
 
 	TBasicVertexConstBuff					basicConstBuff;
-
-	std::vector<ID3D11CommandList*>		d3dCommandLists = {};
 
 	D3D11_VIEWPORT						d3dViewport;
 
