@@ -47,9 +47,9 @@ bool CRendererManager::Draw(double timepassed)
 	g_d3dData->d3dContext->OMSetRenderTargets(1, d3dTargets, g_d3dData->d3dDepthStencilView);
 	//g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
 
-	const float bg_green[] = { 0.0f, 1.0f, 0.0f, 1.0f };
+	const float bg_green[] = { 0.2f, 0.5f, 0.2f, 1.0f };
 
-	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView, bg_green);
+	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView,  bg_green);
 	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
 	//g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
 

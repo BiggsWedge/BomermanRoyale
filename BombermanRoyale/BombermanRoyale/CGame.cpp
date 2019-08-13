@@ -149,7 +149,7 @@ void CGame::Run()
 	    g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
 	walkSound1->SetVolume(0.4f);
-	
+
 	if (G_FAIL(g_pAudioHolder->CreateSound(explosionSFX, &explosionSound1)))
 	{
 	    g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
@@ -973,12 +973,12 @@ void CGame::WindowResize()
 {
 	g_pWindow->GetClientWidth(width);
 	g_pWindow->GetClientHeight(height);
-	g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+	g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(30), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
 	GW::SYSTEM::GWindowStyle style = (FullScreen) ? GW::SYSTEM::GWindowStyle::FULLSCREENBORDERLESS : GW::SYSTEM::GWindowStyle::WINDOWEDBORDERED;
 	g_pWindow->ChangeWindowStyle(style);
 	g_pWindow->GetClientWidth(width);
 	g_pWindow->GetClientHeight(height);
-	g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+	g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(30), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
 	g_d3dData->d3dViewport.Height = static_cast<float>(height);
 	g_d3dData->d3dViewport.Width = static_cast<float>(width);
 
@@ -1344,10 +1344,19 @@ void CGame::updateBombs(double timePassed) {
 			}
 
 		}
-		for (CBomb* bomb : v_cBombs) {
-			if (bomb && bomb->isAlive()) {
-				if (Xexplosions[i]->Collides((CObject*)bomb) || Zexplosions[i]->Collides((CObject*)bomb)) {
-					bomb->Explode();
+		for (int k = 0; k < v_cBombs.size(); k++)
+		{
+			if (v_cBombs[k] && v_cBombs[k]->isAlive())
+			{
+				if (Xexplosions[i]->Collides((CObject*)v_cBombs[k]) || Zexplosions[i]->Collides((CObject*)v_cBombs[k])) {
+
+					v_cBombs[k]->Explode();
+					CPlayer* parent = v_cBombs[k]->getParent();
+					for (int j = 0; j < parent->getBombIndices().size(); ++j) {
+						if (parent->getBombIndices()[j] == k)
+							parent->deleteBomb(j);
+					}
+
 				}
 			}
 		}
@@ -1388,8 +1397,8 @@ bool CGame::loadTempMenus() {
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 
-	loadInfo.position = { 0.0f, 2.5f, 20.0f };
-	loadInfo.forwardVec = { 0.0f, 1.1f, -1.0f };
+	loadInfo.position = { 0.0f, 2.5f, 18.6f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::NAMES_HUD;
 	loadInfo.hasCollider = false;
 	loadInfo.scale = DirectX::XMFLOAT3(2.4f, 0.25f, 1.0f);
@@ -1397,24 +1406,24 @@ bool CGame::loadTempMenus() {
 	loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { 0.0f, 5.4f, -5.0f };
-	loadInfo.forwardVec = { 0.0f, 1.1f, -1.0f };
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::MAIN_MENU;
-	loadInfo.scale = DirectX::XMFLOAT3(2.6f, 2.1f, 1.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(2.55f, 2.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::MAIN_MENU;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { 0.0f, 5.4f, -5.0f };
-	loadInfo.forwardVec = { 0.0f, 1.1f, -1.0f };
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::WIN_SCREEN;
-	loadInfo.scale = DirectX::XMFLOAT3(2.6f, 2.1f, 1.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(2.55f, 2.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::WIN_SCREEN;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { 0.0f, 12.0f, -10.5f };
-	loadInfo.forwardVec = { 0.0f, 1.1f, -1.0f };
+	loadInfo.position = { 0.0f, 20.0f, -9.5f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HELP_MENU;
 	loadInfo.scale = DirectX::XMFLOAT3(0.8f, 1.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU2;
