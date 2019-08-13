@@ -545,8 +545,17 @@ void CGame::LoadObject()
 	//loadInfo.meshID = 1;
 	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
+	loadInfo.meshID = MODELS::CUBE;
+	loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
 	loadInfo.floor = true;
 	loadInfo.destroyable = false;
+	loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 
 	for (float z = -7.5f; z < 15.0f; z += 2.5f)
@@ -554,17 +563,6 @@ void CGame::LoadObject()
 		for (float x = -12.5f; x < 15.0f; x += 2.5f)
 		{
 			loadInfo.position = { x, -2.5f, z };
-			loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
-			loadInfo.usedGeo = -1;
-			loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-			loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-			loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-			loadInfo.meshID = MODELS::CUBE;
-			loadInfo.LoadState = 3;
-			loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-			loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-			loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
 			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 		}
 	}
