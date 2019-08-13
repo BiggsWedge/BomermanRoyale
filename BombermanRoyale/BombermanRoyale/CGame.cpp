@@ -166,7 +166,6 @@ void CGame::Run()
 			keyboardInputs[0].controls[i].currState = GetAsyncKeyState(keyboardInputs[0].keycodes[i]);
 			keyboardInputs[1].controls[i].currState = GetAsyncKeyState(keyboardInputs[1].keycodes[i]);
 		}
-
 		if (keys[KEYS::FULLSCREEN].pressed())
 		{
 			FullScreen = !FullScreen;
@@ -1108,6 +1107,7 @@ void CGame::GamePlayLoop(double timePassed)
 			if (currPlayer->Collides((CObject*)items[i]))
 			{
 				currPlayer->SetBombType(items[i]->GetItemType());
+				currPlayer->incNumBombs();
 				items.erase(items.begin() + i);
 				--i;
 			}
@@ -1155,6 +1155,7 @@ void CGame::GamePlayLoop(double timePassed)
 								v_cBombs[i] = p_cEntityManager->DropBomb(currPlayer);
 							break;
 						}
+						break;
 					}
 				}
 			}
