@@ -5,10 +5,11 @@
 
 const char* backgroundMusicFilePath = ".//Assets//Music//Level_Music1.wav";
 const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
-const char* bombPlaceSFX = ".//Assets//Music//RD_UI_Scroll_Up.wav";
-const char* walkSFX = ".//Assets//Music//RD_UI_Scroll_Down.wav";
+const char* walkSFX = ".//Assets//Music//RD_UI_Scroll_Up.wav";
+const char* bombPlaceSFX = ".//Assets//Music//RD_UI_Scroll_Down.wav";
 const char* explosionSFX = ".//Assets//Music//RD_Bomb_Explode_02.wav";
 const char* spawnSFX = ".//Assets//Music//RD_Upgrade_Pickup_01.wav";
+const char* powerUpSFX = ".//Assets//Music//RD_Upgrade_Pickup_03.wav";
 
 struct key
 {
@@ -75,6 +76,8 @@ static std::vector<int> keycodes =
 bool ControlScreenToggle = false;
 bool Controller1Alive = false;
 bool Controller2Alive = false;
+bool soundplaying;
+bool soundplaying2;
 
 int boxDropped;
 float bCollisionIgnore = 0.5f;
@@ -91,6 +94,7 @@ float isP1SelectButtonPressed = 0.0f;
 float isP2StartButtonPressed = 0.0f;
 float isP2SelectButtonPressed = 0.0f;
 
+float walktimer = 0.0f;
 
 float isP1LDPADPressed = 0.0f;
 float isP1RDPADPressed = 0.0f;
@@ -126,7 +130,7 @@ void CGame::Run()
 
 	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicStream)))
 	{
-		if (G_SUCCESS(g_pMusicStream->SetVolume(0.5f)))
+		if (G_SUCCESS(g_pMusicStream->SetVolume(0.3f)))
 		{
 			g_pMusicStream->StreamStart(true);
 		}
@@ -144,6 +148,7 @@ void CGame::Run()
 	{
 	    g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
+	walkSound1->SetVolume(0.4f);
 	
 	if (G_FAIL(g_pAudioHolder->CreateSound(explosionSFX, &explosionSound1)))
 	{
@@ -154,31 +159,43 @@ void CGame::Run()
 	{
 	    g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
+	spawnSound1->SetVolume(0.25f);
 	
 	if (G_FAIL(g_pAudioHolder->CreateSound(bombPlaceSFX, &bombPlaceSound1)))
 	{
 	    g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
+	bombPlaceSound1->SetVolume(0.8f);
 
-	if (G_FAIL(g_pAudioHolder->CreateSound(walkSFX, &walkSound2)))
+	if (G_FAIL(g_pAudioHolder->CreateSound(powerUpSFX, &powerUpSound)))
 	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
+	powerUpSound->SetVolume(0.25f);
+
+	if (G_FAIL(g_pAudioHolder->CreateSound(powerUpSFX, &powerUpSound2)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+	powerUpSound2->SetVolume(0.25f);
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(explosionSFX, &explosionSound2)))
 	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
 
+
 	if (G_FAIL(g_pAudioHolder->CreateSound(spawnSFX, &spawnSound2)))
 	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
+	spawnSound2->SetVolume(0.25f);
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(bombPlaceSFX, &bombPlaceSound2)))
 	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
+	bombPlaceSound2->SetVolume(0.8f);
 	
 	
 
@@ -1015,8 +1032,17 @@ void CGame::GamePlayLoop(double timePassed)
 		if (isRightPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::RIGHT).held())
 			deltaX += timePassed * PLAYER_SPEED;
 
-		if (deltaX != 0.0f || deltaZ != 0.0f)
+		if (deltaX != 0.0f || deltaZ != 0.0f) {
 			currPlayer->Move(deltaX, deltaZ);
+			bool walkplaying;
+			walktimer += timePassed;
+			walkSound1->isSoundPlaying(walkplaying);
+			if (!walkplaying && walktimer > 0.3f)
+			{
+				walktimer = 0.0f;
+				walkSound1->Play();
+			}
+		}
 
 		for (CObject* cObj : objects)
 		{
@@ -1033,6 +1059,13 @@ void CGame::GamePlayLoop(double timePassed)
 		{
 			if (currPlayer->Collides((CObject*)items[i]))
 			{
+				powerUpSound->isSoundPlaying(soundplaying);
+				powerUpSound2->isSoundPlaying(soundplaying2);
+				if (!soundplaying)
+					powerUpSound->Play();
+				else if (!soundplaying2)
+					powerUpSound2->Play();
+				currPlayer->SetBombType(items[i]->GetItemType());
 				items.erase(items.begin() + i);
 				--i;
 			}
@@ -1042,6 +1075,16 @@ void CGame::GamePlayLoop(double timePassed)
 		{
 			if (currPlayer->hasAvailableBombSlot())
 			{
+				bool soundplaying;
+				bombPlaceSound1->isSoundPlaying(soundplaying);
+				if (!soundplaying)
+				{
+					bombPlaceSound1->Play();
+				}
+				else
+				{
+					bombPlaceSound2->Play();
+				}
 				for (int i = 0; i < maxNumBombs; ++i)
 				{
 					if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive())
@@ -1217,7 +1260,7 @@ void CGame::setGameState(int _gameState) {
 		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-10.0f, 0.0f, 10.0f));
 		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(10.0f, 0.0f, -5.0f));
 
-		bool soundplaying;
+		
 
 		spawnSound1->isSoundPlaying(soundplaying);
 		if (!soundplaying)
@@ -1409,9 +1452,9 @@ void CGame::PlayerCollision(CPlayer * playerToCheck, CObject* cObj) {
 	zD = abs(pCollider->d3dCollider.Center.z - objCollider->d3dCollider.Center.z);
 	mX = pCollider->d3dCollider.Extents.x + objCollider->d3dCollider.Extents.x;
 	mZ = pCollider->d3dCollider.Extents.z + objCollider->d3dCollider.Extents.z;
-
 	if (zD < mZ && zD > mZ - 0.25) {
 		playerToCheck->Move(0, ((mZ - zD) + 0.1f) * (float)upDown);
+		
 	} else if (xD < mX && xD > mX - 0.25) {
 		playerToCheck->Move(((mX - xD) + 0.1f) * (float)leftRight, 0);
 	}
