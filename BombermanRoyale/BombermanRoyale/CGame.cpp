@@ -242,7 +242,9 @@ void CGame::Run()
 			isPaused = !isPaused;
 			if (isPaused == false)
 			{
-				g_pAudioHolder->ResumeAll();
+				explosionSound1->isSoundPlaying(soundplaying);
+				if(soundplaying)
+					g_pAudioHolder->ResumeAll();
 				g_pMusicStream->ResumeStream();
 				timePassed = tempTime;
 			}
@@ -271,7 +273,9 @@ void CGame::Run()
 			ControlScreenToggle = !ControlScreenToggle;
 			if (isPaused == false)
 			{
-				g_pAudioHolder->ResumeAll();
+				explosionSound1->isSoundPlaying(soundplaying);
+				if (soundplaying)
+					g_pAudioHolder->ResumeAll();
 				g_pMusicStream->ResumeStream();
 				timePassed = tempTime;
 			}
@@ -1103,8 +1107,7 @@ void CGame::GamePlayLoop(double timePassed)
 				--i;
 			}
 		}
-
-		if (isSouthPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::BOMB).pressed())
+		if ((isSouthPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::BOMB).pressed()) && !isPaused )
 		{
 			if (currPlayer->hasAvailableBombSlot())
 			{
