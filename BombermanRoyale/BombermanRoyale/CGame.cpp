@@ -135,7 +135,7 @@ void CGame::Run()
 
 	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicStream)))
 	{
-		if (G_SUCCESS(g_pMusicStream->SetVolume(0.3f)))
+		if (G_SUCCESS(g_pMusicStream->SetVolume(0.1f)))
 		{
 			g_pMusicStream->StreamStart(true);
 		}
@@ -155,11 +155,6 @@ void CGame::Run()
 	}
 	walkSound1->SetVolume(0.4f);
 
-	if (G_FAIL(g_pAudioHolder->CreateSound(explosionSFX, &explosionSound1)))
-	{
-		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
-
 	if (G_FAIL(g_pAudioHolder->CreateSound(spawnSFX, &spawnSound1)))
 	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
@@ -172,23 +167,6 @@ void CGame::Run()
 	}
 	bombPlaceSound1->SetVolume(0.8f);
 
-	if (G_FAIL(g_pAudioHolder->CreateSound(powerUpSFX, &powerUpSound)))
-	{
-		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
-	powerUpSound->SetVolume(0.25f);
-
-	if (G_FAIL(g_pAudioHolder->CreateSound(powerUpSFX, &powerUpSound2)))
-	{
-		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
-	powerUpSound2->SetVolume(0.25f);
-
-	if (G_FAIL(g_pAudioHolder->CreateSound(explosionSFX, &explosionSound2)))
-	{
-		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
-
 	if (G_FAIL(g_pAudioHolder->CreateSound(spawnSFX, &spawnSound2)))
 	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
@@ -200,10 +178,59 @@ void CGame::Run()
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
 	bombPlaceSound2->SetVolume(0.8f);
+	//for (int i = 0; i < numPlayers; ++i)
+	//{
+	//    if (walkSound.size() != numPlayers)
+	//    {
+	//        walkSound.resize(2);
+	//    }
+	//    if (G_FAIL(g_pAudioHolder->CreateSound(walkSFX, &walkSound.at(i))))
+	//    {
+	//        g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	//    }
+	//}
+	for (int i = 0; i < 24; ++i)
+	{
+	    if (explosionSound.size() != 24)
+	    {
+	        explosionSound.resize(24);
+	    }
+	    if (G_FAIL(g_pAudioHolder->CreateSound(explosionSFX, &explosionSound.at(i))))
+	    {
+	        g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	    }
+	}
+
+	for (int i = 0; i < 4; ++i)
+	{
+	    if (bombPlaceSound.size() != 4)
+	    {
+	        bombPlaceSound.resize(4);
+	    }
+	    if (G_FAIL(g_pAudioHolder->CreateSound(bombPlaceSFX, &bombPlaceSound.at(i))))
+	    {
+	        g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	    }
+		bombPlaceSound.at(i)->SetVolume(0.8f);
+	}
+
+	for (int i = 0; i < 4; ++i)
+	{
+		if (powerUpSound.size() != 4)
+		{
+			powerUpSound.resize(4);
+		}
+		if (G_FAIL(g_pAudioHolder->CreateSound(powerUpSFX, &powerUpSound.at(i))))
+		{
+			g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+		}
+		powerUpSound.at(i)->SetVolume(0.2f);
+	}
+
 
 	p1Pause.SetButtonID(G_START_BTN);
 	p1Help.SetButtonID(G_SELECT_BTN);
-
+	p1Pause.Reset(false);
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
 	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY)
 	{
@@ -245,7 +272,7 @@ void CGame::Run()
 			
 		}
 
-		if (keys[KEYS::GAME_STATE].pressed() || p1Pause.Pressed())
+		if (keys[KEYS::GAME_STATE].pressed() || p1Pause.Released())
 		{
 			if (curGameState == GAME_STATE::MAIN_MENU)
 			{
@@ -261,24 +288,13 @@ void CGame::Run()
 			}
 		}
 
-		if (keys[KEYS::PAUSE].pressed() || p1Help.Pressed())
+		if (keys[KEYS::PAUSE].pressed())
 		{
-
-			isPaused = !isPaused;
 			ControlScreenToggle = !ControlScreenToggle;
-			if (isPaused == false)
-			{
-				explosionSound1->isSoundPlaying(soundplaying);
-				if (soundplaying)
-					g_pAudioHolder->ResumeAll();
-				g_pMusicStream->ResumeStream();
-				timePassed = tempTime;
-			}
 		}
 			
 			if (isPaused == true)
 			{
-				g_pMusicStream->PauseStream();
 				g_pAudioHolder->PauseAll();
 				tempTime = timePassed;
 				timePassed = 0;
@@ -294,11 +310,9 @@ void CGame::Run()
 		{
 			if (isPaused == false)
 			{
-				explosionSound1->isSoundPlaying(soundplaying);
-				if (soundplaying)
-					g_pAudioHolder->ResumeAll();
 				g_pMusicStream->ResumeStream();
-				timePassed = tempTime;
+				if(tempTime != 0)
+					timePassed = tempTime;
 			}
 
 			updateBombs(timePassed);
@@ -861,7 +875,7 @@ void CGame::GamePlayLoop(double timePassed)
 			ControlScreenToggle = !ControlScreenToggle;
 			isPaused = !isPaused;
 		}
-		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::PAUSE))
+		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_CONTROLLER_BUTTONS::PAUSE))
 		{
 			setGameState(GAME_STATE::MAIN_MENU);
 			return;
@@ -952,12 +966,15 @@ void CGame::GamePlayLoop(double timePassed)
 		{
 			if (currPlayer->Collides((CObject*)items[i]))
 			{
-				powerUpSound->isSoundPlaying(soundplaying);
-				powerUpSound2->isSoundPlaying(soundplaying2);
-				if (!soundplaying)
-					powerUpSound->Play();
-				else if (!soundplaying2)
-					powerUpSound2->Play();
+				for (int i = 0; i < powerUpSound.size(); ++i)
+				{
+					powerUpSound.at(i)->isSoundPlaying(soundplaying);
+					if (!soundplaying)
+					{
+						powerUpSound.at(i)->Play();
+						break;
+					}
+				}
 				currPlayer->SetBombType(items[i]->GetItemType());
 				if (currPlayer->GetNumBombs() < 6) {
 					currPlayer->incNumBombs();
@@ -1147,8 +1164,8 @@ void CGame::setGameState(int _gameState) {
 	switch (_gameState) {
 	case GAME_STATE::MAIN_MENU:
 	{
+		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
-		p1Pause.Reset(true);
 		break;
 	}
 	case GAME_STATE::ARCADE_GAME:

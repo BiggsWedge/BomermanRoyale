@@ -29,14 +29,13 @@ extern GW::AUDIO::GAudio* g_pAudioHolder;
 extern GW::AUDIO::GMusic* g_pMusicStream;
 extern GW::AUDIO::GSound* g_pSoundPlayer;
 extern GW::AUDIO::GSound* walkSound1;
-extern GW::AUDIO::GSound* explosionSound1;
 extern GW::AUDIO::GSound* bombPlaceSound1;
 extern GW::AUDIO::GSound* spawnSound1;
-extern GW::AUDIO::GSound* powerUpSound;
-extern GW::AUDIO::GSound* powerUpSound2;
-extern GW::AUDIO::GSound* explosionSound2;
 extern GW::AUDIO::GSound* bombPlaceSound2;
 extern GW::AUDIO::GSound* spawnSound2;
+extern std::vector<GW::AUDIO::GSound*> explosionSound;
+extern std::vector<GW::AUDIO::GSound*> bombPlaceSound;
+extern std::vector<GW::AUDIO::GSound*> powerUpSound;
 extern GW::SYSTEM::GController* g_pControllerInput;
 
 /***********************************************************************

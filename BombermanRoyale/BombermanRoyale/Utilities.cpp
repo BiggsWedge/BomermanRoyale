@@ -18,14 +18,13 @@ GAudio* g_pAudioHolder = nullptr;
 GMusic* g_pMusicStream = nullptr;
 GSound* g_pSoundPlayer = nullptr;
 GSound* walkSound1;
-GSound* explosionSound1;
 GSound* bombPlaceSound1;
 GSound* spawnSound1;
-GSound* powerUpSound;
-GSound* powerUpSound2;
-GSound* explosionSound2;
 GSound* bombPlaceSound2;
 GSound* spawnSound2;
+std::vector<GSound*> explosionSound;
+std::vector<GSound*> bombPlaceSound;
+std::vector<GSound*> powerUpSound;
 GController* g_pControllerInput = nullptr;
 
 std::vector<TMeshTemplate> v_tMeshTemplates = {};

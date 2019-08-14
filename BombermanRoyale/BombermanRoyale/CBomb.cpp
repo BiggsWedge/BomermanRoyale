@@ -15,16 +15,14 @@ void CBomb::Explode()
 {
 	
 	bool soundplaying;
-	explosionSound1->isSoundPlaying(soundplaying);
-	if (!soundplaying)
+	for (int i = 0; i < explosionSound.size(); ++i)
 	{
-		explosionSound1->Play();
-	}
-	else
-	{	
-		explosionSound2->isSoundPlaying(soundplaying);
-		if(!soundplaying)
-		explosionSound2->Play();
+		explosionSound.at(i)->isSoundPlaying(soundplaying);
+		if (!soundplaying)
+		{
+			explosionSound.at(i)->Play();
+			break;
+		}
 	}
 	alive = false;
 
