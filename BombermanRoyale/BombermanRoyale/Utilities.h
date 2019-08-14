@@ -38,6 +38,7 @@ extern std::vector<GW::AUDIO::GSound*> bombPlaceSound;
 extern std::vector<GW::AUDIO::GSound*> powerUpSound;
 extern GW::SYSTEM::GController* g_pControllerInput;
 
+
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the
 *								current date and time.
@@ -233,6 +234,12 @@ struct TMeshTemplate {
 	uint32_t numVerts;
 	uint32_t numIndices;
 
+	int currKeyFrame = 0;
+	float frameTime = 0;
+	float currFrameIndex = 0;
+	float animTime = 0.0f;
+	float totalTime;
+
 	TMaterial _mat;
 
 	AnimationClip _anim;
@@ -251,7 +258,7 @@ struct TMeshTemplate {
 
 	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr);
 	void initialize(ID3D11Device* _device);
-	void render(ID3D11DeviceContext* _context);
+	void render(ID3D11DeviceContext* _context, double timepassed);
 };
 
 

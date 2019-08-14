@@ -286,6 +286,11 @@ void CGame::Run()
 			{
 				setGameState(GAME_STATE::MAIN_MENU);
 			}
+			else if (curGameState == GAME_STATE::CREDIT_SCREEN)
+			{
+				setGameState(GAME_STATE::MAIN_MENU);
+			}
+
 		}
 
 		if (keys[KEYS::PAUSE].pressed())
@@ -485,11 +490,30 @@ void CGame::Run()
 #pragma endregion
 
 
-		if (!p_cRendererManager->Draw(timePassed))
+		if (!p_cRendererManager->Draw(timePassed, curGameState))
 		{
 			g_pLogger->LogCatergorized("FAILURE", "Failed to draw");
 		}
 	}
+}
+
+void CGame::LoadAnim()
+{
+	OBJLoadInfo loadInfo;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.position = { 0.0f, 10.0f, -5.0f };
+	loadInfo.forwardVec = { 0.0f, 1.6f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
+	loadInfo.LoadState = GAME_STATE::CREDIT_SCREEN;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	loadInfo.usedVertex = VERTEX_SHADER::ANIM;
+	loadInfo.usedPixel = PIXEL_SHADER::ANIM;
+	loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
+	loadInfo.usedGeo = -1;
+	loadInfo.floor = true;
+	loadInfo.destroyable = false;
+	loadInfo.meshID = MODELS::BATTLEMAGE;
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
 void CGame::LoadObject()
@@ -556,16 +580,6 @@ void CGame::LoadObject()
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	*/
-
-
-	//loadInfo.position = { -17.5f, 0.0f, 0.0f };
-	//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
-	//loadInfo.LoadState = 3;
-	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	//loadInfo.usedVertex = VERTEX_SHADER::ANIM;
-	//loadInfo.usedPixel = PIXEL_SHADER::ANIM;
-	//loadInfo.meshID = 1;
-	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
@@ -1189,6 +1203,11 @@ void CGame::setGameState(int _gameState) {
 		ClearPlayersAndBombs();
 		break;
 	}
+	//case GAME_STATE::CREDIT_SCREEN:
+	//{
+	//	LoadAnim();
+	//	break;
+	//}
 	default:
 	{
 		break;

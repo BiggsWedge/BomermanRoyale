@@ -12,6 +12,7 @@ protected:
 	int componentType;
 public:
 	inline int GetComponentType() { return componentType; }
+	virtual ~TComponent();
 };
 
 struct TRendererComponent : TComponent

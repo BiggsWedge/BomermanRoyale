@@ -5,7 +5,7 @@ cbuffer MVP_t : register(b0)
 	matrix projection;
 };
 
-cbuffer joints : register(b1)
+cbuffer JOINTS : register(b1)
 {
 	int numJoints;
 	matrix joints[30];

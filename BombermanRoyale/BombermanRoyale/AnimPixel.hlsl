@@ -65,14 +65,14 @@ float4 main(PS_IN input) : SV_TARGET
 	float3 half_vector = normalize(light_dir + eyeDir);
 	float nh = dot(norm, half_vector);
 	float specIntensity = pow(saturate(nh), 1 + _mat.surfaceShiny);
-	float4 lightIntensity = float4(light.color.xyz, 0.0) * light.intensity * sq_distance;
+	//float4 lightIntensity = float4(light.color.xyz, 0.0) * light.intensity * sq_distance;
 	float4 mat_Diffuse = txDiffuse.Sample(txSampler, input.tex) * float4(_mat.surfaceDiffuse, 0.0) * _mat.diffuseFactor;
 	float4 mat_specular = txSpecular.Sample(txSampler, input.tex) * float4(_mat.surfaceSpecular, 0.0) * _mat.specularFactor;
 	float4 mat_emissive = txEmissive.Sample(txSampler, input.tex) * float4(_mat.surfaceEmissive, 0.0) * _mat.emissiveFactor;
 	float4 emissive = mat_emissive;
 	float4 ambient = mat_Diffuse * ambient_light;
-	float4 specular = mat_specular * specIntensity * lightIntensity;
-	float4 diffuse = mat_Diffuse * diffuse_intensity * lightIntensity;
+	float4 specular = mat_specular * specIntensity /** lightIntensity*/;
+	float4 diffuse = mat_Diffuse * diffuse_intensity /** lightIntensity*/;
 
 	diffuse.xyz -= specular.xyz;
 	diffuse.xyz = saturate(diffuse.xyz);

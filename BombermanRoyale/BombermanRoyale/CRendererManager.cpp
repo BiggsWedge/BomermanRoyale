@@ -24,7 +24,7 @@ void CRendererManager::RenderObjectCollider(CObject * _objToDraw)
 	}
 }
 
-bool CRendererManager::Draw(double timepassed)
+bool CRendererManager::Draw(double timepassed, int gamestate)
 {
 
 	if (!g_d3dData->d3dSurface)
@@ -51,10 +51,11 @@ bool CRendererManager::Draw(double timepassed)
 
 	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView,  bg_green);
 	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
-	//g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
+	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
 
 	/*********DRAW OTHER STUFF HERE************/
-	//v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext);
+	if(gamestate == 3)
+		v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext, timepassed);
 	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState);
 	for (CObject* c : rendereableObjects)
 		c->Draw(timepassed);

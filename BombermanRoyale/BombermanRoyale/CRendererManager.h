@@ -9,7 +9,7 @@ public:
 	bool HasComponent(CObject _objToCheck, int _componentToCheck);
 	void RenderObject(CObject* _objToDraw);
 	void RenderObjectCollider(CObject* _objToDraw);
-	bool Draw(double timepassed);
+	bool Draw(double timepassed, int gamestate);
 	CRendererManager();
 	~CRendererManager();
 };

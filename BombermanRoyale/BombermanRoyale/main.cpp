@@ -23,8 +23,8 @@ int main(void)
 	InitializeGlobals();
 	LoadTextures();
 	LoadModels();
-	//v_tMeshTemplates[MODELS::BATTLEMAGE].loadModel(".\\Assets\\BattleMage.mesh", ".\\Assets\\BattleMage.mat", ".\\Assets\\BattleMage.anim");
-	//v_tMeshTemplates[MODELS::BATTLEMAGE].initialize(g_d3dData->d3dDevice);
+	v_tMeshTemplates[MODELS::BATTLEMAGE].loadModel(".\\Assets\\BattleMage.mesh", ".\\Assets\\BattleMage.mat", ".\\Assets\\BattleMage.anim");
+	v_tMeshTemplates[MODELS::BATTLEMAGE].initialize(g_d3dData->d3dDevice);
 	LoadMenuScreen(15, 11, 0, ".//Assets//Menu.mat");
 	LoadMenuScreen(19, 11, 1, ".//Assets//Menu.mat");
 

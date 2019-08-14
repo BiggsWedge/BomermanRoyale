@@ -756,17 +756,70 @@ void TMeshTemplate::initialize(ID3D11Device* _device)
 
 }
 
-void TMeshTemplate::render(ID3D11DeviceContext* _context)
+void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 {
 
+	animTime += timepassed;
+	totalTime += timepassed;
+
+	float fractionalTime = timepassed - (int)timepassed;
 
 	UINT strides = sizeof(TSimpleVertex);
 	UINT offsets = 0;
+
+	if (currKeyFrame == _anim.frames.size())
+		currKeyFrame = 0;
+
+	while (animTime > _anim.frames[currFrameIndex + 1].time)
+	{
+		currFrameIndex++;
+		if (currFrameIndex == _anim.frames.size() - 1)
+		{
+			animTime -= _anim.duration;
+			currFrameIndex = 0;
+		}
+	}
+
+	float startTime, endTime;
+	startTime = _anim.frames[currFrameIndex].time;
+	endTime = _anim.frames[currFrameIndex + 1].time;
+
+	float ratio = (animTime - startTime) / (endTime - startTime);
+
+	KeyFrame _key = _anim.frames[currFrameIndex];
+
+	jointCB _jointsConst;
+	_jointsConst.numJoints = _anim.frames[currFrameIndex].joints.size();
+
+	for (int i = 0; i < _anim.frames[currFrameIndex].joints.size(); ++i)
+	{
+
+		DirectX::XMMATRIX tween = matLerp(_anim.frames[currFrameIndex].joints[i]._mat, _anim.frames[currFrameIndex + 1].joints[i]._mat, ratio);
+
+		//debug_renderer::drawMatrix(tween);
+
+		_jointsConst._joints[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, _bindPose[i]._mat) * tween);
+
+		if (_key.joints[i].parentIndex >= 0)
+		{
+			DirectX::XMFLOAT4X4 startMat, endMat;
+
+			DirectX::XMStoreFloat4x4(&startMat, matLerp(_anim.frames[currFrameIndex].joints[i]._mat, _anim.frames[currFrameIndex + 1].joints[i]._mat, ratio));
+			DirectX::XMStoreFloat4x4(&endMat, matLerp(_anim.frames[currFrameIndex].joints[_anim.frames[currFrameIndex].joints[i].parentIndex]._mat, _anim.frames[currFrameIndex + 1].joints[_anim.frames[currFrameIndex + 1].joints[i].parentIndex]._mat, ratio));
+		}
+
+
+	}
 	
 	MVP_t debugConstBuff;
-	debugConstBuff.world = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
-	debugConstBuff.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
-	debugConstBuff.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, g_d3dData->viewMat));
+	//debugConstBuff.world = DirectX::XMMatrixTranspose(mObjMatrix);
+	//
+	//if (g_d3dData->bUseDebugRenderCamera)
+	//	debugConstBuff.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
+	//else
+	//	debugConstBuff.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
+	//
+	//debugConstBuff.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
 
 #pragma endregion
 
@@ -782,12 +835,7 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context)
 	//MatBuffer mat;
 	//mat.material = _mat;
 
-	jointCB _jointsConst;
-	_jointsConst.numJoints = _bindPose.size();
-	for (int i = 0; i < _bindPose.size(); ++i)
-	{
-		_jointsConst._joints[i] = _bindPose[i]._mat;
-	}
+	
 
 	debugConstBuff.world = DirectX::XMMatrixIdentity();
 	debugConstBuff.world = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
