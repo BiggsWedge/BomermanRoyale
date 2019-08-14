@@ -23,6 +23,7 @@ struct key
 };
 
 Button p1Pause;
+Button p1Help;
 
 
 struct CONTROL_KEYS
@@ -201,6 +202,7 @@ void CGame::Run()
 	bombPlaceSound2->SetVolume(0.8f);
 
 	p1Pause.SetButtonID(G_START_BTN);
+	p1Help.SetButtonID(G_SELECT_BTN);
 
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
 	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY)
@@ -237,13 +239,13 @@ void CGame::Run()
 			FullScreen = !FullScreen;
 			this->WindowResize();
 		}
-		if (keys[KEYS::HELP_MENU].pressed()) {
+		if (keys[KEYS::HELP_MENU].pressed() || p1Help.Pressed()) {
 			ControlScreenToggle = !ControlScreenToggle;
 			isPaused = !isPaused;
 			
 		}
 
-		if (keys[KEYS::GAME_STATE].pressed() || (curGameState != GAME_STATE::ARCADE_GAME && p1Pause.Pressed()))
+		if (keys[KEYS::GAME_STATE].pressed() || p1Pause.Pressed())
 		{
 			if (curGameState == GAME_STATE::MAIN_MENU)
 			{
@@ -259,7 +261,7 @@ void CGame::Run()
 			}
 		}
 
-		if (keys[KEYS::PAUSE].pressed())
+		if (keys[KEYS::PAUSE].pressed() || p1Help.Pressed())
 		{
 
 			isPaused = !isPaused;
@@ -290,6 +292,14 @@ void CGame::Run()
 			ShowCursor(true);
 		if (curGameState == GAME_STATE::ARCADE_GAME)
 		{
+			if (isPaused == false)
+			{
+				explosionSound1->isSoundPlaying(soundplaying);
+				if (soundplaying)
+					g_pAudioHolder->ResumeAll();
+				g_pMusicStream->ResumeStream();
+				timePassed = tempTime;
+			}
 
 			updateBombs(timePassed);
 			prevCursor = currCursor;
@@ -847,7 +857,10 @@ void CGame::GamePlayLoop(double timePassed)
 
 		CharacterController* cont = currPlayer->GetCharacterController();
 		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::HELP))
+		{
 			ControlScreenToggle = !ControlScreenToggle;
+			isPaused = !isPaused;
+		}
 		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::PAUSE))
 		{
 			setGameState(GAME_STATE::MAIN_MENU);
@@ -953,7 +966,7 @@ void CGame::GamePlayLoop(double timePassed)
 				--i;
 			}
 		}
-		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::ACTION))//isSouthPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::BOMB).pressed())
+		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::ACTION) && !isPaused)//isSouthPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::BOMB).pressed())
 		{
 			if (currPlayer->hasAvailableBombSlot())
 			{
@@ -1247,13 +1260,15 @@ void CGame::updateBombs(double timePassed) {
 			if (v_cBombs[k] && v_cBombs[k]->isAlive())
 			{
 				if (Xexplosions[i]->Collides((CObject*)v_cBombs[k]) || Zexplosions[i]->Collides((CObject*)v_cBombs[k])) {
-
+					/*
 					v_cBombs[k]->Explode();
 					CPlayer* parent = v_cBombs[k]->getParent();
 					for (int j = 0; j < parent->getBombIndices().size(); ++j) {
 						if (parent->getBombIndices()[j] == k)
 							parent->deleteBomb(j);
 					}
+					*/
+					v_cBombs[k]->SetToExplode();
 
 				}
 			}

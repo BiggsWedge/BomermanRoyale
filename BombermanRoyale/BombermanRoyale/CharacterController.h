@@ -57,6 +57,7 @@ public:
 	inline bool IsControllerConnected() { return connected; }
 	void Update()
 	{
+
 		LeftXAxis = 0.0f;
 		LeftYAxis = 0.0f;
 		g_pControllerInput->IsConnected(controllerIndex, connected);
