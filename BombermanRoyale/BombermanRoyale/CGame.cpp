@@ -240,14 +240,7 @@ void CGame::Run()
 		if (keys[KEYS::HELP_MENU].pressed()) {
 			ControlScreenToggle = !ControlScreenToggle;
 			isPaused = !isPaused;
-			if (isPaused == false)
-			{
-				explosionSound1->isSoundPlaying(soundplaying);
-				if (soundplaying)
-					g_pAudioHolder->ResumeAll();
-				g_pMusicStream->ResumeStream();
-				timePassed = tempTime;
-			}
+			
 		}
 
 		if (keys[KEYS::GAME_STATE].pressed() || (curGameState != GAME_STATE::ARCADE_GAME && p1Pause.Pressed()))
@@ -268,6 +261,7 @@ void CGame::Run()
 
 		if (keys[KEYS::PAUSE].pressed())
 		{
+
 			isPaused = !isPaused;
 			ControlScreenToggle = !ControlScreenToggle;
 			if (isPaused == false)
@@ -279,13 +273,17 @@ void CGame::Run()
 				timePassed = tempTime;
 			}
 		}
-		if (isPaused == true)
-		{
-			g_pMusicStream->PauseStream();
-			g_pAudioHolder->PauseAll();
-			tempTime = timePassed;
-			timePassed = 0;
-		}
+			
+			if (isPaused == true)
+			{
+				g_pMusicStream->PauseStream();
+				g_pAudioHolder->PauseAll();
+				tempTime = timePassed;
+				timePassed = 0;
+			}
+
+			
+		
 		if (prevShowMouse && !showMouse)
 			ShowCursor(false);
 		if (!prevShowMouse && showMouse)
