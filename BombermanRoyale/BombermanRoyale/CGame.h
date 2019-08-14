@@ -36,7 +36,6 @@ class CGame
 	std::vector<double> explosionTimers;
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
 
-	//CPlayer *p1 = nullptr, *p2 = nullptr;
 
 	int maxNumBombs = 24;
 	std::vector<CBomb*> v_cBombs;
@@ -44,7 +43,6 @@ class CGame
 	double mouseIdleTimer;
 	bool prevShowMouse = true;
 	bool showMouse = true;
-
 
 public:
 	void Cleanup();
@@ -71,6 +69,6 @@ public:
 	void updateBombs(double timePassed);
 	void loadMap(int index);
 	bool loadTempMenus();
-	void PlayerCollision(CPlayer* playerToCheck, CObject* cObj);
+	void PlayerCollision(CPlayer* playerToCheck, CObject* cObj, float dx, float dz);
 };
 

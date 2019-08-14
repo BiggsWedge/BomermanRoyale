@@ -366,47 +366,6 @@ void CGame::LoadObject()
 
 	//TCollider collider = GetCenter(v_tMeshTemplates[0]);
 
-	//window data(width, height)
-	g_pWindow->GetClientWidth(width);
-	g_pWindow->GetClientHeight(height);
-
-	/*
-	collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
-	collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
-	collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
-
-	loadInfo.collider.center = collider.center;
-	loadInfo.collider.extents = collider.extents;
-	loadInfo.LoadState = 3;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-
-
-
-	//collider data
-	collider = GetCenter(v_tMeshTemplates[1]);
-	collider.center.x = GetCenter(v_tMeshTemplates[1]).center.x + loadInfo.position.x;
-	collider.center.y = GetCenter(v_tMeshTemplates[1]).center.y + loadInfo.position.y;
-	collider.center.z = GetCenter(v_tMeshTemplates[1]).center.z + loadInfo.position.z;
-
-	loadInfo.collider.center = collider.center;
-	loadInfo.collider.extents = collider.extents;
-
-
-	collider.center.x = GetCenter(v_tMeshTemplates[1]).center.x + loadInfo.position.x;
-	collider.center.y = GetCenter(v_tMeshTemplates[1]).center.y + loadInfo.position.y;
-	collider.center.z = GetCenter(v_tMeshTemplates[1]).center.z + loadInfo.position.z;
-
-	loadInfo.collider.center = collider.center;
-	loadInfo.collider.extents = collider.extents;
-	*/
-
-	//loadInfo.position = { -12.5f, 0.0f, 0.0f };
-	//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
-	//loadInfo.LoadState = 3;
-	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	//loadInfo.meshID = 1;
-	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
@@ -472,8 +431,6 @@ void CGame::LoadObject()
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
 
-
-
 	loadInfo.position = { -10, 0, 0 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	loadInfo.position = { -10, 0, 5 };
@@ -530,11 +487,42 @@ void CGame::Cleanup()
 
 	for (CObject* object : menuObjects)
 	{
-		object->Cleanup();
-		delete object;
+		if (object)
+			delete object;
 		object = nullptr;
 	}
 	menuObjects.clear();
+
+	for (CBomb* bomb : v_cBombs)
+	{
+		if (bomb)
+			delete bomb;
+		bomb = nullptr;
+	}
+	v_cBombs.clear();
+	for (CPlayer* player : v_cPlayers)
+	{
+		if (player)
+			delete player;
+		player = nullptr;
+	}
+	v_cPlayers.clear();
+	for (CObject* exp : Xexplosions)
+	{
+		if (exp)
+			delete exp;
+		exp = nullptr;
+	}
+	Xexplosions.clear();
+	for (CObject* exp : Zexplosions)
+	{
+		if (exp)
+			delete exp;
+		exp = nullptr;
+	}
+	Zexplosions.clear();
+	explosionTimers.clear();
+
 }
 
 CGame::CGame()
@@ -544,7 +532,6 @@ CGame::CGame()
 
 CGame::~CGame()
 {
-	delete p_cRendererManager;
 }
 
 #define PLAYER_SPEED 5.0f
@@ -635,21 +622,21 @@ void CGame::GamePlayLoop(double timePassed)
 
 		if (isRightPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::RIGHT).held())
 			deltaX += timePassed * PLAYER_SPEED;
-
 		*/
+
 		if (deltaX != 0.0f || deltaZ != 0.0f)
 			currPlayer->Move(deltaX, deltaZ);
 
 		for (CObject* cObj : objects)
 		{
 			if (currPlayer->Collides(cObj))
-				PlayerCollision(currPlayer, cObj);
+				PlayerCollision(currPlayer, cObj, deltaX, deltaZ);
 		}
 		for (CBomb* bomb : v_cBombs)
 		{
 			if (bomb && bomb->isAlive())
 				if (currPlayer->Collides(bomb))
-					PlayerCollision(currPlayer, (CObject*)bomb);
+					PlayerCollision(currPlayer, (CObject*)bomb, deltaX, deltaZ);
 		}
 		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::ACTION))//isSouthPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::BOMB).pressed())
 		{
@@ -797,6 +784,7 @@ void CGame::setGameState(int _gameState)
 	case GAME_STATE::ARCADE_GAME:
 	{
 		LoadObject();
+		v_cBombs.resize(maxNumBombs);
 		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-10.0f, 0.0f, 10.0f));
 		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(10.0f, 0.0f, -5.0f));
 
@@ -821,16 +809,35 @@ void CGame::ClearPlayersAndBombs()
 			delete v_cPlayers[i];
 			v_cPlayers[i] = nullptr;
 		}
+	for (CBomb* bomb : v_cBombs)
+	{
+		if (bomb)
+			delete bomb;
+		bomb = nullptr;
+	}
 	v_cBombs.clear();
-	v_cBombs.resize(maxNumBombs);
+
+	for (CObject* object : objects)
+	{
+		if (object)
+			delete object;
+		object = nullptr;
+	}
+	for (CObject* exp : Xexplosions)
+	{
+		if (exp)
+			delete exp;
+		exp = nullptr;
+	}
 	Xexplosions.clear();
+	for (CObject* exp : Zexplosions)
+	{
+		if (exp)
+			delete exp;
+		exp = nullptr;
+	}
 	Zexplosions.clear();
 	explosionTimers.clear();
-
-	for (int i = 0; i < objects.size(); i++)
-	{
-		objects[i]->Cleanup();
-	}
 	objects.clear();
 }
 
@@ -840,7 +847,9 @@ void CGame::updateBombs(double timePassed)
 	{
 		if (explosionTimers[i] >= 0.5f)
 		{
+			delete Xexplosions[i];
 			Xexplosions.erase(Xexplosions.begin() + i);
+			delete Zexplosions[i];
 			Zexplosions.erase(Zexplosions.begin() + i);
 			explosionTimers.erase(explosionTimers.begin() + i);
 			--i;
@@ -851,6 +860,7 @@ void CGame::updateBombs(double timePassed)
 		{
 			if (Xexplosions[i]->Collides(objects[j]) || Zexplosions[i]->Collides(objects[j]))
 			{
+				delete objects[j];
 				objects.erase(objects.begin() + j);
 				--j;
 			}
@@ -948,7 +958,7 @@ bool CGame::loadTempMenus()
 	return true;
 }
 
-void CGame::PlayerCollision(CPlayer * playerToCheck, CObject* cObj)
+void CGame::PlayerCollision(CPlayer * playerToCheck, CObject* cObj, float dx, float dz)
 {
 	TComponent* comp = nullptr;
 	TColliderComponent* pCollider;
@@ -977,12 +987,23 @@ void CGame::PlayerCollision(CPlayer * playerToCheck, CObject* cObj)
 	mX = pCollider->d3dCollider.Extents.x + objCollider->d3dCollider.Extents.x;
 	mZ = pCollider->d3dCollider.Extents.z + objCollider->d3dCollider.Extents.z;
 
+
+	TTransformComponent* pTrans = nullptr;
+	if (playerToCheck->GetComponent(COMPONENT_TYPE::TRANSFORM, comp))
+		pTrans = (TTransformComponent*)comp;
+
 	if (zD < mZ && zD > mZ - 0.2)
 	{
-		playerToCheck->Move(0, ((mZ - zD) + 0.1f) * (float)upDown);
+		pTrans->fPosition.z += ((mZ - zD) + 0.1f) *(float)upDown;
+		pCollider->d3dCollider.Center.z += ((mZ - zD) + 0.1f) *(float)upDown;
+		//playerToCheck->Move(0, ((mZ - zD) + 0.1f) * (float)upDown);
 	}
 	else if (xD < mX && xD > mX - 0.2)
 	{
-		playerToCheck->Move(((mX - xD) + 0.1f) * (float)leftRight, 0);
+
+		pTrans->fPosition.x += ((mX - xD) + 0.05f) *(float)leftRight;
+		pCollider->d3dCollider.Center.x += ((mX - xD) + 0.05f) *(float)leftRight;
+		//playerToCheck->Move(((mX - xD) + 0.1f) * (float)leftRight, 0);
 	}
+	pTrans->ResetMatrix();
 }

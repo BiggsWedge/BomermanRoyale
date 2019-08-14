@@ -1,6 +1,6 @@
 #include "CBomb.h"
 #include "CPlayer.h"
-
+#include <iostream>
 
 CBomb::CBomb()
 {

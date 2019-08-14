@@ -7,6 +7,7 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {
+	CObject::~CObject();
 }
 
 void CPlayer::resetStats()
@@ -25,3 +26,4 @@ void CPlayer::Initialize()
 {
 	controller = CharacterController();
 }
+

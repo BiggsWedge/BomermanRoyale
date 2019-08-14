@@ -38,6 +38,7 @@ TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, Direct
 	componentType = COMPONENT_TYPE::TRANSFORM;
 	fPosition = spawnPosition;
 	fForwardVector = forwardVector;
+	fScale = scale;
 	DirectX::XMFLOAT3 up = { 0.0f, 1.0f, 0.0f };
 	DirectX::XMVECTOR at = DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&fForwardVector)));
 	DirectX::XMVECTOR origin = { 0.0f, 0.0f, 0.0f };
@@ -51,6 +52,19 @@ TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, Direct
 
 TTransformComponent::~TTransformComponent()
 {
+
+}
+
+
+void TTransformComponent::ResetMatrix()
+{
+	DirectX::XMFLOAT3 up = { 0.0f, 1.0f, 0.0f };
+	DirectX::XMVECTOR at = DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&fForwardVector)));
+	DirectX::XMVECTOR origin = { 0.0f, 0.0f, 0.0f };
+
+	mObjMatrix = DirectX::XMMatrixLookAtLH(origin, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&fForwardVector)), DirectX::XMLoadFloat3(&up));
+	mObjMatrix = mObjMatrix * DirectX::XMMatrixTranslation(fPosition.x, fPosition.y, fPosition.z);
+	mObjMatrix = DirectX::XMMatrixScaling(fScale.x, fScale.y, fScale.z) * mObjMatrix;
 
 }
 
@@ -178,4 +192,9 @@ TColliderComponent::TColliderComponent(TMeshTemplate mtemplate, DirectX::XMFLOAT
 	//	d3dCollider.Extents = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	//else
 	d3dCollider.Extents = DirectX::XMFLOAT3(abs((left + right) / 2.0f + left), abs((top + bottom) / 2.0f + top), abs((front + back) / 2.0f + front));
+}
+
+TComponent::~TComponent()
+{
+
 }
