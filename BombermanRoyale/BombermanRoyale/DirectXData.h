@@ -5,6 +5,8 @@
 #include <DirectXMath.h>
 #include "DDSTextureLoader.h"
 #include <DirectXCollision.h>
+#include "SkyPixel.csh"
+#include "SkyVertex.csh"
 #include "ConstDefines.h"
 #include "../Gateware/Interface/G_Graphics/GDirectX11Surface.h"
 

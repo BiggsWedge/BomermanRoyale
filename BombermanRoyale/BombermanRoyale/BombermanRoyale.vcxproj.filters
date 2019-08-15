@@ -7,6 +7,8 @@
     <FxCompile Include="BasicPixel.hlsl" />
     <FxCompile Include="LineVertex.hlsl" />
     <FxCompile Include="LinePixel.hlsl" />
+    <FxCompile Include="SkyPixel.hlsl" />
+    <FxCompile Include="SkyVertex.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Gateware\Source\G_Audio\GAudio.cpp" />
