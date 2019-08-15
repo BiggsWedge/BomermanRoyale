@@ -269,11 +269,11 @@ struct MVP_t
 	DirectX::XMMATRIX projection;
 };
 
-struct joints
-{
-	int numJoints;
-	DirectX::XMMATRIX joints[30];
-};
+//struct joints
+//{
+//	int numJoints;
+//	DirectX::XMMATRIX joint[30];
+//};
 
 struct Light
 {
