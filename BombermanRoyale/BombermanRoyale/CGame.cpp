@@ -136,7 +136,7 @@ void CGame::Run()
 
 	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicStream)))
 	{
-		if (G_SUCCESS(g_pMusicStream->SetVolume(0.1f)))
+		if (G_SUCCESS(g_pMusicStream->SetVolume(0.3f)))
 		{
 			g_pMusicStream->StreamStart(true);
 		}

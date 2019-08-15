@@ -1,150 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="BasicPixel.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="BasicVertex.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="LineVertex.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="LinePixel.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="AnimPixel.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="AnimVertex.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
+    <FxCompile Include="AnimPixel.hlsl" />
+    <FxCompile Include="AnimVertex.hlsl" />
+    <FxCompile Include="BasicVertex.hlsl" />
+    <FxCompile Include="BasicPixel.hlsl" />
+    <FxCompile Include="LineVertex.hlsl" />
+    <FxCompile Include="LinePixel.hlsl" />
+    <FxCompile Include="BombShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CBomb.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CEntityManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CGame.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CObject.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Component.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CPlayer.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CRendererManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectXData.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Utilities.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="WICTextureLoader.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Gateware\Source\G_Audio\GAudio.cpp">
-      <Filter>Gateware</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Gateware\Source\G_System\GController.cpp">
-      <Filter>Gateware</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Gateware\Source\G_Graphics\GDirectX11Surface.cpp">
-      <Filter>Gateware</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Gateware\Source\G_System\GFile.cpp">
-      <Filter>Gateware</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Gateware\Source\G_System\GI_Callback.cpp">
-      <Filter>Gateware</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Gateware\Source\G_System\GI_Static.cpp">
-      <Filter>Gateware</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Gateware\Source\G_System\GInput.cpp">
-      <Filter>Gateware</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Gateware\Source\G_System\GLog.cpp">
-      <Filter>Gateware</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Gateware\Source\G_System\GWindow.cpp">
-      <Filter>Gateware</Filter>
-    </ClCompile>
+    <ClCompile Include="..\Gateware\Source\G_Audio\GAudio.cpp" />
+    <ClCompile Include="..\Gateware\Source\G_Graphics\GDirectX11Surface.cpp" />
+    <ClCompile Include="..\Gateware\Source\G_System\GController.cpp" />
+    <ClCompile Include="..\Gateware\Source\G_System\GFile.cpp" />
+    <ClCompile Include="..\Gateware\Source\G_System\GInput.cpp" />
+    <ClCompile Include="..\Gateware\Source\G_System\GI_Callback.cpp" />
+    <ClCompile Include="..\Gateware\Source\G_System\GI_Static.cpp" />
+    <ClCompile Include="..\Gateware\Source\G_System\GLog.cpp" />
+    <ClCompile Include="..\Gateware\Source\G_System\GWindow.cpp" />
+    <ClCompile Include="CBomb.cpp" />
+    <ClCompile Include="CEntityManager.cpp" />
     <ClCompile Include="CItem.cpp" />
+    <ClCompile Include="CObject.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="CPlayer.cpp" />
+    <ClCompile Include="DirectXData.cpp" />
+    <ClCompile Include="CGame.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="CRendererManager.cpp" />
+    <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="WICTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CBomb.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="CEntityManager.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="CGame.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="CObject.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Component.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="ConstDefines.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="CPlayer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="CRendererManager.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectXData.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="pools.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="SharedDefines.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="TObjectTemplate.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Utilities.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="WICTextureLoader.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
+    <ClInclude Include="CBomb.h" />
+    <ClInclude Include="CEntityManager.h" />
     <ClInclude Include="CItem.h" />
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterController.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Source">
-      <UniqueIdentifier>{2d904587-5083-4a4f-808c-b214dcbfa454}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Gateware">
-      <UniqueIdentifier>{5df6837e-655e-4011-9baf-dbb2545710de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers">
-      <UniqueIdentifier>{c2f86d1d-fb00-4dd9-ab95-e7257d88dd49}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{d1dd8a98-70fb-403b-8b7b-3cb4fd2ec3ea}</UniqueIdentifier>
-    </Filter>
+    <ClInclude Include="CharacterController.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="CPlayer.h" />
+    <ClInclude Include="DirectXData.h" />
+    <ClInclude Include="CGame.h" />
+    <ClInclude Include="CObject.h" />
+    <ClInclude Include="CRendererManager.h" />
+    <ClInclude Include="pools.h" />
+    <ClInclude Include="ConstDefines.h" />
+    <ClInclude Include="SharedDefines.h" />
+    <ClInclude Include="TObjectTemplate.h" />
+    <ClInclude Include="Utilities.h" />
+    <ClInclude Include="WICTextureLoader.h" />
   </ItemGroup>
 </Project>

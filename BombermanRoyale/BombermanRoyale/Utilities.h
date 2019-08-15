@@ -16,6 +16,7 @@
 #include "LineVertex.csh"
 #include "AnimPixel.csh"
 #include "AnimVertex.csh"
+#include "BombShader.csh"
 #include "DirectXData.h"
 #include "SharedDefines.h"
 #include <fstream>
@@ -176,6 +177,15 @@ struct jointCB
 	int numJoints;
 	DirectX::XMMATRIX _joints[30];
 };
+
+struct bombconstbuffer
+{
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX projection;
+	float4 time;
+};
+
 
 struct material_t
 {

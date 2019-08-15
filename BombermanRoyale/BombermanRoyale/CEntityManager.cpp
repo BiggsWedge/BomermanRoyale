@@ -145,7 +145,7 @@ CBomb* CEntityManager::DropBomb(CPlayer* playerSource)
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
@@ -193,7 +193,7 @@ CBomb* CEntityManager::DropBomb0(CPlayer* playerSource)
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
@@ -241,7 +241,7 @@ CBomb* CEntityManager::DropBomb1(CPlayer* playerSource)
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
@@ -289,7 +289,7 @@ CBomb* CEntityManager::DropBomb2(CPlayer* playerSource)
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
@@ -337,7 +337,7 @@ CBomb* CEntityManager::DropBomb3(CPlayer* playerSource)
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
