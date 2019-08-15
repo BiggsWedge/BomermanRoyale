@@ -172,6 +172,13 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation vertex shader");
 
+	if (FAILED(d3dDevice->CreateVertexShader(SkyVertex, sizeof(SkyVertex), nullptr, &d3dVertexShader[VERTEX_SHADER::SKY])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the skybox vertex shader");
 
 #pragma endregion
 
@@ -200,6 +207,14 @@ bool DirectXData::Initialize()
 	}
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation pixel shader");
+
+	if (FAILED(d3dDevice->CreatePixelShader(SkyPixel, sizeof(SkyPixel), nullptr, &d3dPixelShader[PIXEL_SHADER::SKY])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the skybox pixel shader");
 
 #pragma endregion
 
@@ -238,6 +253,23 @@ bool DirectXData::Initialize()
 		//log failure
 		return false;
 	}
+
+
+	std::vector<D3D11_INPUT_ELEMENT_DESC> d3dSkyShaderDesc =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	if (FAILED(d3dDevice->CreateInputLayout(d3dSkyShaderDesc.data(), d3dSkyShaderDesc.size(), SkyVertex, sizeof(SkyVertex), &d3dInputLayout[INPUT_LAYOUT::SKY])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the skybox input layout");
+
 #pragma endregion
 
 #pragma region Sampler State Creation
@@ -258,6 +290,27 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the sampler state");
 
+
+	// Create the skybox sample state
+	D3D11_SAMPLER_DESC skyboxSampDesc = {};
+	skyboxSampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	skyboxSampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	skyboxSampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	skyboxSampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	skyboxSampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	skyboxSampDesc.MinLOD = 0;
+	skyboxSampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	if (FAILED(d3dDevice->CreateSamplerState(&skyboxSampDesc, &JungleSampler)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the skybox sampler state");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the skybox sampler state");
+
+	CreateDDSTextureFromFile(d3dDevice, L"JungleCubeMap.dds", (ID3D11Resource**)&Jungle, &JungleSRV);
+
 #pragma endregion
 
 #pragma region Camera Creation
@@ -276,6 +329,7 @@ bool DirectXData::Initialize()
 	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(30), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 100.0f);
 
 #pragma endregion
+
 
 #pragma region Constant Buffer Creation
 
@@ -357,7 +411,110 @@ bool DirectXData::Initialize()
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the basic pixel constant buffer");
 
 
+	//Jungle Constant Buffer
+	D3D11_BUFFER_DESC JungleBuffer = {};
+	JungleBuffer.Usage = D3D11_USAGE_DYNAMIC;
+	JungleBuffer.ByteWidth = sizeof(TBasicVertexConstBuff);
+	JungleBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	SkyBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	if (FAILED(d3dDevice->CreateBuffer(&JungleBuffer, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::SKY])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the Skybox constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the Skybox constant buffer");
+
 #pragma endregion
+
+
+#pragma region Vertex Buffer Creation
+
+	KeyVertex verts[] =
+	{
+		{ DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) },
+
+	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f),DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f) },
+
+	{ DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f),DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+
+	{ DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) },
+
+	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f) },
+	{ DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f) },
+	{ DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f) },
+
+	{ DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) },
+	{ DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) },
+	{ DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f),DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) },
+	};
+
+
+
+	//Jungle Vertex buffer
+	JungleBuffer.Usage = D3D11_USAGE_DEFAULT;
+	JungleBuffer.ByteWidth = sizeof(KeyVertex) * 24;
+	JungleBuffer.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	JungleBuffer.CPUAccessFlags = 0;
+	JungleBuffer.MiscFlags = 0;
+	JungleBuffer.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA SubData;
+	SubData.pSysMem = verts;
+
+	d3dDevice->CreateBuffer(&JungleBuffer, &SubData, &JungleVertexBuffer);
+
+#pragma endregion
+
+#pragma region Index Buffer Creation
+
+
+	WORD JungleIndices[36] =
+	{
+		3,0,1,
+		2,3,1,
+
+		6,5,4,
+		7,6,4,
+
+		11,8,9,
+		10,11,9,
+
+		14,13,12,
+		15,14,12,
+
+		19,16,17,
+		18,19,17,
+
+		22,21,20,
+		23,22,20
+	};
+
+	//Sky Index Buffer
+	JungleBuffer.Usage = D3D11_USAGE_DEFAULT;
+	JungleBuffer.ByteWidth = sizeof(WORD) * 36;
+	JungleBuffer.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	JungleBuffer.CPUAccessFlags = 0;
+	SubData.pSysMem = JungleIndices;
+	d3dDevice->CreateBuffer(&JungleBuffer, &SubData, &JungleIndexBuffer);
+
+#pragma endregion
+
+
 
 	return true;
 }

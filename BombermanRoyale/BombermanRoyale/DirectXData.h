@@ -3,6 +3,7 @@
 #include <direct.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include "DDSTextureLoader.h"
 #include <DirectXCollision.h>
 #include "ConstDefines.h"
 #include "../Gateware/Interface/G_Graphics/GDirectX11Surface.h"
@@ -17,7 +18,11 @@ struct TBasicVertexConstBuff
 	DirectX::XMMATRIX mProjMatrix;
 };
 
-
+struct KeyVertex
+{
+	DirectX::XMFLOAT3 xyzw;
+	DirectX::XMFLOAT3 Normal;
+};
 
 struct TBasicPixelConstBuff
 {
@@ -36,27 +41,27 @@ struct VIEWPORT
 
 struct CONSTANT_BUFFER
 {
-	enum { V_BASIC = 0, V_LINE, P_BASIC, P_LINE, MVP_t, LIGHTS, JOINTS, MATERIAL, COUNT };
+	enum { V_BASIC = 0, V_LINE, P_BASIC, P_LINE, MVP_t, LIGHTS, JOINTS, MATERIAL, SKY, COUNT };
 };
 
 struct INDEX_BUFFER
 {
-	enum { DEFAULT = 0, ANIM, COUNT };
+	enum { DEFAULT = 0, ANIM, SKY, COUNT };
 };
 
 struct VERTEX_BUFFER
 {
-	enum { DEFAULT = 0, LINE, ANIM, COUNT };
+	enum { DEFAULT = 0, LINE, ANIM, SKY, COUNT };
 };
 
 struct VERTEX_SHADER
 {
-	enum { BASIC = 0, LINE, ANIM, COUNT };
+	enum { BASIC = 0, LINE, ANIM, SKY, COUNT };
 };
 
 struct PIXEL_SHADER
 {
-	enum { BASIC = 0, LINE, ANIM, COUNT };
+	enum { BASIC = 0, LINE, ANIM, SKY, COUNT };
 };
 
 struct GEOMETRY_SHADER
@@ -66,7 +71,7 @@ struct GEOMETRY_SHADER
 
 struct INPUT_LAYOUT
 {
-	enum { BASIC = 0, LINE, COUNT };
+	enum { BASIC = 0, LINE, SKY, COUNT };
 };
 
 struct RASTERIZER_STATE
@@ -131,6 +136,12 @@ public:
 
 	bool								bUseDebugRenderCamera = false;
 
+	//Skybox Stuff
+	ID3D11Texture2D			 *Jungle = nullptr;
+	ID3D11ShaderResourceView *JungleSRV = nullptr;
+	ID3D11SamplerState		*JungleSampler = nullptr;
+	ID3D11Buffer          *JungleVertexBuffer = nullptr;
+	ID3D11Buffer		  *JungleIndexBuffer = nullptr;
 
 	DirectX::XMMATRIX					camMat;
 	DirectX::XMMATRIX					debugCamMat;
