@@ -7,6 +7,7 @@ const char* backgroundMusicFilePath = ".//Assets//Music//Level_Music1.wav";
 const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
 const char* walkSFX = ".//Assets//Music//RD_UI_Scroll_Up.wav";
 const char* bombPlaceSFX = ".//Assets//Music//RD_UI_Scroll_Down.wav";
+const char* menuSFX = ".//Assets//Music//RD_UI_Select.wav";
 const char* explosionSFX = ".//Assets//Music//RD_Bomb_Explode_02.wav";
 const char* spawnSFX = ".//Assets//Music//RD_Upgrade_Pickup_01.wav";
 const char* powerUpSFX = ".//Assets//Music//RD_Upgrade_Pickup_03.wav";
@@ -189,6 +190,19 @@ void CGame::Run()
 	//        g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	//    }
 	//}
+
+	for (int i = 0; i < 2; ++i)
+	{
+		if (MenuSounds.size() != 2)
+		{
+			MenuSounds.resize(2);
+		}
+		if (G_FAIL(g_pAudioHolder->CreateSound(menuSFX, &MenuSounds.at(i))))
+		{
+			g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+		}
+	}
+
 	for (int i = 0; i < 24; ++i)
 	{
 		if (explosionSound.size() != 24)
@@ -320,15 +334,42 @@ void CGame::Run()
 					menucontroltimer = 0.0;
 					menuBomb->Move(0.0f, 1.75f);
 					menuIndex -= 1;
+					for (int i = 0; i < MenuSounds.size(); ++i)
+					{
+						MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						if (!soundplaying)
+						{
+							MenuSounds.at(i)->Play();
+							break;
+						}
+					}
 				}
 				if (menuBomb->GetCharacterController()->GetUpDown() < 0.0f && menucontroltimer > 0.2 && menuIndex < 3)
 				{
 					menucontroltimer = 0.0;
 					menuBomb->Move(0.0f, -1.75f);
 					menuIndex += 1;
+					for (int i = 0; i < MenuSounds.size(); ++i)
+					{
+						MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						if (!soundplaying)
+						{
+							MenuSounds.at(i)->Play();
+							break;
+						}
+					}
 				}
 				if (menuBomb->GetCharacterController()->ButtonReleased(DEFAULT_CONTROLLER_BUTTONS::ACTION))
 				{
+					for (int i = 0; i < MenuSounds.size(); ++i)
+					{
+						MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						if (!soundplaying)
+						{
+							MenuSounds.at(i)->Play();
+							break;
+						}
+					}
 					switch (menuIndex) {
 					case 0:
 					{

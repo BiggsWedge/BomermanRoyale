@@ -33,6 +33,7 @@ extern GW::AUDIO::GSound* bombPlaceSound1;
 extern GW::AUDIO::GSound* spawnSound1;
 extern GW::AUDIO::GSound* bombPlaceSound2;
 extern GW::AUDIO::GSound* spawnSound2;
+extern std::vector<GW::AUDIO::GSound*> MenuSounds;
 extern std::vector<GW::AUDIO::GSound*> explosionSound;
 extern std::vector<GW::AUDIO::GSound*> bombPlaceSound;
 extern std::vector<GW::AUDIO::GSound*> powerUpSound;
