@@ -43,8 +43,11 @@ class CGame
 
 	int maxNumBombs = 24;
 	std::vector<CBomb*> v_cBombs;
+	CPlayer* menuBomb = nullptr;
+	int menuIndex = 0;
 
 	double mouseIdleTimer;
+	double menucontroltimer = 0.0;
 	bool prevShowMouse = true;
 	bool showMouse = true;
 

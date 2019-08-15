@@ -259,6 +259,8 @@ struct TMeshTemplate {
 	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr);
 	void initialize(ID3D11Device* _device);
 	void render(ID3D11DeviceContext* _context, double timepassed);
+	/*~TMeshTemplate();
+	TMeshTemplate();*/
 };
 
 

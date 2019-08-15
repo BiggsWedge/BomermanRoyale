@@ -121,7 +121,7 @@ bool InitializeAudio() {
 			g_pLogger->LogCatergorized("FAILURE", "Audio Manager unsuccessfully created.");
 			return false;
 		}
-		
+
 	}
 	else {
 		g_pLogger->LogCatergorized("FAILURE", "Audio Manager unsuccessfully created.");
@@ -160,7 +160,7 @@ void LoadModel(TMeshLoadInfo loadInfo)
 	int numIndices;
 	int numVerts;
 
-	TMeshTemplate temp;
+	TMeshTemplate temp/* = TMeshTemplate()*/;
 	temp.uID = index;
 	temp.sName = loadInfo.name;
 
@@ -361,7 +361,7 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) 
 	float SSpaceWidth = (float)width * 0.5f;
 	float SSpaceHeight = (float)height * 0.5f;
 
-	TMeshTemplate temp;
+	TMeshTemplate temp/* = TMeshTemplate()*/;
 
 	temp.uID = index;
 	temp.v_iIndices.resize(numIndices);
@@ -424,6 +424,8 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) 
 
 		v_tMeshTemplates.push_back(temp);
 	}
+	temp._vertexBuffer = nullptr;
+	temp._indexBuffer = nullptr;
 }
 
 void LoadTextures()
@@ -810,7 +812,7 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 
 
 	}
-	
+
 	MVP_t debugConstBuff;
 	//debugConstBuff.world = DirectX::XMMatrixTranspose(mObjMatrix);
 	//
@@ -835,7 +837,7 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 	//MatBuffer mat;
 	//mat.material = _mat;
 
-	
+
 
 	debugConstBuff.world = DirectX::XMMatrixIdentity();
 	debugConstBuff.world = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
@@ -850,7 +852,7 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 
 	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::LIGHTS], 0, nullptr, &_light, 0, 0);
 	_context->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::LIGHTS]);
-	
+
 	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MATERIAL], 0, nullptr, &_mat, 0, 0);
 	_context->PSSetConstantBuffers(1, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MATERIAL]);
 
@@ -869,6 +871,33 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 
 	_context->DrawIndexed(numIndices, 0, 0);
 }
+
+//TMeshTemplate::~TMeshTemplate()
+//{
+//	SAFE_RELEASE(_vertexBuffer);
+//	SAFE_RELEASE(_indexBuffer);
+//	SAFE_RELEASE(_samState);
+//	for (int i = 0; i < TEXTURES::COUNT; i++)
+//	{
+//		SAFE_RELEASE(_srv[i]);
+//		SAFE_RELEASE(_textures[i]);
+//	}
+//
+//
+//}
+//
+//TMeshTemplate::TMeshTemplate()
+//{
+//	_vertexBuffer = nullptr;
+//	_indexBuffer = nullptr;
+//	_samState = nullptr;
+//	for (int i = 0; i < TEXTURES::COUNT; i++)
+//	{
+//		_srv[i] = nullptr;
+//		_textures[i] = nullptr;
+//
+//	}
+//}
 
 float lerp(float x, float y, float ratio)
 {
@@ -935,7 +964,19 @@ DirectX::XMMATRIX TurnTo(DirectX::XMMATRIX _mat, DirectX::XMVECTOR _target, floa
 void CleanGlobals()
 {
 	GW_SAFE_RELEASE(g_pWindow);
-
+	//for (int i = 0; i < v_tMeshTemplates.size(); i++)
+	//{
+	//	if(v_tMeshTemplates.at(i)._vertexBuffer)
+	//	SAFE_RELEASE(v_tMeshTemplates.at(i)._vertexBuffer);
+	//	SAFE_RELEASE(v_tMeshTemplates[i]._indexBuffer);
+	//	SAFE_RELEASE(v_tMeshTemplates[i]._samState);
+	//	for (int j = 0; j < 3; j++)
+	//	{
+	//		SAFE_RELEASE(v_tMeshTemplates[i]._textures[j]);
+	//		SAFE_RELEASE(v_tMeshTemplates[i]._srv[j]);
+	//	}
+	//
+	//}
 	v_tMeshTemplates.clear();
 	g_d3dData->Cleanup();
 	delete g_d3dData;
