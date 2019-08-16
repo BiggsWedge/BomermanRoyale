@@ -63,6 +63,47 @@ bool CRendererManager::Draw(double timepassed, int gamestate)
 	UINT strides[] = { sizeof(TLineVertex) };
 	UINT offsets[] = { 0 };
 
+	//Skybox
+	ID3D11ShaderResourceView* texViews[] = { g_d3dData->JungleSRV };
+	
+	//Sky Vertex Buffer Update
+	ID3D11Buffer* tempVB[] = { g_d3dData->JungleVertexBuffer };
+	UINT stride[] = { sizeof(KeyVertex) };
+	UINT offset[] = { 0 };
+	g_d3dData->d3dContext->IASetVertexBuffers(0, 1, &tempVB[0], stride, offset);
+	g_d3dData->d3dContext->IASetInputLayout(g_d3dData->d3dInputLayout[INPUT_LAYOUT::SKY]);
+	//Sky Index Buffer
+	g_d3dData->d3dContext->IASetIndexBuffer(g_d3dData->JungleIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	g_d3dData->d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	//Sky Constant Buffer
+	DirectX::XMMATRIX ScalingMatrix = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+	TBasicVertexConstBuff cb;
+	ScalingMatrix.r[3] = cb.mViewMatrix.r[3];
+	cb.mModelMatrix = DirectX::XMMatrixTranspose(ScalingMatrix);
+	cb.mViewMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, cb.mViewMatrix));
+	cb.mProjMatrix = DirectX::XMMatrixTranspose(cb.mProjMatrix);
+
+	D3D11_MAPPED_SUBRESOURCE mapsr;
+	ZeroMemory(&mapsr, sizeof(mapsr));
+
+	g_d3dData->d3dContext->Map(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::SKY], 0, D3D11_MAP_WRITE_DISCARD, 0, &mapsr);
+	std::memcpy(mapsr.pData, &cb, sizeof(TBasicVertexConstBuff));
+	g_d3dData->d3dContext->Unmap(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::SKY], 0);
+
+
+	//Sky shaders Set Up
+	g_d3dData->d3dContext->VSSetShader(g_d3dData->d3dVertexShader[VERTEX_SHADER::SKY], nullptr, 0);
+	g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::SKY]);
+	g_d3dData->d3dContext->PSSetShader(g_d3dData->d3dPixelShader[PIXEL_SHADER::SKY], nullptr, 0);
+	g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::SKY]);
+	g_d3dData->d3dContext->PSSetShaderResources(0, 1, texViews);
+	g_d3dData->d3dContext->PSSetSamplers(0, 1, &g_d3dData->JungleSampler);
+
+	//Draw
+	g_d3dData->d3dContext->DrawIndexed(36, 0, 0);
+
 
 	g_d3dData->d3dSwapChain->Present(1, 0);
 

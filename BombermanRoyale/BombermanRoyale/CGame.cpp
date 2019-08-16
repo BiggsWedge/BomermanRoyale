@@ -990,7 +990,8 @@ void CGame::GamePlayLoop(double timePassed)
 					}
 				}
 				currPlayer->SetBombType(items[i]->GetItemType());
-				if (currPlayer->GetNumBombs() < 6) {
+				if (currPlayer->GetNumBombs() < 6) 
+				{
 					currPlayer->incNumBombs();
 				}
 				items.erase(items.begin() + i);
@@ -1174,8 +1175,10 @@ void CGame::ExplodeBomb(int bombToExplodeIndex)
 */
 
 
-void CGame::setGameState(int _gameState) {
-	switch (_gameState) {
+void CGame::setGameState(int _gameState) 
+{
+	switch (_gameState) 
+	{
 	case GAME_STATE::MAIN_MENU:
 	{
 		p1Pause.Reset(false);
@@ -1217,7 +1220,8 @@ void CGame::setGameState(int _gameState) {
 }
 
 
-void CGame::ClearPlayersAndBombs() {
+void CGame::ClearPlayersAndBombs() 
+{
 	for (int i = 0; i < v_cPlayers.size(); ++i)
 		if (v_cPlayers[i])
 		{
@@ -1240,9 +1244,12 @@ void CGame::ClearPlayersAndBombs() {
 	items.clear();
 }
 
-void CGame::updateBombs(double timePassed) {
-	for (int i = 0; i < explosionTimers.size(); ++i) {
-		if (explosionTimers[i] >= 0.5f) {
+void CGame::updateBombs(double timePassed)
+{
+	for (int i = 0; i < explosionTimers.size(); ++i) 
+	{
+		if (explosionTimers[i] >= 0.5f) 
+		{
 			Xexplosions.erase(Xexplosions.begin() + i);
 			Zexplosions.erase(Zexplosions.begin() + i);
 			explosionTimers.erase(explosionTimers.begin() + i);
@@ -1250,14 +1257,17 @@ void CGame::updateBombs(double timePassed) {
 			continue;
 		}
 
-		for (int j = 0; j < objects.size(); j++) {
+		for (int j = 0; j < objects.size(); j++) 
+		{
 			TComponent* obj = nullptr;
 			TTransformComponent* objTrans;
 			objTrans = nullptr;
-			if (objects[j]->GetComponent(COMPONENT_TYPE::TRANSFORM, obj)) {
+			if (objects[j]->GetComponent(COMPONENT_TYPE::TRANSFORM, obj)) 
+			{
 				objTrans = (TTransformComponent*)obj;
 			}
-			if (Xexplosions[i]->Collides(objects[j]) || Zexplosions[i]->Collides(objects[j])) {
+			if (Xexplosions[i]->Collides(objects[j]) || Zexplosions[i]->Collides(objects[j]))
+			{
 				if (objTrans->item) {
 					switch (rand() % 4) {
 					case 0:
@@ -1284,8 +1294,10 @@ void CGame::updateBombs(double timePassed) {
 				}
 			}
 		}
-		for (CPlayer* player : v_cPlayers) {
-			if (player) {
+		for (CPlayer* player : v_cPlayers) 
+		{
+			if (player) 
+			{
 				if (Xexplosions[i]->Collides((CObject*)player) || Zexplosions[i]->Collides((CObject*)player))
 					player->setAlive(false);
 			}
@@ -1295,7 +1307,8 @@ void CGame::updateBombs(double timePassed) {
 		{
 			if (v_cBombs[k] && v_cBombs[k]->isAlive())
 			{
-				if (Xexplosions[i]->Collides((CObject*)v_cBombs[k]) || Zexplosions[i]->Collides((CObject*)v_cBombs[k])) {
+				if (Xexplosions[i]->Collides((CObject*)v_cBombs[k]) || Zexplosions[i]->Collides((CObject*)v_cBombs[k])) 
+				{
 					/*
 					v_cBombs[k]->Explode();
 					CPlayer* parent = v_cBombs[k]->getParent();
@@ -1312,15 +1325,19 @@ void CGame::updateBombs(double timePassed) {
 		explosionTimers[i] += timePassed;
 	}
 
-	for (int i = 0; i < v_cBombs.size(); ++i) {
+	for (int i = 0; i < v_cBombs.size(); ++i) 
+	{
 		if (!v_cBombs[i])
 			continue;
 
-		if (v_cBombs[i]->isAlive()) {
-			if (v_cBombs[i]->shouldExplode()) {
+		if (v_cBombs[i]->isAlive()) 
+		{
+			if (v_cBombs[i]->shouldExplode()) 
+			{
 				v_cBombs[i]->Explode();
 				CPlayer* parent = v_cBombs[i]->getParent();
-				for (int j = 0; j < parent->getBombIndices().size(); ++j) {
+				for (int j = 0; j < parent->getBombIndices().size(); ++j) 
+				{
 					if (parent->getBombIndices()[j] == i)
 						parent->deleteBomb(j);
 				}

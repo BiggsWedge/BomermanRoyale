@@ -20,6 +20,7 @@ void CBomb::Explode()
 		explosionSound.at(i)->isSoundPlaying(soundplaying);
 		if (!soundplaying)
 		{
+
 			explosionSound.at(i)->Play();
 			break;
 		}
