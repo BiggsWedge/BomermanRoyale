@@ -191,8 +191,8 @@ CBomb* CEntityManager::DropBomb0(CPlayer* playerSource)
 
 	loadInfo.position = pos;
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
-	loadInfo.meshID = MODELS::BOMB;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
+	loadInfo.meshID = MODELS::BOMB2;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB2;
 	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
 	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
@@ -240,7 +240,7 @@ CBomb* CEntityManager::DropBomb1(CPlayer* playerSource)
 	loadInfo.position = pos;
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB3;
 	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
 	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
@@ -335,8 +335,8 @@ CBomb* CEntityManager::DropBomb3(CPlayer* playerSource)
 
 	loadInfo.position = pos;
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
-	loadInfo.meshID = MODELS::BOMB;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
+	loadInfo.meshID = MODELS::BOMB2;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB4;
 	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
 	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
@@ -448,16 +448,16 @@ CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
 	switch (itemType)
 	{
 	case 4:
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB2;
 		break;
 	case 1:
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB3;
 		break;
 	case 2:
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
 		break;
 	case 3:
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB4;
 		break;
 	}
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;

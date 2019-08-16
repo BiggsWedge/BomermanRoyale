@@ -65,13 +65,13 @@ void ProcessFbxMeshComplete(FbxNode* Node, vector<SimpleVertex>* vertices, vecto
 				vertices->data()[j].Tex[0] = vertices->data()[j].Pos[0];
 				vertices->data()[j].Tex[1] = vertices->data()[j].Pos[1];
 
-				influence_set _theSet = control_point_influences[j];
-				float sum = _theSet[0].weight + _theSet[1].weight + _theSet[2].weight + _theSet[3].weight;
-				for (int k = 0; k < MAX_INFLUENCES; ++k)
-				{
-					vertices->data()[j].joints[k] = _theSet[k].joint;
-					vertices->data()[j].weights[k] = _theSet[k].weight / sum;
-				}
+				//influence_set _theSet = control_point_influences[j];
+				//float sum = _theSet[0].weight + _theSet[1].weight + _theSet[2].weight + _theSet[3].weight;
+				//for (int k = 0; k < MAX_INFLUENCES; ++k)
+				//{
+				//	vertices->data()[j].joints[k] = _theSet[k].joint;
+				//	vertices->data()[j].weights[k] = _theSet[k].weight / sum;
+				//}
 			}
 
 			// expand vertices to match with all normals
@@ -742,8 +742,8 @@ void main()
 {
 	FileSet fileset;
 
-	fileset.meshFile = ".//Assets//black-handbomb.fbx";
-	fileset.bastFile = "Bomb";
+	fileset.meshFile = ".//Assets//bomb2.fbx";
+	fileset.bastFile = "Bomb2";
 
 	ConvertFBX(fileset);
 

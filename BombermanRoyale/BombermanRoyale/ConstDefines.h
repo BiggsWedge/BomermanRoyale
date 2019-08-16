@@ -22,7 +22,10 @@ static const std::vector<const wchar_t*> diffuseTextures =
 	L".//Assets//Cube.fbm//black_texture.jpg",
 	L".//Assets//Cube.fbm//fire.jpg",
 	L".//Assets//Cube.fbm//Hay.jpg",
-	L".//Assets//bomb.fbm//Bomb.png",
+	L".//Assets//bomb.fbm//bomb.png",
+	L".//Assets//bomb.fbm//bomb2.png",
+	L".//Assets//bomb.fbm//bomb3.png",
+	L".//Assets//bomb.fbm//bomb4.png",
 	L".//Assets//Chicken.fbm//ChickenP1.png",
 	L".//Assets//Chicken.fbm//ChickenP2.png"
 };
@@ -40,12 +43,13 @@ static const std::vector<TMeshLoadInfo> modelLoadInfos =
 	{"Cube", ".//Assets//Cube.mesh", nullptr, nullptr},
 	{"BattleMage", ".//Assets//BattleMage.mesh", ".\\Assets\\BattleMage.mat", ".\\Assets\\BattleMage.anim"},
 	{"Bomb", ".//Assets//Bomb.mesh", nullptr, nullptr},
+	{"Bomb2", ".//Assets//Bomb2.mesh", nullptr, nullptr},
 	{"Chicken", ".//Assets//Chicken.mesh", nullptr, nullptr}
 };
 
 struct MODELS
 {
-	enum { CUBE = 0, BATTLEMAGE, BOMB, CHICKEN, MENU1, MENU2, COUNT };
+	enum { CUBE = 0, BATTLEMAGE, BOMB, BOMB2, CHICKEN, MENU1, MENU2, COUNT };
 };
 
 #endif // !CONST_EXPRESSIONS
