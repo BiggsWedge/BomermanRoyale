@@ -17,6 +17,7 @@
 #include "AnimPixel.csh"
 #include "AnimVertex.csh"
 #include "BombShader.csh"
+#include "BombPShader.csh"
 #include "DirectXData.h"
 #include "SharedDefines.h"
 #include <fstream>
@@ -183,6 +184,11 @@ struct bombconstbuffer
 	DirectX::XMMATRIX world;
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX projection;
+	float4 time;
+};
+
+struct bombpixelbuffer
+{
 	float4 time;
 };
 

@@ -146,7 +146,7 @@ CBomb* CEntityManager::DropBomb(CPlayer* playerSource)
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB;
 	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
@@ -194,7 +194,7 @@ CBomb* CEntityManager::DropBomb0(CPlayer* playerSource)
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
 	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
@@ -242,7 +242,7 @@ CBomb* CEntityManager::DropBomb1(CPlayer* playerSource)
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
 	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
@@ -290,7 +290,7 @@ CBomb* CEntityManager::DropBomb2(CPlayer* playerSource)
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
 	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
@@ -338,7 +338,7 @@ CBomb* CEntityManager::DropBomb3(CPlayer* playerSource)
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
 	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;

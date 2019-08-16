@@ -27,7 +27,7 @@ outVertex main(in inVertex input)
 	outVertex output;
 	int t = time;
 	float ratio = time - t;
-	ratio = (1.5f - 0.5f) * ratio + 0.5f;
+	ratio = ratio + 0.5f;
 	if (ratio <= 1.0f)
 		input.position.xyz = input.position.xyz * ratio;
 	if (ratio >= 1.0f)

@@ -110,27 +110,20 @@ void CBomb::Draw(double timepassed)
 		if (renderer->iUsedGeometryShaderIndex >= 0)
 			g_d3dData->d3dContext->GSSetShader(g_d3dData->d3dGeometryShader[renderer->iUsedGeometryShaderIndex], 0, 0);
 
-		TBasicPixelConstBuff pConst;
-		for (int i = 0; i < 8; ++i)
-			pConst.flags[i] = -1;
-
 		if (tex->iUsedDiffuseIndex >= 0)
 		{
 			g_d3dData->d3dContext->PSSetShaderResources(0, 1, &g_d3dData->d3dDiffuseTextures[tex->iUsedDiffuseIndex]);
-			pConst.flags[0] = 1;
 		}
 		else
 			g_d3dData->d3dContext->PSSetShaderResources(0, 0, nullptr);
-
-		if (tex->iUsedNormalIndex >= 0)
-		{
-			pConst.flags[1] = 1;
-		}
 
 		g_d3dData->d3dContext->PSSetSamplers(0, 1, &g_d3dData->d3dSamplerState);
 
 		bombconstbuffer bombconst;
 		bombconst.world = DirectX::XMMatrixTranspose(transform->mObjMatrix);
+
+		bombpixelbuffer bombpconst;
+		bombpconst.time = DirectX::XMFLOAT4(timer, 0.0f, 0.0f, 0.0f);
 
 		if (g_d3dData->bUseDebugRenderCamera)
 			bombconst.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
@@ -143,8 +136,8 @@ void CBomb::Draw(double timepassed)
 		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST], 0, nullptr, &bombconst, 0, 0);
 		g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST]);
 
-		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC], 0, nullptr, &pConst, 0, 0);
-		g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC]);
+		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMB_P_CONST], 0, nullptr, &bombpconst, 0, 0);
+		g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMB_P_CONST]);
 
 		g_d3dData->d3dContext->DrawIndexed(mesh->indexCount, 0, 0);
 	}
