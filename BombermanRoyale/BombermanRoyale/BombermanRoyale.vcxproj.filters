@@ -13,6 +13,12 @@
     <FxCompile Include="LinePixel.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="AnimPixel.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="AnimVertex.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBomb.cpp">
@@ -75,6 +81,7 @@
     <ClCompile Include="..\Gateware\Source\G_System\GWindow.cpp">
       <Filter>Gateware</Filter>
     </ClCompile>
+    <ClCompile Include="CItem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBomb.h">
@@ -117,6 +124,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="WICTextureLoader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CItem.h" />
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="CharacterController.h">

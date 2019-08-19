@@ -31,14 +31,16 @@ struct TMeshLoadInfo
 {
 	std::string name;
 	const char* meshFile;
+	const char* matFile;
+	const char* animFile;
 };
 
 static const std::vector<TMeshLoadInfo> modelLoadInfos =
 {
-	{"Cube", ".//Assets//Cube.mesh"},
-	{"BattleMage", ".//Assets//BattleMage.mesh"},
-	{"Bomb", ".//Assets//Bomb.mesh"},
-	{"Chicken", ".//Assets//Chicken.mesh"}
+	{"Cube", ".//Assets//Cube.mesh", nullptr, nullptr},
+	{"BattleMage", ".//Assets//BattleMage.mesh", ".\\Assets\\BattleMage.mat", ".\\Assets\\BattleMage.anim"},
+	{"Bomb", ".//Assets//Bomb.mesh", nullptr, nullptr},
+	{"Chicken", ".//Assets//Chicken.mesh", nullptr, nullptr}
 };
 
 struct MODELS

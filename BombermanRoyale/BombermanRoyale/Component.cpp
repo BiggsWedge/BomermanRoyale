@@ -33,7 +33,7 @@ TTransformComponent::TTransformComponent()
 
 }
 
-TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector, DirectX::XMFLOAT3 scale, bool floor, bool ndestroyable)
+TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector, DirectX::XMFLOAT3 scale, bool floor, bool ndestroyable, bool nitem, int nitemType)
 {
 	componentType = COMPONENT_TYPE::TRANSFORM;
 	fPosition = spawnPosition;
@@ -44,7 +44,8 @@ TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, Direct
 	DirectX::XMVECTOR origin = { 0.0f, 0.0f, 0.0f };
 	nFloor = floor;
 	destroyable = ndestroyable;
-
+	item = nitem;
+	itemType = nitemType;
 	mObjMatrix = DirectX::XMMatrixLookAtLH(origin, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&forwardVector)), DirectX::XMLoadFloat3(&up));
 	mObjMatrix = mObjMatrix * DirectX::XMMatrixTranslation(spawnPosition.x, spawnPosition.y, spawnPosition.z);
 	mObjMatrix = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) * mObjMatrix;
@@ -102,6 +103,7 @@ TMeshComponent::TMeshComponent()
 TMeshComponent::TMeshComponent(TMeshTemplate _template)
 {
 	componentType = COMPONENT_TYPE::MESH;
+	 mName = _template.sName;
 
 	indexCount = _template.v_iIndices.size();
 	vertexCount = _template.v_tVertices.size();
@@ -152,8 +154,25 @@ TMeshComponent::~TMeshComponent()
 
 TMaterialComponent::TMaterialComponent()
 {
-
+	componentType = COMPONENT_TYPE::MATERIAL;
 }
+
+TMaterialComponent::TMaterialComponent(TMeshTemplate _template)
+{
+	componentType = COMPONENT_TYPE::MATERIAL;
+	filepaths = _template.filePaths;
+	mats = _template.mats;
+	_mat = _template._mat;
+	_textures[TEXTURES::DIFFUSE] = _template._textures[TEXTURES::DIFFUSE];
+	_textures[TEXTURES::EMISSIVE] = _template._textures[TEXTURES::EMISSIVE];
+	_textures[TEXTURES::SPECULAR] = _template._textures[TEXTURES::SPECULAR];
+	_samState = _template._samState;
+	_srv[TEXTURES::DIFFUSE] = _template._srv[TEXTURES::DIFFUSE];
+	_srv[TEXTURES::EMISSIVE] = _template._srv[TEXTURES::EMISSIVE];
+	_srv[TEXTURES::SPECULAR] = _template._srv[TEXTURES::SPECULAR];
+}
+
+
 
 TMaterialComponent::~TMaterialComponent()
 {
@@ -161,6 +180,29 @@ TMaterialComponent::~TMaterialComponent()
 }
 
 #pragma endregion
+
+
+#pragma region TAnim
+
+TAnimComponent::TAnimComponent()
+{
+	componentType = COMPONENT_TYPE::ANIM;
+}
+
+TAnimComponent::TAnimComponent(TMeshTemplate _template)
+{
+	componentType = COMPONENT_TYPE::ANIM;
+	_anim = _template._anim;
+	_bindPose = _template._bindPose;
+}
+
+TAnimComponent::~TAnimComponent()
+{
+
+}
+
+#pragma endregion
+
 
 TColliderComponent::TColliderComponent()
 {
@@ -196,5 +238,5 @@ TColliderComponent::TColliderComponent(TMeshTemplate mtemplate, DirectX::XMFLOAT
 
 TComponent::~TComponent()
 {
-
+	
 }

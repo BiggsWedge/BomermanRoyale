@@ -14,6 +14,8 @@
 #include "BasicPixel.csh"
 #include "LinePixel.csh"
 #include "LineVertex.csh"
+#include "AnimPixel.csh"
+#include "AnimVertex.csh"
 #include "DirectXData.h"
 #include "SharedDefines.h"
 #include <fstream>
@@ -26,7 +28,16 @@ extern GW::SYSTEM::GInput* g_pInputRecord;
 extern GW::AUDIO::GAudio* g_pAudioHolder;
 extern GW::AUDIO::GMusic* g_pMusicStream;
 extern GW::AUDIO::GSound* g_pSoundPlayer;
+extern GW::AUDIO::GSound* walkSound1;
+extern GW::AUDIO::GSound* bombPlaceSound1;
+extern GW::AUDIO::GSound* spawnSound1;
+extern GW::AUDIO::GSound* bombPlaceSound2;
+extern GW::AUDIO::GSound* spawnSound2;
+extern std::vector<GW::AUDIO::GSound*> explosionSound;
+extern std::vector<GW::AUDIO::GSound*> bombPlaceSound;
+extern std::vector<GW::AUDIO::GSound*> powerUpSound;
 extern GW::SYSTEM::GController* g_pControllerInput;
+
 
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the
@@ -159,6 +170,30 @@ struct TLineVertex {
 	inline TLineVertex(const float3& p, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) : pos{ p }, color{ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f } {}
 };
 
+struct jointCB
+{
+	int numJoints;
+	DirectX::XMMATRIX _joints[30];
+};
+
+struct material_t
+{
+	enum COMPONENT { DIFFUSE = 0, EMISSIVE, SPECULAR, SHININESS, COUNT };
+
+	struct component_t
+	{
+		float value[3] = { 0.0f, 0.0f, 0.0f };
+		float factor = 0.0f;
+		int64_t input = -1;
+	};
+
+	component_t& operator[](int i) { return components[i]; }
+	const component_t& operator[](int i)const { return components[i]; }
+
+private:
+	component_t components[COMPONENT::COUNT];
+};
+
 struct TMaterial {
 	DirectX::XMFLOAT3		fSurfaceDiffuse;
 	float					fDiffuseFactor;
@@ -170,14 +205,96 @@ struct TMaterial {
 	float					fShinyFactor;
 };
 
+struct joint
+{
+	DirectX::XMMATRIX _mat;
+	int parentIndex;
+};
+
+struct KeyFrame
+{
+	double time;
+	std::vector<joint> joints;
+};
+
+struct AnimationClip
+{
+	double duration;
+	std::vector<KeyFrame> frames;
+};
 
 struct TMeshTemplate {
 	UINT uID;
 	std::string						sName;
 	std::vector<TSimpleVertex>		v_tVertices;
 	std::vector<int>				v_iIndices;
+
+	std::vector<joint> _bindPose;
+
+	uint32_t numVerts;
+	uint32_t numIndices;
+
+	int currKeyFrame = 0;
+	float frameTime = 0;
+	float currFrameIndex = 0;
+	float animTime = 0.0f;
+	float totalTime;
+
+	TMaterial _mat;
+
+	AnimationClip _anim;
+
+	ID3D11Buffer* _vertexBuffer;
+	ID3D11Buffer* _indexBuffer;
+
+	std::vector<file_path_t> filePaths;
+	std::vector<material_t> mats;
+
+	enum TEXTURES { DIFFUSE = 0, EMISSIVE, SPECULAR, COUNT };
+
+	ID3D11ShaderResourceView*	_srv[TEXTURES::COUNT];
+	ID3D11Resource*				_textures[TEXTURES::COUNT];
+	ID3D11SamplerState*			_samState;
+
+	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr);
+	void initialize(ID3D11Device* _device);
+	void render(ID3D11DeviceContext* _context, double timepassed);
 };
 
+
+struct MVP_t
+{
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX projection;
+};
+
+struct joints
+{
+	int numJoints;
+	DirectX::XMMATRIX joints[30];
+};
+
+struct Light
+{
+	DirectX::XMFLOAT3 dir;
+	float intensity;
+	DirectX::XMFLOAT3 position;
+	int type;
+	DirectX::XMFLOAT3 color;
+private:
+	float pad2;
+};
+
+struct LightBuffer
+{
+	Light light;
+};
+
+struct MatBuffer
+{
+	TMaterial material;
+};
 
 extern std::vector<TMeshTemplate> v_tMeshTemplates;
 
@@ -214,6 +331,9 @@ DirectX::XMVECTOR RPYFromVector(DirectX::XMVECTOR RPY);
 
 DirectX::XMMATRIX TurnTo(DirectX::XMMATRIX _mat, DirectX::XMVECTOR _target, float speed);
 
+float lerp(float x, float y, float ratio);
+
+DirectX::XMMATRIX matLerp(DirectX::XMMATRIX x, DirectX::XMMATRIX y, float ratio);
 
 void CleanGlobals();
 

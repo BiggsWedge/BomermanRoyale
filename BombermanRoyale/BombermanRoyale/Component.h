@@ -2,7 +2,9 @@
 
 #include "Utilities.h"
 
-struct COMPONENT_TYPE { enum { RENDERER = 0, MESH, TRANSFORM, TEXTURE, MATERIAL, COLLIDER }; };
+
+struct COMPONENT_TYPE { enum { RENDERER = 0, MESH, TRANSFORM, TEXTURE, MATERIAL, ANIM, COLLIDER }; };
+
 
 struct TComponent
 {
@@ -33,9 +35,11 @@ public:
 	DirectX::XMFLOAT3				fScale;
 	bool nFloor;
 	bool destroyable;
+	bool item;
+	int itemType;
 
 	TTransformComponent();
-	TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector, DirectX::XMFLOAT3 scale, bool floor, bool ndestroyable);
+	TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector, DirectX::XMFLOAT3 scale, bool floor, bool ndestroyable, bool nitem, int nitemType);
 	~TTransformComponent();
 	void ResetMatrix();
 };
@@ -60,6 +64,7 @@ public:
 	ID3D11Buffer*		d3dVertexBuffer;
 	ID3D11Buffer*		d3dIndexBuffer;
 	bool hasCollider;
+	std::string mName;
 	TMeshComponent();
 	TMeshComponent(TMeshTemplate _template);
 	~TMeshComponent();
@@ -68,11 +73,31 @@ public:
 struct TMaterialComponent : TComponent
 {
 private:
-	int componentType = COMPONENT_TYPE::MATERIAL;
 public:
+	std::vector<file_path_t> filepaths;
+	std::vector<material_t> mats;
+	TMaterial _mat;
+	enum TEXTURES { DIFFUSE = 0, EMISSIVE, SPECULAR, COUNT };
+	ID3D11ShaderResourceView*	_srv[TEXTURES::COUNT];
+	ID3D11Resource*				_textures[TEXTURES::COUNT];
+	ID3D11SamplerState*			_samState;
 	TMaterialComponent();
+	TMaterialComponent(TMeshTemplate _template);
 	~TMaterialComponent();
 };
+
+
+struct TAnimComponent : TComponent
+{
+private:
+public:
+	std::vector<joint> _bindPose;
+	AnimationClip _anim;
+	TAnimComponent();
+	TAnimComponent(TMeshTemplate _template);
+	~TAnimComponent();
+};
+
 
 struct TColliderComponent : TComponent
 {

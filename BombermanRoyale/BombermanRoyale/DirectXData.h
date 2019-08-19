@@ -17,6 +17,8 @@ struct TBasicVertexConstBuff
 	DirectX::XMMATRIX mProjMatrix;
 };
 
+
+
 struct TBasicPixelConstBuff
 {
 	int flags[8];
@@ -34,27 +36,27 @@ struct VIEWPORT
 
 struct CONSTANT_BUFFER
 {
-	enum { V_BASIC = 0, V_LINE, P_BASIC, P_LINE, COUNT };
+	enum { V_BASIC = 0, V_LINE, P_BASIC, P_LINE, MVP_t, LIGHTS, JOINTS, MATERIAL, COUNT };
 };
 
 struct INDEX_BUFFER
 {
-	enum { DEFAULT = 0, COUNT };
+	enum { DEFAULT = 0, ANIM, COUNT };
 };
 
 struct VERTEX_BUFFER
 {
-	enum { DEFAULT = 0, LINE, COUNT };
+	enum { DEFAULT = 0, LINE, ANIM, COUNT };
 };
 
 struct VERTEX_SHADER
 {
-	enum { BASIC = 0, LINE, COUNT };
+	enum { BASIC = 0, LINE, ANIM, COUNT };
 };
 
 struct PIXEL_SHADER
 {
-	enum { BASIC = 0, LINE, COUNT };
+	enum { BASIC = 0, LINE, ANIM, COUNT };
 };
 
 struct GEOMETRY_SHADER
@@ -84,7 +86,7 @@ struct DEPTH_STENCIL_STATE
 
 struct COLLISION_LAYERS
 {
-	enum { PLAYER, BOMB, EXPLOSION, WALL, DESTROYABLE, FLOOR, COUNT };
+	enum { PLAYER, BOMB, EXPLOSION, WALL, DESTROYABLE, FLOOR, ITEM, COUNT };
 };
 
 struct DIFFUSE_TEXTURES
@@ -122,6 +124,7 @@ public:
 	ID3D11RenderTargetView*				d3dRenderTargetView = nullptr;
 	ID3D11DepthStencilView*				d3dDepthStencilView = nullptr;
 	ID3D11RasterizerState*				d3dRasterizerState = nullptr;
+	ID3D11RasterizerState*				d3dRasterizerState2 = nullptr;
 	ID3D11SamplerState*					d3dSamplerState = nullptr;
 
 	ID3D11ShaderResourceView*			d3dDiffuseTextures[DIFFUSE_TEXTURES::COUNT] = {};

@@ -83,6 +83,16 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created rasterizer state");
 
+	d3dRasterDesc.FrontCounterClockwise = false;
+
+	if (FAILED(d3dDevice->CreateRasterizerState(&d3dRasterDesc, &d3dRasterizerState2)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the rasterizer2 state");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created rasterizer2 state");
+
 #pragma endregion
 
 #pragma region CollisionMatrix
@@ -151,6 +161,17 @@ bool DirectXData::Initialize()
 		//log failure
 		return false;
 	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the line vertex shader");
+
+	if (FAILED(d3dDevice->CreateVertexShader(AnimVertex, sizeof(AnimVertex), nullptr, &d3dVertexShader[VERTEX_SHADER::ANIM])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation vertex shader");
+
 
 #pragma endregion
 
@@ -169,6 +190,16 @@ bool DirectXData::Initialize()
 		//log failure
 		return false;
 	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the line pixel shader");
+
+	if (FAILED(d3dDevice->CreatePixelShader(AnimPixel, sizeof(AnimPixel), nullptr, &d3dPixelShader[PIXEL_SHADER::ANIM])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation pixel shader");
 
 #pragma endregion
 
@@ -232,8 +263,8 @@ bool DirectXData::Initialize()
 #pragma region Camera Creation
 
 	debugCamPos = { 0.0f, 25.0f, -22.0f };
-	camPos = { 0.0f, 25.0f, -22.0f };
-	DirectX::XMFLOAT3 at = { 0.0f, 0.0f, 0.0f };
+	camPos = { 0.0f, 45.0f, -25.0f };
+	DirectX::XMFLOAT3 at = { 0.0f, 0.0f, 3.0f };
 	DirectX::XMFLOAT3 up = { 0.0f, 1.0f, 0.0f };
 
 	camMat = DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat3(&camPos), DirectX::XMLoadFloat3(&at), DirectX::XMLoadFloat3(&up));
@@ -242,7 +273,7 @@ bool DirectXData::Initialize()
 	debugCamMat = DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(30)) * debugCamMat;
 
 	viewMat = camMat;// DirectX::XMMatrixInverse(nullptr, camMat);
-	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 100.0f);
+	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(30), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 100.0f);
 
 #pragma endregion
 
@@ -266,6 +297,46 @@ bool DirectXData::Initialize()
 	}
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the basic vertex constant buffer");
+
+	BasicVConstBuffDesc.ByteWidth = sizeof(LightBuffer);
+
+	if (FAILED(d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::LIGHTS])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the light constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the light constant buffer");
+
+	BasicVConstBuffDesc.ByteWidth = sizeof(MatBuffer);
+
+	if (FAILED(d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::MATERIAL])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the material constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the material constant buffer");
+
+	BasicVConstBuffDesc.ByteWidth = sizeof(MVP_t);
+
+	if (FAILED(d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::MVP_t])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the MVP_t constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the MVP_t constant buffer");
+
+	BasicVConstBuffDesc.ByteWidth = sizeof(jointCB);
+
+	if (FAILED(d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::JOINTS])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the joints constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the joints constant buffer");
 
 	D3D11_BUFFER_DESC BasicPConstBuffDesc;
 	ZeroMemory(&BasicPConstBuffDesc, sizeof(BasicPConstBuffDesc));

@@ -11,6 +11,7 @@ private:
 	int numBombs = 1;
 	bool alive;
 	int controllerIndex;
+	int bombType = 0;
 	CharacterController controller;
 
 public:
@@ -27,10 +28,9 @@ public:
 	inline bool hasAvailableBombSlot() { return (bombs.size() < numBombs ? true : false); }
 	inline int GetControllerIndex() { return controllerIndex; }
 	inline std::vector<int> getBombIndices() { return bombs; };
+	inline int GetBombType() { return bombType; }
 	inline void GetInput() { controller.Update(); }
 	inline CharacterController* GetCharacterController() { return &controller; }
-
-
 
 	//MUTATORS
 	inline void setControllerIndex(int index) { controller.SetControllerIndex(index); }
@@ -38,6 +38,7 @@ public:
 	inline void incNumBombs() { numBombs++; }
 	inline void setAlive(bool _alive) { alive = _alive; }
 	inline void deleteBomb(int index) { bombs.erase(bombs.begin() + index); }
+	inline void SetBombType(int _bombType) { bombType = _bombType; }
 
 };
 

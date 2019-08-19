@@ -8,7 +8,7 @@
 struct Button
 {
 private:
-	bool currState, prevState;
+	bool currState = true, prevState = true;
 	int buttonID;
 public:
 	inline void SetButtonID(int ID) { buttonID = ID; }
@@ -57,6 +57,7 @@ public:
 	inline bool IsControllerConnected() { return connected; }
 	void Update()
 	{
+
 		LeftXAxis = 0.0f;
 		LeftYAxis = 0.0f;
 		g_pControllerInput->IsConnected(controllerIndex, connected);

@@ -22,5 +22,6 @@ public:
 	CBomb& operator=(const CBomb& other);
 	inline int GetStrength() { return strength; }
 	inline void SetAlive(bool check) { alive = check; }
+	inline void SetToExplode() { timer = maxTime - 0.01f; }
 };
 

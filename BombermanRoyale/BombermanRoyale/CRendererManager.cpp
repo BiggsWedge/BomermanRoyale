@@ -24,7 +24,7 @@ void CRendererManager::RenderObjectCollider(CObject * _objToDraw)
 	}
 }
 
-bool CRendererManager::Draw()
+bool CRendererManager::Draw(double timepassed, int gamestate)
 {
 
 	if (!g_d3dData->d3dSurface)
@@ -47,16 +47,18 @@ bool CRendererManager::Draw()
 	g_d3dData->d3dContext->OMSetRenderTargets(1, d3dTargets, g_d3dData->d3dDepthStencilView);
 	//g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
 
-	const float bg_green[] = { 0.0f, 1.0f, 0.0f, 1.0f };
+	const float bg_green[] = { 0.2f, 0.5f, 0.2f, 1.0f };
 
-	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView, bg_green);
+	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView,  bg_green);
 	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
-	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState);
+	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
 
 	/*********DRAW OTHER STUFF HERE************/
-
+	if(gamestate == 3)
+		v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext, timepassed);
+	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState);
 	for (CObject* c : rendereableObjects)
-		c->Draw();
+		c->Draw(timepassed);
 
 	UINT strides[] = { sizeof(TLineVertex) };
 	UINT offsets[] = { 0 };

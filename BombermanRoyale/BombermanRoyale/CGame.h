@@ -2,9 +2,11 @@
 
 #include "CRendererManager.h"
 #include "CEntityManager.h"
+#include "CObject.h"
 #include "pools.h"
 #include "Utilities.h"
 #include "CPlayer.h"
+#include "CItem.h"
 
 
 struct GAME_STATE
@@ -33,6 +35,7 @@ class CGame
 	std::vector<CObject*> menuObjects;
 	std::vector<CObject*> Xexplosions;
 	std::vector<CObject*> Zexplosions;
+	std::vector<CItem*> items;
 	std::vector<double> explosionTimers;
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
 
@@ -55,8 +58,9 @@ public:
 	void Run();
 	//void InitFreeParticles(emitter& emitter, pool_t<particle, 1024>& freePool, float deltaTime);
 	//void InitSortedParticles(sorted_pool_t<particle, 1000>& sortedPool, float deltaTime);
-
+	void LoadAnim();
 	void LoadObject();
+	//void SpawnObject(int i, std::vector<CObject*> objects, CRendererManager* p_cRendererManager, CEntityManager* p_cEntityManager);
 
 	CGame();
 

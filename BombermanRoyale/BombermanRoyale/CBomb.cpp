@@ -13,7 +13,20 @@ CBomb::~CBomb()
 
 void CBomb::Explode()
 {
-	timer = maxTime - 0.0001f;
+	
+	bool soundplaying;
+	for (int i = 0; i < explosionSound.size(); ++i)
+	{
+		explosionSound.at(i)->isSoundPlaying(soundplaying);
+		if (!soundplaying)
+		{
+			explosionSound.at(i)->Play();
+			break;
+		}
+	}
+	alive = false;
+
+	//timer = maxTime - 0.01f;
 }
 
 void CBomb::initialize(CPlayer* parent)
