@@ -1392,28 +1392,6 @@ void CGame::updateBombs(double timePassed)
 			}
 			if (Xexplosions[i]->Collides(objects[j]) || Zexplosions[i]->Collides(objects[j])) {
 				if (objTrans->item) {
-					switch (rand() % 4) {
-					case 0:
-						items.push_back(p_cEntityManager->ItemDrop(objects[j], 1));
-						objects.erase(objects.begin() + j);
-						--j;
-						break;
-					case 1:
-						items.push_back(p_cEntityManager->ItemDrop(objects[j], 2));
-						objects.erase(objects.begin() + j);
-						--j;
-						break;
-					case 2:
-						items.push_back(p_cEntityManager->ItemDrop(objects[j], 3));
-						objects.erase(objects.begin() + j);
-						--j;
-						break;
-					case 3:
-						items.push_back(p_cEntityManager->ItemDrop(objects[j], 4));
-						objects.erase(objects.begin() + j);
-						--j;
-						break;
-					}
 					items.push_back(p_cEntityManager->ItemDrop(objects[j], (rand() % 4) + 1));
 					delete objects[j];
 					objects[j] = nullptr;
