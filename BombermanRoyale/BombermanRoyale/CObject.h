@@ -15,6 +15,7 @@ struct OBJLoadInfo
 	bool item;
 	int collisionLayer;
 	int itemType;
+	int layer;
 };
 
 class CObject

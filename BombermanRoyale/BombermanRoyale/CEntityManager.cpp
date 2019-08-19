@@ -15,7 +15,7 @@
 CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 {
 	CObject* temp = new CObject();
-	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, loadInfo.item, loadInfo.itemType);
+	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, loadInfo.item, loadInfo.itemType, loadInfo.layer);
 	temp->AddComponent((TComponent*)transform);
 
 	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
@@ -36,7 +36,7 @@ CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 CPlayer* CEntityManager::CreatePlayerFromTemplate(OBJLoadInfo loadInfo)
 {
 	CPlayer* temp = new CPlayer();
-	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, false, loadInfo.itemType);
+	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, false, loadInfo.itemType, loadInfo.layer);
 	temp->AddComponent((TComponent*)transform);
 
 	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
@@ -57,7 +57,7 @@ CPlayer* CEntityManager::CreatePlayerFromTemplate(OBJLoadInfo loadInfo)
 CBomb * CEntityManager::CreateBombFromTemplate(OBJLoadInfo loadInfo)
 {
 	CBomb* temp = new CBomb();
-	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, loadInfo.item, loadInfo.itemType);
+	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, loadInfo.item, loadInfo.itemType, loadInfo.layer);
 	temp->AddComponent((TComponent*)transform);
 
 	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
@@ -78,7 +78,7 @@ CBomb * CEntityManager::CreateBombFromTemplate(OBJLoadInfo loadInfo)
 CItem * CEntityManager::CreateItemFromTemplate(OBJLoadInfo loadInfo)
 {
 	CItem* temp = new CItem();
-	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, loadInfo.item, loadInfo.itemType);
+	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, loadInfo.item, loadInfo.itemType, loadInfo.layer);
 	temp->AddComponent((TComponent*)transform);
 
 	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
