@@ -15,6 +15,7 @@ public:
 	~CBomb();
 	void Explode();
 	inline bool shouldExplode() { return timer >= maxTime; }
+	inline double getTimer() { return timer; }
 	inline void updateBomb(double timePassed) { timer += timePassed; }
 	inline CPlayer* getParent() { return p_cParentPlayer; }
 	void initialize(CPlayer* parent);
