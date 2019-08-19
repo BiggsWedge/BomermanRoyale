@@ -108,8 +108,17 @@ bool DirectXData::Initialize()
 		{
 			for (int j = 0; j < COLLISION_LAYERS::COUNT; ++j)
 			{
-				collisionMatrix[i][j] = (j == COLLISION_LAYERS::PLAYER) ? true : false;
-				collisionMatrix[j][i] = (j == COLLISION_LAYERS::PLAYER) ? true : false;
+				collisionMatrix[i][j] = (j == COLLISION_LAYERS::PLAYER || j == COLLISION_LAYERS::WALL || j == COLLISION_LAYERS::DESTROYABLE || j == COLLISION_LAYERS::BOMB) ? true : false;
+				collisionMatrix[j][i] = (j == COLLISION_LAYERS::PLAYER || j == COLLISION_LAYERS::WALL || j == COLLISION_LAYERS::DESTROYABLE || j == COLLISION_LAYERS::BOMB) ? true : false;
+
+				//collisionMatrix[i][j] = (j == COLLISION_LAYERS::WALL) ? true : false;
+				//collisionMatrix[j][i] = (j == COLLISION_LAYERS::WALL) ? true : false;
+
+				//collisionMatrix[i][j] = (j == COLLISION_LAYERS::DESTROYABLE) ? true : false;
+				//collisionMatrix[j][i] = (j == COLLISION_LAYERS::DESTROYABLE) ? true : false;
+
+				//collisionMatrix[i][j] = (j == COLLISION_LAYERS::BOMB) ? true : false;
+				//collisionMatrix[j][i] = (j == COLLISION_LAYERS::BOMB) ? true : false;
 			}
 			break;
 		}

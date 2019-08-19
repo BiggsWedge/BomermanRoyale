@@ -68,5 +68,7 @@ public:
 	void loadMap(int index);
 	bool loadTempMenus();
 	void PlayerCollision(CPlayer* playerToCheck, CObject* cObj);
+	void PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb);
+	void BombCollision(CObject* objectToCheck, CBomb* cBomb);
 };
 

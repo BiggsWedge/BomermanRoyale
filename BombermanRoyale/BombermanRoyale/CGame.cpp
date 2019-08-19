@@ -452,30 +452,6 @@ void CGame::LoadObject() {
 
 	for (float z = minZ; z < maxZ; z += 2.5f) {
 		for (float x = minX; x < maxX; x += 2.5f) {
-			if (z == minZ || z == maxZ) {
-				loadInfo.layer = 0;
-			}
-
-			if (x == minX || x == maxX) {
-				loadInfo.layer = 0;
-			}
-
-			if (z == -5 || z == 12.5) {
-				loadInfo.layer = 1;
-			}
-
-			if (x == -10 || x == 12.5) {
-				loadInfo.layer = 1;
-			}
-
-			if (z == -2.5 || z == 10) {
-				loadInfo.layer = 2;
-			}
-
-			if (x == -7.5 || x == 10) {
-				loadInfo.layer = 2;
-			}
-
 			loadInfo.position = { x, -2.5f, z };
 			loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 			loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
@@ -880,7 +856,7 @@ void CGame::GamePlayLoop(double timePassed) {
 		for (CBomb* bomb : v_cBombs) {
 			if (bomb && bomb->isAlive())
 				if (currPlayer->Collides(bomb))
-					PlayerCollision(currPlayer, (CObject*)bomb);
+					PlayerBombCollision(currPlayer, bomb);
 		}
 
 		for (int i = 0; i < items.size(); i++) {
@@ -971,6 +947,7 @@ void CGame::setGameState(int _gameState) {
 		fMaxX = 15;
 		fMinZ = -10;
 		fMaxZ = 15;
+		mapTime = 0;
 		break;
 	case GAME_STATE::WIN_SCREEN:
 		ClearPlayersAndBombs();
@@ -1166,5 +1143,84 @@ void CGame::PlayerCollision(CPlayer * playerToCheck, CObject* cObj) {
 		playerToCheck->Move(0, ((mZ - zD) + 0.1f) * (float)upDown);
 	} else if (xD < mX && xD > mX - 0.25) {
 		playerToCheck->Move(((mX - xD) + 0.1f) * (float)leftRight, 0);
+	}
+}
+
+void CGame::PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb) {
+	TComponent* comp = nullptr;
+	TColliderComponent* pCollider;
+	playerToCheck->GetComponent(COMPONENT_TYPE::COLLIDER, comp);
+	pCollider = (TColliderComponent*)comp;
+
+	if (!cBomb->GetComponent(COMPONENT_TYPE::COLLIDER, comp))
+		return;
+
+	TColliderComponent* objCollider = (TColliderComponent*)comp;
+	TTransformComponent* bombTransform = (TTransformComponent*)comp;
+
+	float xD, zD, mX, mZ;
+	int leftRight, upDown;
+
+	if (pCollider->d3dCollider.Center.x < objCollider->d3dCollider.Center.x)
+		leftRight = 1;
+	else
+		leftRight = -1;
+
+	if (pCollider->d3dCollider.Center.z < objCollider->d3dCollider.Center.z)
+		upDown = 1;
+	else
+		upDown = -1;
+
+	xD = abs(pCollider->d3dCollider.Center.x - objCollider->d3dCollider.Center.x);
+	zD = abs(pCollider->d3dCollider.Center.z - objCollider->d3dCollider.Center.z);
+	mX = pCollider->d3dCollider.Extents.x + objCollider->d3dCollider.Extents.x;
+	mZ = pCollider->d3dCollider.Extents.z + objCollider->d3dCollider.Extents.z;
+
+	if (zD < mZ && zD > mZ - 0.25) {
+		if ()
+		{
+
+		}
+		cBomb->Move(0, ((mZ - zD) + 0.1f) * (float)upDown);
+	} else if (xD < mX && xD > mX - 0.25) {
+		cBomb->Move(((mX - xD) + 0.1f) * (float)leftRight, 0);
+	}
+}
+
+void CGame::BombCollision(CObject* objectToCheck, CBomb* cBomb) {
+	TComponent* comp = nullptr;
+	TColliderComponent* pCollider;
+	objectToCheck->GetComponent(COMPONENT_TYPE::COLLIDER, comp);
+	pCollider = (TColliderComponent*)comp;
+
+	if (!cBomb->GetComponent(COMPONENT_TYPE::COLLIDER, comp))
+		return;
+
+	TColliderComponent* objCollider = (TColliderComponent*)comp;
+	TTransformComponent* bombTransform = (TTransformComponent*)comp;
+
+	float xD, zD, mX, mZ;
+	int leftRight, upDown;
+
+	if (pCollider->d3dCollider.Center.x < objCollider->d3dCollider.Center.x)
+		leftRight = 1;
+	else
+		leftRight = -1;
+
+	if (pCollider->d3dCollider.Center.z < objCollider->d3dCollider.Center.z)
+		upDown = 1;
+	else
+		upDown = -1;
+
+	xD = abs(pCollider->d3dCollider.Center.x - objCollider->d3dCollider.Center.x);
+	zD = abs(pCollider->d3dCollider.Center.z - objCollider->d3dCollider.Center.z);
+	mX = pCollider->d3dCollider.Extents.x + objCollider->d3dCollider.Extents.x;
+	mZ = pCollider->d3dCollider.Extents.z + objCollider->d3dCollider.Extents.z;
+
+	if (zD < mZ && zD > mZ - 0.25) {
+		cBomb->Move(0, ((mZ - zD) + 0.1f) * (float)upDown);
+	}
+	else if (xD < mX && xD > mX - 0.25) {
+		cBomb->Move(((mX - xD) + 0.1f) * (float)leftRight, 0);
 	}
 }
