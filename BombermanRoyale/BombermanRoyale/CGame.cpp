@@ -883,6 +883,8 @@ void CGame::LoadObject()
 void CGame::Cleanup()
 {
 	delete p_cEntityManager;
+	delete menuBomb;
+	menuBomb = nullptr;
 	p_cEntityManager = nullptr;
 	delete p_cRendererManager;
 	p_cRendererManager = nullptr;
@@ -1085,6 +1087,8 @@ void CGame::GamePlayLoop(double timePassed)
 				if (currPlayer->GetNumBombs() < 6) {
 					currPlayer->incNumBombs();
 				}
+				delete items[i];
+				items[i] = nullptr;
 				items.erase(items.begin() + i);
 				--i;
 			}
@@ -1284,6 +1288,8 @@ void CGame::setGameState(int _gameState) {
 		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(12.5f, 0.0f, -7.5f));
 		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
 		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(12.0f, 0.0f, 12.5f));
+		v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
+		v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(12.0f, 0.0f, 12.5f));
 
 		spawnSound1->isSoundPlaying(soundplaying);
 		if (!soundplaying)
@@ -1293,6 +1299,7 @@ void CGame::setGameState(int _gameState) {
 		if (!soundplaying)
 			spawnSound2->Play();
 
+		v_cBombs.resize(maxNumBombs);
 		break;
 	}
 	case GAME_STATE::WIN_SCREEN:
@@ -1349,6 +1356,12 @@ void CGame::ClearPlayersAndBombs() {
 			delete exp;
 		exp = nullptr;
 	}
+	for (CItem* item : items)
+	{
+		if (item)
+			delete item;
+		item = nullptr;
+	}
 	Zexplosions.clear();
 	explosionTimers.clear();
 	objects.clear();
@@ -1401,6 +1414,11 @@ void CGame::updateBombs(double timePassed)
 						--j;
 						break;
 					}
+					items.push_back(p_cEntityManager->ItemDrop(objects[j], (rand() % 4) + 1));
+					delete objects[j];
+					objects[j] = nullptr;
+					objects.erase(objects.begin() + j);
+					--j;
 				}
 			}
 		}
