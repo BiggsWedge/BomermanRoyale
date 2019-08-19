@@ -34,7 +34,8 @@ public:
 	inline std::vector<TComponent*> GetComponenets() { return v_tComponents; }
 	inline void AddComponent(TComponent* _toAdd) { v_tComponents.push_back(_toAdd); }
 	bool GetComponent(int componentType, TComponent* & component);
-	void Draw(double timepassed);
+	virtual void Draw(double timepassed);
+	
 	bool Move(float _x, float _z);
 	bool Collides(CObject* _other);
 	virtual void Cleanup();

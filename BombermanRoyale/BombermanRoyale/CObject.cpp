@@ -22,6 +22,7 @@ void CObject::Draw(double timepassed)
 	animTime += timepassed;
 	totalTime += timepassed;
 
+	
 	float fractionalTime = timepassed - (int)timepassed;
 
 	ID3D11CommandList* d3dCommandList = nullptr;

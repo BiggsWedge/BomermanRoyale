@@ -145,8 +145,8 @@ CBomb* CEntityManager::DropBomb(CPlayer* playerSource)
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
+	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
@@ -191,10 +191,10 @@ CBomb* CEntityManager::DropBomb0(CPlayer* playerSource)
 
 	loadInfo.position = pos;
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
-	loadInfo.meshID = MODELS::BOMB;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.meshID = MODELS::BOMB2;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB2;
+	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
+	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
@@ -240,9 +240,9 @@ CBomb* CEntityManager::DropBomb1(CPlayer* playerSource)
 	loadInfo.position = pos;
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB3;
+	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
+	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
@@ -289,8 +289,8 @@ CBomb* CEntityManager::DropBomb2(CPlayer* playerSource)
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
+	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
@@ -335,10 +335,10 @@ CBomb* CEntityManager::DropBomb3(CPlayer* playerSource)
 
 	loadInfo.position = pos;
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
-	loadInfo.meshID = MODELS::BOMB;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.meshID = MODELS::BOMB2;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB4;
+	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
+	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
@@ -448,16 +448,16 @@ CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
 	switch (itemType)
 	{
 	case 4:
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB2;
 		break;
 	case 1:
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB3;
 		break;
 	case 2:
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
 		break;
 	case 3:
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB4;
 		break;
 	}
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
@@ -500,21 +500,21 @@ CObject* CEntityManager::SpawnObject(CObject* obj) {
 
 	return Item;
 }
-CPlayer* CEntityManager::InstantiatePlayer(int numPlayer, int playerModel, DirectX::XMFLOAT3 spawnPos)
+CPlayer* CEntityManager::InstantiatePlayer(int numPlayer, int playerModel, int playerSkin, DirectX::XMFLOAT3 spawnPos, int loadState, DirectX::XMFLOAT3 forwardVec, DirectX::XMFLOAT3 scale)
 {
 	OBJLoadInfo pLoadInfo;
-	pLoadInfo.meshID = MODELS::CHICKEN;
+	pLoadInfo.meshID = playerModel;
 	pLoadInfo.position = spawnPos;
-	pLoadInfo.forwardVec = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
-	pLoadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	pLoadInfo.usedDiffuse = playerModel;
+	pLoadInfo.forwardVec = forwardVec;
+	pLoadInfo.scale = scale;
+	pLoadInfo.usedDiffuse = playerSkin;
 	pLoadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	pLoadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	pLoadInfo.collisionLayer = COLLISION_LAYERS::PLAYER;
 	pLoadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	pLoadInfo.usedGeo = -1;
-	pLoadInfo.LoadState = 3;
-	pLoadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 0.75f);
+	pLoadInfo.LoadState = loadState;
+	//pLoadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 0.75f);
 
 	CPlayer* player = nullptr;
 	player = CreatePlayerFromTemplate(pLoadInfo);

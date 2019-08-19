@@ -16,7 +16,7 @@ struct VS_IN
 	float3 pos : POSITION;
 	float3 norm : NORMAL;
 	float2 tex : TEXCOORD;
-	int4 joints : JOINTS;
+	uint4 joints : JOINTS;
 	float4 weights : WEIGHTS;
 };
 

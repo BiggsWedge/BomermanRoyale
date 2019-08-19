@@ -172,6 +172,14 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation vertex shader");
 
+	if (FAILED(d3dDevice->CreateVertexShader(BombShader, sizeof(BombShader), nullptr, &d3dVertexShader[VERTEX_SHADER::BOMB])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation vertex shader");
+
 
 #pragma endregion
 
@@ -200,6 +208,14 @@ bool DirectXData::Initialize()
 	}
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation pixel shader");
+
+	if (FAILED(d3dDevice->CreatePixelShader(BombPShader, sizeof(BombPShader), nullptr, &d3dPixelShader[PIXEL_SHADER::BOMB])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the bomb pixel shader");
 
 #pragma endregion
 
@@ -338,6 +354,16 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the joints constant buffer");
 
+	BasicVConstBuffDesc.ByteWidth = sizeof(bombconstbuffer);
+
+	if (FAILED(d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the bomb vertex constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the bomb vertex constant buffer");
+
 	D3D11_BUFFER_DESC BasicPConstBuffDesc;
 	ZeroMemory(&BasicPConstBuffDesc, sizeof(BasicPConstBuffDesc));
 
@@ -355,6 +381,16 @@ bool DirectXData::Initialize()
 	}
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the basic pixel constant buffer");
+
+	BasicPConstBuffDesc.ByteWidth = sizeof(bombpixelbuffer);
+
+	if (FAILED(d3dDevice->CreateBuffer(&BasicPConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::BOMB_P_CONST])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the bomb pixel constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the bomb pixel constant buffer");
 
 
 #pragma endregion
@@ -375,6 +411,7 @@ void DirectXData::Cleanup()
 {
 	SAFE_RELEASE(d3dSamplerState);
 	SAFE_RELEASE(d3dRasterizerState);
+	SAFE_RELEASE(d3dRasterizerState2);
 	SAFE_RELEASE(d3dDepthStencilView);
 	SAFE_RELEASE(d3dRenderTargetView);
 

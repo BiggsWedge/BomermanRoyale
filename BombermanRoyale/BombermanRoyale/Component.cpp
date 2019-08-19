@@ -37,6 +37,7 @@ TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, Direct
 {
 	componentType = COMPONENT_TYPE::TRANSFORM;
 	fPosition = spawnPosition;
+	fScale = scale;
 	fForwardVector = forwardVector;
 	fScale = scale;
 	DirectX::XMFLOAT3 up = { 0.0f, 1.0f, 0.0f };
