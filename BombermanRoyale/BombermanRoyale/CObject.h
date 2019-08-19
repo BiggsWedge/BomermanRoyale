@@ -36,7 +36,7 @@ public:
 	bool GetComponent(int componentType, TComponent* & component);
 	virtual void Draw(double timepassed);
 	
-	bool Move(float _x, float _z);
+	bool Move(float _x, float _z, bool rotation = true);
 	bool Collides(CObject* _other);
 	virtual void Cleanup();
 };

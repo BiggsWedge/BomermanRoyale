@@ -8,10 +8,11 @@ static const std::vector<const wchar_t*> diffuseTextures =
 {
 	L".//Assets//Cube.fbm//Crate.jpg",
 	L".//Assets//BattleMage.fbm//PPG_3D_Player_D.png",
-	L".//Assets//Menus.fbm//Menu.png",
+	L".//Assets//Menus.fbm//Chicken_Pic.jpg",
 	L".//Assets//Menus.fbm//In-Game Barnyard Blast.png",
 	L".//Assets//Menus.fbm//Playe Status.png",
 	L".//Assets//Menus.fbm//Win_Screen.png",
+	L".//Assets//Menus.fbm//Pause_Menu.png",
 	L".//Assets//Menus.fbm//Controls.png",
 	L".//Assets//Menus.fbm//ArcadeButton.png",
 	L".//Assets//Menus.fbm//BattleButton.png",

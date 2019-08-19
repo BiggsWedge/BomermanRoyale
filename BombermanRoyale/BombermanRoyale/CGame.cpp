@@ -25,6 +25,8 @@ struct key
 
 Button p1Pause;
 Button p1Help;
+CObject* pauseMenuBomb;
+float pauseMenuTimer;
 
 
 struct CONTROL_KEYS
@@ -76,6 +78,7 @@ static std::vector<int> keycodes =
 };
 
 bool ControlScreenToggle = false;
+bool PauseMenuToggle = false;
 bool Controller1Alive = false;
 bool Controller2Alive = false;
 
@@ -331,31 +334,67 @@ void CGame::Run()
 				menucontroltimer += timePassed;
 				if (menuBomb->GetCharacterController()->GetUpDown() > 0.0f && menucontroltimer > 0.2 && menuIndex > 0)
 				{
-					menucontroltimer = 0.0;
-					menuBomb->Move(0.0f, 1.75f);
-					menuIndex -= 1;
-					for (int i = 0; i < MenuSounds.size(); ++i)
+					if (menuIndex != 3)
 					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
+						menucontroltimer = 0.0;
+						menuBomb->Move(0.0f, 2.45f, false);
+						menuIndex -= 1;
+						for (int i = 0; i < MenuSounds.size(); ++i)
 						{
-							MenuSounds.at(i)->Play();
-							break;
+							MenuSounds.at(i)->isSoundPlaying(soundplaying);
+							if (!soundplaying)
+							{
+								MenuSounds.at(i)->Play();
+								break;
+							}
+						}
+					}
+					else
+					{
+						menucontroltimer = 0.0;
+						menuBomb->Move(0.0f, 4.9f, false);
+						menuIndex -= 2;
+						for (int i = 0; i < MenuSounds.size(); ++i)
+						{
+							MenuSounds.at(i)->isSoundPlaying(soundplaying);
+							if (!soundplaying)
+							{
+								MenuSounds.at(i)->Play();
+								break;
+							}
 						}
 					}
 				}
 				if (menuBomb->GetCharacterController()->GetUpDown() < 0.0f && menucontroltimer > 0.2 && menuIndex < 3)
 				{
-					menucontroltimer = 0.0;
-					menuBomb->Move(0.0f, -1.75f);
-					menuIndex += 1;
-					for (int i = 0; i < MenuSounds.size(); ++i)
+					if (menuIndex != 1)
 					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
+						menucontroltimer = 0.0;
+						menuBomb->Move(0.0f, -2.45f, false);
+						menuIndex += 1;
+						for (int i = 0; i < MenuSounds.size(); ++i)
 						{
-							MenuSounds.at(i)->Play();
-							break;
+							MenuSounds.at(i)->isSoundPlaying(soundplaying);
+							if (!soundplaying)
+							{
+								MenuSounds.at(i)->Play();
+								break;
+							}
+						}
+					}
+					else
+					{
+						menucontroltimer = 0.0;
+						menuBomb->Move(0.0f, -4.9f, false);
+						menuIndex += 2;
+						for (int i = 0; i < MenuSounds.size(); ++i)
+						{
+							MenuSounds.at(i)->isSoundPlaying(soundplaying);
+							if (!soundplaying)
+							{
+								MenuSounds.at(i)->Play();
+								break;
+							}
 						}
 					}
 				}
@@ -469,6 +508,11 @@ void CGame::Run()
 				if (v_cPlayers[i] && v_cPlayers[i]->isAlive())
 					numPlayersAlive++;
 			}
+			for (int i = 0; i < v_cAI.size(); ++i)
+			{
+				if (v_cAI[i] && v_cAI[i]->isAlive())
+					numPlayersAlive++;
+			}
 
 			if (prevNumPlayersAlive > 1 && numPlayersAlive <= 1)
 			{
@@ -485,8 +529,12 @@ void CGame::Run()
 			if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
 				continue;
 			TRendererComponent* renderer = (TRendererComponent*)cRenderer;
-			if (renderer->iUsedLoadState == curGameState || (ControlScreenToggle && renderer->iUsedLoadState == GAME_STATE::CONTROLS_SCREEN))
+			if (renderer->iUsedLoadState == curGameState || (PauseMenuToggle && renderer->iUsedLoadState == GAME_STATE::PAUSE_MENU))
 				p_cRendererManager->RenderObject(menu);
+			if (renderer->iUsedLoadState == GAME_STATE::CONTROLS_SCREEN && ControlScreenToggle)
+			{
+				p_cRendererManager->RenderObject(menu);
+			}
 
 		}
 		//RenderObjects
@@ -501,15 +549,15 @@ void CGame::Run()
 					p_cRendererManager->RenderObject(objects[i]);
 			}
 
-			if (ControlScreenToggle == true)
-			{
-				if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-				{
-					renderer = (TRendererComponent*)cRenderer;
-					if (renderer->iUsedLoadState == GAME_STATE::CONTROLS_SCREEN)
-						p_cRendererManager->RenderObject(objects[i]);
-				}
-			}
+			//if (ControlScreenToggle == true)
+			//{
+			//	if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+			//	{
+			//		renderer = (TRendererComponent*)cRenderer;
+			//		if (renderer->iUsedLoadState == GAME_STATE::CONTROLS_SCREEN)
+			//			p_cRendererManager->RenderObject(objects[i]);
+			//	}
+			//}
 		}
 
 		//RenderBombs
@@ -570,6 +618,18 @@ void CGame::Run()
 				TRendererComponent* pRenderer = (TRendererComponent*)renderer;
 				if (pRenderer->iUsedLoadState == curGameState)
 					p_cRendererManager->RenderObject((CObject*)player);
+			}
+		}
+		for (CPlayer* AI : v_cAI)
+		{
+			if (!AI || !AI->isAlive())
+				continue;
+			TComponent* renderer = nullptr;
+			if (AI->GetComponent(COMPONENT_TYPE::RENDERER, renderer))
+			{
+				TRendererComponent* pRenderer = (TRendererComponent*)renderer;
+				if (pRenderer->iUsedLoadState == curGameState)
+					p_cRendererManager->RenderObject((CObject*)AI);
 			}
 		}
 		if (menuBomb)
@@ -992,6 +1052,37 @@ void CGame::WindowResize()
 
 void CGame::GamePlayLoop(double timePassed)
 {
+	//std::vector<CPlayer*> AIs;
+	//AIs.resize(v_cAI.size());
+	//std::vector<float> largest;
+	//largest.resize(v_cAI.size());
+	//std::vector<int> pToMimic;
+	//pToMimic.resize(v_cAI.size());
+	//int i = 0;
+	//for (CPlayer* currAI : v_cAI)
+	//{
+	//	AIs.at(i) = currAI;
+	//	int j = 0;
+	//	TComponent* aiComponent;
+	//	currAI->GetComponent(COMPONENT_TYPE::TRANSFORM, aiComponent);
+	//	TTransformComponent* aiTransform = (TTransformComponent*)aiComponent;
+	//	for (CPlayer* currPlayer : v_cPlayers)
+	//	{
+	//		TComponent* pComponent;
+	//		currPlayer->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
+	//		TTransformComponent* pTransform = (TTransformComponent*)pComponent;
+	//
+	//		float deltaX = aiTransform->fPosition.x - pTransform->fPosition.x;
+	//		float deltaY = aiTransform->fPosition.y - pTransform->fPosition.y;
+	//		float distance = sqrt((deltaX *deltaX) + (deltaY *deltaY));
+	//		if(!largest.at(i) || largest.at(i) < distance)
+	//		{
+	//			largest.at(i) = distance;
+	//			pToMimic.at(i) = j;
+	//		}
+	//	}
+	//	i++;
+	//}
 
 	for (CPlayer* currPlayer : v_cPlayers)
 	{
@@ -1001,15 +1092,94 @@ void CGame::GamePlayLoop(double timePassed)
 		currPlayer->GetInput();
 
 		CharacterController* cont = currPlayer->GetCharacterController();
-		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::HELP))
-		{
-			ControlScreenToggle = !ControlScreenToggle;
-			isPaused = !isPaused;
-		}
+		//if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::HELP))
+		//{
+		//	ControlScreenToggle = !ControlScreenToggle;
+		//	isPaused = !isPaused;
+		//}
 		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_CONTROLLER_BUTTONS::PAUSE))
 		{
-			setGameState(GAME_STATE::MAIN_MENU);
-			return;
+			menuIndex = 0;
+			PauseMenuToggle = !PauseMenuToggle;
+			isPaused = !isPaused;
+		}
+		if (PauseMenuToggle)
+		{
+			currPlayer->GetCharacterController()->GetUpDown();
+				currPlayer->GetInput();
+
+				pauseMenuTimer += 0.1f;
+				if (currPlayer->GetCharacterController()->GetUpDown() > 0.0f && pauseMenuTimer > 4.0f && menuIndex > 0)
+				{
+					
+						pauseMenuTimer = 0.0f;
+						pauseMenuBomb->Move(0.0f, 1.2f, false);
+						menuIndex -= 1;
+						for (int i = 0; i < MenuSounds.size(); ++i)
+						{
+							//MenuSounds.at(i)->isSoundPlaying(soundplaying);
+							//if (!soundplaying)
+							//{
+							//	MenuSounds.at(i)->Play();
+							//	break;
+							//}
+						}
+					
+				}
+				if (currPlayer->GetCharacterController()->GetUpDown() < 0.0f && pauseMenuTimer > 4.0f && menuIndex < 2)
+				{
+					
+						pauseMenuTimer = 0.0f;
+						pauseMenuBomb->Move(0.0f, -1.2f, false);
+						menuIndex += 1;
+						for (int i = 0; i < MenuSounds.size(); ++i)
+						{
+							//MenuSounds.at(i)->isSoundPlaying(soundplaying);
+							//if (!soundplaying)
+							//{
+							//	MenuSounds.at(i)->Play();
+							//	break;
+							//}
+						}
+					
+				}
+				if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::ACTION))
+				{
+					//for (int i = 0; i < MenuSounds.size(); ++i)
+					//{
+					//	MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					//	if (!soundplaying)
+					//	{
+					//		MenuSounds.at(i)->Play();
+					//		break;
+					//	}
+					//}
+					switch (menuIndex) {
+						case 0:
+						{
+							isPaused = !isPaused;
+							PauseMenuToggle = !PauseMenuToggle;
+							break;
+						}
+						case 1:
+						{
+							ControlScreenToggle = !ControlScreenToggle;
+							break;
+						}
+						case 2:
+						{
+							HWND windowHandle;
+							g_pWindow->GetWindowHandle(sizeof(HWND), (void**)& windowHandle);
+							SendMessage(windowHandle, WM_CLOSE, 0, 0);
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+
+				}
 		}
 
 		/*
@@ -1297,7 +1467,7 @@ void CGame::setGameState(int _gameState) {
 	{
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
-		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB, DirectX::XMFLOAT3(-2.5f, 11.4f, -5.9f), 0, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f));
+		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(-1.5f, 11.4f, -6.8f), 0, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
 		break;
 	}
 	case GAME_STATE::ARCADE_GAME:
@@ -1307,6 +1477,8 @@ void CGame::setGameState(int _gameState) {
 		LoadObject();
 		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-10.0f, 0.0f, 10.0f));
 		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(10.0f, 0.0f, -5.0f));
+		//v_cAI[0] = p_cEntityManager->InstantiatePlayer(1, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
+		//v_cAI[1] = p_cEntityManager->InstantiatePlayer(2, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
 
 		spawnSound1->isSoundPlaying(soundplaying);
 		if (!soundplaying)
@@ -1344,6 +1516,13 @@ void CGame::ClearPlayersAndBombs() {
 			v_cPlayers[i]->Cleanup();
 			delete v_cPlayers[i];
 			v_cPlayers[i] = nullptr;
+		}
+	for (int i = 0; i < v_cAI.size(); ++i)
+		if (v_cAI[i])
+		{
+			v_cAI[i]->Cleanup();
+			delete v_cAI[i];
+			v_cAI[i] = nullptr;
 		}
 
 	v_cBombs.clear();
@@ -1494,6 +1673,8 @@ bool CGame::loadTempMenus() {
 	loadInfo.LoadState = GAME_STATE::WIN_SCREEN;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+
+
 	loadInfo.position = { 0.0f, 20.0f, -9.5f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HELP_MENU;
@@ -1501,6 +1682,23 @@ bool CGame::loadTempMenus() {
 	loadInfo.meshID = MODELS::MENU2;
 	loadInfo.LoadState = GAME_STATE::CONTROLS_SCREEN;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 19.2f, -9.5f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::PAUSE_MENU;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.2f, 1.0f);
+	loadInfo.meshID = MODELS::MENU2;
+	loadInfo.LoadState = GAME_STATE::PAUSE_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { -2.0f, 19.8f, -11.0f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB;
+	loadInfo.scale = DirectX::XMFLOAT3(0.5, 0.5f, 0.2f);
+	loadInfo.meshID = MODELS::BOMB;
+	loadInfo.LoadState = GAME_STATE::PAUSE_MENU;
+	pauseMenuBomb = p_cEntityManager->CreateOBJFromTemplate(loadInfo);
+	menuObjects.push_back(pauseMenuBomb);
 
 	//loadInfo.position = { -2.5f, 11.4f, -5.9f };
 	//loadInfo.forwardVec = { 0.0f, 1.6f, -1.0f };

@@ -20,6 +20,7 @@ struct GAME_STATE
 		BATTLE_GAME,
 		WIN_SCREEN,
 		CONTROLS_SCREEN,
+		PAUSE_MENU,
 		CREDIT_SCREEN
 	};
 };
@@ -38,10 +39,11 @@ class CGame
 	std::vector<CItem*> items;
 	std::vector<double> explosionTimers;
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
+	std::vector<CPlayer*> v_cAI = { nullptr, nullptr, nullptr, nullptr };
 
 	//CPlayer *p1 = nullptr, *p2 = nullptr;
 
-	int maxNumBombs = 24;
+	int maxNumBombs = 48;
 	std::vector<CBomb*> v_cBombs;
 	CPlayer* menuBomb = nullptr;
 	int menuIndex = 0;
