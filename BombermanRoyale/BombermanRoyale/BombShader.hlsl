@@ -1,44 +1,53 @@
 cbuffer wvp
 {
-	matrix world;
-	matrix view;
-	matrix projection;
-	float4 time;
+    matrix world;
+    matrix view;
+    matrix projection;
+    float time;
+    float3 padding;
 };
 
 struct inVertex
 {
-	float3 position : POSITION;
-	float3 normal : NORMAL;
-	float2 texCoord : TEXCOORD;
-	uint4 joints : JOINTS;
-	float4 weights : WEIGHTS;
+    float3 position : POSITION;
+    float3 normal : NORMAL;
+    float2 texCoord : TEXCOORD;
+    uint4 joints : JOINTS;
+    float4 weights : WEIGHTS;
 };
 
 struct outVertex
 {
-	float4 position : SV_POSITION;
-	float3 normal : NORMAL;
-	float2 texCoord : TEXCOORD0;
+    float4 position : SV_POSITION;
+    float3 normal : NORMAL;
+    float2 texCoord : TEXCOORD0;
 };
 
 outVertex main(in inVertex input)
 {
-	outVertex output;
+
+    outVertex output;
+    /*
 	int t = time;
 	float ratio = time - t;
-	ratio = ratio + 0.5f;
-	if (ratio <= 1.0f)
-		input.position.xyz = input.position.xyz * ratio;
+	ratio = ratio;
 	if (ratio >= 1.0f)
-		input.position.xyz = input.position.xyz / ratio;
-	float4 world_position = mul(float4(input.position.xyz, 1.0f), world);
-	output.position = mul(world_position, view);
-	output.position = mul(output.position, projection);
+		input.position.xyz = input.position.xyz * ratio;
+	if (ratio <= 1.0f)
+    */
 
-	output.normal = mul(float4(input.normal.xyz, 0.0f), world);
-	output.texCoord = input.texCoord.xy;
-	return output;
+    float ratio;
+    ratio = (((cos(time * 360.0f * (3.14f / 180.0f))) + 1.0f) / 8.0f) + 0.75f;
+    input.position.xyz = input.position.xyz * ratio;
+
+
+    float4 world_position = mul(float4(input.position.xyz, 1.0f), world);
+    output.position = mul(world_position, view);
+    output.position = mul(output.position, projection);
+
+    output.normal = mul(float4(input.normal.xyz, 0.0f), world);
+    output.texCoord = input.texCoord.xy;
+    return output;
 	/*PS_INPUT output = (PS_INPUT)0;
 	output.position = mul( input.position, World );
 	output.position = mul( output.position, View );

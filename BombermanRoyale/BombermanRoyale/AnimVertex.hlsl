@@ -8,7 +8,7 @@ cbuffer MVP_t : register(b0)
 cbuffer ALLJOINTS : register(b1)
 {
 	int numJoints;
-	matrix joints[30];
+	matrix alljoints[30];
 }
 
 struct VS_IN
@@ -42,8 +42,8 @@ VS_OUT main(VS_IN input)
 	{
 		if (input.joints[i] >= 0)
 		{
-			skinnedPos += mul(float4(input.pos, 1.0f), joints[input.joints[i]]) * input.weights[i];
-			skinnedNorm += mul(float4(input.norm, 0.0f), joints[input.joints[i]]) * input.weights[i];
+			skinnedPos += mul(float4(input.pos, 1.0f), alljoints[input.joints[i]]) * input.weights[i];
+			skinnedNorm += mul(float4(input.norm, 0.0f), alljoints[input.joints[i]]) * input.weights[i];
 		}
 	}
 	//skinnedPos = float4(input.pos, 1.0f);

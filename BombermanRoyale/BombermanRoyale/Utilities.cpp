@@ -849,7 +849,10 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 
 	_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+
+
 	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MVP_t], 0, nullptr, &debugConstBuff, 0, 0);
+	_context->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MVP_t]);
 
 	_context->IASetInputLayout(g_d3dData->d3dInputLayout[INPUT_LAYOUT::BASIC]);
 
@@ -980,6 +983,11 @@ void CleanGlobals()
 	//	}
 	//
 	//}
+	for (TMeshTemplate temp : v_tMeshTemplates)
+	{
+		SAFE_RELEASE(temp._indexBuffer);
+		SAFE_RELEASE(temp._vertexBuffer)
+	}
 	v_tMeshTemplates.clear();
 	g_d3dData->Cleanup();
 	delete g_d3dData;
