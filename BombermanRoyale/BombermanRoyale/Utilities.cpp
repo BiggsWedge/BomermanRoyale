@@ -534,7 +534,7 @@ void GetCorners(float3 _center, float3 _extents, float3*& corners)
 	corners[7] = { corners[1].x,corners[1].y,corners[0].z };
 }
 
-void TMeshTemplate::loadModel(const char* modelFile, const char* matFile, const char* animFile)
+void TMeshTemplate::loadModel(const char* modelFile, const char* matFile, const char* animFile, float scale)
 {
 	using namespace DirectX;
 	if (modelFile)
@@ -562,7 +562,9 @@ void TMeshTemplate::loadModel(const char* modelFile, const char* matFile, const 
 
 		for (auto& v : v_tVertices)
 		{
-			v.fPosition.x = v.fPosition.x;
+			//v.fPosition.x *= scale;
+			//v.fPosition.y *= scale;
+			//v.fPosition.z *= scale;
 		}
 	}
 

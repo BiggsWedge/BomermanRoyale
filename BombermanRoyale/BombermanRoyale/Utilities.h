@@ -256,7 +256,7 @@ struct TMeshTemplate {
 	ID3D11Resource*				_textures[TEXTURES::COUNT];
 	ID3D11SamplerState*			_samState;
 
-	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr);
+	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr, float scale = 1.0f);
 	void initialize(ID3D11Device* _device);
 	void render(ID3D11DeviceContext* _context, double timepassed);
 };

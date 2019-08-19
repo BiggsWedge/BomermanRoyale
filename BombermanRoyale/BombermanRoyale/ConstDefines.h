@@ -24,7 +24,8 @@ static const std::vector<const wchar_t*> diffuseTextures =
 	L".//Assets//Cube.fbm//Hay.jpg",
 	L".//Assets//bomb.fbm//Bomb.png",
 	L".//Assets//Chicken.fbm//ChickenP1.png",
-	L".//Assets//Chicken.fbm//ChickenP2.png"
+	L".//Assets//Chicken.fbm//ChickenP2.png",
+	L".//Assets//TestButton.png"
 };
 
 struct TMeshLoadInfo
