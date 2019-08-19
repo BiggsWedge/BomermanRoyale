@@ -730,6 +730,8 @@ void CGame::LoadObject()
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	loadInfo.position = { -10, 0, -5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	loadInfo.position = { -10, 0, 10 };
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { -5, 0, -5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -759,6 +761,8 @@ void CGame::LoadObject()
 	loadInfo.position = { 10, 0, 0 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	loadInfo.position = { 10, 0, 5 };
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	loadInfo.position = { 10, 0, -5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 }
@@ -1157,8 +1161,10 @@ void CGame::setGameState(int _gameState) {
 	{
 		LoadObject();
 		v_cBombs.resize(maxNumBombs);
-		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-10.0f, 0.0f, 10.0f));
-		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(10.0f, 0.0f, -5.0f));
+		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-12.5f, 0.0f, 12.5f));
+		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(12.5f, 0.0f, -7.5f));
+		v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
+		v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
 
 		spawnSound1->isSoundPlaying(soundplaying);
 		if (!soundplaying)
@@ -1355,7 +1361,7 @@ bool CGame::loadTempMenus() {
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::TEST_BUTTON;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::MAIN_MENU;
 	loadInfo.scale = DirectX::XMFLOAT3(2.55f, 2.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::MAIN_MENU;

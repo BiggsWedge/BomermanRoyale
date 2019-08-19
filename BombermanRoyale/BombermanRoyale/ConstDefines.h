@@ -25,6 +25,8 @@ static const std::vector<const wchar_t*> diffuseTextures =
 	L".//Assets//bomb.fbm//Bomb.png",
 	L".//Assets//Chicken.fbm//ChickenP1.png",
 	L".//Assets//Chicken.fbm//ChickenP2.png",
+	L".//Assets//Chicken.fbm//ChickenP3.png",
+	L".//Assets//Chicken.fbm//ChickenP4.png",
 	L".//Assets//TestButton.png"
 };
 
