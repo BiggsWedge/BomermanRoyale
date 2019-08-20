@@ -22,6 +22,7 @@ void CObject::Draw(double timepassed)
 	animTime += timepassed;
 	totalTime += timepassed;
 
+	
 	float fractionalTime = timepassed - (int)timepassed;
 
 	ID3D11CommandList* d3dCommandList = nullptr;
@@ -305,7 +306,7 @@ bool CObject::GetComponent(int componentType, TComponent* & component)
 	return false;
 }
 
-bool CObject::Move(float _x, float _z)
+bool CObject::Move(float _x, float _z, bool rotation)
 {
 	TComponent* cTransform;
 	TTransformComponent* transform;
@@ -319,9 +320,13 @@ bool CObject::Move(float _x, float _z)
 	collider->d3dCollider.Center.x += _x;
 	collider->d3dCollider.Center.z += _z;
 
+	
 	transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
 	DirectX::XMFLOAT3 targetVec = { _x, 0.0f, _z };
-	transform->mObjMatrix = TurnTo(transform->mObjMatrix, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec))), 0.5f);
+	if (rotation)
+	{
+		transform->mObjMatrix = TurnTo(transform->mObjMatrix, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec))), 0.5f);
+	}
 
 	DirectX::XMFLOAT4 pos;
 	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);

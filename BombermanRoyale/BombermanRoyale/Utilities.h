@@ -16,6 +16,8 @@
 #include "LineVertex.csh"
 #include "AnimPixel.csh"
 #include "AnimVertex.csh"
+#include "BombShader.csh"
+#include "BombPShader.csh"
 #include "DirectXData.h"
 #include "SharedDefines.h"
 #include <fstream>
@@ -33,6 +35,7 @@ extern GW::AUDIO::GSound* bombPlaceSound1;
 extern GW::AUDIO::GSound* spawnSound1;
 extern GW::AUDIO::GSound* bombPlaceSound2;
 extern GW::AUDIO::GSound* spawnSound2;
+extern std::vector<GW::AUDIO::GSound*> MenuSounds;
 extern std::vector<GW::AUDIO::GSound*> explosionSound;
 extern std::vector<GW::AUDIO::GSound*> bombPlaceSound;
 extern std::vector<GW::AUDIO::GSound*> powerUpSound;
@@ -176,6 +179,20 @@ struct jointCB
 	DirectX::XMMATRIX _joints[30];
 };
 
+struct bombconstbuffer
+{
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX projection;
+	float4 time;
+};
+
+struct bombpixelbuffer
+{
+	float4 time;
+};
+
+
 struct material_t
 {
 	enum COMPONENT { DIFFUSE = 0, EMISSIVE, SPECULAR, SHININESS, COUNT };
@@ -259,6 +276,8 @@ struct TMeshTemplate {
 	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr);
 	void initialize(ID3D11Device* _device);
 	void render(ID3D11DeviceContext* _context, double timepassed);
+	/*~TMeshTemplate();
+	TMeshTemplate();*/
 };
 
 
