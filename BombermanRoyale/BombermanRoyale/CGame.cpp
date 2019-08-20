@@ -1268,8 +1268,10 @@ void CGame::updateBombs(double timePassed)
 			}
 			if (Xexplosions[i]->Collides(objects[j]) || Zexplosions[i]->Collides(objects[j]))
 			{
-				if (objTrans->item) {
-					switch (rand() % 4) {
+				if (objTrans->item)
+				{
+					switch (rand() % 4)
+					{
 					case 0:
 						items.push_back(p_cEntityManager->ItemDrop(objects[j], 1));
 						objects.erase(objects.begin() + j);
@@ -1335,6 +1337,11 @@ void CGame::updateBombs(double timePassed)
 			if (v_cBombs[i]->shouldExplode()) 
 			{
 				v_cBombs[i]->Explode();
+				g_pControllerInput->StartVibration(0, 0.25f, 1, v_cPlayers[0]->GetControllerIndex());
+
+				/*v_cPlayers[1]->setControllerIndex(1);
+
+				g_pControllerInput->StartVibration(0, 0.25f, 1, v_cPlayers[1]->GetControllerIndex());*/
 				CPlayer* parent = v_cBombs[i]->getParent();
 				for (int j = 0; j < parent->getBombIndices().size(); ++j) 
 				{
