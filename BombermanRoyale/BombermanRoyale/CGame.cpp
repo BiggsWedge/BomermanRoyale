@@ -8,8 +8,7 @@
 const char* backgroundMusicFilePath = ".//Assets//Music//Level_Music1.wav";
 const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
 
-struct key
-{
+struct key {
 	bool prevState = false;
 	bool currState = false;
 
@@ -19,41 +18,34 @@ struct key
 	inline bool released() { return !currState && prevState; }
 };
 
-struct CONTROL_KEYS
-{
+struct CONTROL_KEYS {
 	enum { UP = 0, DOWN, LEFT, RIGHT, BOMB, COUNT };
 };
 
-struct KeyboardInput
-{
+struct KeyboardInput {
 	std::vector<key> controls;
 	std::vector<int> keycodes;
 
-	void updateKeys()
-	{
-		for (int i = 0; i < controls.size(); ++i)
-		{
+	void updateKeys() {
+		for (int i = 0; i < controls.size(); ++i) {
 			controls[i].prevState = controls[i].currState;
 			controls[i].currState = GetAsyncKeyState(keycodes[i]);
 		}
 	}
 
-	key At(int index)
-	{
+	key At(int index) {
 		return controls[index];
 	}
 };
 
 static std::vector<KeyboardInput> keyboardInputs;
 
-struct KEYS
-{
+struct KEYS {
 	enum { UP = 0, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE, HELP_MENU, GAME_STATE, FULLSCREEN, PAUSE, COUNT };
 };
 static std::vector<key> keys(KEYS::COUNT);
 
-static std::vector<int> keycodes =
-{
+static std::vector<int> keycodes = {
 	VK_UP,
 	VK_DOWN,
 	VK_LEFT,
@@ -102,8 +94,7 @@ float isP1UDPADPressed = 0.0f;
 float isP1DDPADPressed = 0.0f;
 float isP1SouthButtonPressed = 0.0f;
 
-bool CGame::Initialize()
-{
+bool CGame::Initialize() {
 	keyboardInputs.resize(2);
 	keyboardInputs[0].controls.resize(5);
 	keyboardInputs[0].keycodes.resize(5);
@@ -125,10 +116,8 @@ void CGame::Run()
 
 #pragma region Audio
 
-	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicStream)))
-	{
-		if (G_SUCCESS(g_pMusicStream->SetVolume(0.5f)))
-		{
+	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicStream))) {
+		if (G_SUCCESS(g_pMusicStream->SetVolume(0.5f))) {
 			g_pMusicStream->StreamStart(true);
 		}
 	}
@@ -136,14 +125,14 @@ void CGame::Run()
 #pragma endregion
 
 	float errorCode = 0;
-	if (G_FAIL(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer)))
-	{
+
+	if (G_FAIL(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer))) {
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
 
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
-	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY)
-	{
+
+	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY) {
 		if (G_FAIL(g_pWindow->ProcessWindowEvents()))
 			break;
 
@@ -155,115 +144,117 @@ void CGame::Run()
 		timePassed = (currFrame - prevFrame) / 1000.0;
 		mapTime += timePassed;
 
-		for (int i = 0; i < keycodes.size(); ++i)
-		{
+		for (int i = 0; i < keycodes.size(); ++i) {
 			keys[i].prevState = keys[i].currState;
 			keys[i].currState = GetAsyncKeyState(keycodes[i]) & 0x8000;
 		}
-		for (int i = 0; i < CONTROL_KEYS::COUNT; ++i)
-		{
+
+		for (int i = 0; i < CONTROL_KEYS::COUNT; ++i) {
 			keyboardInputs[0].controls[i].prevState = keyboardInputs[0].controls[i].currState;
 			keyboardInputs[1].controls[i].prevState = keyboardInputs[1].controls[i].currState;
 
 			keyboardInputs[0].controls[i].currState = GetAsyncKeyState(keyboardInputs[0].keycodes[i]);
 			keyboardInputs[1].controls[i].currState = GetAsyncKeyState(keyboardInputs[1].keycodes[i]);
 		}
-		if (keys[KEYS::FULLSCREEN].pressed())
-		{
+
+		if (keys[KEYS::FULLSCREEN].pressed()) {
 			FullScreen = !FullScreen;
 			this->WindowResize();
 		}
+
 		if (keys[KEYS::HELP_MENU].pressed()) {
 			ControlScreenToggle = !ControlScreenToggle;
 			isPaused = !isPaused;
-			if (isPaused == false)
-			{
+
+			if (isPaused == false) {
 				g_pAudioHolder->ResumeAll();
 				g_pMusicStream->ResumeStream();
 				timePassed = tempTime;
 			}
 		}
-		if (keys[KEYS::GAME_STATE].pressed())
-		{
-			if (curGameState == GAME_STATE::MAIN_MENU)
-			{
+
+		if (keys[KEYS::GAME_STATE].pressed()) {
+			if (curGameState == GAME_STATE::MAIN_MENU) {
 				setGameState(GAME_STATE::ARCADE_GAME);
-			}
-			else if (curGameState == GAME_STATE::ARCADE_GAME)
-			{
+			} else if (curGameState == GAME_STATE::ARCADE_GAME) {
 				setGameState(GAME_STATE::MAIN_MENU);
-			}
-			else if (curGameState == GAME_STATE::WIN_SCREEN)
-			{
+			} else if (curGameState == GAME_STATE::WIN_SCREEN) {
 				setGameState(GAME_STATE::MAIN_MENU);
 			}
 		}
-		if (keys[KEYS::PAUSE].pressed())
-		{
+
+		if (keys[KEYS::PAUSE].pressed()) {
 			isPaused = !isPaused;
 			ControlScreenToggle = !ControlScreenToggle;
-			if (isPaused == false)
-			{
+
+			if (isPaused == false) {
 				g_pAudioHolder->ResumeAll();
 				g_pMusicStream->ResumeStream();
 				timePassed = tempTime;
 			}
 		}
-		if (isPaused == true)
-		{
+
+		if (isPaused == true) {
 			g_pMusicStream->PauseStream();
 			g_pAudioHolder->PauseAll();
 			tempTime = timePassed;
 			timePassed = 0;
 		}
-		if (curGameState == GAME_STATE::ARCADE_GAME)
-		{
+
+		if (curGameState == GAME_STATE::ARCADE_GAME) {
 			updateBombs(timePassed);
 			prevCursor = currCursor;
 			GetCursorPos(&currCursor);
 
 			g_d3dData->debugCamDelta = { 0.0f, 0.0f };
+
 			if (keys[KEYS::ZERO].pressed())
 				g_d3dData->ToggleUseDebugCamera();
+
 			if (keys[KEYS::UP].held())
 				g_d3dData->debugCamDelta.y += 0.1f;
+
 			if (keys[KEYS::DOWN].held())
 				g_d3dData->debugCamDelta.y += -0.1f;
+
 			if (keys[KEYS::LEFT].held())
 				g_d3dData->debugCamDelta.x += -0.1f;
+
 			if (keys[KEYS::RIGHT].held())
 				g_d3dData->debugCamDelta.x += 0.1f;
 
-			if (keys[KEYS::RMB].held())
-			{
+			if (keys[KEYS::RMB].held()) {
 				g_d3dData->debugCursorRot.y = 0.002f*(currCursor.y - prevCursor.y);
 				g_d3dData->debugCursorRot.x = 0.002f*(currCursor.x - prevCursor.x);
 			}
 
 			static int numPlayersAlive = 0;
 			static int prevNumPlayersAlive = 0;
+
 			prevNumPlayersAlive = numPlayersAlive;
 			numPlayersAlive = 0;
-			for (int i = 0; i < v_cPlayers.size(); ++i)
-			{
+
+			for (int i = 0; i < v_cPlayers.size(); ++i) {
 				if (v_cPlayers[i] && v_cPlayers[i]->isAlive())
 					numPlayersAlive++;
 			}
 
-			if (prevNumPlayersAlive > 1 && numPlayersAlive <= 1)
-			{
+			if (prevNumPlayersAlive > 1 && numPlayersAlive <= 1) {
 				setGameState(GAME_STATE::WIN_SCREEN);
 			}
 
 			this->GamePlayLoop(timePassed);
 		}
+
 		//RenderMenus
-		for (CObject* menu : menuObjects)
-		{
+		for (CObject* menu : menuObjects) {
 			TComponent* cRenderer;
+
 			if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
 				continue;
+
 			TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+
 			if (renderer->iUsedLoadState == curGameState || (ControlScreenToggle && renderer->iUsedLoadState == GAME_STATE::CONTROLS_SCREEN))
 				p_cRendererManager->RenderObject(menu);
 
@@ -381,12 +372,14 @@ void CGame::Run()
 
 			if (Xexplosions[i]->GetComponent(COMPONENT_TYPE::RENDERER, renderer)) {
 				TRendererComponent* tRenderer = (TRendererComponent*)renderer;
+
 				if (tRenderer->iUsedLoadState == curGameState)
 					p_cRendererManager->RenderObject(Xexplosions[i]);
 			}
 
 			if (Zexplosions[i]->GetComponent(COMPONENT_TYPE::RENDERER, renderer)) {
 				TRendererComponent* tRenderer = (TRendererComponent*)renderer;
+
 				if (tRenderer->iUsedLoadState == curGameState)
 					p_cRendererManager->RenderObject(Zexplosions[i]);
 			}
@@ -445,6 +438,7 @@ void CGame::Run()
 void CGame::LoadObject() {
 	OBJLoadInfo loadInfo;
 	float minX, maxX, minZ, maxZ;
+
 	minX = -12.5;
 	maxX = 15;
 	minZ = -7.5;
@@ -467,6 +461,28 @@ void CGame::LoadObject() {
 			loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
 			loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+		}
+	}
+
+	for (float z = -2.5f; z < 10.0f; z += 2.5f) {
+		for (float x = -7.5f; x < 10.0f; x += 2.5f) {
+			if (rand() % 4 >= 1) {
+				loadInfo.position = { x, 0.0f, z };
+				loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+				loadInfo.meshID = MODELS::CUBE;
+				loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
+				loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+				loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+				loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+				loadInfo.usedGeo = -1;
+				loadInfo.LoadState = 3;
+				loadInfo.destroyable = true;
+				loadInfo.collisionLayer = COLLISION_LAYERS::DESTROYABLE;
+				loadInfo.item = true;
+				loadInfo.floor = false;
+				loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+				objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+			}
 		}
 	}
 
@@ -596,28 +612,6 @@ void CGame::LoadObject() {
 		loadInfo.item = true;
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	}
-
-	for (float z = -2.5f; z < 10.0f; z += 2.5f) {
-		for (float x = -7.5f; x < 10.0f; x += 2.5f) {
-			if (rand() % 4 >= 1) {
-				loadInfo.position = { x, 0.0f, z };
-				loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-				loadInfo.meshID = MODELS::CUBE;
-				loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
-				loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-				loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-				loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-				loadInfo.usedGeo = -1;
-				loadInfo.LoadState = 3;
-				loadInfo.destroyable = true;
-				loadInfo.collisionLayer = COLLISION_LAYERS::DESTROYABLE;
-				loadInfo.item = true;
-				loadInfo.floor = false;
-				loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-				objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-			}
-		}
 	}
 
 	for (float x = -15; x <= 15; x += 2.5f) {
@@ -858,7 +852,7 @@ void CGame::GamePlayLoop(double timePassed) {
 
 		for (CBomb* bomb : v_cBombs) {
 			if (bomb && bomb->isAlive()) {
-				if (bomb->getTimer() >= 0.7f) {
+				if (bomb->getTimer() >= 0.75f) {
 					if (currPlayer->Collides(bomb)) {
 						PlayerBombCollision(currPlayer, bomb);
 					}
@@ -870,7 +864,7 @@ void CGame::GamePlayLoop(double timePassed) {
 			if (currPlayer->Collides((CObject*)items[i])) {
 				currPlayer->SetBombType(items[i]->GetItemType());
 
-				if (currPlayer->GetNumBombs() <= 6) {
+				if (currPlayer->GetNumBombs() <= 3) {
 					currPlayer->incNumBombs();
 				}
 
@@ -886,7 +880,7 @@ void CGame::GamePlayLoop(double timePassed) {
 			if (pRenderer->fPosition.x < fMinX - 1.3 || pRenderer->fPosition.x > fMaxX + 1.3 || pRenderer->fPosition.z < fMinZ - 1.3 || pRenderer->fPosition.z > fMaxZ + 1.3) {
 				offMapTimer += timePassed;
 
-				if (offMapTimer >= 0.3) {
+				if (offMapTimer >= 0.25) {
 					offMapTimer = 0;
 					currPlayer->setAlive(false);
 				}
@@ -898,30 +892,64 @@ void CGame::GamePlayLoop(double timePassed) {
 				for (int i = 0; i < maxNumBombs; ++i) {
 					if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive()) {
 						currPlayer->AddBombIndex(i);
+						std::vector<CBomb*> bombs;
+
 						switch (currPlayer->GetBombType()) {
 						case 4:
-							if (v_cBombs[i])
-								*v_cBombs[i] = *p_cEntityManager->DropBomb0(currPlayer);
-							else
-								v_cBombs[i] = p_cEntityManager->DropBomb0(currPlayer);
+							if (v_cBombs[i]) {
+								bombs = p_cEntityManager->DropBomb0(currPlayer);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							} else {
+								bombs = p_cEntityManager->DropBomb0(currPlayer);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							}
+
 							break;
 						case 1:
-							if (v_cBombs[i])
-								*v_cBombs[i] = *p_cEntityManager->DropBomb1(currPlayer);
-							else
-								v_cBombs[i] = p_cEntityManager->DropBomb1(currPlayer);
+							if (v_cBombs[i]) {
+								bombs = p_cEntityManager->DropBomb1(currPlayer);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							} else {
+								bombs = p_cEntityManager->DropBomb1(currPlayer);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							}
+
 							break;
 						case 2:
-							if (v_cBombs[i])
-								*v_cBombs[i] = *p_cEntityManager->DropBomb2(currPlayer);
-							else
-								v_cBombs[i] = p_cEntityManager->DropBomb2(currPlayer);
+							if (v_cBombs[i]) {
+								bombs = p_cEntityManager->DropBomb2(currPlayer);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							} else {
+								bombs = p_cEntityManager->DropBomb2(currPlayer);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							}
+
 							break;
 						case 3:
-							if (v_cBombs[i])
-								*v_cBombs[i] = *p_cEntityManager->DropBomb3(currPlayer);
-							else
-								v_cBombs[i] = p_cEntityManager->DropBomb3(currPlayer);
+							if (v_cBombs[i]) {
+								bombs = p_cEntityManager->DropBomb3(currPlayer);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							} else {
+								bombs = p_cEntityManager->DropBomb3(currPlayer);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							}
+
 							break;
 						case 0:
 							if (v_cBombs[i])
@@ -1054,6 +1082,7 @@ void CGame::updateBombs(double timePassed) {
 			if (v_cBombs[i]->shouldExplode()) {
 				v_cBombs[i]->Explode();
 				CPlayer* parent = v_cBombs[i]->getParent();
+
 				for (int j = 0; j < parent->getBombIndices().size(); ++j) {
 					if (parent->getBombIndices()[j] == i)
 						parent->deleteBomb(j);

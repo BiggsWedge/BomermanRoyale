@@ -42,10 +42,10 @@ public:
 	CItem* CreateItemFromTemplate(OBJLoadInfo loadInfo);
 
 	CBomb* DropBomb(CPlayer* playerSource);
-	CBomb* DropBomb0(CPlayer* playerSource);
-	CBomb* DropBomb1(CPlayer* playerSource);
-	CBomb* DropBomb2(CPlayer* playerSource);
-	CBomb* DropBomb3(CPlayer* playerSource);
+	std::vector<CBomb*> DropBomb0(CPlayer* playerSource);
+	std::vector<CBomb*> DropBomb1(CPlayer* playerSource);
+	std::vector<CBomb*> DropBomb2(CPlayer* playerSource);
+	std::vector<CBomb*> DropBomb3(CPlayer* playerSource);
 
 	CObject* BombExplosionX(CBomb* BombSource);
 	CObject* BombExplosionZ(CBomb* BombSource);

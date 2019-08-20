@@ -146,8 +146,9 @@ CBomb* CEntityManager::DropBomb(CPlayer* playerSource)
 
 	return bomb;
 }
-CBomb* CEntityManager::DropBomb0(CPlayer* playerSource)
+std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource)
 {
+	std::vector<CBomb*> bombs;
 	CBomb* bomb;
 	TComponent* transform;
 	TTransformComponent* cTransform;
@@ -159,11 +160,11 @@ CBomb* CEntityManager::DropBomb0(CPlayer* playerSource)
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
 	int x = 0;
 	int z = 0;
+
 	if (pos.x >= 0) {
 		x = (pos.x + 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
-	}
-	else {
+	} else {
 		x = (pos.x - 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
 	}
@@ -171,13 +172,11 @@ CBomb* CEntityManager::DropBomb0(CPlayer* playerSource)
 	if (pos.z >= 0) {
 		z = (pos.z + 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
-	}
-	else {
+	} else {
 		z = (pos.z - 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
 	}
 
-	loadInfo.position = pos;
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
@@ -189,13 +188,137 @@ CBomb* CEntityManager::DropBomb0(CPlayer* playerSource)
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
-	bomb = CreateBombFromTemplate(loadInfo);
-	bomb->initialize(playerSource);
 
-	return bomb;
+	if (cTransform->fForwardVector.z == 1)
+	{
+		pos.x += 2.5f;
+		pos.y += 0;
+		pos.z += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.z += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.x -= 5;
+		pos.y += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.z -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+	else if (cTransform->fForwardVector.z == -1)
+	{
+		pos.x += 2.5f;
+		pos.y += 0;
+		pos.z -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.z -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.x -= 5;
+		pos.y += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.z += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+	else if (cTransform->fForwardVector.x == 1)
+	{
+		pos.x += 2.5f;
+		pos.y += 0;
+		pos.z -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.x += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.z += 5;
+		pos.y += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.x -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+	else if (cTransform->fForwardVector.x == -1)
+	{
+		pos.x -= 2.5f;
+		pos.y += 0;
+		pos.z += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.x -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.z -= 5;
+		pos.y += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.x += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+
+	return bombs;
 }
-CBomb* CEntityManager::DropBomb1(CPlayer* playerSource)
+std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource)
 {
+	std::vector<CBomb*> bombs;
 	CBomb* bomb;
 	TComponent* transform;
 	TTransformComponent* cTransform;
@@ -210,8 +333,7 @@ CBomb* CEntityManager::DropBomb1(CPlayer* playerSource)
 	if (pos.x >= 0) {
 		x = (pos.x + 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
-	}
-	else {
+	} else {
 		x = (pos.x - 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
 	}
@@ -219,13 +341,11 @@ CBomb* CEntityManager::DropBomb1(CPlayer* playerSource)
 	if (pos.z >= 0) {
 		z = (pos.z + 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
-	}
-	else {
+	} else {
 		z = (pos.z - 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
 	}
 
-	loadInfo.position = pos;
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
@@ -237,13 +357,137 @@ CBomb* CEntityManager::DropBomb1(CPlayer* playerSource)
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
-	bomb = CreateBombFromTemplate(loadInfo);
-	bomb->initialize(playerSource);
 
-	return bomb;
+	if (cTransform->fForwardVector.z == 1)
+	{
+		pos.x += 0;
+		pos.y += 0;
+		pos.z += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.z += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.x -= 2.5f;
+		pos.y += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.x += 5;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+	else if (cTransform->fForwardVector.z == -1)
+	{
+		pos.x += 0;
+		pos.y += 0;
+		pos.z -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.z -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.x -= 2.5f;
+		pos.y += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.x += 5;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+	else if (cTransform->fForwardVector.x == 1)
+	{
+		pos.x += 2.5f;
+		pos.y += 0;
+		pos.z -= 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.x += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.z += 2.5f;
+		pos.y += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.z -= 5;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+	else if (cTransform->fForwardVector.x == -1)
+	{
+		pos.x -= 2.5f;
+		pos.y += 0;
+		pos.z += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.x -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.z -= 2.5f;
+		pos.y += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.z += 5;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+
+	return bombs;
 }
-CBomb* CEntityManager::DropBomb2(CPlayer* playerSource)
+std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource)
 {
+	std::vector<CBomb*> bombs;
 	CBomb* bomb;
 	TComponent* transform;
 	TTransformComponent* cTransform;
@@ -255,11 +499,11 @@ CBomb* CEntityManager::DropBomb2(CPlayer* playerSource)
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
 	int x = 0;
 	int z = 0;
+
 	if (pos.x >= 0) {
 		x = (pos.x + 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
-	}
-	else {
+	} else {
 		x = (pos.x - 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
 	}
@@ -267,13 +511,11 @@ CBomb* CEntityManager::DropBomb2(CPlayer* playerSource)
 	if (pos.z >= 0) {
 		z = (pos.z + 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
-	}
-	else {
+	} else {
 		z = (pos.z - 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
 	}
 
-	loadInfo.position = pos;
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
@@ -285,13 +527,137 @@ CBomb* CEntityManager::DropBomb2(CPlayer* playerSource)
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
-	bomb = CreateBombFromTemplate(loadInfo);
-	bomb->initialize(playerSource);
 
-	return bomb;
+	if (cTransform->fForwardVector.z == 1)
+	{
+		pos.x += 0;
+		pos.y += 0;
+		pos.z += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.z += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.z += 2.5f;
+		pos.y += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.z += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+	else if (cTransform->fForwardVector.z == -1)
+	{
+		pos.x += 0;
+		pos.y += 0;
+		pos.z -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.z -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.z -= 2.5f;
+		pos.y += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.z -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+	else if (cTransform->fForwardVector.x == 1)
+	{
+		pos.x += 2.5f;
+		pos.y += 0;
+		pos.z -= 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.x += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.x += 2.5f;
+		pos.y += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.x += 2.5;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+	else if (cTransform->fForwardVector.x == -1)
+	{
+		pos.x -= 2.5f;
+		pos.y += 0;
+		pos.z += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.x -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.x -= 2.5f;
+		pos.y += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.y += 0;
+		pos.x -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+
+	return bombs;
 }
-CBomb* CEntityManager::DropBomb3(CPlayer* playerSource)
+std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource)
 {
+	std::vector<CBomb*> bombs;
 	CBomb* bomb;
 	TComponent* transform;
 	TTransformComponent* cTransform;
@@ -303,11 +669,11 @@ CBomb* CEntityManager::DropBomb3(CPlayer* playerSource)
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
 	int x = 0;
 	int z = 0;
+
 	if (pos.x >= 0) {
 		x = (pos.x + 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
-	}
-	else {
+	} else {
 		x = (pos.x - 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
 	}
@@ -315,13 +681,11 @@ CBomb* CEntityManager::DropBomb3(CPlayer* playerSource)
 	if (pos.z >= 0) {
 		z = (pos.z + 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
-	}
-	else {
+	} else {
 		z = (pos.z - 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
 	}
 
-	loadInfo.position = pos;
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
@@ -333,10 +697,133 @@ CBomb* CEntityManager::DropBomb3(CPlayer* playerSource)
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
-	bomb = CreateBombFromTemplate(loadInfo);
-	bomb->initialize(playerSource);
 
-	return bomb;
+	if (cTransform->fForwardVector.z == 1)
+	{
+		pos.x += 0;
+		pos.y += 0;
+		pos.z += 5;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.x += 2.5f;
+		pos.y += 0;
+		pos.z += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.x -= 2.5f;
+		pos.z += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.z -= 2.5f;
+		pos.x -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+	else if (cTransform->fForwardVector.z == -1)
+	{
+		pos.x += 0;
+		pos.y += 0;
+		pos.z -= 5;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.x += 2.5f;
+		pos.z -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.x -= 2.5f;
+		pos.z -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.z += 2.5f;
+		pos.x -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+	else if (cTransform->fForwardVector.x == 1)
+	{
+		pos.x += 5;
+		pos.y += 0;
+		pos.z -= 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.z += 2.5f;
+		pos.x += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.z -= 2.5f;
+		pos.x += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.x -= 2.5f;
+		pos.z -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+	else if (cTransform->fForwardVector.x == -1)
+	{
+		pos.x -= 5;
+		pos.y += 0;
+		pos.z += 0;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.z -= 2.5f;
+		pos.x -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.z += 2.5f;
+		pos.x -= 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+
+		pos.x += 2.5f;
+		pos.z += 2.5f;
+		loadInfo.position = pos;
+		bomb = CreateBombFromTemplate(loadInfo);
+		bomb->initialize(playerSource);
+		bombs.push_back(bomb);
+	}
+
+	return bombs;
 }
 CObject* CEntityManager::BombExplosionX(CBomb* BombSource)
 {
@@ -405,29 +892,11 @@ CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
 	OBJLoadInfo loadInfo;
 
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
-
+	pos.y += 1.2;
 	loadInfo.position = pos;
-	//int x = 0;
-	//int z = 0;
-	//if (pos.x >= 0) {
-	//	x = (pos.x + 1.25f) / 2.5f;
-	//	pos.x = ((float)x * 2.5f);
-	//}
-	//else {
-	//	x = (pos.x - 1.25f) / 2.5f;
-	//	pos.x = ((float)x * 2.5f);
-	//}
-
-	//if (pos.z >= 0) {
-	//	z = (pos.z + 1.25f) / 2.5f;
-	//	pos.z = ((float)z * 2.5f);
-	//}
-	//else {
-	//	z = (pos.z - 1.25f) / 2.5f;
-	//	pos.z = ((float)z * 2.5f);
-	//}
 	loadInfo.forwardVec = cTransform->fForwardVector;
 	loadInfo.meshID = 0;
+
 	switch (itemType)
 	{
 	case 4:
@@ -452,7 +921,7 @@ CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
 	loadInfo.destroyable = false;
 	loadInfo.floor = false;
 	loadInfo.itemType = itemType;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 60.0f, 1.0f / 60.0f, 1.0f / 60.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 60.0f, 1.0f / 180.0f, 1.0f / 60.0f);
 	Item = CreateItemFromTemplate(loadInfo);
 
 	return Item;

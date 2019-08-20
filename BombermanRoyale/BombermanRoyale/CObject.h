@@ -32,7 +32,7 @@ public:
 	void Draw();
 	bool Move(float _x, float _z);
 	bool Collides(CObject* _other);
-
+	bool MoveOverTime(float _x, float _z);
 };
 
 
