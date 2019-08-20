@@ -422,27 +422,9 @@ CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
 	OBJLoadInfo loadInfo;
 
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
+	pos.y += 1.5f;
 
 	loadInfo.position = pos;
-	//int x = 0;
-	//int z = 0;
-	//if (pos.x >= 0) {
-	//	x = (pos.x + 1.25f) / 2.5f;
-	//	pos.x = ((float)x * 2.5f);
-	//}
-	//else {
-	//	x = (pos.x - 1.25f) / 2.5f;
-	//	pos.x = ((float)x * 2.5f);
-	//}
-
-	//if (pos.z >= 0) {
-	//	z = (pos.z + 1.25f) / 2.5f;
-	//	pos.z = ((float)z * 2.5f);
-	//}
-	//else {
-	//	z = (pos.z - 1.25f) / 2.5f;
-	//	pos.z = ((float)z * 2.5f);
-	//}
 	loadInfo.forwardVec = cTransform->fForwardVector;
 	loadInfo.meshID = 0;
 	switch (itemType)
@@ -469,7 +451,7 @@ CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
 	loadInfo.destroyable = false;
 	loadInfo.floor = false;
 	loadInfo.itemType = itemType;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 60.0f, 1.0f / 60.0f, 1.0f / 60.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 60.0f, 1.0f / 180.0f, 1.0f / 60.0f);
 	Item = CreateItemFromTemplate(loadInfo);
 
 	return Item;

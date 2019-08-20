@@ -1099,88 +1099,14 @@ void CGame::GamePlayLoop(double timePassed)
 		//}
 		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_CONTROLLER_BUTTONS::PAUSE))
 		{
+			int previndex = menuIndex;
 			menuIndex = 0;
+			previndex = menuIndex - previndex;
+			pauseMenuBomb->Move(0.0f, (-(float)previndex*1.2f), false);
 			PauseMenuToggle = !PauseMenuToggle;
 			isPaused = !isPaused;
 		}
-		if (PauseMenuToggle)
-		{
-			currPlayer->GetCharacterController()->GetUpDown();
-				currPlayer->GetInput();
-
-				pauseMenuTimer += 0.1f;
-				if (currPlayer->GetCharacterController()->GetUpDown() > 0.0f && pauseMenuTimer > 4.0f && menuIndex > 0)
-				{
-					
-						pauseMenuTimer = 0.0f;
-						pauseMenuBomb->Move(0.0f, 1.2f, false);
-						menuIndex -= 1;
-						for (int i = 0; i < MenuSounds.size(); ++i)
-						{
-							//MenuSounds.at(i)->isSoundPlaying(soundplaying);
-							//if (!soundplaying)
-							//{
-							//	MenuSounds.at(i)->Play();
-							//	break;
-							//}
-						}
-					
-				}
-				if (currPlayer->GetCharacterController()->GetUpDown() < 0.0f && pauseMenuTimer > 4.0f && menuIndex < 2)
-				{
-					
-						pauseMenuTimer = 0.0f;
-						pauseMenuBomb->Move(0.0f, -1.2f, false);
-						menuIndex += 1;
-						for (int i = 0; i < MenuSounds.size(); ++i)
-						{
-							//MenuSounds.at(i)->isSoundPlaying(soundplaying);
-							//if (!soundplaying)
-							//{
-							//	MenuSounds.at(i)->Play();
-							//	break;
-							//}
-						}
-					
-				}
-				if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::ACTION))
-				{
-					//for (int i = 0; i < MenuSounds.size(); ++i)
-					//{
-					//	MenuSounds.at(i)->isSoundPlaying(soundplaying);
-					//	if (!soundplaying)
-					//	{
-					//		MenuSounds.at(i)->Play();
-					//		break;
-					//	}
-					//}
-					switch (menuIndex) {
-						case 0:
-						{
-							isPaused = !isPaused;
-							PauseMenuToggle = !PauseMenuToggle;
-							break;
-						}
-						case 1:
-						{
-							ControlScreenToggle = !ControlScreenToggle;
-							break;
-						}
-						case 2:
-						{
-							HWND windowHandle;
-							g_pWindow->GetWindowHandle(sizeof(HWND), (void**)& windowHandle);
-							SendMessage(windowHandle, WM_CLOSE, 0, 0);
-							break;
-						}
-						default:
-						{
-							break;
-						}
-					}
-
-				}
-		}
+		
 
 		/*
 
@@ -1339,6 +1265,84 @@ void CGame::GamePlayLoop(double timePassed)
 						break;
 					}
 				}
+			}
+		}
+
+		if (PauseMenuToggle)
+		{
+			currPlayer->GetCharacterController()->GetUpDown();
+
+			pauseMenuTimer += 0.1f;
+			if (currPlayer->GetCharacterController()->GetUpDown() > 0.0f && pauseMenuTimer > 4.0f && menuIndex > 0)
+			{
+
+				pauseMenuTimer = 0.0f;
+				pauseMenuBomb->Move(0.0f, 1.2f, false);
+				menuIndex -= 1;
+				for (int i = 0; i < MenuSounds.size(); ++i)
+				{
+					//MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					//if (!soundplaying)
+					//{
+					//	MenuSounds.at(i)->Play();
+					//	break;
+					//}
+				}
+
+			}
+			if (currPlayer->GetCharacterController()->GetUpDown() < 0.0f && pauseMenuTimer > 4.0f && menuIndex < 2)
+			{
+
+				pauseMenuTimer = 0.0f;
+				pauseMenuBomb->Move(0.0f, -1.2f, false);
+				menuIndex += 1;
+				for (int i = 0; i < MenuSounds.size(); ++i)
+				{
+					//MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					//if (!soundplaying)
+					//{
+					//	MenuSounds.at(i)->Play();
+					//	break;
+					//}
+				}
+
+			}
+			if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::ACTION))
+			{
+				//for (int i = 0; i < MenuSounds.size(); ++i)
+				//{
+				//	MenuSounds.at(i)->isSoundPlaying(soundplaying);
+				//	if (!soundplaying)
+				//	{
+				//		MenuSounds.at(i)->Play();
+				//		break;
+				//	}
+				//}
+				switch (menuIndex) {
+				case 0:
+				{
+					isPaused = !isPaused;
+					PauseMenuToggle = !PauseMenuToggle;
+					break;
+				}
+				case 1:
+				{
+					ControlScreenToggle = !ControlScreenToggle;
+					break;
+				}
+				case 2:
+				{
+					HWND windowHandle;
+					g_pWindow->GetWindowHandle(sizeof(HWND), (void**)& windowHandle);
+					SendMessage(windowHandle, WM_CLOSE, 0, 0);
+					break;
+				}
+				default:
+				{
+					break;
+				}
+				}
+
 			}
 		}
 
