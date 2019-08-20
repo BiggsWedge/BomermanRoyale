@@ -93,6 +93,17 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created rasterizer2 state");
 
+	//d3dRasterDesc.FrontCounterClockwise = false;
+	d3dRasterDesc.CullMode = D3D11_CULL_NONE;
+
+	if (FAILED(d3dDevice->CreateRasterizerState(&d3dRasterDesc, &d3dRasterizerStateSKYBOX)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the rasterizerSKYBOX state");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created rasterizerSKYBOX state");
+
 #pragma endregion
 
 #pragma region CollisionMatrix

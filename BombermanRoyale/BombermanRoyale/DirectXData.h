@@ -132,6 +132,7 @@ public:
 	ID3D11DepthStencilView*				d3dDepthStencilView = nullptr;
 	ID3D11RasterizerState*				d3dRasterizerState = nullptr;
 	ID3D11RasterizerState*				d3dRasterizerState2 = nullptr;
+	ID3D11RasterizerState*				d3dRasterizerStateSKYBOX = nullptr;
 	ID3D11SamplerState*					d3dSamplerState = nullptr;
 
 	ID3D11ShaderResourceView*			d3dDiffuseTextures[DIFFUSE_TEXTURES::COUNT] = {};
