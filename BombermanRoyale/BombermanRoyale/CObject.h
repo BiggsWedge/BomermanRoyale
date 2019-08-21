@@ -13,6 +13,7 @@ struct OBJLoadInfo
 	bool item;
 	int collisionLayer;
 	int itemType;
+	int layer;
 };
 
 class CObject
@@ -38,7 +39,11 @@ public:
 	
 	bool Move(float _x, float _z, bool rotation = true);
 	bool Collides(CObject* _other);
+//<<<<<<< HEAD
+	bool MoveOverTime(float _x, float _z);
+//=======
 	virtual void Cleanup();
+//>>>>>>> origin/Month2-UI
 };
 
 
