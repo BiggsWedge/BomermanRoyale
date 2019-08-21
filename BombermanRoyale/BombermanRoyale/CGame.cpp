@@ -864,7 +864,7 @@ void CGame::LoadObject()
 
 	for (float z = -2.5f; z < 10.0f; z += 2.5f) {
 		for (float x = -7.5f; x < 10.0f; x += 2.5f) {
-			if (rand() % 4 >= 1) {
+			if (rand() % 5 >= 1) {
 				loadInfo.position = { x, 0.0f, z };
 				loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 				loadInfo.meshID = MODELS::CUBE;
@@ -1059,10 +1059,10 @@ void CGame::LoadObject()
 
 	loadInfo.position = { -5, 0, -5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	loadInfo.position = { -5, 0, 0 };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	loadInfo.position = { -5, 0, 5 };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.position = { -5, 0, 0 };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.position = { -5, 0, 5 };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	loadInfo.position = { -5, 0, 10 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
@@ -1081,8 +1081,8 @@ void CGame::LoadObject()
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	//	loadInfo.position = { 5, 0, -5 };
-	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+		loadInfo.position = { 5, 0, -5 };
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	//loadInfo.position = { 5, 0, 0 };
 	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	//loadInfo.position = { 5, 0, 5 };
