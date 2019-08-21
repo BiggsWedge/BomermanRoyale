@@ -1603,10 +1603,39 @@ void CGame::updateBombs(double timePassed)
 		}
 		for (CPlayer* player : v_cPlayers) 
 		{
-			if (player) 
+			if (player)
 			{
 				if (Xexplosions[i]->Collides((CObject*)player) || Zexplosions[i]->Collides((CObject*)player))
+				{
+					int playerIndex = player->GetControllerIndex();
+					for (int i = 0; i < v_cPlayers.size(); i++)
+					{
+						if (player == v_cPlayers.at(i))
+						{
+							playerIndex = i;
+						}
+					}
+					for (CObject* menu : menuObjects)
+					{
+						TComponent* cRenderer;
+						TComponent* cTexture;
+						if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+							continue;
+						menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+						TTextureComponent* Texture = (TTextureComponent*)cTexture;
+						if (renderer->iUsedLoadState == GAME_STATE::WIN_SCREEN)
+						{
+							if (playerIndex == 0)
+								Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::PLAYER_2_WIN;
+							else
+								Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::PLAYER_1_WIN;
+						}
+						
+
+					}
 					player->setAlive(false);
+				}
 			}
 
 		}
@@ -1642,11 +1671,11 @@ void CGame::updateBombs(double timePassed)
 			if (v_cBombs[i]->shouldExplode()) 
 			{
 				v_cBombs[i]->Explode();
-				g_pControllerInput->StartVibration(0, 0.25f, 1, v_cPlayers[0]->GetControllerIndex());
+				if(v_cPlayers.at(0)->isAlive())
+					g_pControllerInput->StartVibration(0, 0.25f, 1, 0);
+				if (v_cPlayers.at(1)->isAlive())
+					g_pControllerInput->StartVibration(0, 0.25f, 1, 1);
 
-				/*v_cPlayers[1]->setControllerIndex(1);
-
-				g_pControllerInput->StartVibration(0, 0.25f, 1, v_cPlayers[1]->GetControllerIndex());*/
 				CPlayer* parent = v_cBombs[i]->getParent();
 				for (int j = 0; j < parent->getBombIndices().size(); ++j) 
 				{
@@ -1697,7 +1726,7 @@ bool CGame::loadTempMenus() {
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::WIN_SCREEN;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::PLAYER_1_WIN;
 	loadInfo.scale = DirectX::XMFLOAT3(2.55f, 2.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::WIN_SCREEN;
