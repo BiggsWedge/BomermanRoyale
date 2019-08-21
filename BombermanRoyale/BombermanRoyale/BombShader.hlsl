@@ -25,14 +25,12 @@ struct outVertex
 outVertex main(in inVertex input)
 {
 	outVertex output;
-	int t = time;
-	float ratio = time - t;
-	ratio = ratio + 0.5f;
-	if (ratio <= 1.0f)
-		input.position.xyz = input.position.xyz * ratio;
-	if (ratio >= 1.0f)
-		input.position.xyz = input.position.xyz / ratio;
-	float4 world_position = mul(float4(input.position.xyz, 1.0f), world);
+	float ratio = 0.0f;
+	ratio = (((cos(time * 360.0f * (3.14f / 180))) + 1.0f) / 8.0f) + 0.75;
+	output.position.xyz = input.position * ratio;
+
+
+	float4 world_position = mul(float4(output.position.xyz, 1.0f), world);
 	output.position = mul(world_position, view);
 	output.position = mul(output.position, projection);
 

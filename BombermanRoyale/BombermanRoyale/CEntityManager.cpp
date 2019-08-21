@@ -201,7 +201,7 @@ std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource)
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
 
-	if (cTransform->fForwardVector.z == 1)
+	if (cTransform->fForwardVector.z > 0.5f)
 	{
 		pos.x += 2.5f;
 		pos.y += 0;
@@ -232,7 +232,7 @@ std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource)
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-	else if (cTransform->fForwardVector.z == -1)
+	else if (cTransform->fForwardVector.z < -0.5f)
 	{
 		pos.x += 2.5f;
 		pos.y += 0;
@@ -263,7 +263,7 @@ std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource)
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-	else if (cTransform->fForwardVector.x == 1)
+	else if (cTransform->fForwardVector.x > 0.5f)
 	{
 		pos.x += 2.5f;
 		pos.y += 0;
@@ -294,7 +294,7 @@ std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource)
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-	else if (cTransform->fForwardVector.x == -1)
+	else if (cTransform->fForwardVector.x < -0.5f)
 	{
 		pos.x -= 2.5f;
 		pos.y += 0;
@@ -370,7 +370,7 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource)
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
 
-	if (cTransform->fForwardVector.z == 1)
+	if (cTransform->fForwardVector.z > 0.5f)
 	{
 		pos.x += 0;
 		pos.y += 0;
@@ -401,7 +401,7 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource)
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-	else if (cTransform->fForwardVector.z == -1)
+	else if (cTransform->fForwardVector.z < -0.5f)
 	{
 		pos.x += 0;
 		pos.y += 0;
@@ -432,7 +432,7 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource)
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-	else if (cTransform->fForwardVector.x == 1)
+	else if (cTransform->fForwardVector.x > 0.5f)
 	{
 		pos.x += 2.5f;
 		pos.y += 0;
@@ -463,7 +463,7 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource)
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-	else if (cTransform->fForwardVector.x == -1)
+	else if (cTransform->fForwardVector.x < -0.5f)
 	{
 		pos.x -= 2.5f;
 		pos.y += 0;
@@ -540,7 +540,7 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource)
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
 
-	if (cTransform->fForwardVector.z == 1)
+	if (cTransform->fForwardVector.z > 0.5f)
 	{
 		pos.x += 0;
 		pos.y += 0;
@@ -571,7 +571,7 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource)
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-	else if (cTransform->fForwardVector.z == -1)
+	else if (cTransform->fForwardVector.z < -0.5f)
 	{
 		pos.x += 0;
 		pos.y += 0;
@@ -602,7 +602,7 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource)
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-	else if (cTransform->fForwardVector.x == 1)
+	else if (cTransform->fForwardVector.x > 0.5f)
 	{
 		pos.x += 2.5f;
 		pos.y += 0;
@@ -633,7 +633,7 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource)
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-	else if (cTransform->fForwardVector.x == -1)
+	else if (cTransform->fForwardVector.x < -0.5f)
 	{
 		pos.x -= 2.5f;
 		pos.y += 0;
@@ -710,7 +710,7 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource)
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
 
-	if (cTransform->fForwardVector.z == 1)
+	if (cTransform->fForwardVector.z > 0.5f)
 	{
 		pos.x += 0;
 		pos.y += 0;
@@ -742,7 +742,7 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource)
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-	else if (cTransform->fForwardVector.z == -1)
+	else if (cTransform->fForwardVector.z < -0.5f)
 	{
 		pos.x += 0;
 		pos.y += 0;
@@ -772,7 +772,7 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource)
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-	else if (cTransform->fForwardVector.x == 1)
+	else if (cTransform->fForwardVector.x > 0.5f)
 	{
 		pos.x += 5;
 		pos.y += 0;
@@ -803,7 +803,7 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource)
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-	else if (cTransform->fForwardVector.x == -1)
+	else if (cTransform->fForwardVector.x < -0.5f)
 	{
 		pos.x -= 5;
 		pos.y += 0;

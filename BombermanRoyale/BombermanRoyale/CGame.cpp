@@ -1295,7 +1295,7 @@ void CGame::GamePlayLoop(double timePassed)
 
 		for (CBomb* bomb : v_cBombs) {
 			if (bomb && bomb->isAlive()) {
-				if (bomb->getTimer() >= 0.75f) {
+				if (bomb->getTimer() >= 0.7f) {
 					if (currPlayer->Collides(bomb)) {
 						PlayerBombCollision(currPlayer, bomb);
 					}
@@ -1362,67 +1362,67 @@ void CGame::GamePlayLoop(double timePassed)
 						std::vector<CBomb*> bombs;
 
 						switch (currPlayer->GetBombType()) {
-						case 4:
-							if (v_cBombs[i]) {
-								bombs = p_cEntityManager->DropBomb0(currPlayer);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
-							else {
-								bombs = p_cEntityManager->DropBomb0(currPlayer);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
+						//case 4:
+						//	if (v_cBombs[i]) {
+						//		bombs = p_cEntityManager->DropBomb0(currPlayer);
+						//		for (int j = 0; j < bombs.size(); j++) {
+						//			v_cBombs[i + j] = bombs[j];
+						//		}
+						//	}
+						//	else {
+						//		bombs = p_cEntityManager->DropBomb0(currPlayer);
+						//		for (int j = 0; j < bombs.size(); j++) {
+						//			v_cBombs[i + j] = bombs[j];
+						//		}
+						//	}
 
-							break;
-						case 1:
-							if (v_cBombs[i]) {
-								bombs = p_cEntityManager->DropBomb1(currPlayer);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
-							else {
-								bombs = p_cEntityManager->DropBomb1(currPlayer);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
+						//	break;
+						//case 1:
+						//	if (v_cBombs[i]) {
+						//		bombs = p_cEntityManager->DropBomb1(currPlayer);
+						//		for (int j = 0; j < bombs.size(); j++) {
+						//			v_cBombs[i + j] = bombs[j];
+						//		}
+						//	}
+						//	else {
+						//		bombs = p_cEntityManager->DropBomb1(currPlayer);
+						//		for (int j = 0; j < bombs.size(); j++) {
+						//			v_cBombs[i + j] = bombs[j];
+						//		}
+						//	}
 
-							break;
-						case 2:
-							if (v_cBombs[i]) {
-								bombs = p_cEntityManager->DropBomb2(currPlayer);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
-							else {
-								bombs = p_cEntityManager->DropBomb2(currPlayer);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
+						//	break;
+						//case 2:
+						//	if (v_cBombs[i]) {
+						//		bombs = p_cEntityManager->DropBomb2(currPlayer);
+						//		for (int j = 0; j < bombs.size(); j++) {
+						//			v_cBombs[i + j] = bombs[j];
+						//		}
+						//	}
+						//	else {
+						//		bombs = p_cEntityManager->DropBomb2(currPlayer);
+						//		for (int j = 0; j < bombs.size(); j++) {
+						//			v_cBombs[i + j] = bombs[j];
+						//		}
+						//	}
 
-							break;
-						case 3:
-							if (v_cBombs[i]) {
-								bombs = p_cEntityManager->DropBomb3(currPlayer);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
-							else {
-								bombs = p_cEntityManager->DropBomb3(currPlayer);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
+						//	break;
+						//case 3:
+						//	if (v_cBombs[i]) {
+						//		bombs = p_cEntityManager->DropBomb3(currPlayer);
+						//		for (int j = 0; j < bombs.size(); j++) {
+						//			v_cBombs[i + j] = bombs[j];
+						//		}
+						//	}
+						//	else {
+						//		bombs = p_cEntityManager->DropBomb3(currPlayer);
+						//		for (int j = 0; j < bombs.size(); j++) {
+						//			v_cBombs[i + j] = bombs[j];
+						//		}
+						//	}
 
-							break;
-						case 0:
+						//	break;
+						default:
 							if (v_cBombs[i])
 								*v_cBombs[i] = *p_cEntityManager->DropBomb(currPlayer);
 							else

@@ -330,6 +330,7 @@ bool CObject::Move(float _x, float _z, bool rotation)
 
 	DirectX::XMFLOAT4 pos;
 	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
+	DirectX::XMStoreFloat3(&transform->fForwardVector, transform->mObjMatrix.r[2]);
 	transform->fPosition = DirectX::XMFLOAT3(pos.x, pos.y, pos.z);
 
 	return true;
