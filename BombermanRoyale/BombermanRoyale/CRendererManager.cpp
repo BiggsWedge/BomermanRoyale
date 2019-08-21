@@ -46,23 +46,26 @@ bool CRendererManager::Draw(double timepassed, int gamestate)
 
 	g_d3dData->d3dContext->OMSetRenderTargets(1, d3dTargets, g_d3dData->d3dDepthStencilView);
 	//g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
-
 	const float bg_green[] = { 0.2f, 0.5f, 0.2f, 1.0f };
 
-	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView,  bg_green);
+	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView, bg_green);
 	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
 	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
 
 	/*********DRAW OTHER STUFF HERE************/
-	if(gamestate == 3)
+	if (gamestate == 3)
 		v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext, timepassed);
 	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState);
 	for (CObject* c : rendereableObjects)
 		c->Draw(timepassed);
 
-	UINT strides[] = { sizeof(TLineVertex) };
-	UINT offsets[] = { 0 };
 
+	/*
+	g_d3dData->d3dSpriteBatch->Begin();
+	g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Barnyard Blast", { 100, 100 , 0, 0 }, DirectX::Colors::NavajoWhite);
+	g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Barnyard Blast", { 100, 150 , 0, 0 }, DirectX::Colors::Peru);
+	g_d3dData->d3dSpriteBatch->End();
+	*/
 
 	g_d3dData->d3dSwapChain->Present(1, 0);
 

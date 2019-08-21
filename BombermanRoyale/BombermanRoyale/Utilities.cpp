@@ -840,16 +840,12 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 	//MatBuffer mat;
 	//mat.material = _mat;
 
-
-
 	debugConstBuff.world = DirectX::XMMatrixIdentity();
 	debugConstBuff.world = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
 	debugConstBuff.world = debugConstBuff.world * DirectX::XMMatrixTranslation(6.0f, 0.0f, 0.0f);
 	debugConstBuff.world = DirectX::XMMatrixTranspose(debugConstBuff.world);
 
 	_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
 
 	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MVP_t], 0, nullptr, &debugConstBuff, 0, 0);
 	_context->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MVP_t]);

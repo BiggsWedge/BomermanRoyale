@@ -4,7 +4,6 @@
 #include <iostream>
 
 
-
 CObject::CObject()
 {
 }
@@ -22,7 +21,7 @@ void CObject::Draw(double timepassed)
 	animTime += timepassed;
 	totalTime += timepassed;
 
-	
+
 	float fractionalTime = timepassed - (int)timepassed;
 
 	ID3D11CommandList* d3dCommandList = nullptr;
@@ -322,11 +321,12 @@ bool CObject::Move(float _x, float _z)
 
 	transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
 	DirectX::XMFLOAT3 targetVec = { _x, 0.0f, _z };
+
 	transform->mObjMatrix = TurnTo(transform->mObjMatrix, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec))), 0.5f);
 
 	DirectX::XMFLOAT4 pos;
 	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
-	DirectX::XMStoreFloat3(&transform->fForwardVector, DirectX::XMMatrixTranspose(transform->mObjMatrix).r[2]);
+	DirectX::XMStoreFloat3(&transform->fForwardVector, DirectX::XMVector3Normalize(transform->mObjMatrix.r[2]));
 	transform->fPosition = DirectX::XMFLOAT3(pos.x, pos.y, pos.z);
 
 	return true;

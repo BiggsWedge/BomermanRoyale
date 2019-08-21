@@ -6,6 +6,8 @@
 #include <DirectXCollision.h>
 #include "ConstDefines.h"
 #include "../Gateware/Interface/G_Graphics/GDirectX11Surface.h"
+#include "DXTK/SpriteFont.h"
+
 
 #define SAFE_RELEASE(ptr){if(ptr){ptr->Release(); ptr = nullptr;}}
 #define GW_SAFE_RELEASE(ptr){if(ptr){ptr->DecrementCount(); ptr = nullptr;}}
@@ -129,6 +131,8 @@ public:
 
 	bool								bUseDebugRenderCamera = false;
 
+	DirectX::SpriteBatch*				d3dSpriteBatch;
+	DirectX::SpriteFont*				d3dSpriteFont;
 
 	DirectX::XMMATRIX					camMat;
 	DirectX::XMMATRIX					debugCamMat;

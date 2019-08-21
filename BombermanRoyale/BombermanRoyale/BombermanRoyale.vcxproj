@@ -132,6 +132,14 @@
     <ClCompile Include="CPlayer.cpp" />
     <ClCompile Include="DirectXData.cpp" />
     <ClCompile Include="CGame.cpp" />
+    <ClCompile Include="DXTK\BinaryReader.cpp" />
+    <ClCompile Include="DXTK\CommonStates.cpp" />
+    <ClCompile Include="DXTK\DDSTextureLoader.cpp" />
+    <ClCompile Include="DXTK\GraphicsMemory.cpp" />
+    <ClCompile Include="DXTK\pch.cpp" />
+    <ClCompile Include="DXTK\SpriteBatch.cpp" />
+    <ClCompile Include="DXTK\SpriteFont.cpp" />
+    <ClCompile Include="DXTK\VertexTypes.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CRendererManager.cpp" />
     <ClCompile Include="Utilities.cpp" />
@@ -148,6 +156,22 @@
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CRendererManager.h" />
+    <ClInclude Include="DXTK\AlignedNew.h" />
+    <ClInclude Include="DXTK\BinaryReader.h" />
+    <ClInclude Include="DXTK\CommonStates.h" />
+    <ClInclude Include="DXTK\ConstantBuffer.h" />
+    <ClInclude Include="DXTK\DDS.h" />
+    <ClInclude Include="DXTK\DDSTextureLoader.h" />
+    <ClInclude Include="DXTK\DemandCreate.h" />
+    <ClInclude Include="DXTK\DirectXHelpers.h" />
+    <ClInclude Include="DXTK\GraphicsMemory.h" />
+    <ClInclude Include="DXTK\LoaderHelpers.h" />
+    <ClInclude Include="DXTK\pch.h" />
+    <ClInclude Include="DXTK\PlatformHelpers.h" />
+    <ClInclude Include="DXTK\SharedResourcePool.h" />
+    <ClInclude Include="DXTK\SpriteBatch.h" />
+    <ClInclude Include="DXTK\SpriteFont.h" />
+    <ClInclude Include="DXTK\VertexTypes.h" />
     <ClInclude Include="pools.h" />
     <ClInclude Include="ConstDefines.h" />
     <ClInclude Include="SharedDefines.h" />
@@ -292,6 +316,10 @@
       <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)</VariableName>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).csh</HeaderFileOutput>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DXTK\Shaders\Compiled\SpriteEffect_SpritePixelShader.inc" />
+    <None Include="DXTK\Shaders\Compiled\SpriteEffect_SpriteVertexShader.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

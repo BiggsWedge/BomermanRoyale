@@ -108,7 +108,6 @@ float isP1UDPADPressed = 0.0f;
 float isP1DDPADPressed = 0.0f;
 float isP1SouthButtonPressed = 0.0f;
 
-
 bool CGame::Initialize()
 {
 	keyboardInputs.resize(2);
@@ -125,7 +124,6 @@ bool CGame::Initialize()
 	p_cRendererManager = new CRendererManager();
 	return true;
 }
-
 
 void CGame::Run()
 {
@@ -179,6 +177,7 @@ void CGame::Run()
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
 	bombPlaceSound2->SetVolume(0.8f);
+
 	//for (int i = 0; i < numPlayers; ++i)
 	//{
 	//    if (walkSound.size() != numPlayers)
@@ -240,7 +239,6 @@ void CGame::Run()
 		}
 		powerUpSound.at(i)->SetVolume(0.2f);
 	}
-
 
 	p1Pause.SetButtonID(G_START_BTN);
 	p1Help.SetButtonID(G_SELECT_BTN);
@@ -558,7 +556,7 @@ void CGame::Run()
 					p_cRendererManager->RenderObject(items[i]);
 			}
 		}
-
+		
 		//Render Players
 		for (CPlayer* player : v_cPlayers)
 		{
@@ -583,6 +581,7 @@ void CGame::Run()
 			}
 		}
 		g_d3dData->updateCameras();
+
 
 #pragma region Input
 

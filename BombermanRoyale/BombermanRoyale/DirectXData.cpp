@@ -392,6 +392,10 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the bomb pixel constant buffer");
 
+	d3dSpriteBatch = new DirectX::SpriteBatch(d3dContext);
+	d3dSpriteFont = new DirectX::SpriteFont(d3dDevice, L".//Assets//StrickenBrush.spritefont");
+
+
 
 #pragma endregion
 
