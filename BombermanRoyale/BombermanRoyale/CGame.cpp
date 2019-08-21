@@ -447,7 +447,7 @@ void CGame::Run()
 			ShowCursor(true);
 		if (curGameState == GAME_STATE::ARCADE_GAME)
 		{
-			if (isPaused == false)
+			if (!isPaused)
 			{
 				g_pMusicStream->ResumeStream();
 				if (tempTime != 0)
@@ -1272,41 +1272,43 @@ void CGame::GamePlayLoop(double timePassed)
 		if (PauseMenuToggle)
 		{
 			currPlayer->GetCharacterController()->GetUpDown();
-
 			pauseMenuTimer += 0.1f;
-			if (currPlayer->GetCharacterController()->GetUpDown() > 0.0f && pauseMenuTimer > 4.0f && menuIndex > 0)
+			if (!ControlScreenToggle)
 			{
-
-				pauseMenuTimer = 0.0f;
-				pauseMenuBomb->Move(0.0f, 1.2f, false);
-				menuIndex -= 1;
-				for (int i = 0; i < MenuSounds.size(); ++i)
+				if (currPlayer->GetCharacterController()->GetUpDown() > 0.0f && pauseMenuTimer > 4.0f && menuIndex > 0)
 				{
-					//MenuSounds.at(i)->isSoundPlaying(soundplaying);
-					//if (!soundplaying)
-					//{
-					//	MenuSounds.at(i)->Play();
-					//	break;
-					//}
+
+					pauseMenuTimer = 0.0f;
+					pauseMenuBomb->Move(0.0f, 1.2f, false);
+					menuIndex -= 1;
+					for (int i = 0; i < MenuSounds.size(); ++i)
+					{
+						//MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						//if (!soundplaying)
+						//{
+						//	MenuSounds.at(i)->Play();
+						//	break;
+						//}
+					}
+
 				}
-
-			}
-			if (currPlayer->GetCharacterController()->GetUpDown() < 0.0f && pauseMenuTimer > 4.0f && menuIndex < 2)
-			{
-
-				pauseMenuTimer = 0.0f;
-				pauseMenuBomb->Move(0.0f, -1.2f, false);
-				menuIndex += 1;
-				for (int i = 0; i < MenuSounds.size(); ++i)
+				if (currPlayer->GetCharacterController()->GetUpDown() < 0.0f && pauseMenuTimer > 4.0f && menuIndex < 2)
 				{
-					//MenuSounds.at(i)->isSoundPlaying(soundplaying);
-					//if (!soundplaying)
-					//{
-					//	MenuSounds.at(i)->Play();
-					//	break;
-					//}
-				}
 
+					pauseMenuTimer = 0.0f;
+					pauseMenuBomb->Move(0.0f, -1.2f, false);
+					menuIndex += 1;
+					for (int i = 0; i < MenuSounds.size(); ++i)
+					{
+						//MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						//if (!soundplaying)
+						//{
+						//	MenuSounds.at(i)->Play();
+						//	break;
+						//}
+					}
+
+				}
 			}
 			if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::ACTION))
 			{
@@ -1703,7 +1705,7 @@ bool CGame::loadTempMenus() {
 
 
 
-	loadInfo.position = { 0.0f, 20.0f, -9.5f };
+	loadInfo.position = { 0.0f, 20.5f, -9.5f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HELP_MENU;
 	loadInfo.scale = DirectX::XMFLOAT3(0.8f, 1.0f, 1.0f);
@@ -1719,10 +1721,10 @@ bool CGame::loadTempMenus() {
 	loadInfo.LoadState = GAME_STATE::PAUSE_MENU;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { -2.0f, 19.8f, -11.0f };
+	loadInfo.position = { -2.2f, 18.9f, -10.5f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB;
-	loadInfo.scale = DirectX::XMFLOAT3(0.5, 0.5f, 0.2f);
+	loadInfo.scale = DirectX::XMFLOAT3(0.5, 0.5f, 0.0001f);
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.LoadState = GAME_STATE::PAUSE_MENU;
 	pauseMenuBomb = p_cEntityManager->CreateOBJFromTemplate(loadInfo);
