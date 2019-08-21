@@ -37,6 +37,7 @@ TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, Direct
 {
 	componentType = COMPONENT_TYPE::TRANSFORM;
 	fPosition = spawnPosition;
+	fScale = scale;
 	fForwardVector = forwardVector;
 	DirectX::XMFLOAT3 up = { 0.0f, 1.0f, 0.0f };
 	DirectX::XMVECTOR at = DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&fForwardVector)));
@@ -87,15 +88,13 @@ TMeshComponent::TMeshComponent()
 	componentType = COMPONENT_TYPE::MESH;
 }
 
-TMeshComponent::TMeshComponent(TMeshTemplate _template, TCollider tCollider, bool noCollider)
+TMeshComponent::TMeshComponent(TMeshTemplate _template)
 {
 	componentType = COMPONENT_TYPE::MESH;
+	 mName = _template.sName;
 
 	indexCount = _template.v_iIndices.size();
 	vertexCount = _template.v_tVertices.size();
-
-	mCollider = tCollider;
-	hasCollider = noCollider;
 
 	D3D11_BUFFER_DESC vBuffDesc;
 	D3D11_SUBRESOURCE_DATA vBuffSub;
@@ -129,7 +128,6 @@ TMeshComponent::TMeshComponent(TMeshTemplate _template, TCollider tCollider, boo
 	iBuffSub.pSysMem = _template.v_iIndices.data();
 
 	result = g_d3dData->d3dDevice->CreateBuffer(&iBuffDesc, &iBuffSub, &d3dIndexBuffer);
-
 }
 
 TMeshComponent::~TMeshComponent()
@@ -144,8 +142,25 @@ TMeshComponent::~TMeshComponent()
 
 TMaterialComponent::TMaterialComponent()
 {
-
+	componentType = COMPONENT_TYPE::MATERIAL;
 }
+
+TMaterialComponent::TMaterialComponent(TMeshTemplate _template)
+{
+	componentType = COMPONENT_TYPE::MATERIAL;
+	filepaths = _template.filePaths;
+	mats = _template.mats;
+	_mat = _template._mat;
+	_textures[TEXTURES::DIFFUSE] = _template._textures[TEXTURES::DIFFUSE];
+	_textures[TEXTURES::EMISSIVE] = _template._textures[TEXTURES::EMISSIVE];
+	_textures[TEXTURES::SPECULAR] = _template._textures[TEXTURES::SPECULAR];
+	_samState = _template._samState;
+	_srv[TEXTURES::DIFFUSE] = _template._srv[TEXTURES::DIFFUSE];
+	_srv[TEXTURES::EMISSIVE] = _template._srv[TEXTURES::EMISSIVE];
+	_srv[TEXTURES::SPECULAR] = _template._srv[TEXTURES::SPECULAR];
+}
+
+
 
 TMaterialComponent::~TMaterialComponent()
 {
@@ -153,6 +168,29 @@ TMaterialComponent::~TMaterialComponent()
 }
 
 #pragma endregion
+
+
+#pragma region TAnim
+
+TAnimComponent::TAnimComponent()
+{
+	componentType = COMPONENT_TYPE::ANIM;
+}
+
+TAnimComponent::TAnimComponent(TMeshTemplate _template)
+{
+	componentType = COMPONENT_TYPE::ANIM;
+	_anim = _template._anim;
+	_bindPose = _template._bindPose;
+}
+
+TAnimComponent::~TAnimComponent()
+{
+
+}
+
+#pragma endregion
+
 
 TColliderComponent::TColliderComponent()
 {
@@ -180,9 +218,12 @@ TColliderComponent::TColliderComponent(TMeshTemplate mtemplate, DirectX::XMFLOAT
 	}
 
 	d3dCollider.Center = DirectX::XMFLOAT3(((left + right) / 2.0f) + position.x, ((top + bottom) / 2.0f) + position.y, ((front + back) / 2.0f) + position.z);
-	if (mtemplate.uID == MODELS::CHICKEN)
-		d3dCollider.Extents = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	else
-		d3dCollider.Extents = DirectX::XMFLOAT3(abs((left + right) / 2.0f + left), abs((top + bottom) / 2.0f + top), abs((front + back) / 2.0f + front));
-	DirectX::XMStoreFloat4(&d3dCollider.Orientation, DirectX::XMQuaternionIdentity());
+	//if (mtemplate.uID == MODELS::CHICKEN)
+	//	d3dCollider.Extents = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//else
+	d3dCollider.Extents = DirectX::XMFLOAT3(abs((left + right) / 2.0f + left), abs((top + bottom) / 2.0f + top), abs((front + back) / 2.0f + front));
+}
+
+TComponent::~TComponent()
+{
 }

@@ -23,5 +23,5 @@ void CPlayer::updatePlayer()
 
 void CPlayer::Initialize()
 {
-	bombs = std::vector<int>(5);
+	controller = CharacterController();
 }

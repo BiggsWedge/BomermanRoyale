@@ -4,6 +4,9 @@ class CPlayer;
 
 class CBomb : public CObject
 {
+
+	
+
 private:
 	CPlayer* p_cParentPlayer;
 	double timer;
@@ -19,9 +22,11 @@ public:
 	inline void updateBomb(double timePassed) { timer += timePassed; }
 	inline CPlayer* getParent() { return p_cParentPlayer; }
 	void initialize(CPlayer* parent);
+	void Draw(double timepassed);
 	inline bool isAlive() { return alive; }
 	CBomb& operator=(const CBomb& other);
 	inline int GetStrength() { return strength; }
 	inline void SetAlive(bool check) { alive = check; }
+	inline void SetToExplode() { timer = maxTime - 0.01f; }
 };
 

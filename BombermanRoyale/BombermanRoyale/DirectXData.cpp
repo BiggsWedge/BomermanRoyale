@@ -6,6 +6,7 @@ DirectXData* g_d3dData = nullptr;
 
 bool DirectXData::Initialize()
 {
+
 	GW::GRAPHICS::CreateGDirectX11Surface(g_pWindow, GW::GRAPHICS::DEPTH_BUFFER_SUPPORT, &d3dSurface);
 
 	GW::GReturn gresult;
@@ -51,8 +52,8 @@ bool DirectXData::Initialize()
 
 	ZeroMemory(&d3dViewport, sizeof(d3dViewport));
 
-	d3dViewport.Height = d3dSwapChainDesc.BufferDesc.Height;
-	d3dViewport.Width = d3dSwapChainDesc.BufferDesc.Width;
+	d3dViewport.Height = (FLOAT)d3dSwapChainDesc.BufferDesc.Height;
+	d3dViewport.Width = (FLOAT)d3dSwapChainDesc.BufferDesc.Width;
 	d3dViewport.TopLeftX = d3dViewport.TopLeftY = 0;
 	d3dViewport.MaxDepth = 1;
 	d3dViewport.MinDepth = 0;
@@ -81,6 +82,27 @@ bool DirectXData::Initialize()
 	}
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created rasterizer state");
+
+	d3dRasterDesc.FrontCounterClockwise = false;
+
+	if (FAILED(d3dDevice->CreateRasterizerState(&d3dRasterDesc, &d3dRasterizerState2)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the rasterizer2 state");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created rasterizer2 state");
+
+	//d3dRasterDesc.FrontCounterClockwise = false;
+	d3dRasterDesc.CullMode = D3D11_CULL_NONE;
+
+	if (FAILED(d3dDevice->CreateRasterizerState(&d3dRasterDesc, &d3dRasterizerStateSKYBOX)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the rasterizerSKYBOX state");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created rasterizerSKYBOX state");
 
 #pragma endregion
 
@@ -159,6 +181,33 @@ bool DirectXData::Initialize()
 		//log failure
 		return false;
 	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the line vertex shader");
+
+	if (FAILED(d3dDevice->CreateVertexShader(AnimVertex, sizeof(AnimVertex), nullptr, &d3dVertexShader[VERTEX_SHADER::ANIM])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation vertex shader");
+
+
+	if (FAILED(d3dDevice->CreateVertexShader(SkyVertex, sizeof(SkyVertex), nullptr, &d3dVertexShader[VERTEX_SHADER::SKY])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the skybox vertex shader");
+
+	if (FAILED(d3dDevice->CreateVertexShader(BombShader, sizeof(BombShader), nullptr, &d3dVertexShader[VERTEX_SHADER::BOMB])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation vertex shader");
 
 #pragma endregion
 
@@ -177,6 +226,33 @@ bool DirectXData::Initialize()
 		//log failure
 		return false;
 	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the line pixel shader");
+
+	if (FAILED(d3dDevice->CreatePixelShader(AnimPixel, sizeof(AnimPixel), nullptr, &d3dPixelShader[PIXEL_SHADER::ANIM])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation pixel shader");
+
+	if (FAILED(d3dDevice->CreatePixelShader(SkyPixel, sizeof(SkyPixel), nullptr, &d3dPixelShader[PIXEL_SHADER::SKY])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the skybox pixel shader");
+
+	if (FAILED(d3dDevice->CreatePixelShader(BombPShader, sizeof(BombPShader), nullptr, &d3dPixelShader[PIXEL_SHADER::BOMB])))
+
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the bomb pixel shader");
 
 #pragma endregion
 
@@ -215,6 +291,23 @@ bool DirectXData::Initialize()
 		//log failure
 		return false;
 	}
+
+
+	std::vector<D3D11_INPUT_ELEMENT_DESC> d3dSkyShaderDesc =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	if (FAILED(d3dDevice->CreateInputLayout(d3dSkyShaderDesc.data(), d3dSkyShaderDesc.size(), SkyVertex, sizeof(SkyVertex), &d3dInputLayout[INPUT_LAYOUT::SKY])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the skybox input layout");
+
 #pragma endregion
 
 #pragma region Sampler State Creation
@@ -235,13 +328,34 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the sampler state");
 
+
+	// Create the skybox sample state
+	D3D11_SAMPLER_DESC skyboxSampDesc = {};
+	skyboxSampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	skyboxSampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	skyboxSampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	skyboxSampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	skyboxSampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	skyboxSampDesc.MinLOD = 0;
+	skyboxSampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	if (FAILED(d3dDevice->CreateSamplerState(&skyboxSampDesc, &JungleSampler)))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the skybox sampler state");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the skybox sampler state");
+
+	CreateDDSTextureFromFile(d3dDevice, L"JungleCubeMap.dds", (ID3D11Resource**)&Jungle, &JungleSRV);
+
 #pragma endregion
 
 #pragma region Camera Creation
 
 	debugCamPos = { 0.0f, 25.0f, -22.0f };
-	camPos = { 0.0f, 25.0f, -22.0f };
-	DirectX::XMFLOAT3 at = { 0.0f, 0.0f, 0.0f };
+	camPos = { 0.0f, 45.0f, -25.0f };
+	DirectX::XMFLOAT3 at = { 0.0f, 0.0f, 3.0f };
 	DirectX::XMFLOAT3 up = { 0.0f, 1.0f, 0.0f };
 
 	camMat = DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat3(&camPos), DirectX::XMLoadFloat3(&at), DirectX::XMLoadFloat3(&up));
@@ -250,9 +364,10 @@ bool DirectXData::Initialize()
 	debugCamMat = DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(30)) * debugCamMat;
 
 	viewMat = camMat;// DirectX::XMMatrixInverse(nullptr, camMat);
-	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 100.0f);
+	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(30), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 100.0f);
 
 #pragma endregion
+
 
 #pragma region Constant Buffer Creation
 
@@ -275,6 +390,56 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the basic vertex constant buffer");
 
+	BasicVConstBuffDesc.ByteWidth = sizeof(LightBuffer);
+
+	if (FAILED(d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::LIGHTS])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the light constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the light constant buffer");
+
+	BasicVConstBuffDesc.ByteWidth = sizeof(MatBuffer);
+
+	if (FAILED(d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::MATERIAL])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the material constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the material constant buffer");
+
+	BasicVConstBuffDesc.ByteWidth = sizeof(MVP_t);
+
+	if (FAILED(d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::MVP_t])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the MVP_t constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the MVP_t constant buffer");
+
+	BasicVConstBuffDesc.ByteWidth = sizeof(jointCB);
+
+	if (FAILED(d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::JOINTS])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the joints constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the joints constant buffer");
+
+	BasicVConstBuffDesc.ByteWidth = sizeof(bombconstbuffer);
+
+	if (FAILED(d3dDevice->CreateBuffer(&BasicVConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the bomb vertex constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the bomb vertex constant buffer");
+
 	D3D11_BUFFER_DESC BasicPConstBuffDesc;
 	ZeroMemory(&BasicPConstBuffDesc, sizeof(BasicPConstBuffDesc));
 
@@ -293,20 +458,121 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the basic pixel constant buffer");
 
-	D3D11_BUFFER_DESC bd = {};
-	D3D11_SUBRESOURCE_DATA bdsd = {};
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(TLineVertex) * get_line_vert_capacity();
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
-	bd.StructureByteStride = 0;
+	BasicPConstBuffDesc.ByteWidth = sizeof(bombpixelbuffer);
 
-	bdsd.pSysMem = get_line_verts();
+	if (FAILED(d3dDevice->CreateBuffer(&BasicPConstBuffDesc, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::BOMB_P_CONST])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the bomb pixel constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the bomb pixel constant buffer");
 
-	d3dDevice->CreateBuffer(&bd, NULL, &d3dVertexBuffers[VERTEX_BUFFER::LINE]);
+
+	//Jungle Constant Buffer
+	D3D11_BUFFER_DESC JungleBuffer = {};
+	JungleBuffer.Usage = D3D11_USAGE_DYNAMIC;
+	JungleBuffer.ByteWidth = sizeof(TBasicVertexConstBuff);
+	JungleBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	JungleBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	if (FAILED(d3dDevice->CreateBuffer(&JungleBuffer, nullptr, &d3dConstBuffers[CONSTANT_BUFFER::SKY])))
+	{
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the Skybox constant buffer");
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the Skybox constant buffer");
 
 #pragma endregion
+
+
+#pragma region Vertex Buffer Creation
+
+	KeyVertex verts[] =
+	{
+		{ DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) },
+
+	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f),DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f) },
+
+	{ DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f),DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+
+	{ DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) },
+
+	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f) },
+	{ DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f) },
+	{ DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f) },
+
+	{ DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) },
+	{ DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) },
+	{ DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f),DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) },
+	{ DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) },
+	};
+
+
+
+	//Jungle Vertex buffer
+	JungleBuffer.Usage = D3D11_USAGE_DEFAULT;
+	JungleBuffer.ByteWidth = sizeof(KeyVertex) * 24;
+	JungleBuffer.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	JungleBuffer.CPUAccessFlags = 0;
+	JungleBuffer.MiscFlags = 0;
+	JungleBuffer.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA SubData;
+	SubData.pSysMem = verts;
+
+	d3dDevice->CreateBuffer(&JungleBuffer, &SubData, &JungleVertexBuffer);
+
+#pragma endregion
+
+#pragma region Index Buffer Creation
+
+
+	WORD JungleIndices[36] =
+	{
+		3,0,1,
+		2,3,1,
+
+		6,5,4,
+		7,6,4,
+
+		11,8,9,
+		10,11,9,
+
+		14,13,12,
+		15,14,12,
+
+		19,16,17,
+		18,19,17,
+
+		22,21,20,
+		23,22,20
+	};
+
+	//Sky Index Buffer
+	JungleBuffer.Usage = D3D11_USAGE_DEFAULT;
+	JungleBuffer.ByteWidth = sizeof(WORD) * 36;
+	JungleBuffer.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	JungleBuffer.CPUAccessFlags = 0;
+	SubData.pSysMem = JungleIndices;
+	d3dDevice->CreateBuffer(&JungleBuffer, &SubData, &JungleIndexBuffer);
+
+#pragma endregion
+
+
 
 	return true;
 }
@@ -318,23 +584,26 @@ DirectXData::DirectXData()
 
 DirectXData::~DirectXData()
 {
-	Cleanup();
 }
 
 void DirectXData::Cleanup()
 {
-	ID3D11Debug* _debugger;
-	d3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&_debugger));
-
 	SAFE_RELEASE(d3dSamplerState);
 	SAFE_RELEASE(d3dRasterizerState);
+	SAFE_RELEASE(d3dRasterizerState2);
 	SAFE_RELEASE(d3dDepthStencilView);
 	SAFE_RELEASE(d3dRenderTargetView);
+	SAFE_RELEASE(JungleSampler);
+	SAFE_RELEASE(Jungle);
+	SAFE_RELEASE(JungleSRV);
+	SAFE_RELEASE(JungleVertexBuffer);
+	SAFE_RELEASE(JungleIndexBuffer);
 
-	for (int i = 0; i < INPUT_LAYOUT::COUNT; ++i)
-		SAFE_RELEASE(d3dInputLayout[i]);
+
 	for (int i = 0; i < CONSTANT_BUFFER::COUNT; ++i)
 		SAFE_RELEASE(d3dConstBuffers[i]);
+	for (int i = 0; i < INPUT_LAYOUT::COUNT; ++i)
+		SAFE_RELEASE(d3dInputLayout[i]);
 	for (int i = 0; i < GEOMETRY_SHADER::COUNT; ++i)
 		SAFE_RELEASE(d3dGeometryShader[i]);
 	for (int i = 0; i < PIXEL_SHADER::COUNT; ++i)
@@ -344,17 +613,10 @@ void DirectXData::Cleanup()
 	for (int i = 0; i < DIFFUSE_TEXTURES::COUNT; ++i)
 		SAFE_RELEASE(d3dDiffuseTextures[i]);
 
+	GW_SAFE_RELEASE(d3dSurface);
 	SAFE_RELEASE(d3dSwapChain);
 	SAFE_RELEASE(d3dContext);
 	SAFE_RELEASE(d3dDevice);
-
-	if (d3dSurface)
-	{
-		d3dSurface->DecrementCount();
-		d3dSurface = nullptr;
-	}
-
-	SAFE_RELEASE(_debugger);
 }
 
 void DirectXData::updateCameras()
@@ -372,8 +634,6 @@ void DirectXData::updateCameras()
 
 		debugCamMat.r[3] = DirectX::XMLoadFloat4(&debugPos);
 
-
 		debugCursorRot = { 0.0f, 0.0f };
-
 	}
 }

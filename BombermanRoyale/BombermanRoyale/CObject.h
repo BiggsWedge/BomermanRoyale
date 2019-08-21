@@ -7,8 +7,6 @@ struct OBJLoadInfo
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT3 forwardVec;
 	DirectX::XMFLOAT3 scale;
-	TCollider collider;
-	bool hasCollider;
 	int usedVertex, usedPixel, usedGeo, usedInput, usedDiffuse, LoadState;
 	bool floor;
 	bool destroyable;
@@ -25,14 +23,27 @@ protected:
 	ID3D11DeviceContext*			d3dDeferredContext;
 
 public:
+
+	int currKeyFrame = 0;
+	float frameTime = 0;
+	float currFrameIndex = 0;
+	float animTime = 0.0f;
+	float totalTime;
+
 	CObject();
+	~CObject();
 	inline std::vector<TComponent*> GetComponenets() { return v_tComponents; }
 	inline void AddComponent(TComponent* _toAdd) { v_tComponents.push_back(_toAdd); }
 	bool GetComponent(int componentType, TComponent* & component);
-	void Draw();
-	bool Move(float _x, float _z);
+	virtual void Draw(double timepassed);
+	
+	bool Move(float _x, float _z, bool rotation = true);
 	bool Collides(CObject* _other);
+//<<<<<<< HEAD
 	bool MoveOverTime(float _x, float _z);
+//=======
+	virtual void Cleanup();
+//>>>>>>> origin/Month2-UI
 };
 
 

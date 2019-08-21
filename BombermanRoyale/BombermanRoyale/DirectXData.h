@@ -3,17 +3,27 @@
 #include <direct.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include "DDSTextureLoader.h"
 #include <DirectXCollision.h>
+#include "SkyPixel.csh"
+#include "SkyVertex.csh"
 #include "ConstDefines.h"
 #include "../Gateware/Interface/G_Graphics/GDirectX11Surface.h"
 
 #define SAFE_RELEASE(ptr){if(ptr){ptr->Release(); ptr = nullptr;}}
+#define GW_SAFE_RELEASE(ptr){if(ptr){ptr->DecrementCount(); ptr = nullptr;}}
 
 struct TBasicVertexConstBuff
 {
 	DirectX::XMMATRIX mModelMatrix;
 	DirectX::XMMATRIX mViewMatrix;
 	DirectX::XMMATRIX mProjMatrix;
+};
+
+struct KeyVertex
+{
+	DirectX::XMFLOAT3 xyzw;
+	DirectX::XMFLOAT3 Normal;
 };
 
 struct TBasicPixelConstBuff
@@ -33,27 +43,27 @@ struct VIEWPORT
 
 struct CONSTANT_BUFFER
 {
-	enum { V_BASIC = 0, V_LINE, P_BASIC, P_LINE, COUNT };
+	enum { V_BASIC = 0, V_LINE, P_BASIC, P_LINE, MVP_t, LIGHTS, JOINTS, MATERIAL, SKY, BOMBCONST, BOMB_P_CONST, COUNT };
 };
 
 struct INDEX_BUFFER
 {
-	enum { DEFAULT = 0, COUNT };
+	enum { DEFAULT = 0, ANIM, SKY, COUNT };
 };
 
 struct VERTEX_BUFFER
 {
-	enum { DEFAULT = 0, LINE, COUNT };
+	enum { DEFAULT = 0, LINE, ANIM, SKY, COUNT };
 };
 
 struct VERTEX_SHADER
 {
-	enum { BASIC = 0, LINE, COUNT };
+	enum { BASIC = 0, LINE, ANIM, SKY, BOMB, COUNT };
 };
 
 struct PIXEL_SHADER
 {
-	enum { BASIC = 0, LINE, COUNT };
+	enum { BASIC = 0, LINE, ANIM, SKY, BOMB, COUNT };
 };
 
 struct GEOMETRY_SHADER
@@ -63,7 +73,7 @@ struct GEOMETRY_SHADER
 
 struct INPUT_LAYOUT
 {
-	enum { BASIC = 0, LINE, COUNT };
+	enum { BASIC = 0, LINE, SKY, COUNT };
 };
 
 struct RASTERIZER_STATE
@@ -89,9 +99,9 @@ struct COLLISION_LAYERS
 struct DIFFUSE_TEXTURES
 {
 	enum {
-		CRATE = 0, BATTLE_MAGE, MAIN_MENU, HUD, NAMES_HUD, WIN_SCREEN,
+		CRATE = 0, BATTLE_MAGE, MAIN_MENU, HUD, NAMES_HUD, WIN_SCREEN, PAUSE_MENU,
 		HELP_MENU, ARCADE_BUTTON, BATTLE_BUTTON, OPTIONS_BUTTON, EXIT_BUTTON,
-		RED_TEX, BLUE_TEX, BLACK_TEX, FIRE_TEX, HAY_TEX, BOMB, CHICKEN1, CHICKEN2,
+		RED_TEX, BLUE_TEX, BLACK_TEX, FIRE_TEX, HAY_TEX, BOMB, BOMB3, BOMB2, BOMB4, CHICKEN1, CHICKEN2,
 		COUNT
 	};
 };
@@ -106,6 +116,7 @@ class DirectXData
 public:
 
 	bool collisionMatrix[COLLISION_LAYERS::COUNT][COLLISION_LAYERS::COUNT];
+
 	GW::GRAPHICS::GDirectX11Surface*	d3dSurface = nullptr;
 	ID3D11Device*						d3dDevice = nullptr;
 	IDXGISwapChain*						d3dSwapChain = nullptr;
@@ -117,16 +128,23 @@ public:
 	ID3D11GeometryShader*				d3dGeometryShader[GEOMETRY_SHADER::COUNT] = {};
 
 	ID3D11Buffer*						d3dConstBuffers[CONSTANT_BUFFER::COUNT] = {};
-	ID3D11Buffer*						d3dVertexBuffers[VERTEX_BUFFER::COUNT] = {};
 	ID3D11RenderTargetView*				d3dRenderTargetView = nullptr;
 	ID3D11DepthStencilView*				d3dDepthStencilView = nullptr;
 	ID3D11RasterizerState*				d3dRasterizerState = nullptr;
+	ID3D11RasterizerState*				d3dRasterizerState2 = nullptr;
+	ID3D11RasterizerState*				d3dRasterizerStateSKYBOX = nullptr;
 	ID3D11SamplerState*					d3dSamplerState = nullptr;
 
 	ID3D11ShaderResourceView*			d3dDiffuseTextures[DIFFUSE_TEXTURES::COUNT] = {};
 
 	bool								bUseDebugRenderCamera = false;
 
+	//Skybox Stuff
+	ID3D11Texture2D			 *Jungle = nullptr;
+	ID3D11ShaderResourceView *JungleSRV = nullptr;
+	ID3D11SamplerState		*JungleSampler = nullptr;
+	ID3D11Buffer          *JungleVertexBuffer = nullptr;
+	ID3D11Buffer		  *JungleIndexBuffer = nullptr;
 
 	DirectX::XMMATRIX					camMat;
 	DirectX::XMMATRIX					debugCamMat;
@@ -139,8 +157,6 @@ public:
 	DirectX::XMFLOAT3					newCamPos;
 
 	TBasicVertexConstBuff					basicConstBuff;
-
-	std::vector<ID3D11CommandList*>		d3dCommandLists = {};
 
 	D3D11_VIEWPORT						d3dViewport;
 
