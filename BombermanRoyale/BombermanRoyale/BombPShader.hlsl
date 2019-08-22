@@ -40,7 +40,7 @@ float4 main(in inPixel _inPix) : SV_TARGET
 	float4 diff = (float4) 0;
 	float3 norm = normalize(_inPix.normal);
 	float4 red = float4(0.8f, -0.5f, -0.5f, 1.0f);
-	float ratio = time.x / 3.0f;
+	float ratio = time.x / 2.5f;
 	red *= ratio;
 	diff = red;
 

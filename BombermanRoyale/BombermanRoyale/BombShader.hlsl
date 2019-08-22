@@ -26,7 +26,7 @@ outVertex main(in inVertex input)
 {
 	outVertex output;
 	float ratio = 0.0f;
-	ratio = (((cos(time * 360.0f * (3.14f / 180))) + 1.0f) / 8.0f) + 0.75;
+	ratio = ((((cos((time * 360.0f * (3.14f / 180))/2.5f*3.0f)) + 1.0f) / 8.0f) + 0.75);
 	output.position.xyz = input.position * ratio;
 
 

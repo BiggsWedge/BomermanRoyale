@@ -13,6 +13,8 @@ static const std::vector<const wchar_t*> diffuseTextures =
 	L".//Assets//Menus.fbm//Playe Status.png",
 	L".//Assets//Menus.fbm//Player1Win.png",
 	L".//Assets//Menus.fbm//Player2Win.png",
+	L".//Assets//Menus.fbm//Player3Win.png",
+	L".//Assets//Menus.fbm//Player4Win.png",
 	L".//Assets//Menus.fbm//Pause_Menu.png",
 	L".//Assets//Menus.fbm//Controls2.png",
 	L".//Assets//Menus.fbm//ArcadeButton.png",
@@ -29,7 +31,9 @@ static const std::vector<const wchar_t*> diffuseTextures =
 	L".//Assets//bomb.fbm//bomb3.png",
 	L".//Assets//bomb.fbm//bomb4.png",
 	L".//Assets//Chicken.fbm//ChickenP1.png",
-	L".//Assets//Chicken.fbm//ChickenP2.png"
+	L".//Assets//Chicken.fbm//ChickenP2.png",
+	L".//Assets//Chicken.fbm//ChickenP3.png",
+	L".//Assets//Chicken.fbm//ChickenP4.png"
 };
 
 struct TMeshLoadInfo

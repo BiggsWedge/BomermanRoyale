@@ -34,7 +34,7 @@ void CBomb::initialize(CPlayer* parent)
 {
 	alive = true;
 	timer = 0.0;
-	maxTime = 3.0;
+	maxTime = 2.5;
 	p_cParentPlayer = parent;
 }
 
