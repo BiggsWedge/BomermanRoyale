@@ -25,5 +25,9 @@ void CPlayer::updatePlayer()
 void CPlayer::Initialize()
 {
 	controller = CharacterController();
+	if (!controller.IsControllerConnected())
+	{
+
+	}
 }
 

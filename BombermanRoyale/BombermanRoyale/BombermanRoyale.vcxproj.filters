@@ -114,6 +114,9 @@
     <ClCompile Include="WICTextureLoader.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="CharacterController.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBomb.h">

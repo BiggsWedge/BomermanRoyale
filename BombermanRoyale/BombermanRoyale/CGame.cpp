@@ -358,7 +358,7 @@ void CGame::Run()
 						}
 					}
 				}
-				if (menuBomb->GetCharacterController()->ButtonReleased(DEFAULT_CONTROLLER_BUTTONS::ACTION))
+				if (menuBomb->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::ACTION))
 				{
 					for (int i = 0; i < MenuSounds.size(); ++i)
 					{
@@ -556,7 +556,7 @@ void CGame::Run()
 					p_cRendererManager->RenderObject(items[i]);
 			}
 		}
-		
+
 		//Render Players
 		for (CPlayer* player : v_cPlayers)
 		{
@@ -875,7 +875,6 @@ void CGame::LoadObject()
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	loadInfo.position = { 10, 0, -5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
 }
 
 
@@ -978,12 +977,7 @@ void CGame::GamePlayLoop(double timePassed)
 		currPlayer->GetInput();
 
 		CharacterController* cont = currPlayer->GetCharacterController();
-		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::HELP))
-		{
-			ControlScreenToggle = !ControlScreenToggle;
-			isPaused = !isPaused;
-		}
-		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_CONTROLLER_BUTTONS::PAUSE))
+		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::PAUSE))
 		{
 			setGameState(GAME_STATE::MAIN_MENU);
 			return;
@@ -1025,9 +1019,22 @@ void CGame::GamePlayLoop(double timePassed)
 			DirectX::XMStoreFloat4(&tCol->d3dCollider.Orientation, DirectX::XMQuaternionRotationMatrix(pTransform->mObjMatrix));
 		}
 		*/
-
-		deltaX = currPlayer->GetCharacterController()->GetLeftRight() * timePassed * PLAYER_SPEED;
-		deltaZ = currPlayer->GetCharacterController()->GetUpDown() * timePassed * PLAYER_SPEED;
+		if (cont->IsControllerConnected())
+		{
+			cont->GetLeftRight() * timePassed * PLAYER_SPEED;
+			cont->GetUpDown() * timePassed * PLAYER_SPEED;
+		}
+		else
+		{
+			if (cont->ButtonHeld(DEFAULT_BUTTONS::LEFT))
+				deltaX -= 1.0f * timePassed	 * PLAYER_SPEED;
+			if (cont->ButtonHeld(DEFAULT_BUTTONS::RIGHT))
+				deltaX += 1.0f * timePassed * PLAYER_SPEED;
+			if (cont->ButtonHeld(DEFAULT_BUTTONS::UP))
+				deltaZ += 1.0f * timePassed * PLAYER_SPEED;
+			if (cont->ButtonHeld(DEFAULT_BUTTONS::DOWN))
+				deltaZ -= 1.0f * timePassed * PLAYER_SPEED;
+		}
 
 
 		/*
@@ -1092,7 +1099,7 @@ void CGame::GamePlayLoop(double timePassed)
 				--i;
 			}
 		}
-		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::ACTION) && !isPaused)//isSouthPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::BOMB).pressed())
+		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_BUTTONS::ACTION) && !isPaused)//isSouthPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::BOMB).pressed())
 		{
 			if (currPlayer->hasAvailableBombSlot())
 			{
@@ -1285,8 +1292,8 @@ void CGame::setGameState(int _gameState) {
 		LoadObject();
 		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-12.5f, 0.0f, 12.5f));
 		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(12.5f, 0.0f, -7.5f));
-		v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
-		v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(12.0f, 0.0f, 12.5f));
+		//v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
+		//v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(12.0f, 0.0f, 12.5f));
 
 		spawnSound1->isSoundPlaying(soundplaying);
 		if (!soundplaying)

@@ -126,6 +126,7 @@
     <ClCompile Include="..\Gateware\Source\G_System\GWindow.cpp" />
     <ClCompile Include="CBomb.cpp" />
     <ClCompile Include="CEntityManager.cpp" />
+    <ClCompile Include="CharacterController.cpp" />
     <ClCompile Include="CItem.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="Component.cpp" />
