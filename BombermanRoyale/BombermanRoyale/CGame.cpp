@@ -351,8 +351,8 @@ void CGame::Run()
 					else
 					{
 						menucontroltimer = 0.0;
-						menuBomb->Move(0.0f, 4.9f, false);
-						menuIndex -= 2;
+						menuBomb->Move(0.0f, 4.9f + 2.45f, false);
+						menuIndex -= 3;
 						for (int i = 0; i < MenuSounds.size(); ++i)
 						{
 							MenuSounds.at(i)->isSoundPlaying(soundplaying);
@@ -366,7 +366,7 @@ void CGame::Run()
 				}
 				if (menuBomb->GetCharacterController()->GetUpDown() < 0.0f && menucontroltimer > 0.2 && menuIndex < 3)
 				{
-					if (menuIndex != 1)
+					if (menuIndex != 0)
 					{
 						menucontroltimer = 0.0;
 						menuBomb->Move(0.0f, -2.45f, false);
@@ -384,8 +384,8 @@ void CGame::Run()
 					else
 					{
 						menucontroltimer = 0.0;
-						menuBomb->Move(0.0f, -4.9f, false);
-						menuIndex += 2;
+						menuBomb->Move(0.0f, -4.9f - 2.45f, false);
+						menuIndex += 3;
 						for (int i = 0; i < MenuSounds.size(); ++i)
 						{
 							MenuSounds.at(i)->isSoundPlaying(soundplaying);
@@ -1477,7 +1477,7 @@ void CGame::GamePlayLoop(double timePassed)
 
 				}
 			}
-			if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::ACTION))
+			if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_CONTROLLER_BUTTONS::ACTION))
 			{
 				//for (int i = 0; i < MenuSounds.size(); ++i)
 				//{
@@ -1502,9 +1502,13 @@ void CGame::GamePlayLoop(double timePassed)
 				}
 				case 2:
 				{
-					HWND windowHandle;
-					g_pWindow->GetWindowHandle(sizeof(HWND), (void**)& windowHandle);
-					SendMessage(windowHandle, WM_CLOSE, 0, 0);
+					setGameState(GAME_STATE::MAIN_MENU);
+					int previndex = menuIndex;
+					menuIndex = 0;
+					previndex = menuIndex - previndex;
+					pauseMenuBomb->Move(0.0f, (-(float)previndex*1.2f), false);
+					PauseMenuToggle = !PauseMenuToggle;
+					isPaused = !isPaused;
 					break;
 				}
 				default:
