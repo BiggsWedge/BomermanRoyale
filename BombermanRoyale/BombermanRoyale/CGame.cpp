@@ -573,7 +573,8 @@ void CGame::Run()
 		}
 
 		//RenderObjects
-		if (mapTime >= 55) {
+
+		if (mapTime >= 40) {
 			for (int i = 0; i < objects.size(); ++i) {
 				TComponent* cRenderer = nullptr;
 				TComponent* texture = nullptr;
@@ -591,7 +592,7 @@ void CGame::Run()
 				}
 			}
 
-			if (mapTime >= 60) {
+			if (mapTime >= 45) {
 				for (int passes = 0; passes < 6; passes++) {
 					for (int i = 0; i < objects.size(); ++i) {
 						TComponent* cRenderer = nullptr;
@@ -617,6 +618,16 @@ void CGame::Run()
 									}
 								}
 
+								for (int i = 0; i < items.size(); i++)
+								{
+									TComponent* _iRenderer = nullptr;
+									if (items[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, _iRenderer)) {
+										TTransformComponent* iRenderer = (TTransformComponent*)_iRenderer;
+
+										if (iRenderer->fPosition.x == renderer->fPosition.x && iRenderer->fPosition.z == renderer->fPosition.z)
+											items.erase(items.begin() + i);
+									}
+								}
 								objects.erase(objects.begin() + i);
 							}
 						}
@@ -790,85 +801,6 @@ void CGame::LoadObject()
 	minZ = -7.5;
 	maxZ = 15;
 
-	//for (float z = minZ; z < maxZ; z += 2.5f) {
-	//	for (float x = minX; x < maxX; x += 2.5f) {
-	//		loadInfo.position = { x, -2.5f, z };
-	//		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-	//		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
-	//		loadInfo.usedGeo = -1;
-	//		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-	//		loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-	//		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-	//		loadInfo.meshID = MODELS::CUBE;
-	//		loadInfo.LoadState = 3;
-	//		loadInfo.floor = true;
-	//		loadInfo.hasCollider = true;
-	//		loadInfo.destroyable = false;
-	//		loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
-	//		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
-	//		====== =
-				//TCollider collider = GetCenter(v_tMeshTemplates[0]);
-
-				//window data(width, height)
-				//g_pWindow->GetClientWidth(width);
-				//g_pWindow->GetClientHeight(height);
-
-				/*
-					loadInfo.destroyable = true;
-				loadInfo.item = true;
-					loadInfo.hasCollider = true;
-				loadInfo.destroyable = true;
-
-				collider.center.x = GetCenter(v_tMeshTemplates[0]).center.x + loadInfo.position.x;
-				collider.center.y = GetCenter(v_tMeshTemplates[0]).center.y + loadInfo.position.y;
-				collider.center.z = GetCenter(v_tMeshTemplates[0]).center.z + loadInfo.position.z;
-
-				loadInfo.collider.center = collider.center;
-				loadInfo.collider.extents = collider.extents;
-				loadInfo.LoadState = 3;
-				loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-
-
-
-				//collider data
-				collider = GetCenter(v_tMeshTemplates[1]);
-				collider.center.x = GetCenter(v_tMeshTemplates[1]).center.x + loadInfo.position.x;
-				collider.center.y = GetCenter(v_tMeshTemplates[1]).center.y + loadInfo.position.y;
-				collider.center.z = GetCenter(v_tMeshTemplates[1]).center.z + loadInfo.position.z;
-
-				loadInfo.collider.center = collider.center;
-				loadInfo.collider.extents = collider.extents;
-
-
-				collider.center.x = GetCenter(v_tMeshTemplates[1]).center.x + loadInfo.position.x;
-				collider.center.y = GetCenter(v_tMeshTemplates[1]).center.y + loadInfo.position.y;
-				collider.center.z = GetCenter(v_tMeshTemplates[1]).center.z + loadInfo.position.z;
-
-				loadInfo.collider.center = collider.center;
-				loadInfo.collider.extents = collider.extents;
-
-
-					//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
-
-
-				loadInfo.position = { 0.0f, 0.0f, 2.5f };
-				loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-				loadInfo.meshID = 0;
-				loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
-				loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-				loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-				loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-				loadInfo.usedGeo = -1;
-				loadInfo.LoadState = 3;
-				loadInfo.floor = false;
-				loadInfo.destroyable = true;
-				loadInfo.item = true;
-				loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
-				objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-				*/
-
-
 
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
@@ -916,11 +848,7 @@ void CGame::LoadObject()
 	}
 
 	for (float x = -7.5; x <= 7.5; x += 2.5f) {
-		//====== =
-		//	//HAY
-		//	for (float x = -7.5; x <= 7.5; x += 2.5f)
-		//	{
-		//		>>>>>> > origin / Month2 - UI
+
 		loadInfo.position = { x, 0.0f, 10 };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
@@ -1112,6 +1040,7 @@ void CGame::LoadObject()
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+
 	loadInfo.position = { 5, 0, -5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	//loadInfo.position = { 5, 0, 0 };
@@ -1132,7 +1061,6 @@ void CGame::LoadObject()
 	loadInfo.position = { -10.0f, 0, 10.0f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
-
 
 void CGame::Cleanup()
 {
@@ -1188,38 +1116,6 @@ void CGame::WindowResize() {
 
 void CGame::GamePlayLoop(double timePassed)
 {
-	//std::vector<CPlayer*> AIs;
-	//AIs.resize(v_cAI.size());
-	//std::vector<float> largest;
-	//largest.resize(v_cAI.size());
-	//std::vector<int> pToMimic;
-	//pToMimic.resize(v_cAI.size());
-	//int i = 0;
-	//for (CPlayer* currAI : v_cAI)
-	//{
-	//	AIs.at(i) = currAI;
-	//	int j = 0;
-	//	TComponent* aiComponent;
-	//	currAI->GetComponent(COMPONENT_TYPE::TRANSFORM, aiComponent);
-	//	TTransformComponent* aiTransform = (TTransformComponent*)aiComponent;
-	//	for (CPlayer* currPlayer : v_cPlayers)
-	//	{
-	//		TComponent* pComponent;
-	//		currPlayer->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
-	//		TTransformComponent* pTransform = (TTransformComponent*)pComponent;
-	//
-	//		float deltaX = aiTransform->fPosition.x - pTransform->fPosition.x;
-	//		float deltaY = aiTransform->fPosition.y - pTransform->fPosition.y;
-	//		float distance = sqrt((deltaX *deltaX) + (deltaY *deltaY));
-	//		if(!largest.at(i) || largest.at(i) < distance)
-	//		{
-	//			largest.at(i) = distance;
-	//			pToMimic.at(i) = j;
-	//		}
-	//	}
-	//	i++;
-	//}
-
 	for (CPlayer* currPlayer : v_cPlayers)
 	{
 		if (!currPlayer || !currPlayer->isAlive())
@@ -1228,11 +1124,7 @@ void CGame::GamePlayLoop(double timePassed)
 		currPlayer->GetInput();
 
 		CharacterController* cont = currPlayer->GetCharacterController();
-		//if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::HELP))
-		//{
-		//	ControlScreenToggle = !ControlScreenToggle;
-		//	isPaused = !isPaused;
-		//}
+
 		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_CONTROLLER_BUTTONS::PAUSE))
 		{
 			int previndex = menuIndex;
@@ -1244,32 +1136,6 @@ void CGame::GamePlayLoop(double timePassed)
 		}
 
 
-		/*
-
-		float isUpPressed = 0.0f, isDownPressed = 0.0f, isLeftPressed = 0.0f, isRightPressed = 0.0f, isSouthPressed = 0.0f;
-		float leftright = 0.0f, updown = 0.0f;
-		bool controllerConnected;
-
-		g_pControllerInput->IsConnected(currPlayer->GetControllerIndex(), controllerConnected);
-
-		if (controllerConnected) {
-		if (controllerConnected)
-		{
-
-			g_pControllerInput->GetState(currPlayer->GetControllerIndex(), G_DPAD_UP_BTN, isUpPressed);
-			g_pControllerInput->GetState(currPlayer->GetControllerIndex(), G_DPAD_DOWN_BTN, isDownPressed);
-			g_pControllerInput->GetState(currPlayer->GetControllerIndex(), G_DPAD_LEFT_BTN, isLeftPressed);
-			g_pControllerInput->GetState(currPlayer->GetControllerIndex(), G_DPAD_RIGHT_BTN, isRightPressed);
-			g_pControllerInput->GetState(currPlayer->GetControllerIndex(), G_SOUTH_BTN, isSouthPressed);
-
-			g_pControllerInput->GetState(currPlayer->GetControllerIndex(), G_LX_AXIS, leftright);
-			g_pControllerInput->GetState(currPlayer->GetControllerIndex(), G_LY_AXIS, updown);
-		}
-
-
-		bool canMove = true;
-		*/
-
 
 		float deltaX = 0.0f, deltaZ = 0.0f;
 
@@ -1277,34 +1143,11 @@ void CGame::GamePlayLoop(double timePassed)
 		currPlayer->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
 		TTransformComponent* pTransform = (TTransformComponent*)pComponent;
 
-		/*
-		TComponent* col = nullptr;
 
-		if (currPlayer->GetComponent(COMPONENT_TYPE::COLLIDER, col)) {
-			TColliderComponent* tCol = (TColliderComponent*)col;
-			DirectX::XMStoreFloat4(&tCol->d3dCollider.Orientation, DirectX::XMQuaternionRotationMatrix(pTransform->mObjMatrix));
-		}
-		*/
 
 		deltaX = currPlayer->GetCharacterController()->GetLeftRight() * timePassed * PLAYER_SPEED;
 		deltaZ = currPlayer->GetCharacterController()->GetUpDown() * timePassed * PLAYER_SPEED;
 
-
-		/*
-		if (isUpPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::UP).held())
-			deltaZ += timePassed * PLAYER_SPEED;
-
-		if (isDownPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::DOWN).held())
-			deltaZ -= timePassed * PLAYER_SPEED;
-
-		if (isLeftPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::LEFT).held())
-			deltaX -= timePassed * PLAYER_SPEED;
-
-		if (isRightPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::RIGHT).held())
-			deltaX += timePassed * PLAYER_SPEED;
-
-		if (deltaX != 0.0f || deltaZ != 0.0f) {
-		*/
 		if (deltaX != 0.0f || deltaZ != 0.0f)
 		{
 			currPlayer->Move(deltaX, deltaZ);
@@ -1374,7 +1217,8 @@ void CGame::GamePlayLoop(double timePassed)
 			}
 		}
 
-		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::ACTION) && !isPaused)//isSouthPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::BOMB).pressed())
+
+		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::ACTION) && !isPaused)
 		{
 			if (currPlayer->hasAvailableBombSlot())
 			{
@@ -1396,66 +1240,67 @@ void CGame::GamePlayLoop(double timePassed)
 						std::vector<CBomb*> bombs;
 
 						switch (currPlayer->GetBombType()) {
-							//case 4:
-							//	if (v_cBombs[i]) {
-							//		bombs = p_cEntityManager->DropBomb0(currPlayer);
-							//		for (int j = 0; j < bombs.size(); j++) {
-							//			v_cBombs[i + j] = bombs[j];
-							//		}
-							//	}
-							//	else {
-							//		bombs = p_cEntityManager->DropBomb0(currPlayer);
-							//		for (int j = 0; j < bombs.size(); j++) {
-							//			v_cBombs[i + j] = bombs[j];
-							//		}
-							//	}
 
-							//	break;
-							//case 1:
-							//	if (v_cBombs[i]) {
-							//		bombs = p_cEntityManager->DropBomb1(currPlayer);
-							//		for (int j = 0; j < bombs.size(); j++) {
-							//			v_cBombs[i + j] = bombs[j];
-							//		}
-							//	}
-							//	else {
-							//		bombs = p_cEntityManager->DropBomb1(currPlayer);
-							//		for (int j = 0; j < bombs.size(); j++) {
-							//			v_cBombs[i + j] = bombs[j];
-							//		}
-							//	}
+						case 4:
+							if (v_cBombs[i]) {
+								bombs = p_cEntityManager->DropBomb0(currPlayer, objects);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							}
+							else {
+								bombs = p_cEntityManager->DropBomb0(currPlayer, objects);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							}
 
-							//	break;
-							//case 2:
-							//	if (v_cBombs[i]) {
-							//		bombs = p_cEntityManager->DropBomb2(currPlayer);
-							//		for (int j = 0; j < bombs.size(); j++) {
-							//			v_cBombs[i + j] = bombs[j];
-							//		}
-							//	}
-							//	else {
-							//		bombs = p_cEntityManager->DropBomb2(currPlayer);
-							//		for (int j = 0; j < bombs.size(); j++) {
-							//			v_cBombs[i + j] = bombs[j];
-							//		}
-							//	}
+							break;
+						case 1:
+							if (v_cBombs[i]) {
+								bombs = p_cEntityManager->DropBomb1(currPlayer, objects);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							}
+							else {
+								bombs = p_cEntityManager->DropBomb1(currPlayer, objects);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							}
 
-							//	break;
-							//case 3:
-							//	if (v_cBombs[i]) {
-							//		bombs = p_cEntityManager->DropBomb3(currPlayer);
-							//		for (int j = 0; j < bombs.size(); j++) {
-							//			v_cBombs[i + j] = bombs[j];
-							//		}
-							//	}
-							//	else {
-							//		bombs = p_cEntityManager->DropBomb3(currPlayer);
-							//		for (int j = 0; j < bombs.size(); j++) {
-							//			v_cBombs[i + j] = bombs[j];
-							//		}
-							//	}
+							break;
+						case 2:
+							if (v_cBombs[i]) {
+								bombs = p_cEntityManager->DropBomb2(currPlayer, objects);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							}
+							else {
+								bombs = p_cEntityManager->DropBomb2(currPlayer, objects);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							}
 
-							//	break;
+							break;
+						case 3:
+							if (v_cBombs[i]) {
+								bombs = p_cEntityManager->DropBomb3(currPlayer, objects);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							}
+							else {
+								bombs = p_cEntityManager->DropBomb3(currPlayer, objects);
+								for (int j = 0; j < bombs.size(); j++) {
+									v_cBombs[i + j] = bombs[j];
+								}
+							}
+
+							break;
 						default:
 							if (v_cBombs[i])
 								*v_cBombs[i] = *p_cEntityManager->DropBomb(currPlayer);
@@ -1693,7 +1538,6 @@ void CGame::setGameState(int _gameState)
 		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(12.5f, 0.0f, -7.5f));
 		v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
 		v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
-
 		fMinX = -15;
 		fMaxX = 15;
 		fMinZ = -10;
@@ -1767,6 +1611,7 @@ void CGame::updateBombs(double timePassed)
 	for (int i = 0; i < explosionTimers.size(); ++i)
 	{
 		if (explosionTimers[i] >= 0.3f)
+
 		{
 			Xexplosions.erase(Xexplosions.begin() + i);
 			Zexplosions.erase(Zexplosions.begin() + i);
@@ -1787,7 +1632,8 @@ void CGame::updateBombs(double timePassed)
 
 			if (Xexplosions[i]->Collides(objects[j]) || Zexplosions[i]->Collides(objects[j])) {
 				if (objTrans->item) {
-					switch (rand() % 4) {
+
+					switch (rand() % 10) {
 					case 0:
 						items.push_back(p_cEntityManager->ItemDrop(objects[j], 1));
 						objects.erase(objects.begin() + j);
@@ -1808,16 +1654,19 @@ void CGame::updateBombs(double timePassed)
 						objects.erase(objects.begin() + j);
 						--j;
 						break;
+					default:
+						objects.erase(objects.begin() + j);
+						--j;
+						break;
+
 					}
 				}
 			}
 		}
 
-		for (CPlayer* player : v_cPlayers)
-		{
-			if (player)
-			{
 
+		for (CPlayer* player : v_cPlayers) {
+			if (player) {
 				if (Xexplosions[i]->Collides((CObject*)player) || Zexplosions[i]->Collides((CObject*)player))
 				{
 					int playerIndex = player->GetControllerIndex();
