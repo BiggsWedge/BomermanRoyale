@@ -158,12 +158,13 @@ CBomb* CEntityManager::DropBomb(CPlayer* playerSource)
 
 	return bomb;
 }
-std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource)
+std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
 	CBomb* bomb;
 	TComponent* transform;
 	TTransformComponent* cTransform;
+	TTransformComponent* oTransform;
 	playerSource->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
 	cTransform = (TTransformComponent*)transform;
 
@@ -200,7 +201,19 @@ std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource)
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
-
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
+		oTransform = (TTransformComponent*)transform;
+		if (oTransform->fPosition.y == pos.y)
+		{
+			pos.y = 2.5f;
+		}
+		else
+		{
+			pos.y = 0;
+		}
+	}
 	if (cTransform->fForwardVector.z > 0.5f)
 	{
 		pos.x += 2.5f;
@@ -328,12 +341,13 @@ std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource)
 
 	return bombs;
 }
-std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource)
+std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
 	CBomb* bomb;
 	TComponent* transform;
 	TTransformComponent* cTransform;
+	TTransformComponent* oTransform;
 	playerSource->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
 	cTransform = (TTransformComponent*)transform;
 
@@ -369,7 +383,19 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource)
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
-
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
+		oTransform = (TTransformComponent*)transform;
+		if (oTransform->fPosition.y == pos.y)
+		{
+			pos.y = 2.5f;
+		}
+		else
+		{
+			pos.y = 0;
+		}
+	}
 	if (cTransform->fForwardVector.z > 0.5f)
 	{
 		pos.x += 0;
@@ -497,12 +523,13 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource)
 
 	return bombs;
 }
-std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource)
+std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
 	CBomb* bomb;
 	TComponent* transform;
 	TTransformComponent* cTransform;
+	TTransformComponent* oTransform;
 	playerSource->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
 	cTransform = (TTransformComponent*)transform;
 
@@ -539,7 +566,19 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource)
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
-
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
+		oTransform = (TTransformComponent*)transform;
+		if (oTransform->fPosition.y == pos.y)
+		{
+			pos.y = 2.5f;
+		}
+		else
+		{
+			pos.y = 0;
+		}
+	}
 	if (cTransform->fForwardVector.z > 0.5f)
 	{
 		pos.x += 0;
@@ -667,12 +706,13 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource)
 
 	return bombs;
 }
-std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource)
+std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
 	CBomb* bomb;
 	TComponent* transform;
 	TTransformComponent* cTransform;
+	TTransformComponent* oTransform;
 	playerSource->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
 	cTransform = (TTransformComponent*)transform;
 
@@ -709,7 +749,19 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource)
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
-
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
+		oTransform = (TTransformComponent*)transform;
+		if (oTransform->fPosition.y == pos.y)
+		{
+			pos.y = 2.5f;
+		}
+		else
+		{
+			pos.y = 0;
+		}
+	}
 	if (cTransform->fForwardVector.z > 0.5f)
 	{
 		pos.x += 0;
