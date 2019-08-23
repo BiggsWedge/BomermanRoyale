@@ -19,12 +19,12 @@
 class CEntityManager
 {
 private:
-	
 
 
 
 
 public:
+	float3 bombPos1, bombPos2, bombPos3, bombPos4;
 
 	/*********************************************************
 		CreateOBJFromTemplate()			Creates a CObject from
@@ -46,10 +46,10 @@ public:
 	CItem* CreateItemFromTemplate(OBJLoadInfo loadInfo);
 
 	CBomb* DropBomb(CPlayer* playerSource);
-	CBomb* DropBomb0(CPlayer* playerSource);
-	CBomb* DropBomb1(CPlayer* playerSource);
-	CBomb* DropBomb2(CPlayer* playerSource);
-	CBomb* DropBomb3(CPlayer* playerSource);
+	std::vector<CBomb*> DropBomb0(CPlayer* playerSource, std::vector<CObject*>);
+	std::vector<CBomb*> DropBomb1(CPlayer* playerSource, std::vector<CObject*>);
+	std::vector<CBomb*> DropBomb2(CPlayer* playerSource, std::vector<CObject*>);
+	std::vector<CBomb*> DropBomb3(CPlayer* playerSource, std::vector<CObject*>);
 
 	void Cleanup();
 

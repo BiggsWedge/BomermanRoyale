@@ -20,6 +20,7 @@ struct GAME_STATE
 		BATTLE_GAME,
 		WIN_SCREEN,
 		CONTROLS_SCREEN,
+		PAUSE_MENU,
 		CREDIT_SCREEN
 	};
 };
@@ -38,9 +39,10 @@ class CGame
 	std::vector<CItem*> items;
 	std::vector<double> explosionTimers;
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
+	std::vector<CPlayer*> v_cAI = { nullptr, nullptr, nullptr, nullptr };
 
+	int maxNumBombs = 48;
 
-	int maxNumBombs = 24;
 	std::vector<CBomb*> v_cBombs;
 	CPlayer* menuBomb = nullptr;
 	int menuIndex = 0;
@@ -63,19 +65,20 @@ public:
 	//void InitSortedParticles(sorted_pool_t<particle, 1000>& sortedPool, float deltaTime);
 	void LoadAnim();
 	void LoadObject();
-	//void SpawnObject(int i, std::vector<CObject*> objects, CRendererManager* p_cRendererManager, CEntityManager* p_cEntityManager);
 
 	CGame();
-
 	~CGame();
+
 	void WindowResize();
 	void GamePlayLoop(double timePassed);
-	//void ExplodeBomb(int bombToExplodeIndex);
 	void setGameState(int _gameState);
 	void ClearPlayersAndBombs();
 	void updateBombs(double timePassed);
 	void loadMap(int index);
 	bool loadTempMenus();
 	void PlayerCollision(CPlayer* playerToCheck, CObject* cObj, float dx, float dz);
+	void PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb);
+	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer * playerToCheck);
+	void BombBombCollision(CBomb* cBomb, CBomb* cBomb2);
 };
 

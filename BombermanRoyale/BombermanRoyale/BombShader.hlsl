@@ -25,23 +25,13 @@ struct outVertex
 
 outVertex main(in inVertex input)
 {
-
     outVertex output;
-    /*
-	int t = time;
-	float ratio = time - t;
-	ratio = ratio;
-	if (ratio >= 1.0f)
-		input.position.xyz = input.position.xyz * ratio;
-	if (ratio <= 1.0f)
-    */
-
-    float ratio;
-    ratio = (((cos(time * 360.0f * (3.14f / 180.0f))) + 1.0f) / 8.0f) + 0.75f;
-    input.position.xyz = input.position.xyz * ratio;
+    float ratio = 0.0f;
+    ratio = (((cos(time * time * 4.71f) + 1.0f) / 8.0f) + 0.75);
+    output.position.xyz = input.position * ratio;
 
 
-    float4 world_position = mul(float4(input.position.xyz, 1.0f), world);
+    float4 world_position = mul(float4(output.position.xyz, 1.0f), world);
     output.position = mul(world_position, view);
     output.position = mul(output.position, projection);
 
