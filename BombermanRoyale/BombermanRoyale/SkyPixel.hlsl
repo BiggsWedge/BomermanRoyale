@@ -7,7 +7,7 @@
 *                       created for a Skybox.
 ****************************************************/
 
-texture2D Skybox : register(t0);
+Texture2D Skybox : register(t0);
 SamplerState samLine : register(s0);
 
 cbuffer PconstantBuffer : register(b0)

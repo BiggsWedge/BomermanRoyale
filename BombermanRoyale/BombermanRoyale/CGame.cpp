@@ -13,6 +13,7 @@ const char* menuSFX = ".//Assets//Music//RD_UI_Select.wav";
 const char* explosionSFX = ".//Assets//Music//RD_Bomb_Explode_02.wav";
 const char* spawnSFX = ".//Assets//Music//RD_Upgrade_Pickup_01.wav";
 const char* powerUpSFX = ".//Assets//Music//RD_Upgrade_Pickup_03.wav";
+const char* warningSFX = ".//Assets//Music//RD_Upgrade_Pickup_02.wav";
 
 struct key {
 	bool prevState = false;
@@ -78,6 +79,8 @@ bool Controller2Alive = false;
 
 bool soundplaying;
 bool soundplaying2;
+bool warningSoundPlaying = false;
+
 bool isPaused = false;
 
 static double timePassed = 0.0f;
@@ -146,6 +149,10 @@ void CGame::Run()
 	float errorCode = 0;
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer))) {
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+
+	if (G_FAIL(g_pAudioHolder->CreateSound(warningSFX, &warnSound))) {
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
 
@@ -574,7 +581,8 @@ void CGame::Run()
 
 		//RenderObjects
 
-		if (mapTime >= 40) {
+		if (mapTime >= 40) 
+		{
 			for (int i = 0; i < objects.size(); ++i) {
 				TComponent* cRenderer = nullptr;
 				TComponent* texture = nullptr;
@@ -591,8 +599,14 @@ void CGame::Run()
 					}
 				}
 			}
-
+			if (warningSoundPlaying == false)
+			{
+				warnSound->Play();
+				warningSoundPlaying = true;
+			}
+		}
 			if (mapTime >= 45) {
+				warningSoundPlaying = false;
 				for (int passes = 0; passes < 6; passes++) {
 					for (int i = 0; i < objects.size(); ++i) {
 						TComponent* cRenderer = nullptr;
@@ -643,7 +657,7 @@ void CGame::Run()
 
 				mapTime = 0;
 			}
-		}
+		
 
 		for (int i = 0; i < objects.size(); ++i) {
 			TComponent* cRenderer = nullptr;
