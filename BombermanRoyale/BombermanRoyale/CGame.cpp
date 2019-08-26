@@ -14,6 +14,8 @@ const char* explosionSFX = ".//Assets//Music//RD_Bomb_Explode_02.wav";
 const char* spawnSFX = ".//Assets//Music//RD_Upgrade_Pickup_01.wav";
 const char* powerUpSFX = ".//Assets//Music//RD_Upgrade_Pickup_03.wav";
 const char* warningSFX = ".//Assets//Music//RD_Upgrade_Pickup_02.wav";
+const char* fallingSFX = ".//Assets//Music//FallingSound.wav";
+const char* playerfallingSFX = ".//Assets//Music//PlayerFallingSound.wav";
 
 struct key {
 	bool prevState = false;
@@ -80,6 +82,7 @@ bool Controller2Alive = false;
 bool soundplaying;
 bool soundplaying2;
 bool warningSoundPlaying = false;
+bool fallingSoundPlaying = false;
 
 bool isPaused = false;
 
@@ -153,6 +156,10 @@ void CGame::Run()
 	}
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(warningSFX, &warnSound))) {
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+
+	if (G_FAIL(g_pAudioHolder->CreateSound(fallingSFX, &fallingSound))) {
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
 
@@ -581,7 +588,7 @@ void CGame::Run()
 
 		//RenderObjects
 
-		if (mapTime >= 40) 
+		if (mapTime >= 5)
 		{
 			for (int i = 0; i < objects.size(); ++i) {
 				TComponent* cRenderer = nullptr;
@@ -599,16 +606,38 @@ void CGame::Run()
 					}
 				}
 			}
+
+
 			if (warningSoundPlaying == false)
 			{
 				warnSound->Play();
 				warningSoundPlaying = true;
 			}
-		}
-			if (mapTime >= 45) {
+
+
+
+
+			if (mapTime >= 10)
+			{
 				warningSoundPlaying = false;
-				for (int passes = 0; passes < 6; passes++) {
-					for (int i = 0; i < objects.size(); ++i) {
+
+				g_pControllerInput->StartVibration(0, 0.25f, 1, 0);
+				g_pControllerInput->StartVibration(0, 0.25f, 1, 1);
+				g_pControllerInput->StartVibration(0, 0.25f, 1, 2);
+				g_pControllerInput->StartVibration(0, 0.25f, 1, 3);
+
+				if (fallingSoundPlaying == false)
+				{
+					fallingSound->Play();
+					fallingSoundPlaying = true;
+				}
+
+				
+
+				for (int passes = 0; passes < 6; passes++)
+				{
+					for (int i = 0; i < objects.size(); ++i)
+					{
 						TComponent* cRenderer = nullptr;
 						TTransformComponent* renderer = nullptr;
 
@@ -648,6 +677,7 @@ void CGame::Run()
 					}
 				}
 
+				fallingSound = false;
 				if (fMinX < -7.5) {
 					fMinX += 2.5;
 					fMinZ += 2.5;
@@ -657,8 +687,8 @@ void CGame::Run()
 
 				mapTime = 0;
 			}
-		
 
+		}
 		for (int i = 0; i < objects.size(); ++i) {
 			TComponent* cRenderer = nullptr;
 			TComponent* fRenderer = nullptr;
