@@ -15,7 +15,7 @@ const char* spawnSFX = ".//Assets//Music//RD_Upgrade_Pickup_01.wav";
 const char* powerUpSFX = ".//Assets//Music//RD_Upgrade_Pickup_03.wav";
 const char* warningSFX = ".//Assets//Music//RD_Upgrade_Pickup_02.wav";
 const char* fallingSFX = ".//Assets//Music//FallingSound.wav";
-const char* playerfallingSFX = ".//Assets//Music//PlayerFallingSound.wav";
+const char* playerfallingSFX = ".//Assets//Music//PlayerFalling.wav";
 
 struct key {
 	bool prevState = false;
@@ -83,6 +83,7 @@ bool soundplaying;
 bool soundplaying2;
 bool warningSoundPlaying = false;
 bool fallingSoundPlaying = false;
+bool playingfallingSoundPlaying = false;
 
 bool isPaused = false;
 
@@ -160,6 +161,10 @@ void CGame::Run()
 	}
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(fallingSFX, &fallingSound))) {
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+
+	if (G_FAIL(g_pAudioHolder->CreateSound(playerfallingSFX, &playerfallingSound))) {
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
 
@@ -590,6 +595,8 @@ void CGame::Run()
 
 		if (mapTime >= 5)
 		{
+			fallingSoundPlaying = false;
+
 			for (int i = 0; i < objects.size(); ++i) {
 				TComponent* cRenderer = nullptr;
 				TComponent* texture = nullptr;
@@ -620,11 +627,12 @@ void CGame::Run()
 			if (mapTime >= 10)
 			{
 				warningSoundPlaying = false;
+				fallingSoundPlaying = false;
 
 				g_pControllerInput->StartVibration(0, 0.25f, 1, 0);
-				g_pControllerInput->StartVibration(0, 0.25f, 1, 1);
+			  /*g_pControllerInput->StartVibration(0, 0.25f, 1, 1);
 				g_pControllerInput->StartVibration(0, 0.25f, 1, 2);
-				g_pControllerInput->StartVibration(0, 0.25f, 1, 3);
+				g_pControllerInput->StartVibration(0, 0.25f, 1, 3);*/
 
 				if (fallingSoundPlaying == false)
 				{
@@ -657,9 +665,16 @@ void CGame::Run()
 										TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
 										if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z)
+										{
 											player->setAlive(false);
+											
+											playerfallingSound->Play();
+										}
 									}
+									
 								}
+
+								
 
 								for (int i = 0; i < items.size(); i++)
 								{
@@ -677,7 +692,7 @@ void CGame::Run()
 					}
 				}
 
-				fallingSound = false;
+				
 				if (fMinX < -7.5) {
 					fMinX += 2.5;
 					fMinZ += 2.5;
@@ -1257,6 +1272,7 @@ void CGame::GamePlayLoop(double timePassed)
 				if (offMapTimer >= 0.25) {
 					offMapTimer = 0;
 					currPlayer->setAlive(false);
+					playerfallingSound->Play();
 				}
 			}
 		}

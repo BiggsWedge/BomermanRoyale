@@ -24,6 +24,7 @@ GSound* bombPlaceSound2;
 GSound* spawnSound2;
 GSound* warnSound;
 GSound* fallingSound;
+GSound* playerfallingSound;
 std::vector<GSound*> MenuSounds;
 std::vector<GSound*> explosionSound;
 std::vector<GSound*> bombPlaceSound;
