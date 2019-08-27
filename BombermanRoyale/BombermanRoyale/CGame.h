@@ -41,6 +41,8 @@ class CGame
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
 	std::vector<CPlayer*> v_cAI = { nullptr, nullptr, nullptr, nullptr };
 
+
+
 //<<<<<<< HEAD
 //	int maxNumBombs = 24;
 //=======
