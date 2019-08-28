@@ -11,6 +11,8 @@
 ****************************************************/
 
 #include "CEntityManager.h"
+DirectX::XMFLOAT3 bombPos1, bombPos2, bombPos3, bombPos4;
+bool pos1Full, pos2Full, pos3Full, pos4Full;
 
 CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 {
@@ -177,7 +179,8 @@ std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource, std::vector
 	if (pos.x >= 0) {
 		x = (pos.x + 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
-	} else {
+	}
+	else {
 		x = (pos.x - 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
 	}
@@ -185,10 +188,31 @@ std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource, std::vector
 	if (pos.z >= 0) {
 		z = (pos.z + 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
-	} else {
+	}
+	else {
 		z = (pos.z - 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
 	}
+
+	pos.x += 2.5f;
+	pos.y += 0;
+	pos.z += 2.5f;
+	bombPos1 = pos;
+
+	pos.y += 0;
+	pos.z += 2.5f;
+	bombPos2 = pos;
+
+
+	pos.x -= 5;
+	pos.y += 0;
+	bombPos3 = pos;
+
+
+	pos.y += 0;
+	pos.z -= 2.5f;
+	bombPos4 = pos;
+
 
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB2;
@@ -201,46 +225,63 @@ std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource, std::vector
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
+
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
 		oTransform = (TTransformComponent*)transform;
-		if (oTransform->fPosition.y == pos.y)
+		if (oTransform->fPosition.x == bombPos1.x)
 		{
-			pos.y = 2.5f;
+			if (oTransform->fPosition.z == bombPos1.z)
+			{
+				bombPos1.y = 2.5f;
+			}
 		}
-		else
+		if (oTransform->fPosition.x == bombPos2.x)
 		{
-			pos.y = 0;
+			if (oTransform->fPosition.z == bombPos2.z)
+			{
+				bombPos2.y = 2.5f;
+			}
+		}
+		if (oTransform->fPosition.x == bombPos3.x)
+		{
+			if (oTransform->fPosition.z == bombPos3.z)
+			{
+				bombPos3.y = 2.5f;
+			}
+		}
+		if (oTransform->fPosition.x == bombPos4.x)
+		{
+			if (oTransform->fPosition.z == bombPos4.z)
+			{
+				bombPos4.y = 2.5f;
+			}
 		}
 	}
+
 	if (cTransform->fForwardVector.z > 0.5f)
 	{
-		pos.x += 2.5f;
-		pos.y += 0;
-		pos.z += 2.5f;
-		loadInfo.position = pos;
+
+		loadInfo.position = bombPos1;
 		bomb = CreateBombFromTemplate(loadInfo);
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 
-		pos.y += 0;
-		pos.z += 2.5f;
-		loadInfo.position = pos;
+
+		loadInfo.position = bombPos2;
 		bomb = CreateBombFromTemplate(loadInfo);
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 
-		pos.x -= 5;
-		pos.y += 0;
-		loadInfo.position = pos;
+
+		loadInfo.position = bombPos3;
 		bomb = CreateBombFromTemplate(loadInfo);
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 
-		pos.y += 0;
-		pos.z -= 2.5f;
-		loadInfo.position = pos;
+
+		loadInfo.position = bombPos4;
 		bomb = CreateBombFromTemplate(loadInfo);
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
@@ -359,7 +400,8 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector
 	if (pos.x >= 0) {
 		x = (pos.x + 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
-	} else {
+	}
+	else {
 		x = (pos.x - 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
 	}
@@ -367,7 +409,8 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector
 	if (pos.z >= 0) {
 		z = (pos.z + 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
-	} else {
+	}
+	else {
 		z = (pos.z - 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
 	}
@@ -542,7 +585,8 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector
 	if (pos.x >= 0) {
 		x = (pos.x + 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
-	} else {
+	}
+	else {
 		x = (pos.x - 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
 	}
@@ -550,7 +594,8 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector
 	if (pos.z >= 0) {
 		z = (pos.z + 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
-	} else {
+	}
+	else {
 		z = (pos.z - 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
 	}
@@ -725,7 +770,8 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector
 	if (pos.x >= 0) {
 		x = (pos.x + 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
-	} else {
+	}
+	else {
 		x = (pos.x - 1.25f) / 2.5f;
 		pos.x = ((float)x * 2.5f);
 	}
@@ -733,7 +779,8 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector
 	if (pos.z >= 0) {
 		z = (pos.z + 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
-	} else {
+	}
+	else {
 		z = (pos.z - 1.25f) / 2.5f;
 		pos.z = ((float)z * 2.5f);
 	}
@@ -799,6 +846,7 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector
 		pos.x += 0;
 		pos.y += 0;
 		pos.z -= 5;
+		loadInfo.position = pos;
 		bomb = CreateBombFromTemplate(loadInfo);
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
@@ -961,12 +1009,12 @@ CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
 	OBJLoadInfo loadInfo;
 
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
-//<<<<<<< HEAD
-//	pos.y += 1.2;
-//=======
+	//<<<<<<< HEAD
+	//	pos.y += 1.2;
+	//=======
 	pos.y += 1.5f;
 
-//>>>>>>> origin/Month2-UI
+	//>>>>>>> origin/Month2-UI
 	loadInfo.position = pos;
 	loadInfo.forwardVec = cTransform->fForwardVector;
 	loadInfo.meshID = 0;

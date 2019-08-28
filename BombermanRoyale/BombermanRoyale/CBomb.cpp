@@ -25,6 +25,7 @@ void CBomb::Explode()
 			break;
 		}
 	}
+	//DirectX::XMMATRIX viewPos = g_d3dData->screenShake();
 	alive = false;
 
 	//timer = maxTime - 0.01f;

@@ -83,6 +83,7 @@ bool isPaused = false;
 static double timePassed = 0.0f;
 double tempTime = 0.0f;
 double mapTime = 0.0f;
+double shakeTime = 0.0f;
 double offMapTimer = 0;
 int boxDropped;
 int currLayer = 0;
@@ -122,6 +123,7 @@ bool CGame::Initialize() {
 	keyboardInputs[1].controls.resize(5);
 	keyboardInputs[1].keycodes.resize(5);
 	keyboardInputs[1].keycodes = { VK_NUMPAD5, VK_NUMPAD2, VK_NUMPAD1, VK_NUMPAD3, VK_NUMPAD6 };
+	viewPos = g_d3dData->viewMat;
 
 	v_cBombs.resize(maxNumBombs);
 	p_cRendererManager = new CRendererManager();
@@ -682,6 +684,22 @@ void CGame::Run()
 				if (renderer->iUsedLoadState == curGameState)
 					p_cRendererManager->RenderObject(items[i]);
 			}
+		}
+
+		//screenshake
+		if (bombExploded) {
+			shakeTime += timePassed;
+
+			viewPos = g_d3dData->screenShake();
+
+			if (shakeTime >= 0.5) {
+				bombExploded = false;
+			}
+		}
+
+		if (!bombExploded) {
+			g_d3dData->resetCamera();
+			shakeTime = 0;
 		}
 
 		//Render Players
@@ -1654,6 +1672,14 @@ void CGame::updateBombs(double timePassed)
 			if (v_cBombs[i]->shouldExplode())
 			{
 				v_cBombs[i]->Explode();
+				bombExploded = true;
+				/*g_d3dData->screenShakeSmaller(viewPos);
+				g_d3dData->screenShakeSmaller(viewPos);
+				g_d3dData->screenShakeSmaller(viewPos);
+				g_d3dData->screenShakeSmaller(viewPos);*/
+				//g_d3dData->resetCamera(viewPos);
+
+
 				g_pControllerInput->StartVibration(0, 0.25f, 1, v_cPlayers[0]->GetControllerIndex());
 
 				/*v_cPlayers[1]->setControllerIndex(1);

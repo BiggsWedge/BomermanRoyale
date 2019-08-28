@@ -24,7 +24,7 @@ private:
 
 
 public:
-	float3 bombPos1, bombPos2, bombPos3, bombPos4;
+
 
 	/*********************************************************
 		CreateOBJFromTemplate()			Creates a CObject from
