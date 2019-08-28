@@ -5,7 +5,7 @@
 
 #define PLAYER_SPEED 5.0f
 
-const char* backgroundMusicFilePath = ".//Assets//Music//Level_Music1.wav";
+const char* backgroundMusicFilePath = ".//Assets//Music//RushedDevelopment_BattleDemo.wav";
 const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
 const char* walkSFX = ".//Assets//Music//RD_UI_Scroll_Up.wav";
 const char* bombPlaceSFX = ".//Assets//Music//RD_UI_Scroll_Down.wav";
