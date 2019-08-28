@@ -17,6 +17,7 @@ const char* warningSFX = ".//Assets//Music//RD_Upgrade_Pickup_02.wav";
 const char* fallingSFX = ".//Assets//Music//FallingSound.wav";
 const char* playerfallingSFX = ".//Assets//Music//PlayerFalling.wav";
 const char* WinScreenSFX = ".//Assets//Music//WinScreen.wav";
+const char* DeathSFX = ".//Assets//Music//DeathSound.wav";
 
 struct key {
 	bool prevState = false;
@@ -170,6 +171,10 @@ void CGame::Run()
 	}
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(WinScreenSFX, &WinScreenSound))) {
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+
+	if (G_FAIL(g_pAudioHolder->CreateSound(DeathSFX, &DeathSound))) {
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
 
@@ -615,7 +620,7 @@ void CGame::Run()
 
 		//RenderObjects
 
-		if (mapTime >= 5)
+		if (mapTime >= 40)
 		{
 			fallingSoundPlaying = false;
 
@@ -646,7 +651,7 @@ void CGame::Run()
 
 
 
-			if (mapTime >= 10)
+			if (mapTime >= 45)
 			{
 				warningSoundPlaying = false;
 				fallingSoundPlaying = false;
@@ -1778,6 +1783,7 @@ void CGame::updateBombs(double timePassed)
 
 
 					}
+					DeathSound->Play();
 					player->setAlive(false);
 				}
 			}

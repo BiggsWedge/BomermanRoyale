@@ -26,6 +26,7 @@ GSound* warnSound;
 GSound* fallingSound;
 GSound* playerfallingSound;
 GSound* WinScreenSound;
+GSound* DeathSound;
 
 std::vector<GSound*> MenuSounds;
 std::vector<GSound*> explosionSound;
