@@ -127,6 +127,7 @@ bool CGame::Initialize() {
 	keyboardInputs[1].keycodes.resize(5);
 	keyboardInputs[1].keycodes = { VK_NUMPAD5, VK_NUMPAD2, VK_NUMPAD1, VK_NUMPAD3, VK_NUMPAD6 };
 	viewPos = g_d3dData->viewMat;
+	shakeTime = 0;
 
 	v_cBombs.resize(maxNumBombs);
 	p_cRendererManager = new CRendererManager();
@@ -1564,7 +1565,6 @@ void CGame::setGameState(int _gameState)
 	case GAME_STATE::ARCADE_GAME:
 	{
 		delete menuBomb;
-		g_d3dData->resetCamera();
 		shakeTime = 0;
 		menuBomb = nullptr;
 		LoadObject();
@@ -1637,8 +1637,12 @@ void CGame::ClearPlayersAndBombs()
 		objects[i]->Cleanup();
 	}
 	objects.clear();
+
+	for (int i = 0; i < items.size(); i++)
+	{
+		items[i]->Cleanup();
+	}
 	items.clear();
-	g_d3dData->resetCamera();
 	shakeTime = 0;
 }
 
