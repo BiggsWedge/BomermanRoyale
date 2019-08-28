@@ -41,6 +41,7 @@ class CGame
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
 	std::vector<CPlayer*> v_cAI = { nullptr, nullptr, nullptr, nullptr };
 
+
 	int maxNumBombs = 48;
 
 	std::vector<CBomb*> v_cBombs;
@@ -56,8 +57,6 @@ public:
 	void Cleanup();
 	bool FullScreen = false;
 	unsigned int curGameState = 0;
-	unsigned int width;
-	unsigned int height;
 
 	bool Initialize();
 	void Run();
@@ -80,5 +79,8 @@ public:
 	void PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb);
 	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer * playerToCheck);
 	void BombBombCollision(CBomb* cBomb, CBomb* cBomb2);
+
+	inline CPlayer* GetPlayer(int index) { if (index >= v_cPlayers.size())return nullptr; else return v_cPlayers.at(index); }
+
 };
 

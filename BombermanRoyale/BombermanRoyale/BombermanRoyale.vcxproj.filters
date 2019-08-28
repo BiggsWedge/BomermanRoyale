@@ -25,6 +25,12 @@
     <FxCompile Include="LineVertex.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="SkyPixel.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyVertex.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBomb.cpp">
@@ -117,6 +123,9 @@
     <ClCompile Include="CharacterController.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBomb.h">
@@ -159,9 +168,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Utilities.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="TObjectTemplate.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="DXTK\AlignedNew.h">
@@ -213,6 +219,9 @@
       <Filter>DirectXTK\Confirmed</Filter>
     </ClInclude>
     <ClInclude Include="WICTextureLoader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

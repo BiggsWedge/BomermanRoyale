@@ -5,8 +5,6 @@
 #include <DirectXMath.h>
 #include "DDSTextureLoader.h"
 #include <DirectXCollision.h>
-#include "SkyPixel.csh"
-#include "SkyVertex.csh"
 #include "ConstDefines.h"
 #include "../Gateware/Interface/G_Graphics/GDirectX11Surface.h"
 #include "DXTK/SpriteFont.h"
@@ -25,8 +23,8 @@ struct TBasicVertexConstBuff
 struct KeyVertex
 {
 	DirectX::XMFLOAT3 xyzw;
-	DirectX::XMFLOAT3 Normal;
-};
+	DirectX::XMFLOAT2 uv;
+}
 
 struct TBasicPixelConstBuff
 {
@@ -90,7 +88,7 @@ struct DEPTH_STENCIL_VIEW
 
 struct DEPTH_STENCIL_STATE
 {
-	enum { DEFAULT = 0, COUNT };
+	enum { DEFAULT = 0, TWO_D, COUNT };
 };
 
 struct COLLISION_LAYERS
@@ -136,19 +134,25 @@ public:
 	ID3D11RasterizerState*				d3dRasterizerState2 = nullptr;
 	ID3D11RasterizerState*				d3dRasterizerStateSKYBOX = nullptr;
 	ID3D11SamplerState*					d3dSamplerState = nullptr;
-
+	ID3D11DepthStencilState*			d3dDepthStencilState[DEPTH_STENCIL_STATE::COUNT] = {};
+	ID3D11DeviceContext*				d3dDeferredContext = nullptr;
 	ID3D11ShaderResourceView*			d3dDiffuseTextures[DIFFUSE_TEXTURES::COUNT] = {};
 
 	bool								bUseDebugRenderCamera = false;
 
 	DirectX::SpriteBatch*				d3dSpriteBatch;
 	DirectX::SpriteFont*				d3dSpriteFont;
+
+
+
+
+
 	//Skybox Stuff
-	ID3D11Texture2D			 *Jungle = nullptr;
-	ID3D11ShaderResourceView *JungleSRV = nullptr;
-	ID3D11SamplerState		*JungleSampler = nullptr;
-	ID3D11Buffer          *JungleVertexBuffer = nullptr;
-	ID3D11Buffer		  *JungleIndexBuffer = nullptr;
+	ID3D11Texture2D						*Jungle = nullptr;
+	ID3D11ShaderResourceView			*JungleSRV = nullptr;
+	ID3D11SamplerState					*JungleSampler = nullptr;
+	ID3D11Buffer						*JungleVertexBuffer = nullptr;
+	ID3D11Buffer						*JungleIndexBuffer = nullptr;
 
 	DirectX::XMMATRIX					camMat;
 	DirectX::XMMATRIX					debugCamMat;
@@ -160,9 +164,11 @@ public:
 	DirectX::XMFLOAT3					camPos;
 	DirectX::XMFLOAT3					newCamPos;
 
-	TBasicVertexConstBuff					basicConstBuff;
+	TBasicVertexConstBuff				basicConstBuff;
 
 	D3D11_VIEWPORT						d3dViewport;
+
+	DirectX::XMUINT2					windowWidthHeight;
 
 	bool Initialize();
 	DirectXData();
