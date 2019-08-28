@@ -2315,7 +2315,7 @@ void CGame::updateBombs(double timePassed)
 				bombExploded = true;
 
 			
-				if (v_cPlayers.at(0)->isAlive())
+				if (v_cPlayers.at(0) && v_cPlayers.at(0)->isAlive())
 					g_pControllerInput->StartVibration(0, 0.25f, 1, 0);
 				if (v_cPlayers.at(1) && v_cPlayers.at(1)->isAlive())
 					g_pControllerInput->StartVibration(0, 0.25f, 1, 1);
