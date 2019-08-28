@@ -48,6 +48,7 @@ class CGame
 	//CPlayer *p1 = nullptr, *p2 = nullptr;
 
 	int maxNumBombs = 48;
+	DirectX::XMMATRIX viewPos;
 	std::vector<CBomb*> v_cBombs;
 	CPlayer* menuBomb = nullptr;
 	int menuIndex = 0;
@@ -56,6 +57,7 @@ class CGame
 	double menucontroltimer = 0.0;
 	bool prevShowMouse = true;
 	bool showMouse = true;
+	bool bombExploded = false;
 
 
 public:
@@ -86,6 +88,5 @@ public:
 	void PlayerCollision(CPlayer* playerToCheck, CObject* cObj);
 	void PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb);
 	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer * playerToCheck);
-	void BombBombCollision(CBomb* cBomb, CBomb* cBomb2);
 };
 

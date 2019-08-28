@@ -155,6 +155,7 @@ public:
 	DirectX::XMMATRIX					debugCamMat;
 	DirectX::XMFLOAT3					debugCamPos;
 	DirectX::XMFLOAT2					debugCamDelta;
+	DirectX::XMFLOAT2					camDelta;
 	DirectX::XMFLOAT2					debugCursorRot;
 	DirectX::XMMATRIX					viewMat;
 	DirectX::XMMATRIX					projMat;
@@ -171,6 +172,8 @@ public:
 	void Cleanup();
 	inline void ToggleUseDebugCamera() { bUseDebugRenderCamera = !bUseDebugRenderCamera; }
 	void updateCameras();
+	DirectX::XMMATRIX screenShake();
+	void resetCamera();
 };
 
 extern DirectXData* g_d3dData;
