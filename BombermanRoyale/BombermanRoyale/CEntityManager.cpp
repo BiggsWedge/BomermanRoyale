@@ -160,6 +160,7 @@ CBomb* CEntityManager::DropBomb(CPlayer* playerSource)
 
 	return bomb;
 }
+
 std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
@@ -426,6 +427,7 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
+
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
@@ -611,6 +613,7 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
+
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
@@ -796,6 +799,7 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector
 	loadInfo.LoadState = 3;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
+
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
@@ -934,7 +938,6 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector
 		bomb->initialize(playerSource);
 		bombs.push_back(bomb);
 	}
-
 	return bombs;
 }
 void CEntityManager::Cleanup()
@@ -1009,12 +1012,9 @@ CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
 	OBJLoadInfo loadInfo;
 
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
-	//<<<<<<< HEAD
-	//	pos.y += 1.2;
-	//=======
+
 	pos.y += 1.5f;
 
-	//>>>>>>> origin/Month2-UI
 	loadInfo.position = pos;
 	loadInfo.forwardVec = cTransform->fForwardVector;
 	loadInfo.meshID = 0;
