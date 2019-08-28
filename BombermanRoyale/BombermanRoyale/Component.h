@@ -42,6 +42,7 @@ public:
 	TTransformComponent();
 	TTransformComponent(DirectX::XMFLOAT3 spawnPosition, DirectX::XMFLOAT3 forwardVector, DirectX::XMFLOAT3 scale, bool floor, bool ndestroyable, bool nitem, int nitemType, int layer);
 	~TTransformComponent();
+	void ResetMatrix();
 };
 
 struct TTextureComponent : TComponent

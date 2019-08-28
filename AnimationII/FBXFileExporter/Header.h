@@ -85,7 +85,6 @@ DirectX::XMFLOAT3 subFloat3(DirectX::XMFLOAT3 toSub, DirectX::XMFLOAT3 from)
 	return toRet;
 }
 
-
 DirectX::XMFLOAT3 NormalizeFloat3(DirectX::XMFLOAT3 toNorm)
 {
 	DirectX::XMVECTOR vec = DirectX::XMLoadFloat3(&toNorm);

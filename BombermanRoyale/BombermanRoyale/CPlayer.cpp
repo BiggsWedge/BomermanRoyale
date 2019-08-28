@@ -7,6 +7,7 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {
+	CObject::~CObject();
 }
 
 void CPlayer::resetStats()
@@ -24,4 +25,9 @@ void CPlayer::updatePlayer()
 void CPlayer::Initialize()
 {
 	controller = CharacterController();
+	if (!controller.IsControllerConnected())
+	{
+
+	}
 }
+

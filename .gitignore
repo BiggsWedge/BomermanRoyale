@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 
+#Compiled Shader Objects
+*.csh
+
 # Compiled Object files
 *.slo
 *.lo
@@ -42,5 +45,4 @@ x86
 *.opensdf
 *.user
 *.log
-BombermanRoyale/BombermanRoyale/BombPShader.csh
-BombermanRoyale/BombermanRoyale/BombShader.csh
+

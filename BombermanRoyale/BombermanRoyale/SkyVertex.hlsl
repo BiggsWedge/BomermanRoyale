@@ -18,7 +18,9 @@ struct VS_INPUT
 {
     float3 xyz : POSITION;
     float3 Norm : NORMAL;
-    float3 Tex : TEXCOORD;
+    float2 Tex : TEXCOORD;
+    uint4 joints : JOINTS;
+    float4 weights : WEIGHTS;
 };
 
 
@@ -33,10 +35,9 @@ OutputVertex main(VS_INPUT input)
 {
     OutputVertex output = (OutputVertex) 0;
 	//Fancy Stuff
-    output.xyzw = mul(float4(input.xyz, 1), World);
+    output.xyzw = mul(float4(input.xyz, 1.0f), World);
     output.xyzw = mul(output.xyzw, View);
     output.xyzw = mul(output.xyzw, Projection);
-    output.Tex = input.Tex;
     output.Tex = input.xyz;
 
     return output;

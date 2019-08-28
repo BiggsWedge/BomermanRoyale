@@ -185,7 +185,8 @@ struct bombconstbuffer
 	DirectX::XMMATRIX world;
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX projection;
-	float4 time;
+	float time;
+	DirectX::XMFLOAT3 padding;
 };
 
 struct bombpixelbuffer
@@ -262,8 +263,8 @@ struct TMeshTemplate {
 
 	AnimationClip _anim;
 
-	ID3D11Buffer* _vertexBuffer;
-	ID3D11Buffer* _indexBuffer;
+	ID3D11Buffer* _vertexBuffer = nullptr;
+	ID3D11Buffer* _indexBuffer = nullptr;
 
 	std::vector<file_path_t> filePaths;
 	std::vector<material_t> mats;
@@ -274,7 +275,7 @@ struct TMeshTemplate {
 	ID3D11Resource*				_textures[TEXTURES::COUNT];
 	ID3D11SamplerState*			_samState;
 
-	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr);
+	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr, float scale = 1.0f);
 	void initialize(ID3D11Device* _device);
 	void render(ID3D11DeviceContext* _context, double timepassed);
 	/*~TMeshTemplate();

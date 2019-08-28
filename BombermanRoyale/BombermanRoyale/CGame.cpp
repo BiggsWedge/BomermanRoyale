@@ -117,7 +117,8 @@ float isP1UDPADPressed = 0.0f;
 float isP1DDPADPressed = 0.0f;
 float isP1SouthButtonPressed = 0.0f;
 
-bool CGame::Initialize() {
+bool CGame::Initialize()
+{
 	keyboardInputs.resize(2);
 	keyboardInputs[0].controls.resize(5);
 	keyboardInputs[0].keycodes.resize(5);
@@ -187,6 +188,7 @@ void CGame::Run()
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
 	bombPlaceSound2->SetVolume(0.8f);
+
 	//for (int i = 0; i < numPlayers; ++i)
 	//{
 	//    if (walkSound.size() != numPlayers)
@@ -248,7 +250,6 @@ void CGame::Run()
 		}
 		powerUpSound.at(i)->SetVolume(0.2f);
 	}
-
 
 	p1Pause.SetButtonID(G_START_BTN);
 	p1Help.SetButtonID(G_SELECT_BTN);
@@ -326,8 +327,9 @@ void CGame::Run()
 			}
 		}
 
-		if (isPaused == true) {
-			g_pMusicStream->PauseStream();
+
+		if (isPaused == true)
+		{
 			g_pAudioHolder->PauseAll();
 			tempTime = timePassed;
 			timePassed = 0;
@@ -406,7 +408,7 @@ void CGame::Run()
 						}
 					}
 				}
-				if (menuBomb->GetCharacterController()->ButtonReleased(DEFAULT_CONTROLLER_BUTTONS::ACTION))
+				if (menuBomb->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::ACTION))
 				{
 					for (int i = 0; i < MenuSounds.size(); ++i)
 					{
@@ -634,7 +636,6 @@ void CGame::Run()
 										player->setAlive(false);
 								}
 							}
-
 							for (CPlayer* AI : v_cAI) {
 								if (!AI || !AI->isAlive())
 									continue;
@@ -698,6 +699,9 @@ void CGame::Run()
 				}
 			}
 		}
+
+
+
 		//RenderBombs
 		for (CBomb* bomb : v_cBombs) {
 			if (!bomb || !bomb->isAlive())
@@ -801,6 +805,7 @@ void CGame::Run()
 		}
 		g_d3dData->updateCameras();
 
+
 #pragma region Input
 		if (g_pInputRecord->GetState(G_KEY_SPACE, errorCode) == 1) {
 			std::cout << "SPACE WAS PRESSED, G INPUT STYLE";
@@ -812,7 +817,8 @@ void CGame::Run()
 
 #pragma endregion
 
-		if (!p_cRendererManager->Draw(timePassed, curGameState))
+
+		if (!p_cRendererManager->Draw(timePassed, curGameState, this))
 		{
 			g_pLogger->LogCatergorized("FAILURE", "Failed to draw");
 		}
@@ -847,7 +853,6 @@ void CGame::LoadObject()
 	maxX = 15;
 	minZ = -7.5;
 	maxZ = 15;
-
 
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
@@ -1062,6 +1067,8 @@ void CGame::LoadObject()
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	loadInfo.position = { -10, 0, -5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	loadInfo.position = { -10, 0, 10 };
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { -5, 0, -5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -1112,6 +1119,8 @@ void CGame::LoadObject()
 void CGame::Cleanup()
 {
 	delete p_cEntityManager;
+	delete menuBomb;
+	menuBomb = nullptr;
 	p_cEntityManager = nullptr;
 	delete p_cRendererManager;
 	p_cRendererManager = nullptr;
@@ -1131,11 +1140,42 @@ void CGame::Cleanup()
 
 	for (CObject* object : menuObjects)
 	{
-		object->Cleanup();
-		delete object;
+		if (object)
+			delete object;
 		object = nullptr;
 	}
 	menuObjects.clear();
+
+	for (CBomb* bomb : v_cBombs)
+	{
+		if (bomb)
+			delete bomb;
+		bomb = nullptr;
+	}
+	v_cBombs.clear();
+	for (CPlayer* player : v_cPlayers)
+	{
+		if (player)
+			delete player;
+		player = nullptr;
+	}
+	v_cPlayers.clear();
+	for (CObject* exp : Xexplosions)
+	{
+		if (exp)
+			delete exp;
+		exp = nullptr;
+	}
+	Xexplosions.clear();
+	for (CObject* exp : Zexplosions)
+	{
+		if (exp)
+			delete exp;
+		exp = nullptr;
+	}
+	Zexplosions.clear();
+	explosionTimers.clear();
+
 }
 
 CGame::CGame()
@@ -1143,22 +1183,27 @@ CGame::CGame()
 
 }
 
-CGame::~CGame() {
+CGame::~CGame()
+{
 	delete p_cRendererManager;
 }
 
 
 void CGame::WindowResize() {
-	g_pWindow->GetClientWidth(width);
-	g_pWindow->GetClientHeight(height);
-	g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(30), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+
+	g_pWindow->GetClientWidth(g_d3dData->windowWidthHeight.x);
+	g_pWindow->GetClientHeight(g_d3dData->windowWidthHeight.y);
+
+	g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(30), static_cast<float>(g_d3dData->windowWidthHeight.x) / static_cast<float>(g_d3dData->windowWidthHeight.y), 0.1f, 100.0f);
 	GW::SYSTEM::GWindowStyle style = (FullScreen) ? GW::SYSTEM::GWindowStyle::FULLSCREENBORDERLESS : GW::SYSTEM::GWindowStyle::WINDOWEDBORDERED;
 	g_pWindow->ChangeWindowStyle(style);
-	g_pWindow->GetClientWidth(width);
-	g_pWindow->GetClientHeight(height);
-	g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(30), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
-	g_d3dData->d3dViewport.Height = static_cast<float>(height);
-	g_d3dData->d3dViewport.Width = static_cast<float>(width);
+
+	g_pWindow->GetClientWidth(g_d3dData->windowWidthHeight.x);
+	g_pWindow->GetClientHeight(g_d3dData->windowWidthHeight.y);
+
+	g_d3dData->projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(30), static_cast<float>(g_d3dData->windowWidthHeight.x) / static_cast<float>(g_d3dData->windowWidthHeight.y), 0.1f, 100.0f);
+	g_d3dData->d3dViewport.Width = static_cast<float>(g_d3dData->windowWidthHeight.x);
+	g_d3dData->d3dViewport.Height = static_cast<float>(g_d3dData->windowWidthHeight.y);
 }
 
 void CGame::GamePlayLoop(double timePassed)
@@ -1682,6 +1727,14 @@ void CGame::GamePlayLoop(double timePassed)
 		currPlayer->GetInput();
 
 		CharacterController* cont = currPlayer->GetCharacterController();
+		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::PAUSE))
+		{
+			setGameState(GAME_STATE::MAIN_MENU);
+			return;
+		}
+
+		float deltaX = 0.0f, deltaZ = 0.0f;
+		/*
 
 		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_CONTROLLER_BUTTONS::PAUSE))
 		{
@@ -1695,17 +1748,50 @@ void CGame::GamePlayLoop(double timePassed)
 
 
 
-		float deltaX = 0.0f, deltaZ = 0.0f;
 
 		TComponent* pComponent;
 		currPlayer->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
 		TTransformComponent* pTransform = (TTransformComponent*)pComponent;
 
+		/*
+		TComponent* col = nullptr;
+		if (currPlayer->GetComponent(COMPONENT_TYPE::COLLIDER, col))
+		{
+			TColliderComponent* tCol = (TColliderComponent*)col;
+			DirectX::XMStoreFloat4(&tCol->d3dCollider.Orientation, DirectX::XMQuaternionRotationMatrix(pTransform->mObjMatrix));
+		}
+		*/
+		if (cont->IsControllerConnected())
+		{
+			deltaX = cont->GetLeftRight() * timePassed * PLAYER_SPEED;
+			deltaZ = cont->GetUpDown() * timePassed * PLAYER_SPEED;
+		}
+		else
+		{
+			if (cont->ButtonHeld(DEFAULT_BUTTONS::LEFT))
+				deltaX -= 1.0f * timePassed	 * PLAYER_SPEED;
+			if (cont->ButtonHeld(DEFAULT_BUTTONS::RIGHT))
+				deltaX += 1.0f * timePassed * PLAYER_SPEED;
+			if (cont->ButtonHeld(DEFAULT_BUTTONS::UP))
+				deltaZ += 1.0f * timePassed * PLAYER_SPEED;
+			if (cont->ButtonHeld(DEFAULT_BUTTONS::DOWN))
+				deltaZ -= 1.0f * timePassed * PLAYER_SPEED;
+		}
 
 
-		deltaX = currPlayer->GetCharacterController()->GetLeftRight() * timePassed * PLAYER_SPEED;
-		deltaZ = currPlayer->GetCharacterController()->GetUpDown() * timePassed * PLAYER_SPEED;
+		/*
+		if (isUpPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::UP).held())
+			deltaZ += timePassed * PLAYER_SPEED;
 
+		if (isDownPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::DOWN).held())
+			deltaZ -= timePassed * PLAYER_SPEED;
+
+		if (isLeftPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::LEFT).held())
+			deltaX -= timePassed * PLAYER_SPEED;
+
+		if (isRightPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::RIGHT).held())
+			deltaX += timePassed * PLAYER_SPEED;
+		*/
 		if (deltaX != 0.0f || deltaZ != 0.0f)
 		{
 			currPlayer->Move(deltaX, deltaZ);
@@ -1719,23 +1805,18 @@ void CGame::GamePlayLoop(double timePassed)
 			}
 		}
 
-
 		for (CObject* cObj : objects) {
 			if (currPlayer->Collides(cObj))
-				PlayerCollision(currPlayer, cObj);
+				PlayerCollision(currPlayer, cObj, deltaX, deltaZ);
 		}
-
 		TComponent* _prenderer = nullptr;
 		TComponent* _brenderer = nullptr;
-
-		for (CBomb* bomb : v_cBombs) {
-			if (bomb && bomb->isAlive()) {
-				if (bomb->getTimer() >= 0.7f) {
-					if (currPlayer->Collides(bomb)) {
-						PlayerBombCollision(currPlayer, bomb);
-					}
-				}
-			}
+		for (CBomb* bomb : v_cBombs)
+		{
+			if (bomb && bomb->isAlive())
+				//if(bomb->getTimer() >= 0.7f)
+				if (currPlayer->Collides(bomb))
+					PlayerCollision(currPlayer, (CObject*)bomb, deltaX, deltaZ);
 		}
 		int bombindex = 0;
 		for (CBomb* bomb : v_cBombs)
@@ -1787,7 +1868,8 @@ void CGame::GamePlayLoop(double timePassed)
 				{
 					currPlayer->incNumBombs();
 				}
-
+				delete items[i];
+				items[i] = nullptr;
 				items.erase(items.begin() + i);
 				--i;
 			}
@@ -1808,7 +1890,7 @@ void CGame::GamePlayLoop(double timePassed)
 		}
 
 
-		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_CONTROLLER_BUTTONS::ACTION) && !isPaused)
+		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_BUTTONS::ACTION) && !isPaused)
 		{
 			if (currPlayer->hasAvailableBombSlot())
 			{
@@ -1945,7 +2027,7 @@ void CGame::GamePlayLoop(double timePassed)
 
 				}
 			}
-			if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_CONTROLLER_BUTTONS::ACTION))
+			if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::ACTION))
 			{
 				//for (int i = 0; i < MenuSounds.size(); ++i)
 				//{
@@ -2146,6 +2228,7 @@ void CGame::setGameState(int _gameState)
 		if (!soundplaying)
 			spawnSound2->Play();
 
+		v_cBombs.resize(maxNumBombs);
 		break;
 	}
 	case GAME_STATE::WIN_SCREEN:
@@ -2176,6 +2259,16 @@ void CGame::ClearPlayersAndBombs()
 			delete v_cPlayers[i];
 			v_cPlayers[i] = nullptr;
 		}
+	for (CBomb* bomb : v_cBombs)
+	{
+		if (bomb)
+			delete bomb;
+		bomb = nullptr;
+	}
+
+	v_cBombs.clear();
+
+
 	for (int i = 0; i < v_cAI.size(); ++i)
 		if (v_cAI[i])
 		{
@@ -2184,16 +2277,34 @@ void CGame::ClearPlayersAndBombs()
 			v_cAI[i] = nullptr;
 		}
 
-	v_cBombs.clear();
-	v_cBombs.resize(maxNumBombs);
+
+	for (CObject* object : objects)
+	{
+		if (object)
+			delete object;
+		object = nullptr;
+	}
+	for (CObject* exp : Xexplosions)
+	{
+		if (exp)
+			delete exp;
+		exp = nullptr;
+	}
 	Xexplosions.clear();
+	for (CObject* exp : Zexplosions)
+	{
+		if (exp)
+			delete exp;
+		exp = nullptr;
+	}
+	for (CItem* item : items)
+	{
+		if (item)
+			delete item;
+		item = nullptr;
+	}
 	Zexplosions.clear();
 	explosionTimers.clear();
-
-	for (int i = 0; i < objects.size(); i++)
-	{
-		objects[i]->Cleanup();
-	}
 	objects.clear();
 	items.clear();
 	g_d3dData->resetCamera();
@@ -2205,9 +2316,10 @@ void CGame::updateBombs(double timePassed)
 	for (int i = 0; i < explosionTimers.size(); ++i)
 	{
 		if (explosionTimers[i] >= 0.3f)
-
 		{
+			delete Xexplosions[i];
 			Xexplosions.erase(Xexplosions.begin() + i);
+			delete Zexplosions[i];
 			Zexplosions.erase(Zexplosions.begin() + i);
 			explosionTimers.erase(explosionTimers.begin() + i);
 			--i;
@@ -2354,7 +2466,7 @@ bool CGame::loadTempMenus() {
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.forwardVec = { 0.0f, 1.1f, -1.0f };
-
+	/*
 	loadInfo.position = { 0.0f, 2.5f, 18.6f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::NAMES_HUD;
@@ -2363,6 +2475,7 @@ bool CGame::loadTempMenus() {
 	loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+	*/
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::MAIN_MENU;
@@ -2422,7 +2535,8 @@ bool CGame::loadTempMenus() {
 	return true;
 }
 
-void CGame::PlayerCollision(CPlayer * playerToCheck, CObject* cObj) {
+void CGame::PlayerCollision(CPlayer * playerToCheck, CObject* cObj, float dx, float dz)
+{
 	TComponent* comp = nullptr;
 	TColliderComponent* pCollider;
 	playerToCheck->GetComponent(COMPONENT_TYPE::COLLIDER, comp);
@@ -2451,14 +2565,28 @@ void CGame::PlayerCollision(CPlayer * playerToCheck, CObject* cObj) {
 	mX = pCollider->d3dCollider.Extents.x + objCollider->d3dCollider.Extents.x;
 	mZ = pCollider->d3dCollider.Extents.z + objCollider->d3dCollider.Extents.z;
 
+
+	TTransformComponent* pTrans = nullptr;
+	if (playerToCheck->GetComponent(COMPONENT_TYPE::TRANSFORM, comp))
+		pTrans = (TTransformComponent*)comp;
+
 	if (zD < mZ && zD > mZ - 0.2)
 	{
-		playerToCheck->Move(0, ((mZ - zD) + 0.1f) * (float)upDown);
+		pTrans->fPosition.z += ((mZ - zD) + 0.1f) *(float)upDown;
+		pCollider->d3dCollider.Center.z += ((mZ - zD) + 0.1f) *(float)upDown;
+		//playerToCheck->Move(0, ((mZ - zD) + 0.1f) * (float)upDown);
 	}
 	else if (xD < mX && xD > mX - 0.2)
 	{
-		playerToCheck->Move(((mX - xD) + 0.1f) * (float)leftRight, 0);
+
+		pTrans->fPosition.x += ((mX - xD)) *(float)leftRight;
+		pCollider->d3dCollider.Center.x += ((mX - xD)) *(float)leftRight;
+		//playerToCheck->Move(((mX - xD) + 0.1f) * (float)leftRight, 0);
 	}
+
+	pTrans->mObjMatrix.r[3] = DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 1.0f };
+	pTrans->mObjMatrix *= DirectX::XMMatrixTranslation(pTrans->fPosition.x, pTrans->fPosition.y, pTrans->fPosition.z);
+	//pTrans->ResetMatrix();
 }
 
 void CGame::PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb) {

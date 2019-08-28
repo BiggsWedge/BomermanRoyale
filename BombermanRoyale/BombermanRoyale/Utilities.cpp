@@ -538,7 +538,7 @@ void GetCorners(float3 _center, float3 _extents, float3*& corners)
 	corners[7] = { corners[1].x,corners[1].y,corners[0].z };
 }
 
-void TMeshTemplate::loadModel(const char* modelFile, const char* matFile, const char* animFile)
+void TMeshTemplate::loadModel(const char* modelFile, const char* matFile, const char* animFile, float scale)
 {
 	using namespace DirectX;
 	if (modelFile)
@@ -566,7 +566,9 @@ void TMeshTemplate::loadModel(const char* modelFile, const char* matFile, const 
 
 		for (auto& v : v_tVertices)
 		{
-			v.fPosition.x = v.fPosition.x;
+			//v.fPosition.x *= scale;
+			//v.fPosition.y *= scale;
+			//v.fPosition.z *= scale;
 		}
 	}
 
@@ -839,8 +841,6 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 	//MatBuffer mat;
 	//mat.material = _mat;
 
-
-
 	debugConstBuff.world = DirectX::XMMatrixIdentity();
 	debugConstBuff.world = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
 	debugConstBuff.world = debugConstBuff.world * DirectX::XMMatrixTranslation(6.0f, 0.0f, 0.0f);
@@ -849,6 +849,7 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 	_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MVP_t], 0, nullptr, &debugConstBuff, 0, 0);
+	_context->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MVP_t]);
 
 	_context->IASetInputLayout(g_d3dData->d3dInputLayout[INPUT_LAYOUT::BASIC]);
 
@@ -979,6 +980,11 @@ void CleanGlobals()
 	//	}
 	//
 	//}
+	for (TMeshTemplate temp : v_tMeshTemplates)
+	{
+		SAFE_RELEASE(temp._indexBuffer);
+		SAFE_RELEASE(temp._vertexBuffer)
+	}
 	v_tMeshTemplates.clear();
 	g_d3dData->Cleanup();
 	delete g_d3dData;
