@@ -41,13 +41,13 @@ class CGame
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
 	std::vector<CPlayer*> v_cAI = { nullptr, nullptr, nullptr, nullptr };
 
-//<<<<<<< HEAD
-//	int maxNumBombs = 24;
-//=======
+
+
+
+	//int maxNumBombs = 24;
 	//CPlayer *p1 = nullptr, *p2 = nullptr;
 
 	int maxNumBombs = 48;
-//>>>>>>> origin/Month2-UI
 	DirectX::XMMATRIX viewPos;
 	std::vector<CBomb*> v_cBombs;
 	CPlayer* menuBomb = nullptr;
@@ -69,12 +69,10 @@ public:
 
 	bool Initialize();
 	void Run();
-//<<<<<<< HEAD
-//=======
+
 	//void InitFreeParticles(emitter& emitter, pool_t<particle, 1024>& freePool, float deltaTime);
 	//void InitSortedParticles(sorted_pool_t<particle, 1000>& sortedPool, float deltaTime);
 	void LoadAnim();
-//>>>>>>> origin/Month2-UI
 	void LoadObject();
 
 	CGame();
