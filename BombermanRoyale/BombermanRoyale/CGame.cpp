@@ -1395,10 +1395,10 @@ void CGame::GamePlayLoop(double timePassed)
 			z = abs(fMaxZ - AITransform->fPosition.z) / 2.5f;
 			if (dec > 0.0f)
 				z = abs(fMaxZ - AITransform->fPosition.z + 2.5f) / 2.5f;
-			
-			
+
+
 		}
-		
+
 		bool breakout = false;
 		int gridlocation = (z * width) + x;
 
@@ -1494,7 +1494,7 @@ void CGame::GamePlayLoop(double timePassed)
 									dZ = 2;
 									gridcheck = 5;
 									break;
-									
+
 									//for (int dZ = -1; dZ <= 1; ++dZ)
 									//{
 									//	for (int dX = -1; dX <= 1; ++dX)
@@ -1662,7 +1662,7 @@ void CGame::GamePlayLoop(double timePassed)
 
 		for (CObject* cObj : objects) {
 			if (currAI->Collides(cObj))
-				PlayerCollision(currAI, cObj);
+				PlayerCollision(currAI, cObj, deltaX, deltaZ);
 		}
 
 		TComponent* _prenderer = nullptr;
@@ -1727,16 +1727,10 @@ void CGame::GamePlayLoop(double timePassed)
 		currPlayer->GetInput();
 
 		CharacterController* cont = currPlayer->GetCharacterController();
-		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::PAUSE))
-		{
-			setGameState(GAME_STATE::MAIN_MENU);
-			return;
-		}
-
+		
 		float deltaX = 0.0f, deltaZ = 0.0f;
-		/*
 
-		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_CONTROLLER_BUTTONS::PAUSE))
+		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::PAUSE))
 		{
 			int previndex = menuIndex;
 			menuIndex = 0;
@@ -1745,6 +1739,7 @@ void CGame::GamePlayLoop(double timePassed)
 			PauseMenuToggle = !PauseMenuToggle;
 			isPaused = !isPaused;
 		}
+		/*
 
 
 
@@ -2212,13 +2207,13 @@ void CGame::setGameState(int _gameState)
 		//v_cAI[0] = p_cEntityManager->InstantiatePlayer(1, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
 		v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
 		//v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
-		v_cAI[1] = p_cEntityManager->InstantiatePlayer(2, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
+		v_cAI[0] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
 		fMinX = -15;
 		fMaxX = 15;
 		fMinZ = -10;
 		fMaxZ = 15;
 		mapTime = 0;
-		
+
 
 		spawnSound1->isSoundPlaying(soundplaying);
 		if (!soundplaying)
@@ -2426,7 +2421,7 @@ void CGame::updateBombs(double timePassed)
 				v_cBombs[i]->Explode();
 				bombExploded = true;
 
-			
+
 				if (v_cPlayers.at(0) && v_cPlayers.at(0)->isAlive())
 					g_pControllerInput->StartVibration(0, 0.25f, 1, 0);
 				if (v_cPlayers.at(1) && v_cPlayers.at(1)->isAlive())

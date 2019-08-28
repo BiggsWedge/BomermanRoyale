@@ -81,5 +81,6 @@ public:
 	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer * playerToCheck);
 
 	inline CPlayer* GetPlayer(int index) { if (index >= v_cPlayers.size())return nullptr; else return v_cPlayers.at(index); }
+	inline CPlayer* GetAI(int index) { if (index >= v_cAI.size()) return nullptr; else return v_cAI.at(index); }
 };
 

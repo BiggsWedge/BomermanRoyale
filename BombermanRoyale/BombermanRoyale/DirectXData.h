@@ -24,7 +24,7 @@ struct KeyVertex
 {
 	DirectX::XMFLOAT3 xyzw;
 	DirectX::XMFLOAT2 uv;
-}
+};
 
 struct TBasicPixelConstBuff
 {
