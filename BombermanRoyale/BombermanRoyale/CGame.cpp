@@ -740,13 +740,13 @@ void CGame::Run()
 
 			if (shakeTime >= 0.5) {
 				bombExploded = false;
+				if (!bombExploded) {
+					g_d3dData->resetCamera();
+					shakeTime = 0;
+				}
 			}
 		}
 
-		if (!bombExploded) {
-			g_d3dData->resetCamera();
-			shakeTime = 0;
-		}
 
 		//Render Players
 		for (CPlayer* player : v_cPlayers) {
@@ -1564,6 +1564,8 @@ void CGame::setGameState(int _gameState)
 	case GAME_STATE::ARCADE_GAME:
 	{
 		delete menuBomb;
+		g_d3dData->resetCamera();
+		shakeTime = 0;
 		menuBomb = nullptr;
 		LoadObject();
 		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-12.5f, 0.0f, 12.5f));
@@ -1636,6 +1638,8 @@ void CGame::ClearPlayersAndBombs()
 	}
 	objects.clear();
 	items.clear();
+	g_d3dData->resetCamera();
+	shakeTime = 0;
 }
 
 void CGame::updateBombs(double timePassed)
@@ -1828,8 +1832,6 @@ bool CGame::loadTempMenus() {
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::WIN_SCREEN;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
-
 
 	loadInfo.position = { 0.0f, 20.5f, -9.5f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
