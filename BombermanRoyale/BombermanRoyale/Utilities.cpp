@@ -25,6 +25,8 @@ GSound* spawnSound2;
 GSound* warnSound;
 GSound* fallingSound;
 GSound* playerfallingSound;
+GSound* WinScreenSound;
+
 std::vector<GSound*> MenuSounds;
 std::vector<GSound*> explosionSound;
 std::vector<GSound*> bombPlaceSound;
@@ -994,4 +996,5 @@ void CleanGlobals()
 
 	GW_SAFE_RELEASE(g_pLogger);
 }
+
 

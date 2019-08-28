@@ -16,6 +16,7 @@ const char* powerUpSFX = ".//Assets//Music//RD_Upgrade_Pickup_03.wav";
 const char* warningSFX = ".//Assets//Music//RD_Upgrade_Pickup_02.wav";
 const char* fallingSFX = ".//Assets//Music//FallingSound.wav";
 const char* playerfallingSFX = ".//Assets//Music//PlayerFalling.wav";
+const char* WinScreenSFX = ".//Assets//Music//WinScreen.wav";
 
 struct key {
 	bool prevState = false;
@@ -165,6 +166,10 @@ void CGame::Run()
 	}
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(playerfallingSFX, &playerfallingSound))) {
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
+	}
+
+	if (G_FAIL(g_pAudioHolder->CreateSound(WinScreenSFX, &WinScreenSound))) {
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
 	}
 
@@ -559,13 +564,30 @@ void CGame::Run()
 							}
 						}
 						if (winner == 0)
+						{
 							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::PLAYER_1_WIN;
+							WinScreenSound->Play();
+						}
 						else if (winner == 1)
+						{
 							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::PLAYER_2_WIN;
+							WinScreenSound->Play();
+						}
 						else if (winner == 2)
+						{
 							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::PLAYER_3_WIN;
-						else
+							WinScreenSound->Play();
+						}
+						else if (winner == 3)
+						{
 							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::PLAYER_4_WIN;
+							WinScreenSound->Play();
+						}
+						else
+						{
+							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::DRAW_SCREEN;
+							WinScreenSound->Play();
+						}
 					}
 				}
 				setGameState(GAME_STATE::WIN_SCREEN);
@@ -630,9 +652,9 @@ void CGame::Run()
 				fallingSoundPlaying = false;
 
 				g_pControllerInput->StartVibration(0, 0.25f, 1, 0);
-			  /*g_pControllerInput->StartVibration(0, 0.25f, 1, 1);
+				g_pControllerInput->StartVibration(0, 0.25f, 1, 1);
 				g_pControllerInput->StartVibration(0, 0.25f, 1, 2);
-				g_pControllerInput->StartVibration(0, 0.25f, 1, 3);*/
+				g_pControllerInput->StartVibration(0, 0.25f, 1, 3);
 
 				if (fallingSoundPlaying == false)
 				{
