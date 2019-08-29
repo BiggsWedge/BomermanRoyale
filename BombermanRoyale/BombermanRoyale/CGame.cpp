@@ -573,8 +573,8 @@ void CGame::Run()
 									break;
 								}
 							}
-								winner++;
-							
+							winner++;
+
 						}
 						if (winner == 0)
 						{
@@ -1503,53 +1503,52 @@ void CGame::GamePlayLoop(double timePassed)
 		bool breakout = false;
 		int gridlocation = (z * width) + x;
 
-		if (gridlocation < GRID.size())
-		{
-			if (GRID.at(gridlocation) == GRID_SYSTEM::BOMB)
-			{
-				int tile = GRID[gridlocation];
 
-				currAI->Move(((x / ((width - 1) / 2)) - 1) * timePassed * PLAYER_SPEED, ((z / ((height - 1) / 2)) - 1) * timePassed * PLAYER_SPEED);
-				//for (int dZ = -1; dZ <= 1; dZ+=2)
-				//{
-				//	for (int dX = -1; dX <= 1; dX +=2)
-				//	{
-				//		bool zbounds = true;
-				//		bool xbounds = true;
-				//		int zchange;
-				//		int xchange;
-				//		zchange = z + dZ;
-				//		xchange = x + dX;
-				//
-				//		if (zchange < 0 || zchange > height - 1)
-				//		{
-				//			zbounds = false;
-				//			zchange = z;
-				//		}
-				//
-				//		if (xchange < 0 || xchange > width - 1)
-				//		{
-				//			xbounds = false;
-				//			xchange = x;
-				//		}
-				//		if (tile == GRID_SYSTEM::FREE)
-				//		{
-				//
-				//			deltaX = timePassed * PLAYER_SPEED * -dX;
-				//			deltaZ = timePassed * PLAYER_SPEED * -dZ;
-				//			currAI->Move(deltaX, deltaZ);
-				//			dZ = 2;
-				//			break;
-				//		}
-				//	}
-				//}
-			}
+		if (GRID.at(gridlocation) == GRID_SYSTEM::BOMB)
+		{
+			int tile = GRID[gridlocation];
+
+			currAI->Move(((x / ((width - 1) / 2)) - 1) * timePassed * PLAYER_SPEED, ((z / ((height - 1) / 2)) - 1) * timePassed * PLAYER_SPEED);
+			//for (int dZ = -1; dZ <= 1; dZ+=2)
+			//{
+			//	for (int dX = -1; dX <= 1; dX +=2)
+			//	{
+			//		bool zbounds = true;
+			//		bool xbounds = true;
+			//		int zchange;
+			//		int xchange;
+			//		zchange = z + dZ;
+			//		xchange = x + dX;
+			//
+			//		if (zchange < 0 || zchange > height - 1)
+			//		{
+			//			zbounds = false;
+			//			zchange = z;
+			//		}
+			//
+			//		if (xchange < 0 || xchange > width - 1)
+			//		{
+			//			xbounds = false;
+			//			xchange = x;
+			//		}
+			//		if (tile == GRID_SYSTEM::FREE)
+			//		{
+			//
+			//			deltaX = timePassed * PLAYER_SPEED * -dX;
+			//			deltaZ = timePassed * PLAYER_SPEED * -dZ;
+			//			currAI->Move(deltaX, deltaZ);
+			//			dZ = 2;
+			//			break;
+			//		}
+			//	}
+			//}
 		}
+
 		else
 		{
 			for (int gridcheck = 0; gridcheck < 5; gridcheck++)
 			{
-				for (int dZ = 1; dZ >= -1; --dZ)
+				for (int dZ = -1; dZ <= 1; ++dZ)
 				{
 					for (int dX = -1; dX <= 1; ++dX)
 					{
@@ -1587,7 +1586,7 @@ void CGame::GamePlayLoop(double timePassed)
 							int tile = GRID[gridlocation];
 							if (gridcheck == 0)
 							{
-								if (tile == GRID_SYSTEM::BOMB && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+								if (tile == GRID_SYSTEM::BOMB/* && (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
 								{
 									deltaX = timePassed * PLAYER_SPEED * xchange;
 									deltaZ = timePassed * PLAYER_SPEED * zchange;
@@ -1744,7 +1743,7 @@ void CGame::GamePlayLoop(double timePassed)
 							//}
 							if (gridcheck == 2)
 							{
-								if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+								if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
 								{
 
 									deltaX = timePassed * PLAYER_SPEED * -xchange;
