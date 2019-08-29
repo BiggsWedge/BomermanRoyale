@@ -5,7 +5,7 @@ using namespace GW;
 using namespace SYSTEM;
 using namespace AUDIO;
 
-constexpr size_t MAX_LINE_VERTS = 4096;
+constexpr size_t MAX_LINE_VERTS = 10000;
 
 size_t line_vert_count = 0;
 std::array< TLineVertex, MAX_LINE_VERTS> line_verts;

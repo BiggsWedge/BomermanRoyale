@@ -137,6 +137,7 @@
     <ClCompile Include="CRendererManager.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
+    <ClCompile Include="XTime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBomb.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="TObjectTemplate.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="WICTextureLoader.h" />
+    <ClInclude Include="XTime.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="AnimPixel.hlsl">
