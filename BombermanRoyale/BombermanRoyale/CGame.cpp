@@ -566,12 +566,15 @@ void CGame::Run()
 					{
 						for (CPlayer* player : v_cPlayers)
 						{
-
-							if (player->isAlive())
+							if (player != NULL)
 							{
-								break;
+								if (player->isAlive())
+								{
+									break;
+								}
 							}
-							winner++;
+								winner++;
+							
 						}
 						if (winner == 0)
 						{
@@ -645,13 +648,14 @@ void CGame::Run()
 					}
 				}
 			}
+			if (warningSoundPlaying == false)
+			{
+				warnSound->Play();
+				warningSoundPlaying = true;
+			}
 		}
 
-		if (warningSoundPlaying == false)
-		{
-			warnSound->Play();
-			warningSoundPlaying = true;
-		}
+		
 		//}
 		//if (mapTime >= 45) {
 		//	warningSoundPlaying = false;
