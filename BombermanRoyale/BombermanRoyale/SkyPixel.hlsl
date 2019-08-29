@@ -13,8 +13,7 @@ SamplerState samLine : register(s0);
 struct PS_INPUT
 {
     float4 Pos : SV_POSITION;
-    float3 Norm : NORMAL;
-    float2 Tex : TEXCOORD;
+    float3 Tex : TEXCOORD;
 };
 
 

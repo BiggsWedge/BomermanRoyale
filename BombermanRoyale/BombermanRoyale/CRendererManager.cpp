@@ -70,7 +70,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	}
 
 
-	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState);
+	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::DEFAULT]);
 	/*********DRAW OTHER STUFF HERE************/
 	//if(gamestate == 3)
 	//	v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext, timepassed);

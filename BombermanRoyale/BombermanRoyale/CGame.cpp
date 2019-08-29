@@ -607,14 +607,18 @@ void CGame::Run()
 				warningSoundPlaying = true;
 			}
 		}
-		if (mapTime >= 45) {
+		if (mapTime >= 45) 
+		{
 			warningSoundPlaying = false;
-			for (int passes = 0; passes < 6; passes++) {
-				for (int i = 0; i < objects.size(); ++i) {
+			for (int passes = 0; passes < 6; passes++) 
+			{
+				for (int i = 0; i < objects.size(); ++i) 
+				{
 					TComponent* cRenderer = nullptr;
 					TTransformComponent* renderer = nullptr;
 
-					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer)) {
+					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer)) 
+					{
 						renderer = (TTransformComponent*)cRenderer;
 
 						if (renderer->fPosition.x == fMinX || renderer->fPosition.z == fMinZ || renderer->fPosition.x == fMaxX || renderer->fPosition.z == fMaxZ) {
