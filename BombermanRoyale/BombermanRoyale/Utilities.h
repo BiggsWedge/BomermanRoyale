@@ -36,6 +36,11 @@ extern GW::AUDIO::GSound* spawnSound1;
 extern GW::AUDIO::GSound* bombPlaceSound2;
 extern GW::AUDIO::GSound* spawnSound2;
 extern GW::AUDIO::GSound* warnSound;
+extern GW::AUDIO::GSound* fallingSound;
+extern GW::AUDIO::GSound* playerfallingSound;
+extern GW::AUDIO::GSound* WinScreenSound;
+extern GW::AUDIO::GSound* DeathSound;
+
 extern std::vector<GW::AUDIO::GSound*> MenuSounds;
 extern std::vector<GW::AUDIO::GSound*> explosionSound;
 extern std::vector<GW::AUDIO::GSound*> bombPlaceSound;
@@ -185,7 +190,8 @@ struct bombconstbuffer
 	DirectX::XMMATRIX world;
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX projection;
-	float4 time;
+	float time;
+	DirectX::XMFLOAT3 padding;
 };
 
 struct bombpixelbuffer
@@ -262,8 +268,8 @@ struct TMeshTemplate {
 
 	AnimationClip _anim;
 
-	ID3D11Buffer* _vertexBuffer;
-	ID3D11Buffer* _indexBuffer;
+	ID3D11Buffer* _vertexBuffer = nullptr;
+	ID3D11Buffer* _indexBuffer = nullptr;
 
 	std::vector<file_path_t> filePaths;
 	std::vector<material_t> mats;
@@ -274,7 +280,7 @@ struct TMeshTemplate {
 	ID3D11Resource*				_textures[TEXTURES::COUNT];
 	ID3D11SamplerState*			_samState;
 
-	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr);
+	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr, float scale = 1.0f);
 	void initialize(ID3D11Device* _device);
 	void render(ID3D11DeviceContext* _context, double timepassed);
 	/*~TMeshTemplate();

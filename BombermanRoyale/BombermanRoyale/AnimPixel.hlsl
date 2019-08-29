@@ -41,7 +41,7 @@ struct PS_IN
 	float3 norm : NORMAL;
 	float2 tex : TEXCOORD1;
 	float4 wPos : WORLD;
-	float3 eye : EYE;
+	float4 eye : EYE;
 };
 
 static float4 ambient_light = { 0.75f, 0.75f, 0.75f, 1.0f };

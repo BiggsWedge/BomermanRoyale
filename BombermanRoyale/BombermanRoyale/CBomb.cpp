@@ -1,6 +1,6 @@
 #include "CBomb.h"
 #include "CPlayer.h"
-
+#include <iostream>
 
 CBomb::CBomb()
 {
@@ -133,7 +133,7 @@ void CBomb::Draw(double timepassed)
 			bombconst.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
 
 		bombconst.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
-		bombconst.time = DirectX::XMFLOAT4(timer, 0.0f, 0.0f, 0.0f);
+		bombconst.time = timer;
 
 		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST], 0, nullptr, &bombconst, 0, 0);
 		g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST]);

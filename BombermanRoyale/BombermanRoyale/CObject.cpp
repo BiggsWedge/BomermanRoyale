@@ -1,8 +1,7 @@
 #pragma once
 
 #include "CObject.h"
-
-
+#include <iostream>
 
 
 CObject::CObject()
@@ -22,7 +21,7 @@ void CObject::Draw(double timepassed)
 	animTime += timepassed;
 	totalTime += timepassed;
 
-	
+
 	float fractionalTime = timepassed - (int)timepassed;
 
 	ID3D11CommandList* d3dCommandList = nullptr;
@@ -354,6 +353,7 @@ bool CObject::MoveOverTime(float _x, float _z)
 
 	DirectX::XMFLOAT4 pos;
 	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
+	DirectX::XMStoreFloat3(&transform->fForwardVector, DirectX::XMVector3Normalize(transform->mObjMatrix.r[2]));
 	transform->fPosition = DirectX::XMFLOAT3(pos.x, pos.y, pos.z);
 
 	return true;
