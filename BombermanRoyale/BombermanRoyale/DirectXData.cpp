@@ -58,6 +58,9 @@ bool DirectXData::Initialize()
 	d3dViewport.MaxDepth = 1;
 	d3dViewport.MinDepth = 0;
 
+	windowWidthHeight.x = d3dSwapChainDesc.BufferDesc.Width;
+	windowWidthHeight.y = d3dSwapChainDesc.BufferDesc.Height;
+
 #pragma endregion
 
 #pragma region Rasterizer State Creation
@@ -193,6 +196,7 @@ bool DirectXData::Initialize()
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation vertex shader");
 
 
+	/*
 	if (FAILED(d3dDevice->CreateVertexShader(SkyVertex, sizeof(SkyVertex), nullptr, &d3dVertexShader[VERTEX_SHADER::SKY])))
 	{
 		//log failure
@@ -200,6 +204,7 @@ bool DirectXData::Initialize()
 	}
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the skybox vertex shader");
+	*/
 
 	if (FAILED(d3dDevice->CreateVertexShader(BombShader, sizeof(BombShader), nullptr, &d3dVertexShader[VERTEX_SHADER::BOMB])))
 	{
@@ -237,6 +242,7 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation pixel shader");
 
+	/*
 	if (FAILED(d3dDevice->CreatePixelShader(SkyPixel, sizeof(SkyPixel), nullptr, &d3dPixelShader[PIXEL_SHADER::SKY])))
 	{
 		//log failure
@@ -244,6 +250,7 @@ bool DirectXData::Initialize()
 	}
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the skybox pixel shader");
+	*/
 
 	if (FAILED(d3dDevice->CreatePixelShader(BombPShader, sizeof(BombPShader), nullptr, &d3dPixelShader[PIXEL_SHADER::BOMB])))
 
@@ -292,7 +299,7 @@ bool DirectXData::Initialize()
 		return false;
 	}
 
-
+	/*
 	std::vector<D3D11_INPUT_ELEMENT_DESC> d3dSkyShaderDesc =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -308,6 +315,7 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the skybox input layout");
 
+	*/
 #pragma endregion
 
 #pragma region Sampler State Creation
@@ -347,7 +355,7 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the skybox sampler state");
 
-	CreateDDSTextureFromFile(d3dDevice, L"JungleCubeMap.dds", (ID3D11Resource**)&Jungle, &JungleSRV);
+	//CreateDDSTextureFromFile(d3dDevice, L"JungleCubeMap.dds", (ID3D11Resource**)&Jungle, &JungleSRV);
 
 #pragma endregion
 
@@ -368,6 +376,35 @@ bool DirectXData::Initialize()
 
 #pragma endregion
 
+#pragma region Depth Stencil State Creation
+
+	D3D11_DEPTH_STENCIL_DESC dssDesc;
+
+	dssDesc.DepthEnable = true;
+	dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dssDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	dssDesc.StencilEnable = true;
+	dssDesc.StencilReadMask = 0xFF;
+	dssDesc.StencilWriteMask = 0xFF;
+
+	dssDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	dssDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	dssDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	dssDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	dssDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	dssDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	dssDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	dssDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	d3dDevice->CreateDepthStencilState(&dssDesc, &d3dDepthStencilState[DEPTH_STENCIL_STATE::DEFAULT]);
+
+	dssDesc.DepthEnable = false;
+
+	d3dDevice->CreateDepthStencilState(&dssDesc, &d3dDepthStencilState[DEPTH_STENCIL_STATE::TWO_D]);
+
+#pragma endregion
 
 #pragma region Constant Buffer Creation
 
@@ -468,6 +505,10 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the bomb pixel constant buffer");
 
+	d3dSpriteBatch = new DirectX::SpriteBatch(d3dContext);
+	d3dSpriteFont = new DirectX::SpriteFont(d3dDevice, L".//Assets//winkDeep.spritefont");
+
+
 
 	//Jungle Constant Buffer
 	D3D11_BUFFER_DESC JungleBuffer = {};
@@ -486,40 +527,51 @@ bool DirectXData::Initialize()
 #pragma endregion
 
 
+	d3dDevice->CreateDeferredContext(0, &d3dDeferredContext);
+
+
 #pragma region Vertex Buffer Creation
 
 	KeyVertex verts[] =
 	{
-		{ DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) },
+		//-z plane
+		{DirectX::XMFLOAT3(-1,-1,-1), DirectX::XMFLOAT2(0,1)},
+		{DirectX::XMFLOAT3(-1,1,-1), DirectX::XMFLOAT2(0,0)},
+		{DirectX::XMFLOAT3(1,-1,-1), DirectX::XMFLOAT2(1,1)},
+		{DirectX::XMFLOAT3(1,1,-1), DirectX::XMFLOAT2(1,0)},
 
-	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f),DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f) },
+		//+z plane
+		{DirectX::XMFLOAT3(-1,-1,1), DirectX::XMFLOAT2(0,1)},
+		{DirectX::XMFLOAT3(-1,1,1), DirectX::XMFLOAT2(0,0)},
+		{DirectX::XMFLOAT3(1,-1,1), DirectX::XMFLOAT2(1,1)},
+		{DirectX::XMFLOAT3(1,1,1), DirectX::XMFLOAT2(1,0)},
 
-	{ DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f),DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+		//-y plane
+		{DirectX::XMFLOAT3(-1,-1,-1) , DirectX::XMFLOAT2(0,1)},
+		{DirectX::XMFLOAT3(-1,-1,1),  DirectX::XMFLOAT2(0,0)},
+		{DirectX::XMFLOAT3(1,-1,-1),  DirectX::XMFLOAT2(1,1)},
+		{DirectX::XMFLOAT3(1,-1,1),  DirectX::XMFLOAT2(1,0)},
 
-	{ DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) },
+		//+y plane
+		{DirectX::XMFLOAT3(-1,1,-1)	, DirectX::XMFLOAT2(0,1)},
+		{DirectX::XMFLOAT3(-1,1,1),	 DirectX::XMFLOAT2(0,0)},
+		{DirectX::XMFLOAT3(1,1,-1),	 DirectX::XMFLOAT2(1,1)},
+		{DirectX::XMFLOAT3(1,1,1), 	DirectX::XMFLOAT2(1,0)},
 
-	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f) },
-	{ DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f) },
-	{ DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f) },
-	{ DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f) },
+		//-x plane
+		{DirectX::XMFLOAT3(-1,-1,-1) , DirectX::XMFLOAT2(0,1)},
+		{DirectX::XMFLOAT3(-1,1,-1),  DirectX::XMFLOAT2(0,0)},
+		{DirectX::XMFLOAT3(-1,-1,1),  DirectX::XMFLOAT2(1,1)},
+		{DirectX::XMFLOAT3(-1,1,1),  DirectX::XMFLOAT2(1,0)},
 
-	{ DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) },
-	{ DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) },
-	{ DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f),DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) },
-	{ DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) },
+		//+x plane
+		{DirectX::XMFLOAT3(1,-1,-1), DirectX::XMFLOAT2(0,1)},
+		{DirectX::XMFLOAT3(1,1,-1), DirectX::XMFLOAT2(0,0)},
+		{DirectX::XMFLOAT3(1,-1,1), DirectX::XMFLOAT2(1,1)},
+		{DirectX::XMFLOAT3(1,1,1), DirectX::XMFLOAT2(1,0)},
+
 	};
+
 
 
 
@@ -635,6 +687,7 @@ void DirectXData::updateCameras()
 		debugCamMat.r[3] = DirectX::XMLoadFloat4(&debugPos);
 
 		debugCursorRot = { 0.0f, 0.0f };
+		DirectX::XMStoreFloat3(&debugCamPos, debugCamMat.r[3]);
 	}
 }
 

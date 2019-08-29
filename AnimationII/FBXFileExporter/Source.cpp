@@ -407,9 +407,6 @@ void ConvertFBX(FileSet files)
 	_clip.duration = _time.GetSecondDouble();
 
 
-
-
-
 	std::vector<joint> bindPose;
 
 
@@ -428,8 +425,6 @@ void ConvertFBX(FileSet files)
 
 		bindPose.push_back(__joint);
 	}
-
-
 
 
 	for (int i = 1; i < _frameCount; ++i)
