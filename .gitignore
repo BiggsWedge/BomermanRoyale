@@ -46,3 +46,13 @@ x86
 *.user
 *.log
 
+BombermanRoyale/BombermanRoyale/AnimPixel.csh
+BombermanRoyale/BombermanRoyale/AnimVertex.csh
+BombermanRoyale/BombermanRoyale/BasicPixel.csh
+BombermanRoyale/BombermanRoyale/BasicVertex.csh
+BombermanRoyale/BombermanRoyale/BombPShader.csh
+BombermanRoyale/BombermanRoyale/BombShader.csh
+BombermanRoyale/BombermanRoyale/LinePixel.csh
+BombermanRoyale/BombermanRoyale/LineVertex.csh
+BombermanRoyale/BombermanRoyale/SkyPixel.csh
+BombermanRoyale/BombermanRoyale/SkyVertex.csh
