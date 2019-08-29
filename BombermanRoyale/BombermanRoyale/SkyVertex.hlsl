@@ -27,7 +27,6 @@ struct VS_INPUT
 struct OutputVertex
 {
     float4 xyzw : SV_POSITION;
-    float3 Norm : NORMAL;
     float3 Tex : TEXCOORD;
 };
 

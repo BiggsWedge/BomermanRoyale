@@ -655,7 +655,6 @@ void CGame::Run()
 			}
 		}
 
-		
 		//}
 		//if (mapTime >= 45) {
 		//	warningSoundPlaying = false;
@@ -691,7 +690,6 @@ void CGame::Run()
 				{
 					TComponent* cRenderer = nullptr;
 					TTransformComponent* renderer = nullptr;
-
 
 					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 					{
