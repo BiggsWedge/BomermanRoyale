@@ -8,7 +8,7 @@ class CRendererManager
 {
 private:
 	std::vector<CObject*> rendereableObjects;
-	//Skybox* theSkybox;
+	Skybox* theSkybox;
 public:
 	bool HasComponent(CObject _objToCheck, int _componentToCheck);
 	void RenderObject(CObject* _objToDraw);

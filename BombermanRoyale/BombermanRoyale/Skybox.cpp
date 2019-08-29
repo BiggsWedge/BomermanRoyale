@@ -35,9 +35,9 @@ void Skybox::Initialize()
 	tempVerts.resize(thisTemplate->v_tVertices.size());
 	for (int i = 0; i < tempVerts.size(); ++i)
 	{
-		tempVerts[i].fPosition.x = (thisTemplate->v_tVertices[i].fPosition.x / 50.0f) ;
+		tempVerts[i].fPosition.x = (thisTemplate->v_tVertices[i].fPosition.x / 50.0f);
 		tempVerts[i].fPosition.y = (thisTemplate->v_tVertices[i].fPosition.y / 50.0f) - 1.0f;
-		tempVerts[i].fPosition.z = (thisTemplate->v_tVertices[i].fPosition.z / 50.0f) ;
+		tempVerts[i].fPosition.z = (thisTemplate->v_tVertices[i].fPosition.z / 50.0f);
 	}
 
 	D3D11_BUFFER_DESC vBuff;
@@ -91,41 +91,12 @@ void Skybox::Initialize()
 		{ "WEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
-	g_d3dData->d3dSurface->GetRenderTarget((void**)&g_d3dData->d3dRenderTargetView);
-
-
 	res = g_d3dData->d3dDevice->CreateInputLayout(d3dSkyShaderDesc.data(), (UINT)d3dSkyShaderDesc.size(), SkyVertex, sizeof(SkyVertex), &d3dInputLayout);
 
 	p_d3dUsedSampler = &g_d3dData->d3dSamplerState;
 	p_d3dUsedTexture = &g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::FIRE_TEX];
 
-	ID3D11RenderTargetView* const d3dTargets[] = { g_d3dData->d3dRenderTargetView };
-	g_d3dData->d3dDeferredContext->RSSetViewports(1, &g_d3dData->d3dViewport);
-	g_d3dData->d3dDeferredContext->OMSetRenderTargets(1, d3dTargets, g_d3dData->d3dDepthStencilView);
-
-	g_d3dData->d3dDeferredContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::SKYBOX]);
-	g_d3dData->d3dDeferredContext->OMSetDepthStencilState(g_d3dData->d3dDepthStencilState[DEPTH_STENCIL_STATE::DEFAULT], 0);
-
-	g_d3dData->d3dDeferredContext->IASetInputLayout(d3dInputLayout);
-	g_d3dData->d3dDeferredContext->IASetIndexBuffer(d3dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-	UINT strides = sizeof(TSimpleVertex);
-	UINT offsets = 0;
-
-	g_d3dData->d3dDeferredContext->IASetVertexBuffers(0, 1, &d3dVertexBuffer, &strides, &offsets);
-
-	g_d3dData->d3dDeferredContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	g_d3dData->d3dDeferredContext->VSSetShader(d3dVertexShader, nullptr, 0);
-	g_d3dData->d3dDeferredContext->VSSetConstantBuffers(0, 1, &d3dConstantBuffer);
-
-	g_d3dData->d3dDeferredContext->PSSetShader(d3dPixelShader, nullptr, 0);
-	g_d3dData->d3dDeferredContext->PSSetSamplers(0, 1, p_d3dUsedSampler);
-	g_d3dData->d3dDeferredContext->PSSetShaderResources(0, 1, p_d3dUsedTexture);
-
-	g_d3dData->d3dDeferredContext->DrawIndexed(uNumIndices, 0, 0);
-
-	g_d3dData->d3dDeferredContext->FinishCommandList(false, &d3dCommandList);
+	SAFE_RELEASE(g_d3dData->d3dRenderTargetView);
 }
 
 void Skybox::Update()
@@ -140,5 +111,29 @@ void Skybox::Update()
 
 void Skybox::Render()
 {
-	g_d3dData->d3dContext->ExecuteCommandList(d3dCommandList, false);
+	ID3D11RenderTargetView* const d3dTargets[] = { g_d3dData->d3dRenderTargetView };
+	g_d3dData->d3dContext->OMSetRenderTargets(1, d3dTargets, g_d3dData->d3dDepthStencilView);
+	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
+
+	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::SKYBOX]);
+	g_d3dData->d3dContext->OMSetDepthStencilState(g_d3dData->d3dDepthStencilState[DEPTH_STENCIL_STATE::DEFAULT], 0);
+
+	g_d3dData->d3dContext->IASetInputLayout(d3dInputLayout);
+	g_d3dData->d3dContext->IASetIndexBuffer(d3dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	UINT strides = sizeof(TSimpleVertex);
+	UINT offsets = 0;
+
+	g_d3dData->d3dContext->IASetVertexBuffers(0, 1, &d3dVertexBuffer, &strides, &offsets);
+
+	g_d3dData->d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	g_d3dData->d3dContext->VSSetShader(d3dVertexShader, nullptr, 0);
+	g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &d3dConstantBuffer);
+
+	g_d3dData->d3dContext->PSSetShader(d3dPixelShader, nullptr, 0);
+	g_d3dData->d3dContext->PSSetSamplers(0, 1, p_d3dUsedSampler);
+	g_d3dData->d3dContext->PSSetShaderResources(0, 1, p_d3dUsedTexture);
+
+	g_d3dData->d3dContext->DrawIndexed(uNumIndices, 0, 0);
 }
