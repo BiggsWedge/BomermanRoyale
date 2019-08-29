@@ -595,3 +595,22 @@ void DirectXData::updateCameras()
 		DirectX::XMStoreFloat3(&debugCamPos, debugCamMat.r[3]);
 	}
 }
+
+DirectX::XMMATRIX DirectXData::screenShake() {
+	float radius = 0.5f;
+	float randomAngle = rand() % 360;
+	float2 offset;
+
+	offset.x = sin(randomAngle) * radius * 0.25;
+	offset.y = cos(randomAngle) * radius * 0.25;
+	randomAngle += (150 + rand() % 60);
+
+	DirectX::XMMATRIX viewPos = viewMat;
+	viewMat = DirectX::XMMatrixTranslation(offset.x, 0.0f, offset.y) * viewMat;
+
+	return viewPos;
+}
+
+void DirectXData::resetCamera() {
+	viewMat = camMat;
+}

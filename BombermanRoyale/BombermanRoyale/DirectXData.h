@@ -96,10 +96,15 @@ struct COLLISION_LAYERS
 	enum { PLAYER, BOMB, EXPLOSION, WALL, DESTROYABLE, FLOOR, ITEM, COUNT };
 };
 
+struct GRID_SYSTEM
+{
+	enum { FREE, DESTROYABLE, CRATE, BOMB, PLAYER, POWERUP, COUNT };
+};
+
 struct DIFFUSE_TEXTURES
 {
 	enum {
-		CRATE = 0, BATTLE_MAGE, MAIN_MENU, HUD, NAMES_HUD, PLAYER_1_WIN, PLAYER_2_WIN, PLAYER_3_WIN, PLAYER_4_WIN, PAUSE_MENU,
+		CRATE = 0, BATTLE_MAGE, MAIN_MENU, HUD, NAMES_HUD, PLAYER_1_WIN, PLAYER_2_WIN, PLAYER_3_WIN, PLAYER_4_WIN, DRAW_SCREEN, PAUSE_MENU,
 		HELP_MENU, ARCADE_BUTTON, BATTLE_BUTTON, OPTIONS_BUTTON, EXIT_BUTTON,
 		RED_TEX, BLUE_TEX, BLACK_TEX, FIRE_TEX, HAY_TEX, BOMB, BOMB3, BOMB2, BOMB4, CHICKEN1, CHICKEN2,
 		CHICKEN3, CHICKEN4, COUNT
@@ -158,6 +163,7 @@ public:
 	DirectX::XMMATRIX					debugCamMat;
 	DirectX::XMFLOAT3					debugCamPos;
 	DirectX::XMFLOAT2					debugCamDelta;
+	DirectX::XMFLOAT2					camDelta;
 	DirectX::XMFLOAT2					debugCursorRot;
 	DirectX::XMMATRIX					viewMat;
 	DirectX::XMMATRIX					projMat;
@@ -176,6 +182,8 @@ public:
 	void Cleanup();
 	inline void ToggleUseDebugCamera() { bUseDebugRenderCamera = !bUseDebugRenderCamera; }
 	void updateCameras();
+	DirectX::XMMATRIX screenShake();
+	void resetCamera();
 };
 
 extern DirectXData* g_d3dData;
