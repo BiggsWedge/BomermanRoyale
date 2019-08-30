@@ -7,7 +7,7 @@
 
 struct DEFAULT_BUTTONS
 {
-	enum { ACTION = 0, PAUSE, LEFT, RIGHT, UP, DOWN, COUNT };
+	enum { ACTION = 0, PAUSE, LEFT, RIGHT, UP, DOWN, CROUCH, COUNT };
 };
 
 struct Button
@@ -43,7 +43,7 @@ public:
 	inline bool IsControllerConnected() { return connected; }
 	void Update();
 	inline void SetControllerIndex(int index) { controllerIndex = index; }
-	void SetButtonCodes(int actionButton, int pauseButton, int helpButton);
+	void SetButtonCodes(int actionButton, int pauseButton, int helpButton, int crouchButton);
 	inline float GetLeftRight() { return LeftXAxis; };
 	inline float GetUpDown() { return LeftYAxis; }
 };

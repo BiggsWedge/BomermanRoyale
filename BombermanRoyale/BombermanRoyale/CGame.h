@@ -29,25 +29,24 @@ struct GAME_STATE
 struct particle
 {
 	float timer;
-	float3 pos;
-	float3 prev_pos;
-	float3 speed;
-	float4 color;
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 prev_pos;
+	DirectX::XMFLOAT3 speed;
+	DirectX::XMFLOAT4 color;
 };
 
 struct emitter
 {
-	float3 spawn_pos;
-	float4 spawn_color;
+	DirectX::XMFLOAT3 spawn_pos;
+	DirectX::XMFLOAT4 spawn_color;
 	// indices into the shared_pool 
 	end::sorted_pool_t<int16_t, 256> indices;
 };
 
 class CGame
 {
-	float temp1 = 0;
-	float temp2 = 0;
-	float particleSpeed = 0.5f;
+	float particleLife = 5.0f;
+	float particleSpeed = 1.5f;
 	float particleGravity = 9.8f;
 	end::sorted_pool_t<particle, 1000> sortedParticles;
 	end::pool_t<particle, 1000> freeParticles;
@@ -55,6 +54,8 @@ class CGame
 	emitter firstEmit;
 	emitter secondEmit;
 	emitter thirdEmit;
+	emitter fourthEmit;
+	emitter freeEmit;
 	XTime timer;
 
 	CRendererManager* p_cRendererManager;
@@ -71,6 +72,7 @@ class CGame
 
 	int maxNumBombs = 48;
 	DirectX::XMMATRIX viewPos;
+	DirectX::XMFLOAT3 bombPos;
 	std::vector<CBomb*> v_cBombs;
 	CPlayer* menuBomb = nullptr;
 	int menuIndex = 0;
@@ -80,6 +82,8 @@ class CGame
 	bool prevShowMouse = true;
 	bool showMouse = true;
 	bool bombExploded = false;
+	bool SprinklersOn = false;
+
 
 public:
 	void Cleanup();
@@ -89,8 +93,10 @@ public:
 	bool Initialize();
 	void Run();
 
-	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, float deltaTime);
-	void InitSortedParticles(end::sorted_pool_t<particle, 1000>& sortedPool, float deltaTime);
+	void InitSortedParticles(end::sorted_pool_t<particle, 1000>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color);
+	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime);
+	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime, CObject* obj);
+	void SpawnParticles(CObject* obj, double time, double timePassed);
 
 	void LoadAnim();
 	void LoadObject();

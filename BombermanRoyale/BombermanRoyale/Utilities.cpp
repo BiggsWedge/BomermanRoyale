@@ -5,7 +5,7 @@ using namespace GW;
 using namespace SYSTEM;
 using namespace AUDIO;
 
-constexpr size_t MAX_LINE_VERTS = 10000;
+constexpr size_t MAX_LINE_VERTS = 9000;
 
 size_t line_vert_count = 0;
 std::array< TLineVertex, MAX_LINE_VERTS> line_verts;
@@ -444,7 +444,7 @@ void LoadTextures()
 	}
 }
 
-void add_line(float3 point_a, float3 point_b, float4 color_a, float4 color_b) {
+void add_line(DirectX::XMFLOAT3 point_a, DirectX::XMFLOAT3 point_b, DirectX::XMFLOAT4 color_a, DirectX::XMFLOAT4 color_b) {
 	line_verts[line_vert_count].pos = point_a;
 	line_verts[line_vert_count].color = color_a;
 	line_vert_count += 1;

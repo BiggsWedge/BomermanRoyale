@@ -7,7 +7,8 @@ std::vector<int> P1DefaultControls
 	'A',
 	'D',
 	'W',
-	'S'
+	'S',
+	'C'
 };
 
 std::vector<int> P2DefaultControls
@@ -17,7 +18,8 @@ std::vector<int> P2DefaultControls
 	'J',
 	'L',
 	'I',
-	'K'
+	'K',
+	'M'
 };
 
 
@@ -49,6 +51,7 @@ void CharacterController::Update()
 			button.Update(controllerIndex, connected);
 		g_pControllerInput->GetState(controllerIndex, G_LX_AXIS, LeftXAxis);
 		g_pControllerInput->GetState(controllerIndex, G_LY_AXIS, LeftYAxis);
+		//g_pControllerInput->GetState(controllerIndex, G_LY_AXIS, LeftYAxis);
 	}
 	else
 	{
@@ -60,13 +63,15 @@ void CharacterController::Update()
 }
 
 
-void CharacterController::SetButtonCodes(int actionButton, int pauseButton, int helpButton)
+void CharacterController::SetButtonCodes(int actionButton, int pauseButton, int helpButton, int crouchButton)
 {
-	controllerButtons.resize(DEFAULT_BUTTONS::PAUSE + 1);
+	controllerButtons.resize(DEFAULT_BUTTONS::PAUSE + 2);
 	controllerButtons[DEFAULT_BUTTONS::ACTION].SetButtonID(actionButton);
 	controllerButtons[DEFAULT_BUTTONS::ACTION].Reset(false);
 	controllerButtons[DEFAULT_BUTTONS::PAUSE].SetButtonID(pauseButton);
 	controllerButtons[DEFAULT_BUTTONS::PAUSE].Reset(false);
+	//controllerButtons[DEFAULT_BUTTONS::CROUCH].SetButtonID(crouchButton);
+	//controllerButtons[DEFAULT_BUTTONS::CROUCH].Reset(false);
 
 	keyboardButtons.resize(DEFAULT_BUTTONS::COUNT);
 	for (Button& button : keyboardButtons)
@@ -77,7 +82,7 @@ void CharacterController::SetButtonCodes(int actionButton, int pauseButton, int 
 	keyboardButtons[DEFAULT_BUTTONS::UP].SetButtonID((controllerIndex == 0) ? P1DefaultControls[DEFAULT_BUTTONS::UP] : P2DefaultControls[DEFAULT_BUTTONS::UP]);
 	keyboardButtons[DEFAULT_BUTTONS::DOWN].SetButtonID((controllerIndex == 0) ? P1DefaultControls[DEFAULT_BUTTONS::DOWN] : P2DefaultControls[DEFAULT_BUTTONS::DOWN]);
 	keyboardButtons[DEFAULT_BUTTONS::PAUSE].SetButtonID((controllerIndex == 0) ? P1DefaultControls[DEFAULT_BUTTONS::PAUSE] : P2DefaultControls[DEFAULT_BUTTONS::PAUSE]);
-
+	keyboardButtons[DEFAULT_BUTTONS::CROUCH].SetButtonID((controllerIndex == 0) ? P1DefaultControls[DEFAULT_BUTTONS::CROUCH] : P2DefaultControls[DEFAULT_BUTTONS::CROUCH]);
 }
 
 
