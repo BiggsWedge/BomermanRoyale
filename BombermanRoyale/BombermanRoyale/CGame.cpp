@@ -90,6 +90,7 @@ bool playingfallingSoundPlaying = false;
 bool isPaused = false;
 
 static double timePassed = 0.0f;
+double AIbombaction = 0.0f;
 double tempTime = 0.0f;
 double mapTime = 0.0f;
 double shakeTime = 0.0f;
@@ -1455,6 +1456,7 @@ void CGame::GamePlayLoop(double timePassed)
 			continue;
 
 		float deltaX = 0.0f, deltaZ = 0.0f;
+		AIbombaction += timePassed;
 
 		TComponent* AIComponent;
 		currAI->GetComponent(COMPONENT_TYPE::TRANSFORM, AIComponent);
@@ -1472,7 +1474,7 @@ void CGame::GamePlayLoop(double timePassed)
 			dec = dec - x;
 			x = abs((fMaxX - 2.5f) - AITransform->fPosition.x) / 2.5f;
 			if (dec > 0.0f)
-				x = abs((fMaxX - 2.5f) - AITransform->fPosition.x + 1.25f) / 2.5f;
+				x = abs((fMaxX - 2.5f) - AITransform->fPosition.x + 2.5f) / 2.5f;
 
 			dec = abs(AITransform->fPosition.z) / 2.5f;
 			z = dec;
@@ -1500,57 +1502,24 @@ void CGame::GamePlayLoop(double timePassed)
 
 		}
 
-		bool breakout = false;
-		int gridlocation = (z * width) + x;
-
-
-		if (GRID.at(gridlocation) == GRID_SYSTEM::BOMB)
-		{
-			int tile = GRID[gridlocation];
-
-			currAI->Move(((x / ((width - 1) / 2)) - 1) * timePassed * PLAYER_SPEED, ((z / ((height - 1) / 2)) - 1) * timePassed * PLAYER_SPEED);
-			//for (int dZ = -1; dZ <= 1; dZ+=2)
-			//{
-			//	for (int dX = -1; dX <= 1; dX +=2)
-			//	{
-			//		bool zbounds = true;
-			//		bool xbounds = true;
-			//		int zchange;
-			//		int xchange;
-			//		zchange = z + dZ;
-			//		xchange = x + dX;
-			//
-			//		if (zchange < 0 || zchange > height - 1)
-			//		{
-			//			zbounds = false;
-			//			zchange = z;
-			//		}
-			//
-			//		if (xchange < 0 || xchange > width - 1)
-			//		{
-			//			xbounds = false;
-			//			xchange = x;
-			//		}
-			//		if (tile == GRID_SYSTEM::FREE)
-			//		{
-			//
-			//			deltaX = timePassed * PLAYER_SPEED * -dX;
-			//			deltaZ = timePassed * PLAYER_SPEED * -dZ;
-			//			currAI->Move(deltaX, deltaZ);
-			//			dZ = 2;
-			//			break;
-			//		}
-			//	}
-			//}
+		for (CObject* cObj : objects) {
+			if (currAI->Collides(cObj))
+				PlayerCollision(currAI, cObj, deltaX, deltaZ);
 		}
 
-		else
+		bool breakout = false;
+		int gridlocation = (z * width) + x;
+		if (gridlocation < GRID.size())
 		{
-			for (int gridcheck = 0; gridcheck < 5; gridcheck++)
+
+			if (GRID.at(gridlocation) == GRID_SYSTEM::BOMB)
 			{
-				for (int dZ = -1; dZ <= 1; ++dZ)
+				int tile = GRID[gridlocation];
+
+				//currAI->Move(((x / ((width - 1) / 2)) - 1) * timePassed * PLAYER_SPEED, ((z / ((height - 1) / 2)) - 1) * timePassed * PLAYER_SPEED);
+				for (int dZ = -1; dZ <= 1; dZ += 2)
 				{
-					for (int dX = -1; dX <= 1; ++dX)
+					for (int dX = -1; dX <= 1; dX += 2)
 					{
 						bool zbounds = true;
 						bool xbounds = true;
@@ -1559,199 +1528,245 @@ void CGame::GamePlayLoop(double timePassed)
 						zchange = z + dZ;
 						xchange = x + dX;
 
-						if (zchange < 0 && zchange > height - 1)
+						if (zchange < 0 || zchange > height - 1)
 						{
 							zbounds = false;
 							zchange = z;
 						}
 
-						if (xchange < 0 && xchange > width - 1)
+						if (xchange < 0 || xchange > width - 1)
 						{
 							xbounds = false;
 							xchange = x;
 						}
-
-						gridlocation = ((zchange)* width) + (xchange);
-						zchange -= z;
-						xchange -= x;
-
-						//if (AITransform->fPosition.x < 0.0f)
-						//	xchange *= -1.0f;
-						//
-						//if (AITransform->fPosition.z < 0.0f)
-						//	zchange *= -1.0f;
-
-						if (gridlocation < GRID.size())
+						if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
 						{
-							int tile = GRID[gridlocation];
-							if (gridcheck == 0)
-							{
-								if (tile == GRID_SYSTEM::BOMB/* && (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
-								{
-									deltaX = timePassed * PLAYER_SPEED * xchange;
-									deltaZ = timePassed * PLAYER_SPEED * zchange;
-									currAI->Move(deltaX, deltaZ);
-									dZ = 2;
-									gridcheck = 5;
-									break;
 
-									//for (int dZ = -1; dZ <= 1; ++dZ)
-									//{
-									//	for (int dX = -1; dX <= 1; ++dX)
-									//	{
-									//		zbounds = true;
-									//		xbounds = true;
-									//		zchange = 0;
-									//		xchange = 0;
-									//		zchange = z + dZ;
-									//		xchange = x + dX;
-									//
-									//		if (zchange < 0 && zchange > height - 1)
-									//		{
-									//			zbounds = false;
-									//			zchange = z;
-									//		}
-									//
-									//		if (xchange < 0 && xchange > width - 1)
-									//		{
-									//			xbounds = false;
-									//			xchange = x;
-									//		}
-									//
-									//		gridlocation = ((zchange)* width) + (xchange);
-									//		zchange -= z;
-									//		xchange -= x;
-									//
-									//		if (gridlocation < GRID.size())
-									//		{
-									//			int tile = GRID[gridlocation];
-									//			if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
-									//			{
-									//
-									//				deltaX = timePassed * PLAYER_SPEED * -xchange;
-									//				deltaZ = timePassed * PLAYER_SPEED * -zchange;
-									//				currAI->Move(deltaX, deltaZ);
-									//				dZ = 2;
-									//				gridcheck = 5;
-									//				break;
-									//			}
-									//		}
-									//	}
-									//}
-								}
+							deltaX = timePassed * PLAYER_SPEED * -dX;
+							deltaZ = timePassed * PLAYER_SPEED * -dZ;
+							currAI->Move(deltaX, deltaZ);
+							for (CObject* cObj : objects) {
+								if (currAI->Collides(cObj))
+									PlayerCollision(currAI, cObj, deltaX, deltaZ);
+							}
+						}
+					}
+				}
+			}
+
+			else
+			{
+				for (int gridcheck = 0; gridcheck < 5; gridcheck++)
+				{
+					for (int dZ = -1; dZ <= 1; ++dZ)
+					{
+						for (int dX = -1; dX <= 1; ++dX)
+						{
+							bool zbounds = true;
+							bool xbounds = true;
+							int zchange;
+							int xchange;
+							zchange = z + dZ;
+							xchange = x + dX;
+
+							if (zchange < 0 && zchange > height - 1)
+							{
+								zbounds = false;
+								zchange = z;
 							}
 
-
-							//if (gridcheck == 1)
-							//{
-							//	if (tile == GRID_SYSTEM::DESTROYABLE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
-							//	{
-							//		if (currAI->hasAvailableBombSlot())
-							//		{
-							//			bool soundplaying;
-							//			bombPlaceSound1->isSoundPlaying(soundplaying);
-							//			if (!soundplaying)
-							//			{
-							//				bombPlaceSound1->Play();
-							//			}
-							//			else
-							//			{
-							//				bombPlaceSound2->Play();
-							//			}
-							//			for (int i = 0; i < maxNumBombs; ++i)
-							//			{
-							//				if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive())
-							//				{
-							//					currAI->AddBombIndex(i);
-							//					std::vector<CBomb*> bombs;
-							//
-							//					switch (currAI->GetBombType()) {
-							//
-							//					case 4:
-							//						if (v_cBombs[i]) {
-							//							bombs = p_cEntityManager->DropBomb0(currAI, objects);
-							//							for (int j = 0; j < bombs.size(); j++) {
-							//								v_cBombs[i + j] = bombs[j];
-							//							}
-							//						}
-							//						else {
-							//							bombs = p_cEntityManager->DropBomb0(currAI, objects);
-							//							for (int j = 0; j < bombs.size(); j++) {
-							//								v_cBombs[i + j] = bombs[j];
-							//							}
-							//						}
-							//
-							//						break;
-							//					case 1:
-							//						if (v_cBombs[i]) {
-							//							bombs = p_cEntityManager->DropBomb1(currAI, objects);
-							//							for (int j = 0; j < bombs.size(); j++) {
-							//								v_cBombs[i + j] = bombs[j];
-							//							}
-							//						}
-							//						else {
-							//							bombs = p_cEntityManager->DropBomb1(currAI, objects);
-							//							for (int j = 0; j < bombs.size(); j++) {
-							//								v_cBombs[i + j] = bombs[j];
-							//							}
-							//						}
-							//
-							//						break;
-							//					case 2:
-							//						if (v_cBombs[i]) {
-							//							bombs = p_cEntityManager->DropBomb2(currAI, objects);
-							//							for (int j = 0; j < bombs.size(); j++) {
-							//								v_cBombs[i + j] = bombs[j];
-							//							}
-							//						}
-							//						else {
-							//							bombs = p_cEntityManager->DropBomb2(currAI, objects);
-							//							for (int j = 0; j < bombs.size(); j++) {
-							//								v_cBombs[i + j] = bombs[j];
-							//							}
-							//						}
-							//
-							//						break;
-							//					case 3:
-							//						if (v_cBombs[i]) {
-							//							bombs = p_cEntityManager->DropBomb3(currAI, objects);
-							//							for (int j = 0; j < bombs.size(); j++) {
-							//								v_cBombs[i + j] = bombs[j];
-							//							}
-							//						}
-							//						else {
-							//							bombs = p_cEntityManager->DropBomb3(currAI, objects);
-							//							for (int j = 0; j < bombs.size(); j++) {
-							//								v_cBombs[i + j] = bombs[j];
-							//							}
-							//						}
-							//
-							//						break;
-							//					default:
-							//						if (v_cBombs[i])
-							//							*v_cBombs[i] = *p_cEntityManager->DropBomb(currAI);
-							//						else
-							//							v_cBombs[i] = p_cEntityManager->DropBomb(currAI);
-							//						break;
-							//					}
-							//
-							//					break;
-							//				}
-							//			}
-							//		}
-							//	}
-							//}
-							if (gridcheck == 2)
+							if (xchange < 0 && xchange > width - 1)
 							{
-								if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
-								{
+								xbounds = false;
+								xchange = x;
+							}
 
-									deltaX = timePassed * PLAYER_SPEED * -xchange;
-									deltaZ = timePassed * PLAYER_SPEED * -zchange;
-									currAI->Move(deltaX, deltaZ);
-									dZ = 2;
-									gridcheck = 5;
-									break;
+							gridlocation = ((zchange)* width) + (xchange);
+							zchange -= z;
+							xchange -= x;
+
+							//if (AITransform->fPosition.x < 0.0f)
+							//	xchange *= -1.0f;
+							//
+							//if (AITransform->fPosition.z < 0.0f)
+							//	zchange *= -1.0f;
+
+							if (gridlocation < GRID.size())
+							{
+								int tile = GRID[gridlocation];
+								if (gridcheck == 0)
+								{
+									if (tile == GRID_SYSTEM::BOMB/* && (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
+									{
+										deltaX = timePassed * PLAYER_SPEED * xchange;
+										deltaZ = timePassed * PLAYER_SPEED * zchange;
+										currAI->Move(deltaX, deltaZ);
+										for (CObject* cObj : objects) {
+											if (currAI->Collides(cObj))
+												PlayerCollision(currAI, cObj, deltaX, deltaZ);
+										}
+
+										for (int dZ = -1; dZ <= 1; ++dZ)
+										{
+											for (int dX = -1; dX <= 1; ++dX)
+											{
+												zbounds = true;
+												xbounds = true;
+												zchange = 0;
+												xchange = 0;
+												zchange = z + dZ;
+												xchange = x + dX;
+
+												if (zchange < 0 && zchange > height - 1)
+												{
+													zbounds = false;
+													zchange = z;
+												}
+
+												if (xchange < 0 && xchange > width - 1)
+												{
+													xbounds = false;
+													xchange = x;
+												}
+
+												gridlocation = ((zchange)* width) + (xchange);
+												zchange -= z;
+												xchange -= x;
+
+												if (gridlocation < GRID.size())
+												{
+													int tile = GRID[gridlocation];
+													if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+													{
+
+														deltaX = timePassed * PLAYER_SPEED * -xchange;
+														deltaZ = timePassed * PLAYER_SPEED * -zchange;
+														currAI->Move(deltaX, deltaZ);
+														for (CObject* cObj : objects) {
+															if (currAI->Collides(cObj))
+																PlayerCollision(currAI, cObj, deltaX, deltaZ);
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+
+
+								else if (gridcheck == 1 && AIbombaction >= 4.0f)
+								{
+									if (tile == GRID_SYSTEM::DESTROYABLE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+									{
+										if (currAI->hasAvailableBombSlot())
+										{
+											AIbombaction = 0.0f;
+											bool soundplaying;
+											bombPlaceSound1->isSoundPlaying(soundplaying);
+											if (!soundplaying)
+											{
+												bombPlaceSound1->Play();
+											}
+											else
+											{
+												bombPlaceSound2->Play();
+											}
+											for (int i = 0; i < maxNumBombs; ++i)
+											{
+												if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive())
+												{
+													currAI->AddBombIndex(i);
+													std::vector<CBomb*> bombs;
+
+													switch (currAI->GetBombType()) {
+
+													case 4:
+														if (v_cBombs[i]) {
+															bombs = p_cEntityManager->DropBomb0(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+														else {
+															bombs = p_cEntityManager->DropBomb0(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+
+														break;
+													case 1:
+														if (v_cBombs[i]) {
+															bombs = p_cEntityManager->DropBomb1(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+														else {
+															bombs = p_cEntityManager->DropBomb1(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+
+														break;
+													case 2:
+														if (v_cBombs[i]) {
+															bombs = p_cEntityManager->DropBomb2(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+														else {
+															bombs = p_cEntityManager->DropBomb2(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+
+														break;
+													case 3:
+														if (v_cBombs[i]) {
+															bombs = p_cEntityManager->DropBomb3(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+														else {
+															bombs = p_cEntityManager->DropBomb3(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+
+														break;
+													default:
+														if (v_cBombs[i])
+															*v_cBombs[i] = *p_cEntityManager->DropBomb(currAI);
+														else
+															v_cBombs[i] = p_cEntityManager->DropBomb(currAI);
+														break;
+													}
+
+													break;
+												}
+											}
+										}
+									}
+								}
+								else if (gridcheck == 2)
+								{
+									if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
+									{
+
+										deltaX = timePassed * PLAYER_SPEED * -xchange;
+										deltaZ = timePassed * PLAYER_SPEED * -zchange;
+										currAI->Move(deltaX, deltaZ);
+										for (CObject* cObj : objects) {
+											if (currAI->Collides(cObj))
+												PlayerCollision(currAI, cObj, deltaX, deltaZ);
+										}
+									}
 								}
 							}
 						}
@@ -1759,6 +1774,282 @@ void CGame::GamePlayLoop(double timePassed)
 				}
 			}
 		}
+		else if (gridlocation >= GRID.size())
+		{
+			if (x >= width - 1)
+			{
+				x = width - 1;
+			}
+			if (z >= height - 1)
+			{
+				z = height - 1;
+			}
+			gridlocation = (z * width) + x;
+
+			if (GRID.at(gridlocation) == GRID_SYSTEM::BOMB)
+			{
+				int tile = GRID[gridlocation];
+
+				//currAI->Move(((x / ((width - 1) / 2)) - 1) * timePassed * PLAYER_SPEED, ((z / ((height - 1) / 2)) - 1) * timePassed * PLAYER_SPEED);
+				for (int dZ = -1; dZ <= 1; dZ++)
+				{
+					for (int dX = -1; dX <= 1; dX++)
+					{
+						bool zbounds = true;
+						bool xbounds = true;
+						int zchange;
+						int xchange;
+						zchange = z + dZ;
+						xchange = x + dX;
+
+						if (zchange < 0 || zchange > height - 1)
+						{
+							zbounds = false;
+							zchange = z;
+						}
+
+						if (xchange < 0 || xchange > width - 1)
+						{
+							xbounds = false;
+							xchange = x;
+						}
+						if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+						{
+
+							deltaX = timePassed * PLAYER_SPEED * -dX;
+							deltaZ = timePassed * PLAYER_SPEED * -dZ;
+							currAI->Move(deltaX, deltaZ);
+							for (CObject* cObj : objects) {
+								if (currAI->Collides(cObj))
+									PlayerCollision(currAI, cObj, deltaX, deltaZ);
+							}
+						}
+					}
+				}
+			}
+
+			else
+			{
+				for (int gridcheck = 0; gridcheck < 5; gridcheck++)
+				{
+					for (int dZ = -1; dZ <= 1; ++dZ)
+					{
+						for (int dX = -1; dX <= 1; ++dX)
+						{
+							bool zbounds = true;
+							bool xbounds = true;
+							int zchange;
+							int xchange;
+							zchange = z + dZ;
+							xchange = x + dX;
+
+							if (zchange < 0 && zchange > height - 1)
+							{
+								zbounds = false;
+								zchange = z;
+							}
+
+							if (xchange < 0 && xchange > width - 1)
+							{
+								xbounds = false;
+								xchange = x;
+							}
+
+							gridlocation = ((zchange)* width) + (xchange);
+							zchange -= z;
+							xchange -= x;
+
+							//if (AITransform->fPosition.x < 0.0f)
+							//	xchange *= -1.0f;
+							//
+							//if (AITransform->fPosition.z < 0.0f)
+							//	zchange *= -1.0f;
+
+							if (gridlocation < GRID.size())
+							{
+								int tile = GRID[gridlocation];
+								if (gridcheck == 0)
+								{
+									if (tile == GRID_SYSTEM::BOMB/* && (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
+									{
+										deltaX = timePassed * PLAYER_SPEED * xchange;
+										deltaZ = timePassed * PLAYER_SPEED * zchange;
+										currAI->Move(deltaX, deltaZ);
+										for (CObject* cObj : objects) {
+											if (currAI->Collides(cObj))
+												PlayerCollision(currAI, cObj, deltaX, deltaZ);
+										}
+
+										for (int dZ = -1; dZ <= 1; ++dZ)
+										{
+											for (int dX = -1; dX <= 1; ++dX)
+											{
+												zbounds = true;
+												xbounds = true;
+												zchange = 0;
+												xchange = 0;
+												zchange = z + dZ;
+												xchange = x + dX;
+
+												if (zchange < 0 && zchange > height - 1)
+												{
+													zbounds = false;
+													zchange = z;
+												}
+
+												if (xchange < 0 && xchange > width - 1)
+												{
+													xbounds = false;
+													xchange = x;
+												}
+
+												gridlocation = ((zchange)* width) + (xchange);
+												zchange -= z;
+												xchange -= x;
+
+												if (gridlocation < GRID.size())
+												{
+													int tile = GRID[gridlocation];
+													if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
+													{
+
+														deltaX = timePassed * PLAYER_SPEED * -xchange;
+														deltaZ = timePassed * PLAYER_SPEED * -zchange;
+														currAI->Move(deltaX, deltaZ);
+														for (CObject* cObj : objects) {
+															if (currAI->Collides(cObj))
+																PlayerCollision(currAI, cObj, deltaX, deltaZ);
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+
+
+								else if (gridcheck == 1 && AIbombaction >= 4.0f)
+								{
+									if (tile == GRID_SYSTEM::DESTROYABLE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+									{
+										if (currAI->hasAvailableBombSlot())
+										{
+											AIbombaction = 0.0f;
+											bool soundplaying;
+											bombPlaceSound1->isSoundPlaying(soundplaying);
+											if (!soundplaying)
+											{
+												bombPlaceSound1->Play();
+											}
+											else
+											{
+												bombPlaceSound2->Play();
+											}
+											for (int i = 0; i < maxNumBombs; ++i)
+											{
+												if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive())
+												{
+													currAI->AddBombIndex(i);
+													std::vector<CBomb*> bombs;
+
+													switch (currAI->GetBombType()) {
+
+													case 4:
+														if (v_cBombs[i]) {
+															bombs = p_cEntityManager->DropBomb0(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+														else {
+															bombs = p_cEntityManager->DropBomb0(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+
+														break;
+													case 1:
+														if (v_cBombs[i]) {
+															bombs = p_cEntityManager->DropBomb1(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+														else {
+															bombs = p_cEntityManager->DropBomb1(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+
+														break;
+													case 2:
+														if (v_cBombs[i]) {
+															bombs = p_cEntityManager->DropBomb2(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+														else {
+															bombs = p_cEntityManager->DropBomb2(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+
+														break;
+													case 3:
+														if (v_cBombs[i]) {
+															bombs = p_cEntityManager->DropBomb3(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+														else {
+															bombs = p_cEntityManager->DropBomb3(currAI, objects);
+															for (int j = 0; j < bombs.size(); j++) {
+																v_cBombs[i + j] = bombs[j];
+															}
+														}
+
+														break;
+													default:
+														if (v_cBombs[i])
+															*v_cBombs[i] = *p_cEntityManager->DropBomb(currAI);
+														else
+															v_cBombs[i] = p_cEntityManager->DropBomb(currAI);
+														break;
+													}
+
+													break;
+												}
+											}
+										}
+									}
+								}
+								else if (gridcheck == 2)
+								{
+									if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
+									{
+
+										deltaX = timePassed * PLAYER_SPEED * -xchange;
+										deltaZ = timePassed * PLAYER_SPEED * -zchange;
+										currAI->Move(deltaX, deltaZ);
+										for (CObject* cObj : objects) {
+											if (currAI->Collides(cObj))
+												PlayerCollision(currAI, cObj, deltaX, deltaZ);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+
 
 		for (CObject* cObj : objects) {
 			if (currAI->Collides(cObj))
