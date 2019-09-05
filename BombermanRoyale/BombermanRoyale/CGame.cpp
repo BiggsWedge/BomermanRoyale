@@ -936,9 +936,9 @@ void CGame::LoadObject()
 	loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 
-	for (float z = -12.5f; z < 20.0f; z += 2.5f)
+	for (float z = -7.5f; z < 15.0f; z += 2.5f)
 	{
-		for (float x = -17.5f; x < 20.0f; x += 2.5f)
+		for (float x = -12.5f; x < 15.0f; x += 2.5f)
 		{
 			loadInfo.position = { x, -2.5f, z };
 			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -1097,8 +1097,8 @@ void CGame::LoadObject()
 
 	}
 
-	for (float x = -20; x <= 20; x += 2.5f) {
-		loadInfo.position = { x, 0, -15 };
+	for (float x = -15; x <= 15; x += 2.5f) {
+		loadInfo.position = { x, 0, -10 };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
 		loadInfo.meshID = MODELS::CUBE;
@@ -1110,12 +1110,12 @@ void CGame::LoadObject()
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { x, 0, 20 };
+		loadInfo.position = { x, 0, 15 };
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
 
-	for (float z = -12.5; z <= 17.5; z += 2.5f) {
-		loadInfo.position = { -20, 0, z };
+	for (float z = -7.5; z <= 12.5; z += 2.5f) {
+		loadInfo.position = { -15, 0, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
 		loadInfo.collisionLayer = COLLISION_LAYERS::WALL;
@@ -1125,7 +1125,7 @@ void CGame::LoadObject()
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { 20, 0, z };
+		loadInfo.position = { 15, 0, z };
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
 
