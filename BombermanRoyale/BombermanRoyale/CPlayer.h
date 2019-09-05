@@ -13,6 +13,7 @@ private:
 	int controllerIndex;
 	int bombType = 0;
 	CharacterController controller;
+	bool crouched = false;
 
 public:
 	CPlayer();
@@ -30,12 +31,14 @@ public:
 	inline std::vector<int> getBombIndices() { return bombs; };
 	inline int GetBombType() { return bombType; }
 	inline void GetInput() { controller.Update(); }
+	inline bool GetCrouchStatus() { return crouched; }
 	inline CharacterController* GetCharacterController() { return &controller; }
 
 	//MUTATORS
 	inline void setControllerIndex(int index) { controller.SetControllerIndex(index); }
 	inline void AddBombIndex(int index) { bombs.push_back(index); }
 	inline void incNumBombs() { numBombs++; }
+	inline void ChangeCrouchStatus() { crouched = !crouched; }
 	inline void setAlive(bool _alive) { alive = _alive; }
 	inline void deleteBomb(int index) { bombs.erase(bombs.begin() + index); }
 	inline void SetBombType(int _bombType) { bombType = _bombType; }

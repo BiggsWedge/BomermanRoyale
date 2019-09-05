@@ -31,6 +31,7 @@ struct key {
 
 Button p1Pause;
 Button p1Help;
+Button duck;
 CObject* pauseMenuBomb;
 float pauseMenuTimer;
 
@@ -98,10 +99,10 @@ double offMapTimer = 0;
 int boxDropped;
 int currLayer = 0;
 int passes = 0;
-float fMinX = -15;
-float fMaxX = 15;
-float fMinZ = -10;
-float fMaxZ = 15;
+float fMinX = -20;
+float fMaxX = 20;
+float fMinZ = -15;
+float fMaxZ = 20;
 float bCollisionIgnore = 0.5f;
 int numPlayers = 2;
 
@@ -135,6 +136,7 @@ bool CGame::Initialize()
 	keyboardInputs[1].keycodes.resize(5);
 	keyboardInputs[1].keycodes = { VK_NUMPAD5, VK_NUMPAD2, VK_NUMPAD1, VK_NUMPAD3, VK_NUMPAD6 };
 	viewPos = g_d3dData->viewMat;
+	shakeTime = 0;
 
 	v_cBombs.resize(maxNumBombs);
 	p_cRendererManager = new CRendererManager();
@@ -157,6 +159,7 @@ void CGame::Run()
 #pragma endregion
 
 	float errorCode = 0;
+
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer))) {
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
@@ -212,18 +215,6 @@ void CGame::Run()
 	}
 	bombPlaceSound2->SetVolume(0.8f);
 
-	//for (int i = 0; i < numPlayers; ++i)
-	//{
-	//    if (walkSound.size() != numPlayers)
-	//    {
-	//        walkSound.resize(2);
-	//    }
-	//    if (G_FAIL(g_pAudioHolder->CreateSound(walkSFX, &walkSound.at(i))))
-	//    {
-	//        g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	//    }
-	//}
-
 	for (int i = 0; i < 2; ++i)
 	{
 		if (MenuSounds.size() != 2)
@@ -276,6 +267,7 @@ void CGame::Run()
 
 	p1Pause.SetButtonID(G_START_BTN);
 	p1Help.SetButtonID(G_SELECT_BTN);
+	//duck.SetButtonID(G_EAST_BTN);
 
 	setGameState(GAME_STATE::MAIN_MENU);
 
@@ -293,6 +285,7 @@ void CGame::Run()
 		currFrame = GetTickCount64();
 		timePassed = (currFrame - prevFrame) / 1000.0;
 		mapTime += timePassed;
+		timer.Signal();
 
 		for (int i = 0; i < keycodes.size(); ++i) {
 			keys[i].prevState = keys[i].currState;
@@ -317,6 +310,7 @@ void CGame::Run()
 		if (keys[KEYS::HELP_MENU].pressed() || p1Help.Pressed()) {
 			ControlScreenToggle = !ControlScreenToggle;
 			isPaused = !isPaused;
+			SprinklersOn = false;
 
 		}
 
@@ -342,11 +336,12 @@ void CGame::Run()
 		if (keys[KEYS::PAUSE].pressed()) {
 			isPaused = !isPaused;
 			ControlScreenToggle = !ControlScreenToggle;
-
+			SprinklersOn = false;
 			if (isPaused == false) {
 				g_pAudioHolder->ResumeAll();
 				g_pMusicStream->ResumeStream();
 				timePassed = tempTime;
+				SprinklersOn = true;
 			}
 		}
 
@@ -356,6 +351,7 @@ void CGame::Run()
 			g_pAudioHolder->PauseAll();
 			tempTime = timePassed;
 			timePassed = 0;
+			SprinklersOn = false;
 		}
 
 		if (curGameState == GAME_STATE::MAIN_MENU)
@@ -490,25 +486,6 @@ void CGame::Run()
 			prevCursor = currCursor;
 			GetCursorPos(&currCursor);
 
-			/*
-			prevShowMouse = showMouse;
-			if (prevCursor.x == currCursor.x && prevCursor.y == currCursor.y)
-			{
-				mouseIdleTimer += timePassed;
-				if (mouseIdleTimer >= 3.0)
-					showMouse = false;
-			}
-			else
-			{
-				showMouse = true;
-				mouseIdleTimer = 0.0;
-			}
-			if (prevShowMouse && !showMouse)
-				ShowCursor(false);
-			if (!prevShowMouse && showMouse)
-				ShowCursor(true);
-				f*/
-
 			g_d3dData->debugCamDelta = { 0.0f, 0.0f };
 
 			if (keys[KEYS::ZERO].pressed())
@@ -610,6 +587,8 @@ void CGame::Run()
 			this->GamePlayLoop(timePassed);
 		}
 
+
+
 		//RenderMenus
 		for (CObject* menu : menuObjects) {
 			TComponent* cRenderer;
@@ -627,8 +606,20 @@ void CGame::Run()
 
 		}
 
+		//render particles
+		if (bombExploded)
+		{
+			InitSortedParticles(sortedParticles, timer.Delta(), bombPos, { 1,0,0,1 });
+		}
+		if (SprinklersOn == true)
+		{
+			//RenderParticles
+			InitFreeParticles(firstEmit, shared_pool, timer.Delta());
+			InitFreeParticles(secondEmit, shared_pool, timer.Delta());
+			InitFreeParticles(thirdEmit, shared_pool, timer.Delta());
+			InitFreeParticles(fourthEmit, shared_pool, timer.Delta());
+		}
 		//RenderObjects
-
 		if (mapTime >= 40)
 		{
 			fallingSoundPlaying = false;
@@ -664,9 +655,6 @@ void CGame::Run()
 		//			TComponent* cRenderer = nullptr;
 		//			TTransformComponent* renderer = nullptr;
 
-
-
-
 		if (mapTime >= 45)
 		{
 			warningSoundPlaying = false;
@@ -697,15 +685,8 @@ void CGame::Run()
 						renderer = (TTransformComponent*)cRenderer;
 
 						if (renderer->fPosition.x == fMinX || renderer->fPosition.z == fMinZ || renderer->fPosition.x == fMaxX || renderer->fPosition.z == fMaxZ) {
-
-							//delete objects[i];
 							objects[i] = nullptr;
-							//objects.erase(objects.begin() + i);
-							//--i;
-							//continue;
-
-
-
+							SprinklersOn = false;
 							for (CPlayer* player : v_cPlayers)
 							{
 								if (!player || !player->isAlive())
@@ -732,13 +713,6 @@ void CGame::Run()
 
 								TComponent* _prenderer = nullptr;
 
-
-								/*for (int i = 0; i < items.size(); i++)
-								{
-									TComponent* _iRenderer = nullptr;
-									if (items[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, _iRenderer)) {
-										TTransformComponent* iRenderer = (TTransformComponent*)_iRenderer;
-*/
 								if (AI->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
 									TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
@@ -757,7 +731,6 @@ void CGame::Run()
 										items.erase(items.begin() + i);
 								}
 							}
-							//}
 							objects.erase(objects.begin() + i);
 						}
 
@@ -816,7 +789,9 @@ void CGame::Run()
 				if (tRenderer->iUsedLoadState == curGameState)
 					p_cRendererManager->RenderObject((CObject*)bomb);
 			}
+
 		}
+
 
 
 		//RenderExplosions
@@ -867,7 +842,6 @@ void CGame::Run()
 			}
 		}
 
-
 		//Render Players
 		for (CPlayer* player : v_cPlayers) {
 			if (!player || !player->isAlive())
@@ -882,6 +856,7 @@ void CGame::Run()
 					p_cRendererManager->RenderObject((CObject*)player);
 			}
 		}
+
 		for (CPlayer* AI : v_cAI)
 		{
 			if (!AI || !AI->isAlive())
@@ -894,6 +869,7 @@ void CGame::Run()
 					p_cRendererManager->RenderObject((CObject*)AI);
 			}
 		}
+
 		if (menuBomb)
 		{
 			TComponent* renderer = nullptr;
@@ -1312,7 +1288,7 @@ void CGame::GamePlayLoop(double timePassed)
 {
 	int width;
 	int height;
-	if (fMaxX == 15.0f)
+	if (fMaxX == 20.0f)
 	{
 		width = (((fMaxX - 2.5f) - (fMinX + 2.5f)) / 2.5f) + 1;
 		height = (((fMaxZ - 2.5f) - (fMinZ + 2.5f)) / 2.5f) + 1;
@@ -1333,7 +1309,7 @@ void CGame::GamePlayLoop(double timePassed)
 		int x = i % width;
 		float zpos;
 		float xpos;
-		if (fMaxX == 15.0f)
+		if (fMaxX == 20.0f)
 		{
 			zpos = (fMaxZ - 2.5f) - (float(z) * 2.5f);
 			xpos = (fMaxX - 2.5f) - (float(x) * 2.5f);
@@ -1515,7 +1491,6 @@ void CGame::GamePlayLoop(double timePassed)
 			if (GRID.at(gridlocation) == GRID_SYSTEM::BOMB)
 			{
 				int tile = GRID[gridlocation];
-
 				//currAI->Move(((x / ((width - 1) / 2)) - 1) * timePassed * PLAYER_SPEED, ((z / ((height - 1) / 2)) - 1) * timePassed * PLAYER_SPEED);
 				for (int dZ = -1; dZ <= 1; dZ += 2)
 				{
@@ -1772,6 +1747,7 @@ void CGame::GamePlayLoop(double timePassed)
 						}
 					}
 				}
+
 			}
 		}
 		else if (gridlocation >= GRID.size())
@@ -1815,6 +1791,7 @@ void CGame::GamePlayLoop(double timePassed)
 						}
 						if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
 						{
+
 
 							deltaX = timePassed * PLAYER_SPEED * -dX;
 							deltaZ = timePassed * PLAYER_SPEED * -dZ;
@@ -2061,7 +2038,7 @@ void CGame::GamePlayLoop(double timePassed)
 
 		for (CBomb* bomb : v_cBombs) {
 			if (bomb && bomb->isAlive()) {
-				if (bomb->getTimer() >= 0.7f) {
+				if (bomb->getTimer() >= 0.5f) {
 					if (currAI->Collides(bomb)) {
 						PlayerBombCollision(currAI, bomb);
 					}
@@ -2130,23 +2107,6 @@ void CGame::GamePlayLoop(double timePassed)
 			PauseMenuToggle = !PauseMenuToggle;
 			isPaused = !isPaused;
 		}
-		/*
-
-
-
-
-		TComponent* pComponent;
-		currPlayer->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
-		TTransformComponent* pTransform = (TTransformComponent*)pComponent;
-
-		/*
-		TComponent* col = nullptr;
-		if (currPlayer->GetComponent(COMPONENT_TYPE::COLLIDER, col))
-		{
-			TColliderComponent* tCol = (TColliderComponent*)col;
-			DirectX::XMStoreFloat4(&tCol->d3dCollider.Orientation, DirectX::XMQuaternionRotationMatrix(pTransform->mObjMatrix));
-		}
-		*/
 		if (cont->IsControllerConnected())
 		{
 			deltaX = cont->GetLeftRight() * timePassed * PLAYER_SPEED;
@@ -2165,30 +2125,41 @@ void CGame::GamePlayLoop(double timePassed)
 		}
 
 
-		/*
-		if (isUpPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::UP).held())
-			deltaZ += timePassed * PLAYER_SPEED;
-
-		if (isDownPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::DOWN).held())
-			deltaZ -= timePassed * PLAYER_SPEED;
-
-		if (isLeftPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::LEFT).held())
-			deltaX -= timePassed * PLAYER_SPEED;
-
-		if (isRightPressed == 1.0f || keyboardInputs[currPlayer->GetControllerIndex()].At(CONTROL_KEYS::RIGHT).held())
-			deltaX += timePassed * PLAYER_SPEED;
-		*/
 		if (deltaX != 0.0f || deltaZ != 0.0f)
 		{
-			currPlayer->Move(deltaX, deltaZ);
-			bool walkplaying;
-			walktimer += timePassed;
-			walkSound1->isSoundPlaying(walkplaying);
-			if (!walkplaying && walktimer > 0.3f)
+			if (currPlayer->GetCrouchStatus() == false)
 			{
-				walktimer = 0.0f;
-				walkSound1->Play();
+
+				currPlayer->Move(deltaX, deltaZ);
+				bool walkplaying;
+				walktimer += timePassed;
+				walkSound1->isSoundPlaying(walkplaying);
+				if (!walkplaying && walktimer > 0.3f)
+				{
+					walktimer = 0.0f;
+					walkSound1->Play();
+				}
 			}
+		}
+
+		if (deltaX != 0.0f || deltaZ != 0.0f)
+		{
+			if (currPlayer->GetCrouchStatus() == true)
+			{
+
+			}
+		}
+
+		//CROUCH
+		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_BUTTONS::CROUCH) && !isPaused) {
+
+			currPlayer->CrouchRoll(0, 0, -1.5f, false);
+			currPlayer->ChangeCrouchStatus();
+		}
+		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::CROUCH) && !isPaused) {
+
+			currPlayer->CrouchRoll(0, 0, 1.5f, false);
+			currPlayer->ChangeCrouchStatus();
 		}
 
 		for (CObject* cObj : objects) {
@@ -2200,9 +2171,9 @@ void CGame::GamePlayLoop(double timePassed)
 		for (CBomb* bomb : v_cBombs)
 		{
 			if (bomb && bomb->isAlive())
-				//if(bomb->getTimer() >= 0.7f)
-				if (currPlayer->Collides(bomb))
-					PlayerCollision(currPlayer, (CObject*)bomb, deltaX, deltaZ);
+				if (bomb->getTimer() >= 0.5f)
+					if (currPlayer->Collides(bomb))
+						PlayerCollision(currPlayer, (CObject*)bomb, deltaX, deltaZ);
 		}
 		int bombindex = 0;
 		for (CBomb* bomb : v_cBombs)
@@ -2276,7 +2247,6 @@ void CGame::GamePlayLoop(double timePassed)
 			}
 		}
 
-
 		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_BUTTONS::ACTION) && !isPaused)
 		{
 			if (currPlayer->hasAvailableBombSlot())
@@ -2313,6 +2283,7 @@ void CGame::GamePlayLoop(double timePassed)
 									v_cBombs[i + j] = bombs[j];
 								}
 							}
+
 							break;
 						case 1:
 							if (v_cBombs[i]) {
@@ -2385,15 +2356,7 @@ void CGame::GamePlayLoop(double timePassed)
 					pauseMenuTimer = 0.0f;
 					pauseMenuBomb->Move(0.0f, 1.2f, false);
 					menuIndex -= 1;
-					for (int i = 0; i < MenuSounds.size(); ++i)
-					{
-						//MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						//if (!soundplaying)
-						//{
-						//	MenuSounds.at(i)->Play();
-						//	break;
-						//}
-					}
+
 
 				}
 				if (currPlayer->GetCharacterController()->GetUpDown() < 0.0f && pauseMenuTimer > 4.0f && menuIndex < 2)
@@ -2402,29 +2365,12 @@ void CGame::GamePlayLoop(double timePassed)
 					pauseMenuTimer = 0.0f;
 					pauseMenuBomb->Move(0.0f, -1.2f, false);
 					menuIndex += 1;
-					for (int i = 0; i < MenuSounds.size(); ++i)
-					{
-						//MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						//if (!soundplaying)
-						//{
-						//	MenuSounds.at(i)->Play();
-						//	break;
-						//}
-					}
+
 
 				}
 			}
 			if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::ACTION))
 			{
-				//for (int i = 0; i < MenuSounds.size(); ++i)
-				//{
-				//	MenuSounds.at(i)->isSoundPlaying(soundplaying);
-				//	if (!soundplaying)
-				//	{
-				//		MenuSounds.at(i)->Play();
-				//		break;
-				//	}
-				//}
 				switch (menuIndex) {
 				case 0:
 				{
@@ -2460,121 +2406,150 @@ void CGame::GamePlayLoop(double timePassed)
 	}
 }
 
+void CGame::InitSortedParticles(end::sorted_pool_t<particle, 1000>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color) {
+	//Init number of particles as loop
+	for (size_t i = 0; i < 1; i++) {
+		int count = sortedPool.alloc();
 
-//void InitSortedParticles(sorted_pool_t<particle, 1000>& sortedPool, float deltaTime) {
-//	//Init number of particles as loop
-//	for (size_t i = 0; i < 1; i++) {
-//		int count = sortedPool.alloc();
-//
-//		if (count != -1) {
-//			sortedPool[count].pos.x = 0;
-//			sortedPool[count].pos.y = 0;
-//			sortedPool[count].pos.z = 0;
-//			sortedPool[count].speed.x = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX)) / 3;
-//			sortedPool[count].speed.y = (0.0f + (2.0f - 0.0f) * ((float)rand() / (float)RAND_MAX)) / 2;
-//			sortedPool[count].speed.z = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX)) / 3;
-//			sortedPool[count].speed.y *= particleSpeed;
-//			sortedPool[count].timer = 1.5f + (1.8f - 1.5f) * ((float)rand() / (float)RAND_MAX);
-//			sortedPool[count].color = { 1,0,0,1 };
-//		}
-//	}
-//
-//	for (size_t i = 0; i < sortedPool.size(); i++) {
-//		sortedPool[i].prev_pos = sortedPool[i].pos;
-//		sortedPool[i].pos.x += (sortedPool[i].speed.x * deltaTime);
-//		sortedPool[i].pos.y += (sortedPool[i].speed.y * deltaTime);
-//		sortedPool[i].pos.z += (sortedPool[i].speed.z * deltaTime);
-//		sortedPool[i].speed.y -= particleGravity * deltaTime;
-//		sortedPool[i].timer -= deltaTime;
-//		add_line(sortedPool[i].pos, sortedPool[i].prev_pos, sortedPool[i].color);
-//
-//		if (sortedPool[i].timer <= 0) {
-//			sortedPool.free(i);
-//			i--;
-//		}
-//	}
-//}
-//
-//void InitFreeParticles(emitter& emitter, pool_t<particle, 1024>& freePool, float deltaTime) {
-//	//init emitters
-//	firstEmit.spawn_pos = { 5,0,5 };
-//	secondEmit.spawn_pos = { 0,0,10 };
-//	thirdEmit.spawn_pos = { 5,0,0 };
-//	firstEmit.spawn_color = { 0,1,0,0 };
-//	secondEmit.spawn_color = { 0,0,1,0 };
-//	thirdEmit.spawn_color = { 0,1,1,0 };
-//
-//	//alloc space
-//	int count = freePool.alloc();
-//	int emitCount = emitter.indices.alloc();
-//
-//	emitter.indices[emitCount] = count;
-//	freePool[count].pos = emitter.spawn_pos;
-//	freePool[count].prev_pos = emitter.spawn_pos;
-//	freePool[count].speed.x = (-5.0f + (5.0f - -5.0f) * ((float)rand() / (float)RAND_MAX)) / 3;
-//	freePool[count].speed.y = (0.0f + (2.0f - 0.0f) * ((float)rand() / (float)RAND_MAX)) / 2;
-//	freePool[count].speed.z = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX)) / 3;
-//	freePool[count].speed.x *= particleSpeed;
-//	freePool[count].timer = ((float)rand() / (float)RAND_MAX);
-//	freePool[count].color = { 0,1,1,0 };
-//
-//	for (size_t i = 0; i < emitter.indices.size(); i++) {
-//		int Ecount = emitter.indices[i];
-//
-//		if (Ecount <= -1 || Ecount > 1024) {
-//			break;
-//		}
-//
-//		if (Ecount != -1) {
-//			freePool[Ecount].timer -= deltaTime;
-//
-//			if (freePool[Ecount].timer <= 0.0f) {
-//				freePool.free(Ecount);
-//				emitter.indices.free(i);
-//				i--;
-//				continue;
-//			}
-//
-//			freePool[Ecount].prev_pos = freePool[Ecount].pos;
-//			freePool[Ecount].pos.x += (freePool[Ecount].speed.x * deltaTime);
-//			freePool[Ecount].pos.y += (freePool[Ecount].speed.y * deltaTime);
-//			freePool[Ecount].pos.z += (freePool[Ecount].speed.z * deltaTime);
-//			freePool[Ecount].speed.y -= particleGravity * deltaTime;
-//			add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
-//		}
-//	}
-//}
-//void CGame::SpawnObject(int i, std::vector<CObject*> objects, CRendererManager* p_cRendererManager, CEntityManager* p_cEntityManager) {
-//	item = p_cEntityManager->ItemDrop(objects[i]);
-//	p_cRendererManager->RenderObject(item);
-//}
-
-/*
-void CGame::ExplodeBomb(int bombToExplodeIndex)
-{
-	for (CPlayer* _currPlayer : v_cPlayers)
-	{
-		if (_currPlayer)
-		{
-			std::vector<int>* playerBombs = &_currPlayer->getBombIndices();
-
-			for (int i = 0; i < playerBombs->size(); ++i)
-			{
-				if (playerBombs->at(i) > bombToExplodeIndex)
-					playerBombs->at(i)--;
-				else if (playerBombs->at(i) == bombToExplodeIndex)
-				{
-					playerBombs->erase(playerBombs->begin() + i);
-					--i;
-				}
-			}
+		if (count != -1) {
+			sortedPool[count].pos.x = -pos.x - 10;
+			sortedPool[count].pos.y = pos.y;
+			sortedPool[count].pos.z = -pos.z - 15;
+			sortedPool[count].speed.x = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX));
+			sortedPool[count].speed.y = (0.0f + (2.0f - 0.0f) * ((float)rand() / (float)RAND_MAX));
+			sortedPool[count].speed.z = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX));
+			sortedPool[count].speed.y *= particleSpeed;
+			sortedPool[count].timer = 1.5f + (1.8f - 1.5f) * ((float)rand() / (float)RAND_MAX);
+			sortedPool[count].color = color;
 		}
 	}
-	v_cBombs[bombToExplodeIndex]->Explode();
-	v_cBombs.erase(v_cBombs.begin() + bombToExplodeIndex);
-}
-*/
 
+	for (size_t i = 0; i < sortedPool.size(); i++) {
+		sortedPool[i].prev_pos = sortedPool[i].pos;
+		sortedPool[i].pos.x += (sortedPool[i].speed.x * deltaTime);
+		sortedPool[i].pos.y += (sortedPool[i].speed.y * deltaTime);
+		sortedPool[i].pos.z += (sortedPool[i].speed.z * deltaTime);
+		sortedPool[i].speed.y -= particleGravity * deltaTime;
+		sortedPool[i].timer -= deltaTime;
+		add_line(sortedPool[i].pos, sortedPool[i].prev_pos, sortedPool[i].color);
+
+		if (sortedPool[i].timer <= 0) {
+			sortedPool.free(i);
+			i--;
+		}
+	}
+}
+
+void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime) {
+	//init emitters
+	firstEmit.spawn_pos = { 5,5,5 };
+	secondEmit.spawn_pos = { -30,5,-30 };
+	thirdEmit.spawn_pos = { -30,5,5 };
+	fourthEmit.spawn_pos = { 5,5,-30 };
+	//firstEmit.spawn_color = { 1,0,0,1 };
+	//secondEmit.spawn_color = { 1,0,0,1 };
+	//thirdEmit.spawn_color = { 1,0,0,1 };
+
+	//alloc space
+	int count = freePool.alloc();
+	int emitCount = emitter.indices.alloc();
+
+	emitter.indices[emitCount] = count;
+	freePool[count].pos = emitter.spawn_pos;
+	freePool[count].prev_pos = emitter.spawn_pos;
+	freePool[count].speed.x = (-5.0f + (5.0f - -5.0f) * ((float)rand() / (float)RAND_MAX));
+	freePool[count].speed.y = (0.0f + (2.0f - 0.0f) * ((float)rand() / (float)RAND_MAX));
+	freePool[count].speed.z = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX));
+	freePool[count].speed.x *= particleSpeed;
+	freePool[count].timer = ((float)rand() / (float)RAND_MAX);
+	freePool[count].color = { 1,1,1,1 };
+
+	for (size_t i = 0; i < emitter.indices.size(); i++) {
+		int Ecount = emitter.indices[i];
+
+		if (Ecount <= -1 || Ecount > 1024) {
+			break;
+		}
+
+		if (Ecount != -1) {
+			freePool[Ecount].timer -= deltaTime;
+
+			if (freePool[Ecount].timer <= 0.0f) {
+				freePool.free(Ecount);
+				emitter.indices.free(i);
+				i--;
+				continue;
+			}
+
+			freePool[Ecount].prev_pos = freePool[Ecount].pos;
+			freePool[Ecount].pos.x += (freePool[Ecount].speed.x * deltaTime);
+			freePool[Ecount].pos.y += (freePool[Ecount].speed.y * deltaTime);
+			freePool[Ecount].pos.z += (freePool[Ecount].speed.z * deltaTime);
+			freePool[Ecount].speed.y -= particleGravity * deltaTime;
+			add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
+		}
+	}
+}
+
+void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime, CObject* obj) {
+	TComponent* cRenderer = nullptr;
+	TTransformComponent* renderer = nullptr;
+	if (obj->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+	{
+		renderer = (TTransformComponent*)cRenderer;
+
+	}
+
+	//init emitters
+	freeEmit.spawn_pos = renderer->fPosition;
+
+	//alloc space
+	int count = freePool.alloc();
+	int emitCount = emitter.indices.alloc();
+
+	emitter.indices[emitCount] = count;
+	freePool[count].pos = emitter.spawn_pos;
+	freePool[count].prev_pos = emitter.spawn_pos;
+	freePool[count].speed.x = (-5.0f + (5.0f - -5.0f) * ((float)rand() / (float)RAND_MAX));
+	freePool[count].speed.y = (0.0f + (2.0f - 0.0f) * ((float)rand() / (float)RAND_MAX));
+	freePool[count].speed.z = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX));
+	freePool[count].speed.x *= particleSpeed;
+	freePool[count].timer = ((float)rand() / (float)RAND_MAX);
+	freePool[count].color = { 1,0,0,1 };
+
+	for (size_t i = 0; i < emitter.indices.size(); i++) {
+		int Ecount = emitter.indices[i];
+
+		if (Ecount <= -1 || Ecount > 1024) {
+			break;
+		}
+
+		if (Ecount != -1) {
+			freePool[Ecount].timer -= deltaTime;
+
+			if (freePool[Ecount].timer <= 0.0f) {
+				freePool.free(Ecount);
+				emitter.indices.free(i);
+				i--;
+				continue;
+			}
+
+			freePool[Ecount].prev_pos = freePool[Ecount].pos;
+			freePool[Ecount].pos.x += (freePool[Ecount].speed.x * deltaTime);
+			freePool[Ecount].pos.y += (freePool[Ecount].speed.y * deltaTime);
+			freePool[Ecount].pos.z += (freePool[Ecount].speed.z * deltaTime);
+			freePool[Ecount].speed.y -= particleGravity * deltaTime;
+			add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
+		}
+	}
+}
+
+void CGame::SpawnParticles(CObject* obj, double time, double timePassed) {
+	for (double i = 0; i < time; i += timePassed)
+	{
+		InitFreeParticles(freeEmit, shared_pool, timePassed, obj);
+	}
+}
 
 void CGame::setGameState(int _gameState)
 {
@@ -2585,12 +2560,13 @@ void CGame::setGameState(int _gameState)
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
 		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(-1.5f, 11.4f, -6.8f), 0, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
+		SprinklersOn = false;
 		break;
 	}
 	case GAME_STATE::ARCADE_GAME:
 	{
+		SprinklersOn = true;
 		delete menuBomb;
-		g_d3dData->resetCamera();
 		shakeTime = 0;
 		menuBomb = nullptr;
 		LoadObject();
@@ -2600,10 +2576,10 @@ void CGame::setGameState(int _gameState)
 		v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
 		//v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
 		v_cAI[0] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
-		fMinX = -15;
-		fMaxX = 15;
-		fMinZ = -10;
-		fMaxZ = 15;
+		fMinX = -20;
+		fMaxX = 20;
+		fMinZ = -15;
+		fMaxZ = 20;
 		mapTime = 0;
 
 
@@ -2623,11 +2599,6 @@ void CGame::setGameState(int _gameState)
 		ClearPlayersAndBombs();
 		break;
 	}
-	//case GAME_STATE::CREDIT_SCREEN:
-	//{
-	//	LoadAnim();
-	//	break;
-	//}
 	default:
 	{
 		break;
@@ -2694,7 +2665,6 @@ void CGame::ClearPlayersAndBombs()
 	explosionTimers.clear();
 	objects.clear();
 	items.clear();
-	g_d3dData->resetCamera();
 	shakeTime = 0;
 }
 
@@ -2757,13 +2727,29 @@ void CGame::updateBombs(double timePassed)
 			}
 		}
 
+		TComponent* Xplo = nullptr;
+		TComponent* Zplo = nullptr;
+		TTransformComponent* XexplosionTrans;
+		XexplosionTrans = nullptr;
+		TTransformComponent* ZexplosionTrans;
+		ZexplosionTrans = nullptr;
 
 		for (CPlayer* player : v_cPlayers) {
 			if (player) {
+
+				if (Xexplosions[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, Xplo)) {
+					XexplosionTrans = (TTransformComponent*)Xplo;
+				}
+				if (Zexplosions[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, Zplo)) {
+					ZexplosionTrans = (TTransformComponent*)Zplo;
+				}
 				if (Xexplosions[i]->Collides((CObject*)player) || Zexplosions[i]->Collides((CObject*)player))
 				{
-					player->setAlive(false);
-					DeathSound->Play();
+					if (player->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 0 || ZexplosionTrans->fPosition.y == 0)
+					{
+						player->setAlive(false);
+						DeathSound->Play();
+					}
 				}
 			}
 
@@ -2773,8 +2759,11 @@ void CGame::updateBombs(double timePassed)
 			if (AI) {
 				if (Xexplosions[i]->Collides((CObject*)AI) || Zexplosions[i]->Collides((CObject*)AI))
 				{
-					AI->setAlive(false);
-					DeathSound->Play();
+					if (AI->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 0 || ZexplosionTrans->fPosition.y == 0)
+					{
+						AI->setAlive(false);
+						DeathSound->Play();
+					}
 				}
 			}
 		}
@@ -2787,16 +2776,7 @@ void CGame::updateBombs(double timePassed)
 			{
 				if (Xexplosions[i]->Collides((CObject*)v_cBombs[k]) || Zexplosions[i]->Collides((CObject*)v_cBombs[k]))
 				{
-					/*
-					v_cBombs[k]->Explode();
-					CPlayer* parent = v_cBombs[k]->getParent();
-					for (int j = 0; j < parent->getBombIndices().size(); ++j) {
-						if (parent->getBombIndices()[j] == k)
-							parent->deleteBomb(j);
-					}
-					*/
 					v_cBombs[k]->SetToExplode();
-
 				}
 			}
 		}
@@ -2816,6 +2796,15 @@ void CGame::updateBombs(double timePassed)
 				v_cBombs[i]->Explode();
 				bombExploded = true;
 
+				TComponent* cRenderer = nullptr;
+				TTransformComponent* Brenderer = nullptr;
+
+				if (v_cBombs[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+				{
+					Brenderer = (TTransformComponent*)cRenderer;
+					bombPos = Brenderer->fPosition;
+				}
+				//SpawnParticles((CObject*)v_cBombs[i], particleLife, timer.Delta());
 
 				if (v_cPlayers.at(0) && v_cPlayers.at(0)->isAlive())
 					g_pControllerInput->StartVibration(0, 0.25f, 1, 0);
@@ -2856,16 +2845,7 @@ bool CGame::loadTempMenus() {
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.forwardVec = { 0.0f, 1.1f, -1.0f };
-	/*
-	loadInfo.position = { 0.0f, 2.5f, 18.6f };
-	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::NAMES_HUD;
-	loadInfo.scale = DirectX::XMFLOAT3(2.4f, 0.25f, 1.0f);
-	loadInfo.meshID = MODELS::MENU1;
-	loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
-	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	*/
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::MAIN_MENU;
@@ -2907,21 +2887,6 @@ bool CGame::loadTempMenus() {
 	pauseMenuBomb = p_cEntityManager->CreateOBJFromTemplate(loadInfo);
 	menuObjects.push_back(pauseMenuBomb);
 
-	//loadInfo.position = { -2.5f, 11.4f, -5.9f };
-	//loadInfo.forwardVec = { 0.0f, 1.6f, -1.0f };
-	//loadInfo.meshID = MODELS::BOMB;
-	//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLACK_TEX;
-	//loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-	//loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-	//loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-	//loadInfo.usedGeo = -1;
-	//loadInfo.LoadState = 0;
-	//loadInfo.floor = false;
-	//loadInfo.destroyable = true;
-	//loadInfo.item = true;
-	//loadInfo.scale = DirectX::XMFLOAT3(1.0f * 0.5f, 1.0f * 0.5f, 1.0f *0.5f);
-	//menuBomb = p_cEntityManager->CreateOBJFromTemplate(loadInfo);
-	//menuObjects.push_back(menuBomb);
 	return true;
 }
 

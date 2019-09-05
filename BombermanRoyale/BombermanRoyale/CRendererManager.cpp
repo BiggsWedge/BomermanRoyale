@@ -49,7 +49,6 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 	g_d3dData->d3dContext->OMSetDepthStencilState(g_d3dData->d3dDepthStencilState[DEPTH_STENCIL_STATE::DEFAULT], 0);
 	g_d3dData->d3dContext->OMSetRenderTargets(1, d3dTargets, g_d3dData->d3dDepthStencilView);
-	//g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
 	const float bg_green[] = { 0.2f, 0.5f, 0.2f, 1.0f };
 
 
@@ -75,62 +74,11 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::DEFAULT]);
 	/*********DRAW OTHER STUFF HERE************/
 	//if(gamestate == 3)
-	//	v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext, timepassed);
+
 	for (CObject* c : rendereableObjects)
 		c->Draw(timepassed);
 
 
-	/*
-	if (gamestate == 3)
-	{
-		UINT stride[] = { sizeof(KeyVertex) };
-		UINT offset[] = { 0 };
-
-		//Skybox
-		g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerStateSKYBOX);
-		//ID3D11ShaderResourceView* texViews[] = { g_d3dData->JungleSRV };
-		//Sky Vertex Buffer Update
-		ID3D11Buffer* tempVB[] = { g_d3dData->JungleVertexBuffer };
-		g_d3dData->d3dContext->IASetVertexBuffers(0, 1, &tempVB[0], stride, offset);
-		g_d3dData->d3dContext->IASetInputLayout(g_d3dData->d3dInputLayout[INPUT_LAYOUT::SKY]);
-		//Sky Index Buffer
-		g_d3dData->d3dContext->IASetIndexBuffer(g_d3dData->JungleIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-		g_d3dData->d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		DirectX::XMFLOAT3 CameraPos = g_d3dData->debugCamPos;
-		CameraPos.y = 5.0f;
-		DirectX::XMVECTOR FocalPoint = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-		DirectX::XMVECTOR UpDirectionOfCamera = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-		DirectX::XMMATRIX View = DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat3(&g_d3dData->debugCamPos), FocalPoint, UpDirectionOfCamera);
-
-		//Sky Constant Buffer
-		DirectX::XMMATRIX ScalingMatrix = DirectX::XMMatrixScaling(45.0f, 60.0f, 50.0f);
-		TBasicVertexConstBuff cb;
-		ScalingMatrix.r[3] = g_d3dData->basicConstBuff.mViewMatrix.r[3];
-		cb.mModelMatrix = DirectX::XMMatrixTranspose(ScalingMatrix);
-		//cb.mViewMatrix = DirectX::XMMatrixInverse(nullptr, View);
-		cb.mViewMatrix = g_d3dData->basicConstBuff.mViewMatrix;
-		cb.mProjMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, (float)g_d3dData->windowWidthHeight.x / (float)g_d3dData->windowWidthHeight.y, 0.01f, 1100.0f));
-
-		D3D11_MAPPED_SUBRESOURCE mapsr;
-		ZeroMemory(&mapsr, sizeof(mapsr));
-
-		g_d3dData->d3dContext->Map(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::SKY], 0, D3D11_MAP_WRITE_DISCARD, 0, &mapsr);
-		std::memcpy(mapsr.pData, &cb, sizeof(TBasicVertexConstBuff));
-		g_d3dData->d3dContext->Unmap(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::SKY], 0);
-
-		//Sky shaders Set Up
-		g_d3dData->d3dContext->VSSetShader(g_d3dData->d3dVertexShader[VERTEX_SHADER::SKY], nullptr, 0);
-		g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::SKY]);
-		g_d3dData->d3dContext->PSSetShader(g_d3dData->d3dPixelShader[PIXEL_SHADER::SKY], nullptr, 0);
-		g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::SKY]);
-		g_d3dData->d3dContext->PSSetShaderResources(0, 1, &g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::FIRE_TEX]);
-		//g_d3dData->d3dContext->PSSetSamplers(0, 1, &g_d3dData->JungleSampler);
-
-		//Draw
-		g_d3dData->d3dContext->DrawIndexed(36, 0, 0);
-	}
-	*/
 
 	g_d3dData->d3dContext->OMSetDepthStencilState(g_d3dData->d3dDepthStencilState[DEPTH_STENCIL_STATE::TWO_D], 0);
 
@@ -183,7 +131,18 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 
 	}
+	UINT strides[] = { sizeof(TLineVertex) };
+	UINT offsets[] = { 0 };
 
+	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_LINE], 0, nullptr, get_line_verts(), 0, 0);
+	g_d3dData->d3dContext->IASetVertexBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_LINE], strides, offsets);
+	g_d3dData->d3dContext->IASetInputLayout(g_d3dData->d3dInputLayout[INPUT_LAYOUT::LINE]);
+	g_d3dData->d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	g_d3dData->d3dContext->VSSetShader(g_d3dData->d3dVertexShader[VERTEX_SHADER::LINE], 0, 0);
+
+	g_d3dData->d3dContext->PSSetShader(g_d3dData->d3dPixelShader[PIXEL_SHADER::LINE], nullptr, 0);
+	g_d3dData->d3dContext->Draw(get_line_vert_count(), 0);
+	clear_lines();
 	g_d3dData->d3dSpriteBatch->End();
 
 	g_d3dData->d3dSwapChain->Present(1, 0);

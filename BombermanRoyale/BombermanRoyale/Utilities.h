@@ -168,15 +168,15 @@ struct TSimpleVertex {
 };
 
 struct TLineVertex {
-	float3 pos = { 0.0f, 0.0f, 0.0f };
-	float4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };
+	DirectX::XMFLOAT4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-	TLineVertex() = default;
-	TLineVertex(const TLineVertex&) = default;
+	//TLineVertex() = default;
+	//TLineVertex(const TLineVertex&) = default;
 
-	inline TLineVertex(const float3& p, const float4& c) : pos{ p }, color{ c } {}
-	inline TLineVertex(const float3& p, const float3& c) : pos{ p }, color{ c.x, c.y, c.z, 1.0f } {}
-	inline TLineVertex(const float3& p, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) : pos{ p }, color{ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f } {}
+	//inline TLineVertex(const DirectX::XMFLOAT3& p, const DirectX::XMFLOAT4& c) : pos{ p }, color{ c } {}
+	//inline TLineVertex(const DirectX::XMFLOAT3& p, const DirectX::XMFLOAT4& c) : pos{ p }, color{ c.x, c.y, c.z, 1.0f } {}
+	//inline TLineVertex(const DirectX::XMFLOAT3& p, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) : pos{ p }, color{ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f } {}
 };
 
 struct jointCB
@@ -332,9 +332,9 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile);
 
 void LoadTextures();
 
-void add_line(float3 point_a, float3 point_b, float4 color_a, float4 color_b);
+void add_line(DirectX::XMFLOAT3 point_a, DirectX::XMFLOAT3 point_b, DirectX::XMFLOAT4 color_a, DirectX::XMFLOAT4 color_b);
 
-inline void add_line(float3 p, float3 q, float4 color) { add_line(p, q, color, color); }
+inline void add_line(DirectX::XMFLOAT3 p, DirectX::XMFLOAT3 q, DirectX::XMFLOAT4 color) { add_line(p, q, color, color); }
 
 void clear_lines();
 

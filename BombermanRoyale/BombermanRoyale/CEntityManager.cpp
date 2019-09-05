@@ -123,24 +123,50 @@ CBomb* CEntityManager::DropBomb(CPlayer* playerSource)
 	OBJLoadInfo loadInfo;
 
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
-	int x = 0;
-	int z = 0;
-	if (pos.x >= 0) {
-		x = (pos.x + 1.25f) / 2.5f;
-		pos.x = ((float)x * 2.5f);
-	}
-	else {
-		x = (pos.x - 1.25f) / 2.5f;
-		pos.x = ((float)x * 2.5f);
-	}
+	if (cTransform->fPosition.y == 0)
+	{
+		int x = 0;
+		int z = 0;
+		if (pos.x >= 0) {
+			x = (pos.x + 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
+		else {
+			x = (pos.x - 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
 
-	if (pos.z >= 0) {
-		z = (pos.z + 1.25f) / 2.5f;
-		pos.z = ((float)z * 2.5f);
+		if (pos.z >= 0) {
+			z = (pos.z + 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
+		else {
+			z = (pos.z - 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
 	}
-	else {
-		z = (pos.z - 1.25f) / 2.5f;
-		pos.z = ((float)z * 2.5f);
+	else
+	{
+		pos.y = 0;
+		int x = 0;
+		int z = 0;
+		if (pos.x >= 0) {
+			x = (pos.x + 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
+		else {
+			x = (pos.x - 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
+
+		if (pos.z >= 0) {
+			z = (pos.z + 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
+		else {
+			z = (pos.z - 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
 	}
 
 	loadInfo.position = pos;
@@ -174,25 +200,50 @@ std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource, std::vector
 	OBJLoadInfo loadInfo;
 
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
-	int x = 0;
-	int z = 0;
+	if (cTransform->fPosition.y == 0)
+	{
+		int x = 0;
+		int z = 0;
+		if (pos.x >= 0) {
+			x = (pos.x + 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
+		else {
+			x = (pos.x - 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
 
-	if (pos.x >= 0) {
-		x = (pos.x + 1.25f) / 2.5f;
-		pos.x = ((float)x * 2.5f);
+		if (pos.z >= 0) {
+			z = (pos.z + 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
+		else {
+			z = (pos.z - 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
 	}
-	else {
-		x = (pos.x - 1.25f) / 2.5f;
-		pos.x = ((float)x * 2.5f);
-	}
+	else
+	{
+		pos.y = 0;
+		int x = 0;
+		int z = 0;
+		if (pos.x >= 0) {
+			x = (pos.x + 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
+		else {
+			x = (pos.x - 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
 
-	if (pos.z >= 0) {
-		z = (pos.z + 1.25f) / 2.5f;
-		pos.z = ((float)z * 2.5f);
-	}
-	else {
-		z = (pos.z - 1.25f) / 2.5f;
-		pos.z = ((float)z * 2.5f);
+		if (pos.z >= 0) {
+			z = (pos.z + 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
+		else {
+			z = (pos.z - 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
 	}
 
 
@@ -739,24 +790,50 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector
 	OBJLoadInfo loadInfo;
 
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
-	int x = 0;
-	int z = 0;
-	if (pos.x >= 0) {
-		x = (pos.x + 1.25f) / 2.5f;
-		pos.x = ((float)x * 2.5f);
-	}
-	else {
-		x = (pos.x - 1.25f) / 2.5f;
-		pos.x = ((float)x * 2.5f);
-	}
+	if (cTransform->fPosition.y == 0)
+	{
+		int x = 0;
+		int z = 0;
+		if (pos.x >= 0) {
+			x = (pos.x + 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
+		else {
+			x = (pos.x - 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
 
-	if (pos.z >= 0) {
-		z = (pos.z + 1.25f) / 2.5f;
-		pos.z = ((float)z * 2.5f);
+		if (pos.z >= 0) {
+			z = (pos.z + 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
+		else {
+			z = (pos.z - 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
 	}
-	else {
-		z = (pos.z - 1.25f) / 2.5f;
-		pos.z = ((float)z * 2.5f);
+	else
+	{
+		pos.y = 0;
+		int x = 0;
+		int z = 0;
+		if (pos.x >= 0) {
+			x = (pos.x + 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
+		else {
+			x = (pos.x - 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
+
+		if (pos.z >= 0) {
+			z = (pos.z + 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
+		else {
+			z = (pos.z - 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
 	}
 
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
@@ -1259,25 +1336,50 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector
 	OBJLoadInfo loadInfo;
 
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
-	int x = 0;
-	int z = 0;
+	if (cTransform->fPosition.y == 0)
+	{
+		int x = 0;
+		int z = 0;
+		if (pos.x >= 0) {
+			x = (pos.x + 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
+		else {
+			x = (pos.x - 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
 
-	if (pos.x >= 0) {
-		x = (pos.x + 1.25f) / 2.5f;
-		pos.x = ((float)x * 2.5f);
+		if (pos.z >= 0) {
+			z = (pos.z + 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
+		else {
+			z = (pos.z - 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
 	}
-	else {
-		x = (pos.x - 1.25f) / 2.5f;
-		pos.x = ((float)x * 2.5f);
-	}
+	else
+	{
+		pos.y = 0;
+		int x = 0;
+		int z = 0;
+		if (pos.x >= 0) {
+			x = (pos.x + 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
+		else {
+			x = (pos.x - 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
 
-	if (pos.z >= 0) {
-		z = (pos.z + 1.25f) / 2.5f;
-		pos.z = ((float)z * 2.5f);
-	}
-	else {
-		z = (pos.z - 1.25f) / 2.5f;
-		pos.z = ((float)z * 2.5f);
+		if (pos.z >= 0) {
+			z = (pos.z + 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
+		else {
+			z = (pos.z - 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
 	}
 
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
@@ -1785,25 +1887,50 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector
 	OBJLoadInfo loadInfo;
 
 	DirectX::XMFLOAT3 pos = cTransform->fPosition;
-	int x = 0;
-	int z = 0;
+	if (cTransform->fPosition.y == 0)
+	{
+		int x = 0;
+		int z = 0;
+		if (pos.x >= 0) {
+			x = (pos.x + 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
+		else {
+			x = (pos.x - 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
 
-	if (pos.x >= 0) {
-		x = (pos.x + 1.25f) / 2.5f;
-		pos.x = ((float)x * 2.5f);
+		if (pos.z >= 0) {
+			z = (pos.z + 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
+		else {
+			z = (pos.z - 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
 	}
-	else {
-		x = (pos.x - 1.25f) / 2.5f;
-		pos.x = ((float)x * 2.5f);
-	}
+	else
+	{
+		pos.y = 0;
+		int x = 0;
+		int z = 0;
+		if (pos.x >= 0) {
+			x = (pos.x + 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
+		else {
+			x = (pos.x - 1.25f) / 2.5f;
+			pos.x = ((float)x * 2.5f);
+		}
 
-	if (pos.z >= 0) {
-		z = (pos.z + 1.25f) / 2.5f;
-		pos.z = ((float)z * 2.5f);
-	}
-	else {
-		z = (pos.z - 1.25f) / 2.5f;
-		pos.z = ((float)z * 2.5f);
+		if (pos.z >= 0) {
+			z = (pos.z + 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
+		else {
+			z = (pos.z - 1.25f) / 2.5f;
+			pos.z = ((float)z * 2.5f);
+		}
 	}
 
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
@@ -2449,13 +2576,12 @@ CPlayer* CEntityManager::InstantiatePlayer(int numPlayer, int playerModel, int p
 	pLoadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	pLoadInfo.usedGeo = -1;
 	pLoadInfo.LoadState = loadState;
-	//pLoadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 0.75f);
 
 	CPlayer* player = nullptr;
 	player = CreatePlayerFromTemplate(pLoadInfo);
 	player->resetStats();
 	player->Initialize();
 	player->setControllerIndex(numPlayer - 1);
-	player->GetCharacterController()->SetButtonCodes(G_SOUTH_BTN, G_START_BTN, G_SELECT_BTN);
+	player->GetCharacterController()->SetButtonCodes(G_SOUTH_BTN, G_START_BTN, G_SELECT_BTN, G_RIGHT_SHOULDER_BTN);
 	return player;
 }

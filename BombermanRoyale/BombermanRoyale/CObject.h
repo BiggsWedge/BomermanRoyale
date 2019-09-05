@@ -23,7 +23,6 @@ protected:
 	ID3D11DeviceContext*			d3dDeferredContext;
 
 public:
-
 	int currKeyFrame = 0;
 	float frameTime = 0;
 	float currFrameIndex = 0;
@@ -38,12 +37,11 @@ public:
 	virtual void Draw(double timepassed);
 	
 	bool Move(float _x, float _z, bool rotation = true);
+	bool CrouchRoll(float _x, float _z, float _y, bool rotation = true);
 	bool Collides(CObject* _other);
-//<<<<<<< HEAD
 	bool MoveOverTime(float _x, float _z);
-//=======
 	virtual void Cleanup();
-//>>>>>>> origin/Month2-UI
+
 };
 
 

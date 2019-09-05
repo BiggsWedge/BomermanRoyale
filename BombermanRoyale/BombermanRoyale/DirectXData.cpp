@@ -399,6 +399,19 @@ bool DirectXData::Initialize()
 
 #pragma region Constant Buffer Creation
 
+	D3D11_BUFFER_DESC bd = {};
+	D3D11_SUBRESOURCE_DATA bdsd = {};
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(TLineVertex) * get_line_vert_capacity();
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+	bd.MiscFlags = 0;
+	bd.StructureByteStride = 0;
+
+	bdsd.pSysMem = get_line_verts();
+
+	d3dDevice->CreateBuffer(&bd, NULL, &d3dConstBuffers[CONSTANT_BUFFER::V_LINE]);
+
 	D3D11_BUFFER_DESC BasicVConstBuffDesc;
 	ZeroMemory(&BasicVConstBuffDesc, sizeof(BasicVConstBuffDesc));
 
