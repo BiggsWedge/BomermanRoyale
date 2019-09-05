@@ -99,10 +99,10 @@ double offMapTimer = 0;
 int boxDropped;
 int currLayer = 0;
 int passes = 0;
-float fMinX = -20;
-float fMaxX = 20;
-float fMinZ = -15;
-float fMaxZ = 20;
+float fMinX = -15;
+float fMaxX = 15;
+float fMinZ = -10;
+float fMaxZ = 15;
 float bCollisionIgnore = 0.5f;
 int numPlayers = 2;
 
@@ -609,7 +609,7 @@ void CGame::Run()
 		//render particles
 		if (bombExploded)
 		{
-			InitSortedParticles(sortedParticles, timer.Delta(), bombPos, { 1,0,0,1 });
+			InitSortedParticles(sortedParticles, timer.Delta(), bombPos, { 1,1,0,1 });
 		}
 		if (SprinklersOn == true)
 		{
@@ -750,26 +750,28 @@ void CGame::Run()
 			mapTime = 0;
 		}
 
+		if (objects.size() > 0)
+		{
+			for (int i = 0; i < objects.size() - 1; ++i) {
+				TComponent* cRenderer = nullptr;
+				TComponent* fRenderer = nullptr;
+				TColliderComponent* floorRender = nullptr;
+				TRendererComponent* renderer = nullptr;
 
-		for (int i = 0; i < objects.size(); ++i) {
-			TComponent* cRenderer = nullptr;
-			TComponent* fRenderer = nullptr;
-			TColliderComponent* floorRender = nullptr;
-			TRendererComponent* renderer = nullptr;
-
-			if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer)) {
-				renderer = (TRendererComponent*)cRenderer;
-
-				if (renderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(objects[i]);
-			}
-
-			if (ControlScreenToggle == true) {
 				if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer)) {
 					renderer = (TRendererComponent*)cRenderer;
 
-					if (renderer->iUsedLoadState == GAME_STATE::CONTROLS_SCREEN)
+					if (renderer->iUsedLoadState == curGameState)
 						p_cRendererManager->RenderObject(objects[i]);
+				}
+
+				if (ControlScreenToggle == true) {
+					if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer)) {
+						renderer = (TRendererComponent*)cRenderer;
+
+						if (renderer->iUsedLoadState == GAME_STATE::CONTROLS_SCREEN)
+							p_cRendererManager->RenderObject(objects[i]);
+					}
 				}
 			}
 		}
@@ -857,6 +859,7 @@ void CGame::Run()
 			}
 		}
 
+		//Render AI
 		for (CPlayer* AI : v_cAI)
 		{
 			if (!AI || !AI->isAlive())
@@ -868,6 +871,20 @@ void CGame::Run()
 				if (pRenderer->iUsedLoadState == curGameState)
 					p_cRendererManager->RenderObject((CObject*)AI);
 			}
+		}
+
+		//Render Emitter
+		if (objects.size() > 0)
+		{
+				TComponent* cRenderer = nullptr;
+				TRendererComponent* renderer = nullptr;
+				if (objects[objects.size() - 1]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				{
+					renderer = (TRendererComponent*)cRenderer;
+
+					if (renderer->iUsedLoadState == curGameState)
+						p_cRendererManager->RenderObject(objects[objects.size() - 1]);
+				}
 		}
 
 		if (menuBomb)
@@ -1191,6 +1208,10 @@ void CGame::LoadObject()
 	loadInfo.position = { 10.0f, 0, -5.0f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	loadInfo.position = { -10.0f, 0, 10.0f };
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	loadInfo.position = { 0.0f, 0.0f, 0.0f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
@@ -2406,15 +2427,15 @@ void CGame::GamePlayLoop(double timePassed)
 	}
 }
 
-void CGame::InitSortedParticles(end::sorted_pool_t<particle, 1000>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color) {
+void CGame::InitSortedParticles(end::sorted_pool_t<particle, 500>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color) {
 	//Init number of particles as loop
 	for (size_t i = 0; i < 1; i++) {
 		int count = sortedPool.alloc();
 
 		if (count != -1) {
-			sortedPool[count].pos.x = -pos.x - 10;
+			sortedPool[count].pos.x = pos.x;
 			sortedPool[count].pos.y = pos.y;
-			sortedPool[count].pos.z = -pos.z - 15;
+			sortedPool[count].pos.z = pos.z;
 			sortedPool[count].speed.x = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX));
 			sortedPool[count].speed.y = (0.0f + (2.0f - 0.0f) * ((float)rand() / (float)RAND_MAX));
 			sortedPool[count].speed.z = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX));
@@ -2442,10 +2463,10 @@ void CGame::InitSortedParticles(end::sorted_pool_t<particle, 1000>& sortedPool, 
 
 void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime) {
 	//init emitters
-	firstEmit.spawn_pos = { 5,5,5 };
-	secondEmit.spawn_pos = { -30,5,-30 };
-	thirdEmit.spawn_pos = { -30,5,5 };
-	fourthEmit.spawn_pos = { 5,5,-30 };
+	firstEmit.spawn_pos = { fMaxX,5,fMaxZ };
+	secondEmit.spawn_pos = { fMinX,5,fMinZ };
+	thirdEmit.spawn_pos = { fMinX,5,fMaxZ };
+	fourthEmit.spawn_pos = { fMaxX,5,fMinZ };
 	//firstEmit.spawn_color = { 1,0,0,1 };
 	//secondEmit.spawn_color = { 1,0,0,1 };
 	//thirdEmit.spawn_color = { 1,0,0,1 };
@@ -2576,10 +2597,10 @@ void CGame::setGameState(int _gameState)
 		v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
 		//v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
 		v_cAI[0] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
-		fMinX = -20;
-		fMaxX = 20;
-		fMinZ = -15;
-		fMaxZ = 20;
+		fMinX = -15;
+		fMaxX = 15;
+		fMinZ = -10;
+		fMaxZ = 15;
 		mapTime = 0;
 
 
@@ -2886,6 +2907,7 @@ bool CGame::loadTempMenus() {
 	loadInfo.LoadState = GAME_STATE::PAUSE_MENU;
 	pauseMenuBomb = p_cEntityManager->CreateOBJFromTemplate(loadInfo);
 	menuObjects.push_back(pauseMenuBomb);
+
 
 	return true;
 }
