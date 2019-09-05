@@ -1569,13 +1569,13 @@ void CGame::GamePlayLoop(double timePassed)
 							zchange = z + dZ;
 							xchange = x + dX;
 
-							if (zchange < 0 && zchange > height - 1)
+							if (zchange < 0 || zchange > height - 1)
 							{
 								zbounds = false;
 								zchange = z;
 							}
 
-							if (xchange < 0 && xchange > width - 1)
+							if (xchange < 0 || xchange > width - 1)
 							{
 								xbounds = false;
 								xchange = x;
@@ -1617,13 +1617,13 @@ void CGame::GamePlayLoop(double timePassed)
 												zchange = z + dZ;
 												xchange = x + dX;
 
-												if (zchange < 0 && zchange > height - 1)
+												if (zchange < 0 || zchange > height - 1)
 												{
 													zbounds = false;
 													zchange = z;
 												}
 
-												if (xchange < 0 && xchange > width - 1)
+												if (xchange < 0 || xchange > width - 1)
 												{
 													xbounds = false;
 													xchange = x;
@@ -1656,7 +1656,7 @@ void CGame::GamePlayLoop(double timePassed)
 
 								else if (gridcheck == 1 && AIbombaction >= 4.0f)
 								{
-									if (tile == GRID_SYSTEM::DESTROYABLE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+									if (tile == GRID_SYSTEM::DESTROYABLE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
 									{
 										if (currAI->hasAvailableBombSlot())
 										{
