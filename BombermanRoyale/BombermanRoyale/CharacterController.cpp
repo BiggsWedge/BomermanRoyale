@@ -4,22 +4,24 @@ std::vector<int> P1DefaultControls
 {
 	'E',
 	'Q',
+	'C',
 	'A',
 	'D',
 	'W',
-	'S',
-	'C'
+	'S'
+	
 };
 
 std::vector<int> P2DefaultControls
 {
 	'O',
 	'U',
+	'M',
 	'J',
 	'L',
 	'I',
-	'K',
-	'M'
+	'K'
+	
 };
 
 
