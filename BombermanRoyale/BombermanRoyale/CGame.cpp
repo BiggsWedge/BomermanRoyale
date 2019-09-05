@@ -2194,7 +2194,7 @@ void CGame::GamePlayLoop(double timePassed)
 			if (bomb && bomb->isAlive())
 				if (bomb->getTimer() >= 0.5f)
 					if (currPlayer->Collides(bomb))
-						PlayerCollision(currPlayer, (CObject*)bomb, deltaX, deltaZ);
+						PlayerBombCollision(currPlayer, bomb);
 		}
 		int bombindex = 0;
 		for (CBomb* bomb : v_cBombs)
