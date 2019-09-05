@@ -2463,10 +2463,10 @@ void CGame::InitSortedParticles(end::sorted_pool_t<particle, 500>& sortedPool, d
 
 void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime) {
 	//init emitters
-	firstEmit.spawn_pos = { fMaxX,5,fMaxZ };
-	secondEmit.spawn_pos = { fMinX,5,fMinZ };
-	thirdEmit.spawn_pos = { fMinX,5,fMaxZ };
-	fourthEmit.spawn_pos = { fMaxX,5,fMinZ };
+	firstEmit.spawn_pos = { fMaxX,2.5f,fMaxZ };
+	secondEmit.spawn_pos = { fMinX,2.5f,fMinZ };
+	thirdEmit.spawn_pos = { fMinX,2.5f,fMaxZ };
+	fourthEmit.spawn_pos = { fMaxX,2.5f,fMinZ };
 	//firstEmit.spawn_color = { 1,0,0,1 };
 	//secondEmit.spawn_color = { 1,0,0,1 };
 	//thirdEmit.spawn_color = { 1,0,0,1 };
