@@ -98,10 +98,10 @@ double offMapTimer = 0;
 int boxDropped;
 int currLayer = 0;
 int passes = 0;
-float fMinX = -15;
-float fMaxX = 15;
-float fMinZ = -10;
-float fMaxZ = 15;
+float fMinX = -20;
+float fMaxX = 20;
+float fMinZ = -15;
+float fMaxZ = 20;
 float bCollisionIgnore = 0.5f;
 int numPlayers = 2;
 
@@ -936,9 +936,9 @@ void CGame::LoadObject()
 	loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 
-	for (float z = -7.5f; z < 15.0f; z += 2.5f)
+	for (float z = -12.5f; z < 20.0f; z += 2.5f)
 	{
-		for (float x = -12.5f; x < 15.0f; x += 2.5f)
+		for (float x = -17.5f; x < 20.0f; x += 2.5f)
 		{
 			loadInfo.position = { x, -2.5f, z };
 			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -1097,8 +1097,8 @@ void CGame::LoadObject()
 
 	}
 
-	for (float x = -15; x <= 15; x += 2.5f) {
-		loadInfo.position = { x, 0, -10 };
+	for (float x = -20; x <= 20; x += 2.5f) {
+		loadInfo.position = { x, 0, -15 };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
 		loadInfo.meshID = MODELS::CUBE;
@@ -1110,12 +1110,12 @@ void CGame::LoadObject()
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { x, 0, 15 };
+		loadInfo.position = { x, 0, 20 };
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
 
-	for (float z = -7.5; z <= 12.5; z += 2.5f) {
-		loadInfo.position = { -15, 0, z };
+	for (float z = -12.5; z <= 17.5; z += 2.5f) {
+		loadInfo.position = { -20, 0, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
 		loadInfo.collisionLayer = COLLISION_LAYERS::WALL;
@@ -1125,7 +1125,7 @@ void CGame::LoadObject()
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { 15, 0, z };
+		loadInfo.position = { 20, 0, z };
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
 
@@ -1278,7 +1278,7 @@ void CGame::GamePlayLoop(double timePassed)
 {
 	int width;
 	int height;
-	if (fMaxX == 15.0f)
+	if (fMaxX == 20.0f)
 	{
 		width = (((fMaxX - 2.5f) - (fMinX + 2.5f)) / 2.5f) + 1;
 		height = (((fMaxZ - 2.5f) - (fMinZ + 2.5f)) / 2.5f) + 1;
@@ -1299,7 +1299,7 @@ void CGame::GamePlayLoop(double timePassed)
 		int x = i % width;
 		float zpos;
 		float xpos;
-		if (fMaxX == 15.0f)
+		if (fMaxX == 20.0f)
 		{
 			zpos = (fMaxZ - 2.5f) - (float(z) * 2.5f);
 			xpos = (fMaxX - 2.5f) - (float(x) * 2.5f);
@@ -1664,23 +1664,7 @@ void CGame::GamePlayLoop(double timePassed)
 		{
 			if (currPlayer->GetCrouchStatus() == true)
 			{
-				if (deltaX > 0)
-				{
-					deltaX += 3 * timePassed * PLAYER_SPEED;
-				}
-				else
-				{
-					deltaX -= 3 * timePassed * PLAYER_SPEED;
-				}
-				if (deltaZ > 0)
-				{
-					deltaZ += 3 * timePassed * PLAYER_SPEED;
-				}
-				else
-				{
-					deltaZ -= 3 * timePassed * PLAYER_SPEED;
-				}
-				currPlayer->Move(deltaX, deltaZ);
+
 			}
 		}
 
@@ -1817,6 +1801,7 @@ void CGame::GamePlayLoop(double timePassed)
 									v_cBombs[i + j] = bombs[j];
 								}
 							}
+
 							break;
 						case 1:
 							if (v_cBombs[i]) {
@@ -1975,13 +1960,13 @@ void CGame::InitSortedParticles(end::sorted_pool_t<particle, 1000>& sortedPool, 
 
 void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime) {
 	//init emitters
-	firstEmit.spawn_pos = { 2,5,4 };
-	secondEmit.spawn_pos = { -27,5,-28 };
-	thirdEmit.spawn_pos = { -27,5,4 };
-	fourthEmit.spawn_pos = { 2,5,-28 };
-	firstEmit.spawn_color = { 1,0,0,1 };
-	secondEmit.spawn_color = { 1,0,0,1 };
-	thirdEmit.spawn_color = { 1,0,0,1 };
+	firstEmit.spawn_pos = { 5,5,5 };
+	secondEmit.spawn_pos = { -30,5,-30 };
+	thirdEmit.spawn_pos = { -30,5,5 };
+	fourthEmit.spawn_pos = { 5,5,-30 };
+	//firstEmit.spawn_color = { 1,0,0,1 };
+	//secondEmit.spawn_color = { 1,0,0,1 };
+	//thirdEmit.spawn_color = { 1,0,0,1 };
 
 	//alloc space
 	int count = freePool.alloc();
@@ -2109,10 +2094,10 @@ void CGame::setGameState(int _gameState)
 		v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
 		//v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
 		v_cAI[0] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
-		fMinX = -15;
-		fMaxX = 15;
-		fMinZ = -10;
-		fMaxZ = 15;
+		fMinX = -20;
+		fMaxX = 20;
+		fMinZ = -15;
+		fMaxZ = 20;
 		mapTime = 0;
 
 
