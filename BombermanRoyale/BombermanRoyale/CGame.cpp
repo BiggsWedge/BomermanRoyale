@@ -530,6 +530,7 @@ void CGame::Run()
 
 			if (prevNumPlayersAlive > 1 && numPlayersAlive <= 1) {
 				int winner = 0;
+				int aiwinner = 0;
 
 				for (CObject* menu : menuObjects)
 				{
@@ -554,6 +555,18 @@ void CGame::Run()
 							winner++;
 
 						}
+						for (CPlayer* AI : v_cAI)
+						{
+							if (AI != NULL)
+							{
+								if (AI->isAlive())
+								{
+									aiwinner++;
+									break;
+								}
+							}
+						}
+						winner -= aiwinner;
 						if (winner == 0)
 						{
 							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::PLAYER_1_WIN;
@@ -1362,6 +1375,11 @@ void CGame::GamePlayLoop(double timePassed)
 			}
 		}
 
+		if (filled)
+		{
+			continue;
+		}
+
 		for (CObject* Xexplode : Xexplosions)
 		{
 			if (!Xexplode)
@@ -1471,13 +1489,13 @@ void CGame::GamePlayLoop(double timePassed)
 	{
 		if (GRID[i] == GRID_SYSTEM::BOMB)
 		{
-			if(i - 1 < GRID.size())
+			if(i - 1 < GRID.size() && i - 1 > 0)
 				GRID[i - 1] = GRID_SYSTEM::EXPLOSION_RADIUS;
-			if (i - width < GRID.size())
+			if (i - width < GRID.size() && i - width > 0)
 				GRID[i - width] = GRID_SYSTEM::EXPLOSION_RADIUS;
-			if (i + 1 < GRID.size())
+			if (i + 1 < GRID.size() && i + 1 > 0)
 				GRID[i + 1] = GRID_SYSTEM::EXPLOSION_RADIUS;
-			if (i + width < GRID.size())
+			if (i + width < GRID.size() && i + width > 0)
 				GRID[i + width] = GRID_SYSTEM::EXPLOSION_RADIUS;
 
 		}
@@ -1508,13 +1526,17 @@ void CGame::GamePlayLoop(double timePassed)
 			x = abs((fMaxX - 2.5f) - AITransform->fPosition.x) / 2.5f;
 			if (dec > 0.0f)
 				x = abs((fMaxX - 2.5f) - AITransform->fPosition.x + 2.5f) / 2.5f;
+			if (x > width - 1)
+				x = width - 1;
 
 			dec = abs(AITransform->fPosition.z) / 2.5f;
 			z = dec;
 			dec = dec - z;
 			z = abs((fMaxZ - 2.5f) - AITransform->fPosition.z) / 2.5f;
-			//if (dec > 0.0f)
-			//	z = abs((fMaxZ - 2.5f) - AITransform->fPosition.z + 2.5f) / 2.5f;
+			if (dec > 0.0f)
+				z = abs((fMaxZ - 2.5f) - AITransform->fPosition.z + 2.5f) / 2.5f;
+			if (z > height - 1)
+				z = height - 1;
 		}
 		else
 		{
@@ -1524,14 +1546,17 @@ void CGame::GamePlayLoop(double timePassed)
 			x = abs(fMaxX - AITransform->fPosition.x) / 2.5f;
 			if (dec > 0.0f)
 				x = abs(fMaxX - AITransform->fPosition.x + 2.5f) / 2.5f;
+			if (x > width - 1)
+				x = width - 1;
 
 			dec = abs(AITransform->fPosition.z) / 2.5f;
 			z = dec;
 			dec = dec - z;
 			z = abs(fMaxZ - AITransform->fPosition.z) / 2.5f;
-			//if (dec > 0.0f)
-			//	z = abs(fMaxZ - AITransform->fPosition.z + 2.5f) / 2.5f;
-
+			if (dec > 0.0f)
+				z = abs(fMaxZ - AITransform->fPosition.z + 2.5f) / 2.5f;
+			if (z > height - 1)
+				z = height - 1;
 
 		}
 
@@ -1549,9 +1574,9 @@ void CGame::GamePlayLoop(double timePassed)
 			{
 				int tile = GRID[gridlocation];
 				//currAI->Move(((x / ((width - 1) / 2)) - 1) * timePassed * PLAYER_SPEED, ((z / ((height - 1) / 2)) - 1) * timePassed * PLAYER_SPEED);
-				for (int dZ = -1; dZ <= 1; dZ += 2)
+				for (int dZ = -1; dZ <= 1; dZ++)
 				{
-					for (int dX = -1; dX <= 1; dX += 2)
+					for (int dX = -1; dX <= 1; dX++)
 					{
 						bool zbounds = true;
 						bool xbounds = true;
@@ -1594,9 +1619,9 @@ void CGame::GamePlayLoop(double timePassed)
 			{
 				int tile = GRID[gridlocation];
 				//currAI->Move(((x / ((width - 1) / 2)) - 1) * timePassed * PLAYER_SPEED, ((z / ((height - 1) / 2)) - 1) * timePassed * PLAYER_SPEED);
-				for (int dZ = -1; dZ <= 1; dZ += 2)
+				for (int dZ = -1; dZ <= 1; dZ++)
 				{
-					for (int dX = -1; dX <= 1; dX += 2)
+					for (int dX = -1; dX <= 1; dX++)
 					{
 						bool zbounds = true;
 						bool xbounds = true;
