@@ -1513,8 +1513,8 @@ void CGame::GamePlayLoop(double timePassed)
 			z = dec;
 			dec = dec - z;
 			z = abs((fMaxZ - 2.5f) - AITransform->fPosition.z) / 2.5f;
-			if (dec > 0.0f)
-				z = abs((fMaxZ - 2.5f) - AITransform->fPosition.z + 2.5f) / 2.5f;
+			//if (dec > 0.0f)
+			//	z = abs((fMaxZ - 2.5f) - AITransform->fPosition.z + 2.5f) / 2.5f;
 		}
 		else
 		{
@@ -1529,8 +1529,8 @@ void CGame::GamePlayLoop(double timePassed)
 			z = dec;
 			dec = dec - z;
 			z = abs(fMaxZ - AITransform->fPosition.z) / 2.5f;
-			if (dec > 0.0f)
-				z = abs(fMaxZ - AITransform->fPosition.z + 2.5f) / 2.5f;
+			//if (dec > 0.0f)
+			//	z = abs(fMaxZ - AITransform->fPosition.z + 2.5f) / 2.5f;
 
 
 		}
@@ -1571,11 +1571,60 @@ void CGame::GamePlayLoop(double timePassed)
 							xbounds = false;
 							xchange = x;
 						}
+						gridlocation = (zchange * width) + xchange;
+						tile = GRID[gridlocation];
+						zchange -= z;
+						xchange -= x;
 						if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
 						{
 
-							deltaX = timePassed * PLAYER_SPEED * -dX;
-							deltaZ = timePassed * PLAYER_SPEED * -dZ;
+							deltaX = timePassed * PLAYER_SPEED * -xchange;
+							deltaZ = timePassed * PLAYER_SPEED * -zchange;
+							currAI->Move(deltaX, deltaZ);
+							for (CObject* cObj : objects) {
+								if (currAI->Collides(cObj))
+									PlayerCollision(currAI, cObj, deltaX, deltaZ);
+							}
+						}
+					}
+				}
+			}
+
+			if (GRID.at(gridlocation) == GRID_SYSTEM::EXPLOSION_RADIUS)
+			{
+				int tile = GRID[gridlocation];
+				//currAI->Move(((x / ((width - 1) / 2)) - 1) * timePassed * PLAYER_SPEED, ((z / ((height - 1) / 2)) - 1) * timePassed * PLAYER_SPEED);
+				for (int dZ = -1; dZ <= 1; dZ += 2)
+				{
+					for (int dX = -1; dX <= 1; dX += 2)
+					{
+						bool zbounds = true;
+						bool xbounds = true;
+						int zchange;
+						int xchange;
+						zchange = z + dZ;
+						xchange = x + dX;
+
+						if (zchange < 0 || zchange > height - 1)
+						{
+							zbounds = false;
+							zchange = z;
+						}
+
+						if (xchange < 0 || xchange > width - 1)
+						{
+							xbounds = false;
+							xchange = x;
+						}
+						gridlocation = (zchange * width) + xchange;
+						tile = GRID[gridlocation];
+						zchange -= z;
+						xchange -= x;
+						if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+						{
+
+							deltaX = timePassed * PLAYER_SPEED * -xchange;
+							deltaZ = timePassed * PLAYER_SPEED * -zchange;
 							currAI->Move(deltaX, deltaZ);
 							for (CObject* cObj : objects) {
 								if (currAI->Collides(cObj))
