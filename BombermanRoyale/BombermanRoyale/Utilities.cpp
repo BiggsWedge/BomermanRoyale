@@ -824,13 +824,13 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 
 	MVP_t debugConstBuff;
 	//debugConstBuff.world = DirectX::XMMatrixTranspose(mObjMatrix);
-	//
-	//if (g_d3dData->bUseDebugRenderCamera)
-	//	debugConstBuff.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
-	//else
-	//	debugConstBuff.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
-	//
-	//debugConstBuff.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
+	
+	if (g_d3dData->bUseDebugRenderCamera)
+		debugConstBuff.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
+	else
+		debugConstBuff.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
+	
+	debugConstBuff.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
 
 #pragma endregion
 
@@ -847,10 +847,10 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 	//mat.material = _mat;
 
 	debugConstBuff.world = DirectX::XMMatrixIdentity();
-	debugConstBuff.world = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
+	/*debugConstBuff.world = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
 	debugConstBuff.world = debugConstBuff.world * DirectX::XMMatrixTranslation(6.0f, 0.0f, 0.0f);
 	debugConstBuff.world = DirectX::XMMatrixTranspose(debugConstBuff.world);
-
+*/
 	_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MVP_t], 0, nullptr, &debugConstBuff, 0, 0);

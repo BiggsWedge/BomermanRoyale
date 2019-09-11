@@ -1520,41 +1520,49 @@ void CGame::GamePlayLoop(double timePassed)
 		float dec = 0;
 		if (fMaxX == 15.0f)
 		{
-			dec = abs(AITransform->fPosition.x) / 2.5f;
+			//dec = abs(AITransform->fPosition.x) / 2.5f;
+			//x = dec;
+			//dec = dec - x;
+			dec = abs((fMaxX - 2.5f) - AITransform->fPosition.x) / 2.5f;
+			dec += 1.0f;
 			x = dec;
-			dec = dec - x;
-			x = abs((fMaxX - 2.5f) - AITransform->fPosition.x) / 2.5f;
-			if (dec > 0.0f)
-				x = abs((fMaxX - 2.5f) - AITransform->fPosition.x + 2.5f) / 2.5f;
+			//if (dec > 0.0f)
+			//	x = abs((fMaxX - 2.5f) - AITransform->fPosition.x + 2.5f) / 2.5f;
 			if (x > width - 1)
 				x = width - 1;
 
-			dec = abs(AITransform->fPosition.z) / 2.5f;
+			//dec = abs(AITransform->fPosition.z) / 2.5f;
+			//z = dec;
+			//dec = dec - z;
+			dec = abs((fMaxZ - 2.5f) - AITransform->fPosition.z) / 2.5f;
+			dec += 1.0f;
 			z = dec;
-			dec = dec - z;
-			z = abs((fMaxZ - 2.5f) - AITransform->fPosition.z) / 2.5f;
-			if (dec > 0.0f)
-				z = abs((fMaxZ - 2.5f) - AITransform->fPosition.z + 2.5f) / 2.5f;
+			//if (dec > 0.0f)
+			//	z = abs((fMaxZ - 2.5f) - AITransform->fPosition.z + 2.5f) / 2.5f;
 			if (z > height - 1)
 				z = height - 1;
 		}
 		else
 		{
-			dec = abs(AITransform->fPosition.x) / 2.5f;
+			//dec = abs(AITransform->fPosition.x) / 2.5f;
+			//x = dec;
+			//dec = dec - x;
+			dec = abs(fMaxX - AITransform->fPosition.x) / 2.5f;
+			dec += 1.0f;
 			x = dec;
-			dec = dec - x;
-			x = abs(fMaxX - AITransform->fPosition.x) / 2.5f;
-			if (dec > 0.0f)
-				x = abs(fMaxX - AITransform->fPosition.x + 2.5f) / 2.5f;
+			//if (dec > 0.0f)
+			//	x = abs(fMaxX - AITransform->fPosition.x + 2.5f) / 2.5f;
 			if (x > width - 1)
 				x = width - 1;
 
-			dec = abs(AITransform->fPosition.z) / 2.5f;
+			//dec = abs(AITransform->fPosition.z) / 2.5f;
+			//z = dec;
+			//dec = dec - z;
+			dec = abs(fMaxZ - AITransform->fPosition.z) / 2.5f;
+			dec += 1.0f;
 			z = dec;
-			dec = dec - z;
-			z = abs(fMaxZ - AITransform->fPosition.z) / 2.5f;
-			if (dec > 0.0f)
-				z = abs(fMaxZ - AITransform->fPosition.z + 2.5f) / 2.5f;
+			//if (dec > 0.0f)
+			//	z = abs(fMaxZ - AITransform->fPosition.z + 2.5f) / 2.5f;
 			if (z > height - 1)
 				z = height - 1;
 
@@ -1600,7 +1608,7 @@ void CGame::GamePlayLoop(double timePassed)
 						tile = GRID[gridlocation];
 						zchange -= z;
 						xchange -= x;
-						if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+						if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
 						{
 
 							deltaX = timePassed * PLAYER_SPEED * -xchange;
@@ -1645,7 +1653,7 @@ void CGame::GamePlayLoop(double timePassed)
 						tile = GRID[gridlocation];
 						zchange -= z;
 						xchange -= x;
-						if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+						if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
 						{
 
 							deltaX = timePassed * PLAYER_SPEED * -xchange;
@@ -1701,7 +1709,7 @@ void CGame::GamePlayLoop(double timePassed)
 							int tile = GRID[gridlocation];
 							if (gridcheck == 0 || gridcheck == 1)
 							{
-								if (tile == GRID_SYSTEM::BOMB/* && (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
+								if (tile == GRID_SYSTEM::BOMB /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
 								{
 									deltaX = timePassed * PLAYER_SPEED * xchange;
 									deltaZ = timePassed * PLAYER_SPEED * zchange;
@@ -1741,7 +1749,7 @@ void CGame::GamePlayLoop(double timePassed)
 											if (gridlocation < GRID.size())
 											{
 												int tile = GRID[gridlocation];
-												if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+												if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
 												{
 
 													deltaX = timePassed * PLAYER_SPEED * -xchange;
@@ -2035,7 +2043,7 @@ void CGame::GamePlayLoop(double timePassed)
 								int tile = GRID[gridlocation];
 								if (gridcheck == 0)
 								{
-									if (tile == GRID_SYSTEM::BOMB/* && (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
+									if (tile == GRID_SYSTEM::BOMB && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
 									{
 										deltaX = timePassed * PLAYER_SPEED * xchange;
 										deltaZ = timePassed * PLAYER_SPEED * zchange;
@@ -2075,7 +2083,7 @@ void CGame::GamePlayLoop(double timePassed)
 												if (gridlocation < GRID.size())
 												{
 													int tile = GRID[gridlocation];
-													if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
+													if (tile == GRID_SYSTEM::FREE  && xbounds && zbounds)
 													{
 
 														deltaX = timePassed * PLAYER_SPEED * -xchange;
