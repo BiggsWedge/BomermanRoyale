@@ -54,7 +54,6 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView, DirectX::Colors::Wheat);
 	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
-	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
 
 	if (gamestate == GAME_STATE::ARCADE_GAME)
 	{
@@ -71,12 +70,16 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 
 
-	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::DEFAULT]);
+	
 	/*********DRAW OTHER STUFF HERE************/
-	//if(gamestate == 3)
+	//g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
+	//if (gamestate == 3)
+	//	v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext, timepassed);
 
+	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::DEFAULT]);
 	for (CObject* c : rendereableObjects)
 		c->Draw(timepassed);
+	
 
 
 
@@ -86,12 +89,23 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	float aspectRatio = (float)g_d3dData->windowWidthHeight.x / (float)g_d3dData->windowWidthHeight.y;
 	float invAspect = (float)g_d3dData->windowWidthHeight.y / (float)g_d3dData->windowWidthHeight.x;
 	DirectX::GXMVECTOR scale = { 0.1f * aspectRatio, 0.1f * aspectRatio, 0.1f * aspectRatio, 1.0f };
+	DirectX::GXMVECTOR scale2 = { 0.2f * aspectRatio, 0.2f * aspectRatio, 0.2f * aspectRatio, 1.0f };
 
 	DirectX::XMVECTOR measurement = g_d3dData->d3dSpriteFont->MeasureString("Arcade Mode");
 
 	if (gamestate == GAME_STATE::ARCADE_GAME)
 	{
 		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Arcade Mode", DirectX::XMVECTOR{ (0.5f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.01f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
+	}
+
+	if (gamestate == GAME_STATE::ARCADE_MENU)
+	{
+		wchar_t numP[10]; 
+		wchar_t numA[10]; 
+		swprintf_s(numP, L"%d",parentGame->numPLAYERS);
+		swprintf_s(numA, L"%d",parentGame->numAI);
+		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, numA, DirectX::XMVECTOR{ (0.47f*(float)g_d3dData->windowWidthHeight.x), 0.63f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale2);
+		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, numP, DirectX::XMVECTOR{ (0.47f*(float)g_d3dData->windowWidthHeight.x), 0.48f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale2);
 	}
 
 	float x = (0.5f - (0.6f * ((float)g_d3dData->windowWidthHeight.y / (float)g_d3dData->windowWidthHeight.x)));

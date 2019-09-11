@@ -56,3 +56,5 @@ BombermanRoyale/BombermanRoyale/LinePixel.csh
 BombermanRoyale/BombermanRoyale/LineVertex.csh
 BombermanRoyale/BombermanRoyale/SkyPixel.csh
 BombermanRoyale/BombermanRoyale/SkyVertex.csh
+*.ipch
+BombermanRoyale/.vs/BombermanRoyale/v15/Browse.VC.opendb

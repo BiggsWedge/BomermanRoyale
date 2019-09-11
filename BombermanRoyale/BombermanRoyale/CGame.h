@@ -89,6 +89,8 @@ public:
 	void Cleanup();
 	bool FullScreen = false;
 	unsigned int curGameState = 0;
+	int numAI = 0;
+	int numPLAYERS = 2;
 
 	bool Initialize();
 	void Run();
