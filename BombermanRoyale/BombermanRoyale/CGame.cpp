@@ -605,7 +605,7 @@ void CGame::Run()
 		//render particles
 		if (bombExploded)
 		{
-			InitSortedParticles(sortedParticles, timer.Delta(), bombPos, { 1,0,0,1 });
+			InitSortedParticles(sortedParticles, timer.Delta(), bombPos, { 1,1,0,1 });
 		}
 		if (SprinklersOn == true)
 		{
@@ -1930,9 +1930,9 @@ void CGame::InitSortedParticles(end::sorted_pool_t<particle, 1000>& sortedPool, 
 		int count = sortedPool.alloc();
 
 		if (count != -1) {
-			sortedPool[count].pos.x = -pos.x - 10;
+			sortedPool[count].pos.x = -pos.x;
 			sortedPool[count].pos.y = pos.y;
-			sortedPool[count].pos.z = -pos.z - 15;
+			sortedPool[count].pos.z = -pos.z;
 			sortedPool[count].speed.x = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX));
 			sortedPool[count].speed.y = (0.0f + (2.0f - 0.0f) * ((float)rand() / (float)RAND_MAX));
 			sortedPool[count].speed.z = (-3.0f + (3.0f - -3.0f) * ((float)rand() / (float)RAND_MAX));
@@ -1943,6 +1943,7 @@ void CGame::InitSortedParticles(end::sorted_pool_t<particle, 1000>& sortedPool, 
 	}
 
 	for (size_t i = 0; i < sortedPool.size(); i++) {
+		add_line(sortedPool[i].pos, sortedPool[i].prev_pos, sortedPool[i].color);
 		sortedPool[i].prev_pos = sortedPool[i].pos;
 		sortedPool[i].pos.x += (sortedPool[i].speed.x * deltaTime);
 		sortedPool[i].pos.y += (sortedPool[i].speed.y * deltaTime);
@@ -1998,7 +1999,7 @@ void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& fre
 				i--;
 				continue;
 			}
-
+			add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
 			freePool[Ecount].prev_pos = freePool[Ecount].pos;
 			freePool[Ecount].pos.x += (freePool[Ecount].speed.x * deltaTime);
 			freePool[Ecount].pos.y += (freePool[Ecount].speed.y * deltaTime);

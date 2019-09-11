@@ -18,6 +18,8 @@
 #include "AnimVertex.csh"
 #include "BombShader.csh"
 #include "BombPShader.csh"
+#include "GeometryShader.csh"
+#include "ComputeShader.csh"
 #include "DirectXData.h"
 #include "SharedDefines.h"
 #include <fstream>
