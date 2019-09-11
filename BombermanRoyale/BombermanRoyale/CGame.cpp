@@ -34,6 +34,8 @@ Button p1Help;
 Button duck;
 CObject* pauseMenuBomb;
 float pauseMenuTimer;
+int menux = 0;
+int menuz = 0;
 
 
 struct CONTROL_KEYS
@@ -318,6 +320,9 @@ void CGame::Run()
 		{
 			if (curGameState == GAME_STATE::MAIN_MENU)
 			{
+				setGameState(GAME_STATE::ARCADE_MENU);
+			}
+			else if (curGameState == GAME_STATE::ARCADE_MENU) {
 				setGameState(GAME_STATE::ARCADE_GAME);
 			}
 			else if (curGameState == GAME_STATE::ARCADE_GAME) {
@@ -353,6 +358,8 @@ void CGame::Run()
 			timePassed = 0;
 			SprinklersOn = false;
 		}
+
+#pragma region MAIN MENU
 
 		if (curGameState == GAME_STATE::MAIN_MENU)
 		{
@@ -441,7 +448,7 @@ void CGame::Run()
 					switch (menuIndex) {
 					case 0:
 					{
-						setGameState(GAME_STATE::ARCADE_GAME);
+						setGameState(GAME_STATE::ARCADE_MENU);
 						break;
 					}
 					case 1:
@@ -468,6 +475,158 @@ void CGame::Run()
 				}
 			}
 		}
+#pragma endregion
+
+#pragma region ARCADE MENU
+
+		if (curGameState == GAME_STATE::ARCADE_MENU)
+		{
+			if (menuBomb)
+			{
+				menuBomb->GetInput();
+
+				menucontroltimer += timePassed;
+				if (menuBomb->GetCharacterController()->GetUpDown() > 0.0f && menucontroltimer > 0.2 && menuz > 0)
+				{
+
+					menucontroltimer = 0.0;
+					menuBomb->Move(0.0f, 3.0f, false);
+					menuz -= 1;
+					for (int i = 0; i < MenuSounds.size(); ++i)
+					{
+						MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						if (!soundplaying)
+						{
+							MenuSounds.at(i)->Play();
+							break;
+						}
+					}
+
+				}
+				if (menuBomb->GetCharacterController()->GetUpDown() < 0.0f && menucontroltimer > 0.2 && menuz < 3)
+				{
+
+					menucontroltimer = 0.0;
+					menuBomb->Move(0.0f, -3.0f, false);
+					menuz += 1;
+					for (int i = 0; i < MenuSounds.size(); ++i)
+					{
+						MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						if (!soundplaying)
+						{
+							MenuSounds.at(i)->Play();
+							break;
+						}
+					}
+					if(menuz > 1 && menux > 0)
+					{ 
+						menuBomb->Move(-8.0f, 0.0f, false);
+						menux -= 1;
+					}
+
+				}
+				if (menuBomb->GetCharacterController()->GetLeftRight() > 0.0f && menucontroltimer > 0.2 && menux < 1 && menuz < 2)
+				{
+
+					menucontroltimer = 0.0;
+					menuBomb->Move(8.0f, 0.0f, false);
+					menux += 1;
+					for (int i = 0; i < MenuSounds.size(); ++i)
+					{
+						MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						if (!soundplaying)
+						{
+							MenuSounds.at(i)->Play();
+							break;
+						}
+					}
+
+				}
+				if (menuBomb->GetCharacterController()->GetLeftRight() < 0.0f && menucontroltimer > 0.2 && menux > 0)
+				{
+
+					menucontroltimer = 0.0;
+					menuBomb->Move(-8.0f, 0.0f, false);
+					menux -= 1;
+					for (int i = 0; i < MenuSounds.size(); ++i)
+					{
+						MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						if (!soundplaying)
+						{
+							MenuSounds.at(i)->Play();
+							break;
+						}
+					}
+				}
+				if (menuBomb->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::ACTION))
+				{
+					menuIndex = (menuz * 2) + menux;
+					if (menuz > 2)
+						menuIndex = 5;
+					for (int i = 0; i < MenuSounds.size(); ++i)
+					{
+						MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						if (!soundplaying)
+						{
+							MenuSounds.at(i)->Play();
+							break;
+						}
+					}
+					switch (menuIndex) {
+					case 0:
+					{
+						if (numPLAYERS > 2)
+							numPLAYERS--;
+						break;
+					}
+					case 1:
+					{
+						if (numPLAYERS < 4 && numAI + numPLAYERS < 4)
+							numPLAYERS++;
+						break;
+					}
+					case 2:
+					{
+						if (numAI > 0)
+							numAI--;
+						break;
+					}
+					case 3:
+					{
+						if (numAI < 2 && numPLAYERS + numAI < 4)
+							numAI++;
+						break;
+					}
+					case 4:
+					{
+						menuBomb->Move(0.0f, 6.0f, false);
+						menuz = 0;
+						menux = 0;
+						menuIndex = 0;
+						setGameState(GAME_STATE::ARCADE_GAME);
+						
+						break;
+					}
+					case 5:
+					{
+						menuBomb->Move(0.0f, 9.0f, false);
+						menuz = 0;
+						menux = 0;
+						menuIndex = 0;
+						setGameState(GAME_STATE::MAIN_MENU);
+						menuIndex = 0;
+						break;
+					}
+					default:
+					{
+						break;
+					}
+					}
+
+				}
+			}
+		}
+#pragma endregion
 
 		if (prevShowMouse && !showMouse)
 			ShowCursor(false);
@@ -1489,7 +1648,7 @@ void CGame::GamePlayLoop(double timePassed)
 	{
 		if (GRID[i] == GRID_SYSTEM::BOMB)
 		{
-			if(i - 1 < GRID.size() && i - 1 > 0)
+			if (i - 1 < GRID.size() && i - 1 > 0)
 				GRID[i - 1] = GRID_SYSTEM::EXPLOSION_RADIUS;
 			if (i - width < GRID.size() && i - width > 0)
 				GRID[i - width] = GRID_SYSTEM::EXPLOSION_RADIUS;
@@ -2755,7 +2914,17 @@ void CGame::setGameState(int _gameState)
 	{
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
-		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(-1.5f, 11.4f, -6.8f), 0, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
+		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(-1.5f, 11.4f, -6.8f), GAME_STATE::MAIN_MENU, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
+		SprinklersOn = false;
+		break;
+	}
+	case GAME_STATE::ARCADE_MENU:
+	{
+		p1Pause.Reset(false);
+		ClearPlayersAndBombs();
+		delete menuBomb;
+		menuBomb = nullptr;
+		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB, DirectX::XMFLOAT3(-4.35f, 11.9f, -5.6f), GAME_STATE::ARCADE_MENU, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
 		SprinklersOn = false;
 		break;
 	}
@@ -2768,10 +2937,15 @@ void CGame::setGameState(int _gameState)
 		LoadObject();
 		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-12.5f, 0.0f, 12.5f));
 		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(12.5f, 0.0f, -7.5f));
-		//v_cAI[0] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
-		v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
-		//v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
-		v_cAI[1] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
+		
+		if(numPLAYERS > 2)
+			v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
+		if(numPLAYERS > 3)
+			v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
+		if(numAI > 0)
+			v_cAI[1] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
+		if(numAI > 1)
+			v_cAI[0] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
 		fMinX = -15;
 		fMaxX = 15;
 		fMinZ = -10;
@@ -3048,6 +3222,14 @@ bool CGame::loadTempMenus() {
 	loadInfo.scale = DirectX::XMFLOAT3(2.55f, 2.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::MAIN_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_MENU;
+	loadInfo.scale = DirectX::XMFLOAT3(2.52f, 2.0f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::ARCADE_MENU;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
