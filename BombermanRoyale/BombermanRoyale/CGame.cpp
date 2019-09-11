@@ -2476,14 +2476,13 @@ void CGame::GamePlayLoop(double timePassed)
 		}
 
 		
-		g_pControllerInput->GetNumConnected(prevNumControllers);
+		
 		if (currNumControllers < prevNumControllers || currNumControllers == 0)
 		{
 			PauseMenuToggle = true;
 			isPaused = true;
 		}
-		g_pControllerInput->GetNumConnected(currNumControllers);
-
+		g_pControllerInput->GetNumConnected(prevNumControllers);
 		if (currNumControllers > prevNumControllers)
 		{
 			PauseMenuToggle = false;
