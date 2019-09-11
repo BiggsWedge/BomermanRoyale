@@ -12,6 +12,7 @@ private:
 	bool alive;
 	int controllerIndex;
 	int bombType = 0;
+	int placedBombs = 0;
 	CharacterController controller;
 	bool crouched = false;
 
@@ -26,7 +27,7 @@ public:
 	//ACCESSORS
 	inline bool isAlive() { return alive; }
 	inline int GetNumBombs() { return numBombs; }
-	inline bool hasAvailableBombSlot() { return (bombs.size() < numBombs ? true : false); }
+	inline bool hasAvailableBombSlot() { return (placedBombs < numBombs ? true : false); }
 	inline int GetControllerIndex() { return controllerIndex; }
 	inline std::vector<int> getBombIndices() { return bombs; };
 	inline int GetBombType() { return bombType; }
@@ -42,7 +43,8 @@ public:
 	inline void setAlive(bool _alive) { alive = _alive; }
 	inline void deleteBomb(int index) { bombs.erase(bombs.begin() + index); }
 	inline void SetBombType(int _bombType) { bombType = _bombType; }
-
+	inline void IncPlacedBombs() { placedBombs++; }
+	inline void DecPlacedBombs() { placedBombs--; if (placedBombs < 0)placedBombs = 0; }
 };
 
 

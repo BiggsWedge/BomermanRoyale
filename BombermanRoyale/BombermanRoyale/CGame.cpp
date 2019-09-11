@@ -530,8 +530,8 @@ void CGame::Run()
 							break;
 						}
 					}
-					if(menuz > 1 && menux > 0)
-					{ 
+					if (menuz > 1 && menux > 0)
+					{
 						menuBomb->Move(-8.0f, 0.0f, false);
 						menux -= 1;
 					}
@@ -616,7 +616,7 @@ void CGame::Run()
 						menux = 0;
 						menuIndex = 0;
 						setGameState(GAME_STATE::ARCADE_GAME);
-						
+
 						break;
 					}
 					case 5:
@@ -771,7 +771,7 @@ void CGame::Run()
 			this->GamePlayLoop(timePassed);
 		}
 
-		
+
 
 		//RenderMenus
 		for (CObject* menu : menuObjects) {
@@ -916,10 +916,10 @@ void CGame::Run()
 
 
 			//if (fMinX < -7.5) {
-				fMinX += 2.5;
-				fMinZ += 2.5;
-				fMaxX -= 2.5;
-				fMaxZ -= 2.5;
+			fMinX += 2.5;
+			fMinZ += 2.5;
+			fMaxX -= 2.5;
+			fMaxZ -= 2.5;
 			//}
 
 			mapTime = 0;
@@ -2466,8 +2466,8 @@ void CGame::GamePlayLoop(double timePassed)
 			isPaused = !isPaused;
 		}
 
-		
-		
+
+
 		if (currNumControllers < prevNumControllers || currNumControllers == 0)
 		{
 			PauseMenuToggle = true;
@@ -2515,15 +2515,15 @@ void CGame::GamePlayLoop(double timePassed)
 			}
 		}
 
-	/*	if (deltaX != 0.0f || deltaZ != 0.0f)
-		{
-			if (currPlayer->GetCrouchStatus() == true)
+		/*	if (deltaX != 0.0f || deltaZ != 0.0f)
 			{
+				if (currPlayer->GetCrouchStatus() == true)
+				{
 
-			}
-		}*/
+				}
+			}*/
 
-		//CROUCH
+			//CROUCH
 		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_BUTTONS::CROUCH) && !isPaused) {
 
 			currPlayer->CrouchRoll(0, 0, -1.5f, false);
@@ -2558,7 +2558,7 @@ void CGame::GamePlayLoop(double timePassed)
 			if (bomb->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer))
 			{
 				TTransformComponent* bRenderer = (TTransformComponent*)_prenderer;
-				if (bRenderer->fPosition.x < fMinX|| bRenderer->fPosition.x > fMaxX|| bRenderer->fPosition.z < fMinZ|| bRenderer->fPosition.z > fMaxZ)
+				if (bRenderer->fPosition.x < fMinX || bRenderer->fPosition.x > fMaxX || bRenderer->fPosition.z < fMinZ || bRenderer->fPosition.z > fMaxZ)
 				{
 					if (bomb->isAlive())
 					{
@@ -2633,86 +2633,46 @@ void CGame::GamePlayLoop(double timePassed)
 				{
 					bombPlaceSound2->Play();
 				}
-				for (int i = 0; i < maxNumBombs; ++i)
-				{
-					if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive())
+
+				int numBombsPlaced = 0;
+				std::vector<CBomb*> bombs;
+
+				switch (currPlayer->GetBombType()) {
+
+				case 4:
+					bombs = p_cEntityManager->DropBomb0(currPlayer, objects);
+					break;
+				case 1:
+					bombs = p_cEntityManager->DropBomb1(currPlayer, objects);
+					break;
+				case 2:
+					bombs = p_cEntityManager->DropBomb2(currPlayer, objects);
+
+					break;
+				case 3:
+					bombs = p_cEntityManager->DropBomb3(currPlayer, objects);
+
+					break;
+				default:
+
+					bombs.resize(1);
+					bombs[0] = p_cEntityManager->DropBomb(currPlayer);
+					break;
+				}
+				for (int j = 0; j < bombs.size(); ++j) {
+					for (int i = 0; i < maxNumBombs; ++i)
 					{
-						currPlayer->AddBombIndex(i);
-						std::vector<CBomb*> bombs;
 
-						switch (currPlayer->GetBombType()) {
+						if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive())
+						{
+							v_cBombs[i] = bombs[j];
+							currPlayer->AddBombIndex(i);
 
-						case 4:
-							if (v_cBombs[i]) {
-								bombs = p_cEntityManager->DropBomb0(currPlayer, objects);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
-							else {
-								bombs = p_cEntityManager->DropBomb0(currPlayer, objects);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
-
-							break;
-						case 1:
-							if (v_cBombs[i]) {
-								bombs = p_cEntityManager->DropBomb1(currPlayer, objects);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
-							else {
-								bombs = p_cEntityManager->DropBomb1(currPlayer, objects);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
-
-							break;
-						case 2:
-							if (v_cBombs[i]) {
-								bombs = p_cEntityManager->DropBomb2(currPlayer, objects);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
-							else {
-								bombs = p_cEntityManager->DropBomb2(currPlayer, objects);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
-
-							break;
-						case 3:
-							if (v_cBombs[i]) {
-								bombs = p_cEntityManager->DropBomb3(currPlayer, objects);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
-							else {
-								bombs = p_cEntityManager->DropBomb3(currPlayer, objects);
-								for (int j = 0; j < bombs.size(); j++) {
-									v_cBombs[i + j] = bombs[j];
-								}
-							}
-
-							break;
-						default:
-							if (v_cBombs[i])
-								*v_cBombs[i] = *p_cEntityManager->DropBomb(currPlayer);
-							else
-								v_cBombs[i] = p_cEntityManager->DropBomb(currPlayer);
 							break;
 						}
-
-						break;
 					}
 				}
+				currPlayer->IncPlacedBombs();
 			}
 		}
 
@@ -2956,14 +2916,14 @@ void CGame::setGameState(int _gameState)
 		LoadObject();
 		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-12.5f, 0.0f, 12.5f));
 		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(12.5f, 0.0f, -7.5f));
-		
-		if(numPLAYERS > 2)
+
+		if (numPLAYERS > 2)
 			v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
-		if(numPLAYERS > 3)
+		if (numPLAYERS > 3)
 			v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
-		if(numAI > 0)
+		if (numAI > 0)
 			v_cAI[1] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
-		if(numAI > 1)
+		if (numAI > 1)
 			v_cAI[0] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
 		fMinX = -15;
 		fMaxX = 15;
@@ -3206,8 +3166,10 @@ void CGame::updateBombs(double timePassed)
 
 				CPlayer* parent = v_cBombs[i]->getParent();
 				for (int j = 0; j < parent->getBombIndices().size(); ++j) {
-					if (parent->getBombIndices()[j] == i)
+					if (parent->getBombIndices()[j] == i) {
 						parent->deleteBomb(j);
+						parent->DecPlacedBombs();
+					}
 				}
 
 				explosionTimers.push_back(0.0f);
