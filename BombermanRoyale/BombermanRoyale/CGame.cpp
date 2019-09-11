@@ -344,8 +344,8 @@ void CGame::Run()
 				g_pMusicStream->ResumeStream();
 				timePassed = tempTime;
 				mapTime = tempMapTime;
-				//shakeTime = 0;
 				SprinklersOn = true;
+				//shakeTime = 0;
 			}
 		}
 
@@ -358,7 +358,7 @@ void CGame::Run()
 			mapTime = 0;
 			//tempShakeTime = shakeTime;
 			//shakeTime += timePassed;
-			//SprinklersOn = false;
+			SprinklersOn = false;
 			timePassed = 0;
 			//g_d3dData->resetCamera();
 		}
