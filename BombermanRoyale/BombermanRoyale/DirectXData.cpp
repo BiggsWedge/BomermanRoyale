@@ -255,9 +255,23 @@ bool DirectXData::Initialize()
 #pragma endregion
 
 #pragma region Geometry
-
+	if (FAILED(d3dDevice->CreateGeometryShader(GeometryShader, sizeof(GeometryShader), nullptr, &d3dGeometryShader[GEOMETRY_SHADER::PARTICLE])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the geometry shader");
 #pragma endregion
 
+#pragma region Compute
+	if (FAILED(d3dDevice->CreateComputeShader(ComputeShader, sizeof(ComputeShader), nullptr, &d3dComputeShader[COMPUTE_SHADER::PARTICLE])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the compute shader");
 #pragma endregion
 
 #pragma region Input Layout Creation

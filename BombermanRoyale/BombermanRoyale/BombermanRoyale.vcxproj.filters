@@ -31,6 +31,12 @@
     <FxCompile Include="SkyVertex.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="ComputeShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="GeometryShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBomb.cpp">
@@ -126,6 +132,7 @@
     <ClCompile Include="Skybox.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="XTime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBomb.h">
@@ -224,6 +231,7 @@
     <ClInclude Include="Skybox.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="XTime.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">

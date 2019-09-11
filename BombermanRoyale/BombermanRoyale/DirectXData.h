@@ -68,7 +68,12 @@ struct PIXEL_SHADER
 
 struct GEOMETRY_SHADER
 {
-	enum { DEFAULT = 0, COUNT };
+	enum { DEFAULT = 0,PARTICLE,  COUNT };
+};
+
+struct COMPUTE_SHADER
+{
+	enum { DEFAULT = 0, PARTICLE, COUNT };
 };
 
 struct INPUT_LAYOUT
@@ -131,6 +136,7 @@ public:
 	ID3D11InputLayout*					d3dInputLayout[INPUT_LAYOUT::COUNT] = {};
 	ID3D11PixelShader*					d3dPixelShader[PIXEL_SHADER::COUNT] = {};
 	ID3D11GeometryShader*				d3dGeometryShader[GEOMETRY_SHADER::COUNT] = {};
+	ID3D11ComputeShader*				d3dComputeShader[COMPUTE_SHADER::COUNT] = {};
 
 	ID3D11Buffer*						d3dConstBuffers[CONSTANT_BUFFER::COUNT] = {};
 	ID3D11RenderTargetView*				d3dRenderTargetView = nullptr;

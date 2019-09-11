@@ -95,6 +95,8 @@ bool isPaused = false;
 static double timePassed = 0.0f;
 double AIbombaction = 0.0f;
 double tempTime = 0.0f;
+double tempMapTime = 0.0f;
+double tempShakeTime = 0.0f;
 double mapTime = 0.0f;
 double shakeTime = 0.0f;
 double offMapTimer = 0;
@@ -312,7 +314,7 @@ void CGame::Run()
 		if (keys[KEYS::HELP_MENU].pressed() || p1Help.Pressed()) {
 			ControlScreenToggle = !ControlScreenToggle;
 			isPaused = !isPaused;
-			SprinklersOn = false;
+			//SprinklersOn = false;
 
 		}
 
@@ -341,12 +343,14 @@ void CGame::Run()
 		if (keys[KEYS::PAUSE].pressed()) {
 			isPaused = !isPaused;
 			ControlScreenToggle = !ControlScreenToggle;
-			SprinklersOn = false;
+			//SprinklersOn = false;
 			if (isPaused == false) {
 				g_pAudioHolder->ResumeAll();
 				g_pMusicStream->ResumeStream();
 				timePassed = tempTime;
+				mapTime = tempMapTime;
 				SprinklersOn = true;
+				//shakeTime = 0;
 			}
 		}
 
@@ -355,8 +359,13 @@ void CGame::Run()
 		{
 			g_pAudioHolder->PauseAll();
 			tempTime = timePassed;
-			timePassed = 0;
+			tempMapTime = mapTime;
+			mapTime = 0;
+			//tempShakeTime = shakeTime;
+			//shakeTime += timePassed;
 			SprinklersOn = false;
+			timePassed = 0;
+			//g_d3dData->resetCamera();
 		}
 
 #pragma region MAIN MENU
@@ -1007,7 +1016,7 @@ void CGame::Run()
 
 			viewPos = g_d3dData->screenShake();
 
-			if (shakeTime >= 0.5) {
+			if (shakeTime >= 0.5 || isPaused) {
 				bombExploded = false;
 				if (!bombExploded) {
 					g_d3dData->resetCamera();
@@ -1383,7 +1392,7 @@ void CGame::LoadObject()
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	loadInfo.position = { 0.0f, 0.0f, 0.0f };
+	loadInfo.position = { 0.0f, 0.0f, 2.5f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
@@ -2780,6 +2789,7 @@ void CGame::InitSortedParticles(end::sorted_pool_t<particle, 500>& sortedPool, d
 	}
 
 	for (size_t i = 0; i < sortedPool.size(); i++) {
+		//add_line(sortedPool[i].pos, sortedPool[i].prev_pos, sortedPool[i].color);
 		sortedPool[i].prev_pos = sortedPool[i].pos;
 		sortedPool[i].pos.x += (sortedPool[i].speed.x * deltaTime);
 		sortedPool[i].pos.y += (sortedPool[i].speed.y * deltaTime);
@@ -2835,7 +2845,7 @@ void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& fre
 				i--;
 				continue;
 			}
-
+			//add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
 			freePool[Ecount].prev_pos = freePool[Ecount].pos;
 			freePool[Ecount].pos.x += (freePool[Ecount].speed.x * deltaTime);
 			freePool[Ecount].pos.y += (freePool[Ecount].speed.y * deltaTime);
@@ -2894,7 +2904,7 @@ void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& fre
 			freePool[Ecount].pos.y += (freePool[Ecount].speed.y * deltaTime);
 			freePool[Ecount].pos.z += (freePool[Ecount].speed.z * deltaTime);
 			freePool[Ecount].speed.y -= particleGravity * deltaTime;
-			add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
+			//add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
 		}
 	}
 }
