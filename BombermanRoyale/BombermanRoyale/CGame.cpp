@@ -106,6 +106,9 @@ float fMaxZ = 15;
 float bCollisionIgnore = 0.5f;
 int numPlayers = 2;
 
+int currNumControllers = 0;
+int prevNumControllers = 0;
+
 float isLDPADPressed = 0.0f;
 float isRDPADPressed = 0.0f;
 float isUDPADPressed = 0.0f;
@@ -344,7 +347,7 @@ void CGame::Run()
 				SprinklersOn = true;
 			}
 		}
-
+		g_pControllerInput->GetNumConnected(currNumControllers);
 
 		if (isPaused == true)
 		{
@@ -600,7 +603,7 @@ void CGame::Run()
 			this->GamePlayLoop(timePassed);
 		}
 
-
+		
 
 		//RenderMenus
 		for (CObject* menu : menuObjects) {
@@ -2295,6 +2298,22 @@ void CGame::GamePlayLoop(double timePassed)
 			PauseMenuToggle = !PauseMenuToggle;
 			isPaused = !isPaused;
 		}
+
+		
+		g_pControllerInput->GetNumConnected(prevNumControllers);
+		if (currNumControllers < prevNumControllers || currNumControllers == 0)
+		{
+			PauseMenuToggle = true;
+			isPaused = true;
+		}
+		g_pControllerInput->GetNumConnected(currNumControllers);
+
+		if (currNumControllers > prevNumControllers)
+		{
+			PauseMenuToggle = false;
+			isPaused = false;
+		}
+
 		if (cont->IsControllerConnected())
 		{
 			deltaX = cont->GetLeftRight() * timePassed * PLAYER_SPEED;
@@ -2330,13 +2349,13 @@ void CGame::GamePlayLoop(double timePassed)
 			}
 		}
 
-		if (deltaX != 0.0f || deltaZ != 0.0f)
+	/*	if (deltaX != 0.0f || deltaZ != 0.0f)
 		{
 			if (currPlayer->GetCrouchStatus() == true)
 			{
 
 			}
-		}
+		}*/
 
 		//CROUCH
 		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_BUTTONS::CROUCH) && !isPaused) {
