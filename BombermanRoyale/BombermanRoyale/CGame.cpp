@@ -876,15 +876,15 @@ void CGame::Run()
 		//Render Emitter
 		if (objects.size() > 0)
 		{
-				TComponent* cRenderer = nullptr;
-				TRendererComponent* renderer = nullptr;
-				if (objects[objects.size() - 1]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-				{
-					renderer = (TRendererComponent*)cRenderer;
+			TComponent* cRenderer = nullptr;
+			TRendererComponent* renderer = nullptr;
+			if (objects[objects.size() - 1]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+			{
+				renderer = (TRendererComponent*)cRenderer;
 
-					if (renderer->iUsedLoadState == curGameState)
-						p_cRendererManager->RenderObject(objects[objects.size() - 1]);
-				}
+				if (renderer->iUsedLoadState == curGameState)
+					p_cRendererManager->RenderObject(objects[objects.size() - 1]);
+			}
 		}
 
 		if (menuBomb)
@@ -1211,7 +1211,7 @@ void CGame::LoadObject()
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	loadInfo.position = { 0.0f, 0.0f, 0.0f };
+	loadInfo.position = { 0.0f, 0.0f, 2.5f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
@@ -2446,7 +2446,7 @@ void CGame::InitSortedParticles(end::sorted_pool_t<particle, 500>& sortedPool, d
 	}
 
 	for (size_t i = 0; i < sortedPool.size(); i++) {
-		add_line(sortedPool[i].pos, sortedPool[i].prev_pos, sortedPool[i].color);
+		//add_line(sortedPool[i].pos, sortedPool[i].prev_pos, sortedPool[i].color);
 		sortedPool[i].prev_pos = sortedPool[i].pos;
 		sortedPool[i].pos.x += (sortedPool[i].speed.x * deltaTime);
 		sortedPool[i].pos.y += (sortedPool[i].speed.y * deltaTime);
@@ -2508,7 +2508,7 @@ void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& fre
 			freePool[Ecount].pos.y += (freePool[Ecount].speed.y * deltaTime);
 			freePool[Ecount].pos.z += (freePool[Ecount].speed.z * deltaTime);
 			freePool[Ecount].speed.y -= particleGravity * deltaTime;
-			add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
+			//add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
 		}
 	}
 }
@@ -2561,7 +2561,7 @@ void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& fre
 			freePool[Ecount].pos.y += (freePool[Ecount].speed.y * deltaTime);
 			freePool[Ecount].pos.z += (freePool[Ecount].speed.z * deltaTime);
 			freePool[Ecount].speed.y -= particleGravity * deltaTime;
-			add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
+			//add_line(freePool[Ecount].pos, freePool[Ecount].prev_pos, freePool[Ecount].color);
 		}
 	}
 }
