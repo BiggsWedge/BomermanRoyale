@@ -349,7 +349,6 @@ void CGame::Run()
 			}
 		}
 
-
 		if (isPaused == true)
 		{
 			g_pAudioHolder->PauseAll();
@@ -628,11 +627,11 @@ void CGame::Run()
 			InitFreeParticles(thirdEmit, shared_pool, timer.Delta());
 			InitFreeParticles(fourthEmit, shared_pool, timer.Delta());
 		}
+
 		//RenderObjects
-		if (mapTime >= 40)
+		if (mapTime >= 42 && passes < 4)
 		{
 			fallingSoundPlaying = false;
-
 			for (int i = 0; i < objects.size(); ++i) {
 				TComponent* cRenderer = nullptr;
 				TComponent* texture = nullptr;
@@ -656,16 +655,9 @@ void CGame::Run()
 			}
 		}
 
-		//}
-		//if (mapTime >= 45) {
-		//	warningSoundPlaying = false;
-		//	for (int passes = 0; passes < 6; passes++) {
-		//		for (int i = 0; i < objects.size(); ++i) {
-		//			TComponent* cRenderer = nullptr;
-		//			TTransformComponent* renderer = nullptr;
-
-		if (mapTime >= 45)
+		if (mapTime >= 45 && passes < 4)
 		{
+			passes += 1;
 			warningSoundPlaying = false;
 			fallingSoundPlaying = false;
 
@@ -679,8 +671,6 @@ void CGame::Run()
 				fallingSound->Play();
 				fallingSoundPlaying = true;
 			}
-
-
 
 			for (int passes = 0; passes < 6; passes++)
 			{
@@ -749,12 +739,12 @@ void CGame::Run()
 			}
 
 
-			if (fMinX < -7.5) {
+			//if (fMinX < -7.5) {
 				fMinX += 2.5;
 				fMinZ += 2.5;
 				fMaxX -= 2.5;
 				fMaxZ -= 2.5;
-			}
+			//}
 
 			mapTime = 0;
 		}
@@ -2215,9 +2205,8 @@ void CGame::GamePlayLoop(double timePassed)
 			if (bomb->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer))
 			{
 				TTransformComponent* bRenderer = (TTransformComponent*)_prenderer;
-				if (bRenderer->fPosition.x < fMinX - 1.3 || bRenderer->fPosition.x > fMaxX + 1.3 || bRenderer->fPosition.z < fMinZ - 1.3 || bRenderer->fPosition.z > fMaxZ + 1.3)
+				if (bRenderer->fPosition.x < fMinX|| bRenderer->fPosition.x > fMaxX|| bRenderer->fPosition.z < fMinZ|| bRenderer->fPosition.z > fMaxZ)
 				{
-
 					if (bomb->isAlive())
 					{
 						CPlayer* parent = bomb->getParent();
@@ -2597,6 +2586,7 @@ void CGame::setGameState(int _gameState)
 	case GAME_STATE::ARCADE_GAME:
 	{
 		SprinklersOn = true;
+		passes = 0;
 		delete menuBomb;
 		shakeTime = 0;
 		menuBomb = nullptr;
