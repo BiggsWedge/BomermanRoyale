@@ -83,7 +83,7 @@ struct INPUT_LAYOUT
 
 struct RASTERIZER_STATE
 {
-	enum { DEFAULT = 0, COUNT };
+	enum { DEFAULT = 0, SKYBOX, COUNT };
 };
 
 struct DEPTH_STENCIL_VIEW
@@ -141,7 +141,7 @@ public:
 	ID3D11Buffer*						d3dConstBuffers[CONSTANT_BUFFER::COUNT] = {};
 	ID3D11RenderTargetView*				d3dRenderTargetView = nullptr;
 	ID3D11DepthStencilView*				d3dDepthStencilView = nullptr;
-	ID3D11RasterizerState*				d3dRasterizerState = nullptr;
+	ID3D11RasterizerState*				d3dRasterizerState[RASTERIZER_STATE::COUNT] = {};
 	ID3D11RasterizerState*				d3dRasterizerState2 = nullptr;
 	ID3D11RasterizerState*				d3dRasterizerStateSKYBOX = nullptr;
 	ID3D11SamplerState*					d3dSamplerState = nullptr;

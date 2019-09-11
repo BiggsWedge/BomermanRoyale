@@ -100,7 +100,7 @@ void CBomb::Draw(double timepassed)
 
 	if (mesh->mName != "BattleMage")
 	{
-		g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState);
+		g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::DEFAULT]);
 
 		g_d3dData->d3dContext->IASetVertexBuffers(0, 1, &mesh->d3dVertexBuffer, strides, offsets);
 		g_d3dData->d3dContext->IASetIndexBuffer(mesh->d3dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);

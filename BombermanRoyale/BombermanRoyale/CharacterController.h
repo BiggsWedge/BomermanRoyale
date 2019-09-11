@@ -7,7 +7,7 @@
 
 struct DEFAULT_BUTTONS
 {
-	enum { ACTION = 0, PAUSE, LEFT, RIGHT, UP, DOWN, CROUCH, COUNT };
+	enum { ACTION = 0, PAUSE, CROUCH, LEFT, RIGHT, UP, DOWN, COUNT };
 };
 
 struct Button

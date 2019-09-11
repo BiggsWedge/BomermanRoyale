@@ -48,8 +48,8 @@ class CGame
 	float particleLife = 5.0f;
 	float particleSpeed = 1.5f;
 	float particleGravity = 9.8f;
-	end::sorted_pool_t<particle, 1000> sortedParticles;
-	end::pool_t<particle, 1000> freeParticles;
+	end::sorted_pool_t<particle, 500> sortedParticles;
+	end::pool_t<particle, 500> freeParticles;
 	end::pool_t<particle, 1024> shared_pool;
 	emitter firstEmit;
 	emitter secondEmit;
@@ -93,7 +93,7 @@ public:
 	bool Initialize();
 	void Run();
 
-	void InitSortedParticles(end::sorted_pool_t<particle, 1000>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color);
+	void InitSortedParticles(end::sorted_pool_t<particle, 500>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color);
 	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime);
 	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime, CObject* obj);
 	void SpawnParticles(CObject* obj, double time, double timePassed);

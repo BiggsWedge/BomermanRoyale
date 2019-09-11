@@ -56,9 +56,22 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
 	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
 
+	if (gamestate == GAME_STATE::ARCADE_GAME)
+	{
+		theSkybox->Update();
+		theSkybox->Render();
+
+		SAFE_RELEASE(g_d3dData->d3dDepthStencilView);
+		if (G_SUCCESS(g_d3dData->d3dSurface->GetDepthStencilView((void**)&g_d3dData->d3dDepthStencilView)))
+		{
+			g_d3dData->d3dContext->ClearDepthStencilView(g_d3dData->d3dDepthStencilView, D3D11_CLEAR_DEPTH, 1, 0);
+		}
+
+	}
 
 
-	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState);
+
+	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::DEFAULT]);
 	/*********DRAW OTHER STUFF HERE************/
 	//if(gamestate == 3)
 
@@ -78,7 +91,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 	if (gamestate == GAME_STATE::ARCADE_GAME)
 	{
-		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Arcade Mode", DirectX::XMVECTOR{ (0.5f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.01f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::SaddleBrown, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
+		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Arcade Mode", DirectX::XMVECTOR{ (0.5f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.01f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 	}
 
 	float x = (0.5f - (0.6f * ((float)g_d3dData->windowWidthHeight.y / (float)g_d3dData->windowWidthHeight.x)));
@@ -143,6 +156,8 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 CRendererManager::CRendererManager()
 {
+	theSkybox = new Skybox();
+	theSkybox->Initialize();
 }
 
 

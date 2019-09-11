@@ -78,7 +78,7 @@ bool DirectXData::Initialize()
 	d3dRasterDesc.MultisampleEnable = true;
 	d3dRasterDesc.AntialiasedLineEnable = true;
 
-	if (FAILED(d3dDevice->CreateRasterizerState(&d3dRasterDesc, &d3dRasterizerState)))
+	if (FAILED(d3dDevice->CreateRasterizerState(&d3dRasterDesc, &d3dRasterizerState[RASTERIZER_STATE::DEFAULT])))
 	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create the rasterizer state");
 		return false;
@@ -88,24 +88,15 @@ bool DirectXData::Initialize()
 
 	d3dRasterDesc.FrontCounterClockwise = false;
 
-	if (FAILED(d3dDevice->CreateRasterizerState(&d3dRasterDesc, &d3dRasterizerState2)))
+	if (FAILED(d3dDevice->CreateRasterizerState(&d3dRasterDesc, &d3dRasterizerState[RASTERIZER_STATE::SKYBOX])))
 	{
-		g_pLogger->LogCatergorized("FAILURE", "Failed to create the rasterizer2 state");
+		g_pLogger->LogCatergorized("FAILURE", "Failed to create the rasterizer state");
 		return false;
 	}
 	else
-		g_pLogger->LogCatergorized("SUCCESS", "Successfully created rasterizer2 state");
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created rasterizer state");
 
-	//d3dRasterDesc.FrontCounterClockwise = false;
-	d3dRasterDesc.CullMode = D3D11_CULL_NONE;
 
-	if (FAILED(d3dDevice->CreateRasterizerState(&d3dRasterDesc, &d3dRasterizerStateSKYBOX)))
-	{
-		g_pLogger->LogCatergorized("FAILURE", "Failed to create the rasterizerSKYBOX state");
-		return false;
-	}
-	else
-		g_pLogger->LogCatergorized("SUCCESS", "Successfully created rasterizerSKYBOX state");
 
 #pragma endregion
 
@@ -557,97 +548,10 @@ bool DirectXData::Initialize()
 	d3dDevice->CreateDeferredContext(0, &d3dDeferredContext);
 
 
-#pragma region Vertex Buffer Creation
-
-	KeyVertex verts[] =
-	{
-		//-z plane
-		{DirectX::XMFLOAT3(-1,-1,-1), DirectX::XMFLOAT2(0,1)},
-		{DirectX::XMFLOAT3(-1,1,-1), DirectX::XMFLOAT2(0,0)},
-		{DirectX::XMFLOAT3(1,-1,-1), DirectX::XMFLOAT2(1,1)},
-		{DirectX::XMFLOAT3(1,1,-1), DirectX::XMFLOAT2(1,0)},
-
-		//+z plane
-		{DirectX::XMFLOAT3(-1,-1,1), DirectX::XMFLOAT2(0,1)},
-		{DirectX::XMFLOAT3(-1,1,1), DirectX::XMFLOAT2(0,0)},
-		{DirectX::XMFLOAT3(1,-1,1), DirectX::XMFLOAT2(1,1)},
-		{DirectX::XMFLOAT3(1,1,1), DirectX::XMFLOAT2(1,0)},
-
-		//-y plane
-		{DirectX::XMFLOAT3(-1,-1,-1) , DirectX::XMFLOAT2(0,1)},
-		{DirectX::XMFLOAT3(-1,-1,1),  DirectX::XMFLOAT2(0,0)},
-		{DirectX::XMFLOAT3(1,-1,-1),  DirectX::XMFLOAT2(1,1)},
-		{DirectX::XMFLOAT3(1,-1,1),  DirectX::XMFLOAT2(1,0)},
-
-		//+y plane
-		{DirectX::XMFLOAT3(-1,1,-1)	, DirectX::XMFLOAT2(0,1)},
-		{DirectX::XMFLOAT3(-1,1,1),	 DirectX::XMFLOAT2(0,0)},
-		{DirectX::XMFLOAT3(1,1,-1),	 DirectX::XMFLOAT2(1,1)},
-		{DirectX::XMFLOAT3(1,1,1), 	DirectX::XMFLOAT2(1,0)},
-
-		//-x plane
-		{DirectX::XMFLOAT3(-1,-1,-1) , DirectX::XMFLOAT2(0,1)},
-		{DirectX::XMFLOAT3(-1,1,-1),  DirectX::XMFLOAT2(0,0)},
-		{DirectX::XMFLOAT3(-1,-1,1),  DirectX::XMFLOAT2(1,1)},
-		{DirectX::XMFLOAT3(-1,1,1),  DirectX::XMFLOAT2(1,0)},
-
-		//+x plane
-		{DirectX::XMFLOAT3(1,-1,-1), DirectX::XMFLOAT2(0,1)},
-		{DirectX::XMFLOAT3(1,1,-1), DirectX::XMFLOAT2(0,0)},
-		{DirectX::XMFLOAT3(1,-1,1), DirectX::XMFLOAT2(1,1)},
-		{DirectX::XMFLOAT3(1,1,1), DirectX::XMFLOAT2(1,0)},
-
-	};
-
-
-
-
-	//Jungle Vertex buffer
-	JungleBuffer.Usage = D3D11_USAGE_DEFAULT;
-	JungleBuffer.ByteWidth = sizeof(KeyVertex) * 24;
-	JungleBuffer.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	JungleBuffer.CPUAccessFlags = 0;
-	JungleBuffer.MiscFlags = 0;
-	JungleBuffer.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA SubData;
-	SubData.pSysMem = verts;
-
-	d3dDevice->CreateBuffer(&JungleBuffer, &SubData, &JungleVertexBuffer);
-
-#pragma endregion
 
 #pragma region Index Buffer Creation
 
-
-	WORD JungleIndices[36] =
-	{
-		3,0,1,
-		2,3,1,
-
-		6,5,4,
-		7,6,4,
-
-		11,8,9,
-		10,11,9,
-
-		14,13,12,
-		15,14,12,
-
-		19,16,17,
-		18,19,17,
-
-		22,21,20,
-		23,22,20
-	};
-
 	//Sky Index Buffer
-	JungleBuffer.Usage = D3D11_USAGE_DEFAULT;
-	JungleBuffer.ByteWidth = sizeof(WORD) * 36;
-	JungleBuffer.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	JungleBuffer.CPUAccessFlags = 0;
-	SubData.pSysMem = JungleIndices;
-	d3dDevice->CreateBuffer(&JungleBuffer, &SubData, &JungleIndexBuffer);
 
 #pragma endregion
 
@@ -668,7 +572,8 @@ DirectXData::~DirectXData()
 void DirectXData::Cleanup()
 {
 	SAFE_RELEASE(d3dSamplerState);
-	SAFE_RELEASE(d3dRasterizerState);
+	for (int i = 0; i < RASTERIZER_STATE::COUNT; ++i)
+		SAFE_RELEASE(d3dRasterizerState[i]);
 	SAFE_RELEASE(d3dRasterizerState2);
 	SAFE_RELEASE(d3dDepthStencilView);
 	SAFE_RELEASE(d3dRenderTargetView);

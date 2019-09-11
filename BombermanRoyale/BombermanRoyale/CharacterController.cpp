@@ -4,22 +4,24 @@ std::vector<int> P1DefaultControls
 {
 	'E',
 	'Q',
+	'C',
 	'A',
 	'D',
 	'W',
-	'S',
-	'C'
+	'S'
+	
 };
 
 std::vector<int> P2DefaultControls
 {
 	'O',
 	'U',
+	'M',
 	'J',
 	'L',
 	'I',
-	'K',
-	'M'
+	'K'
+	
 };
 
 
@@ -65,13 +67,13 @@ void CharacterController::Update()
 
 void CharacterController::SetButtonCodes(int actionButton, int pauseButton, int helpButton, int crouchButton)
 {
-	controllerButtons.resize(DEFAULT_BUTTONS::PAUSE + 2);
+	controllerButtons.resize(4);
 	controllerButtons[DEFAULT_BUTTONS::ACTION].SetButtonID(actionButton);
 	controllerButtons[DEFAULT_BUTTONS::ACTION].Reset(false);
 	controllerButtons[DEFAULT_BUTTONS::PAUSE].SetButtonID(pauseButton);
 	controllerButtons[DEFAULT_BUTTONS::PAUSE].Reset(false);
-	//controllerButtons[DEFAULT_BUTTONS::CROUCH].SetButtonID(crouchButton);
-	//controllerButtons[DEFAULT_BUTTONS::CROUCH].Reset(false);
+	controllerButtons[DEFAULT_BUTTONS::CROUCH].SetButtonID(crouchButton);
+	controllerButtons[DEFAULT_BUTTONS::CROUCH].Reset(false);
 
 	keyboardButtons.resize(DEFAULT_BUTTONS::COUNT);
 	for (Button& button : keyboardButtons)
