@@ -57,6 +57,7 @@ class CGame
 	emitter fourthEmit;
 	emitter freeEmit;
 	XTime timer;
+	
 
 	CRendererManager* p_cRendererManager;
 	CEntityManager* p_cEntityManager;
@@ -79,6 +80,7 @@ class CGame
 
 	double mouseIdleTimer;
 	double menucontroltimer = 0.0;
+	double AItime = 0.0;
 	bool prevShowMouse = true;
 	bool showMouse = true;
 	bool bombExploded = false;
@@ -116,6 +118,7 @@ public:
 	void PlayerCollision(CPlayer* playerToCheck, CObject* cObj, float dx, float dz);
 	void PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb);
 	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer * playerToCheck);
+	void AI_Method(double timepassed, double action_time);
 
 	inline CPlayer* GetPlayer(int index) { if (index >= v_cPlayers.size())return nullptr; else return v_cPlayers.at(index); }
 	inline CPlayer* GetAI(int index) { if (index >= v_cAI.size()) return nullptr; else return v_cAI.at(index); }
