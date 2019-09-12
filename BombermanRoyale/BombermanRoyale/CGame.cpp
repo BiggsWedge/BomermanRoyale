@@ -352,7 +352,7 @@ void CGame::Run()
 				g_pMusicStream->ResumeStream();
 				timePassed = tempTime;
 				mapTime = tempMapTime;
-				SprinklersOn = true;
+				//SprinklersOn = true;
 				//shakeTime = 0;
 			}
 		}
@@ -366,7 +366,7 @@ void CGame::Run()
 			mapTime = 0;
 			//tempShakeTime = shakeTime;
 			//shakeTime += timePassed;
-			SprinklersOn = false;
+			//SprinklersOn = false;
 			timePassed = 0;
 			//g_d3dData->resetCamera();
 		}
@@ -798,10 +798,10 @@ void CGame::Run()
 		if (SprinklersOn == true)
 		{
 			//RenderParticles
-			InitFreeParticles(firstEmit, shared_pool, timer.Delta());
-			InitFreeParticles(secondEmit, shared_pool, timer.Delta());
-			InitFreeParticles(thirdEmit, shared_pool, timer.Delta());
-			InitFreeParticles(fourthEmit, shared_pool, timer.Delta());
+			InitFreeParticles(firstEmit, shared_pool, timePassed);
+			InitFreeParticles(secondEmit, shared_pool, timePassed);
+			InitFreeParticles(thirdEmit, shared_pool, timePassed);
+			InitFreeParticles(fourthEmit, shared_pool, timePassed);
 		}
 
 		//RenderObjects
