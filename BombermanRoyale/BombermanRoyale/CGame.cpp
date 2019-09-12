@@ -502,7 +502,12 @@ void CGame::Run()
 				{
 
 					menucontroltimer = 0.0;
-					menuBomb->Move(0.0f, 3.0f, false);
+					if (menuz < 3)
+						menuBomb->Move(0.0f, 3.5f, false);
+					else if(menuz == 4)
+						menuBomb->Move(0.0f, 3.0f, false);
+					else
+						menuBomb->Move(0.0f, 2.5f, false);
 					menuz -= 1;
 					for (int i = 0; i < MenuSounds.size(); ++i)
 					{
@@ -515,11 +520,16 @@ void CGame::Run()
 					}
 
 				}
-				if (menuBomb->GetCharacterController()->GetUpDown() < 0.0f && menucontroltimer > 0.2 && menuz < 3)
+				if (menuBomb->GetCharacterController()->GetUpDown() < 0.0f && menucontroltimer > 0.2 && menuz < 4)
 				{
 
 					menucontroltimer = 0.0;
-					menuBomb->Move(0.0f, -3.0f, false);
+					if (menuz < 2)
+						menuBomb->Move(0.0f, -3.5f, false);
+					else if(menuz == 3)
+						menuBomb->Move(0.0f, -3.0f, false);
+					else
+						menuBomb->Move(0.0f, -2.5f, false);
 					menuz += 1;
 					for (int i = 0; i < MenuSounds.size(); ++i)
 					{
@@ -530,14 +540,14 @@ void CGame::Run()
 							break;
 						}
 					}
-					if (menuz > 1 && menux > 0)
+					if (menuz > 2 && menux > 0)
 					{
 						menuBomb->Move(-8.0f, 0.0f, false);
 						menux -= 1;
 					}
 
 				}
-				if (menuBomb->GetCharacterController()->GetLeftRight() > 0.0f && menucontroltimer > 0.2 && menux < 1 && menuz < 2)
+				if (menuBomb->GetCharacterController()->GetLeftRight() > 0.0f && menucontroltimer > 0.2 && menux < 1 && menuz < 3)
 				{
 
 					menucontroltimer = 0.0;
@@ -573,8 +583,8 @@ void CGame::Run()
 				if (menuBomb->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::ACTION))
 				{
 					menuIndex = (menuz * 2) + menux;
-					if (menuz > 2)
-						menuIndex = 5;
+					if (menuz > 3)
+						menuIndex = 7;
 					for (int i = 0; i < MenuSounds.size(); ++i)
 					{
 						MenuSounds.at(i)->isSoundPlaying(soundplaying);
@@ -587,29 +597,41 @@ void CGame::Run()
 					switch (menuIndex) {
 					case 0:
 					{
+						if (mapsize > 1)
+							mapsize--;
+						break;
+					}
+					case 1:
+					{
+						if (mapsize < 3)
+							mapsize++;
+						break;
+					}
+					case 2:
+					{
 						if (numPLAYERS > 2)
 							numPLAYERS--;
 						break;
 					}
-					case 1:
+					case 3:
 					{
 						if (numPLAYERS < 4 && numAI + numPLAYERS < 4)
 							numPLAYERS++;
 						break;
 					}
-					case 2:
+					case 4:
 					{
 						if (numAI > 0)
 							numAI--;
 						break;
 					}
-					case 3:
+					case 5:
 					{
 						if (numAI < 2 && numPLAYERS + numAI < 4)
 							numAI++;
 						break;
 					}
-					case 4:
+					case 6:
 					{
 						menuBomb->Move(0.0f, 6.0f, false);
 						menuz = 0;
@@ -619,7 +641,7 @@ void CGame::Run()
 
 						break;
 					}
-					case 5:
+					case 7:
 					{
 						menuBomb->Move(0.0f, 9.0f, false);
 						menuz = 0;
@@ -1945,7 +1967,7 @@ void CGame::setGameState(int _gameState)
 		ClearPlayersAndBombs();
 		delete menuBomb;
 		menuBomb = nullptr;
-		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB, DirectX::XMFLOAT3(-4.35f, 11.9f, -5.6f), GAME_STATE::ARCADE_MENU, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
+		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB, DirectX::XMFLOAT3(-4.35f, 12.4f, -2.4f), GAME_STATE::ARCADE_MENU, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
 		SprinklersOn = false;
 		break;
 	}
@@ -3235,7 +3257,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 									}
 
 
-									else if (gridcheck == 1 && AIbombaction >= 4.0f)
+									else if (gridcheck == 1 && AIbombaction >= 6.0f)
 									{
 										if (tile == GRID_SYSTEM::DESTROYABLE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
 										{

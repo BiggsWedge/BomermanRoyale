@@ -104,6 +104,12 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 		wchar_t numA[10]; 
 		swprintf_s(numP, L"%d",parentGame->numPLAYERS);
 		swprintf_s(numA, L"%d",parentGame->numAI);
+		if (parentGame->mapsize == 1)
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "SMALL", DirectX::XMVECTOR{ (0.51f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.35f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
+		else if (parentGame->mapsize == 3)
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "LARGE", DirectX::XMVECTOR{ (0.51f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.35f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
+		else
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "MEDIUM", DirectX::XMVECTOR{ (0.51f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.35f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, numA, DirectX::XMVECTOR{ (0.47f*(float)g_d3dData->windowWidthHeight.x), 0.63f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale2);
 		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, numP, DirectX::XMVECTOR{ (0.47f*(float)g_d3dData->windowWidthHeight.x), 0.48f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale2);
 	}
