@@ -14,7 +14,8 @@ struct GAME_STATE
 {
 	enum
 	{
-		MAIN_MENU = 0,
+		LOAD_SCREEN = 0,
+		MAIN_MENU,
 		ARCADE_MENU,
 		BATTLE_MENU,
 		ARCADE_GAME,

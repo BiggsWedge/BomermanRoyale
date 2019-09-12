@@ -93,6 +93,7 @@ bool playingfallingSoundPlaying = false;
 bool isPaused = false;
 
 static double timePassed = 0.0f;
+static double loadScreenTime = 0.0f;
 double AIbombaction = 0.0f;
 double tempTime = 0.0f;
 double tempMapTime = 0.0f;
@@ -276,8 +277,7 @@ void CGame::Run()
 	p1Help.SetButtonID(G_SELECT_BTN);
 	//duck.SetButtonID(G_EAST_BTN);
 
-	setGameState(GAME_STATE::MAIN_MENU);
-
+	
 	p1Pause.Reset(false);
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
 
@@ -291,8 +291,23 @@ void CGame::Run()
 		prevFrame = currFrame;
 		currFrame = GetTickCount64();
 		timePassed = (currFrame - prevFrame) / 1000.0;
-		mapTime += timePassed;
 		timer.Signal();
+		mapTime += timePassed;
+		
+
+		loadScreenTime = timer.Delta() + loadScreenTime;
+
+		if (loadScreenTime < 0.5)
+		{
+			setGameState(GAME_STATE::LOAD_SCREEN);
+		}
+
+
+		if (loadScreenTime > 4 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN))
+		{
+			setGameState(GAME_STATE::MAIN_MENU);
+		}
+
 
 		for (int i = 0; i < keycodes.size(); ++i) {
 			keys[i].prevState = keys[i].currState;
@@ -3241,6 +3256,14 @@ bool CGame::loadTempMenus() {
 	loadInfo.scale = DirectX::XMFLOAT3(2.55f, 2.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::MAIN_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::LOADING_SCREEN;
+	loadInfo.scale = DirectX::XMFLOAT3(2.20f, 2.0f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::LOAD_SCREEN;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
