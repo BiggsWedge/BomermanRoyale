@@ -88,8 +88,9 @@ bool soundplaying;
 bool soundplaying2;
 bool warningSoundPlaying = false;
 bool fallingSoundPlaying = false;
-bool playingfallingSoundPlaying = false;
+bool playerfallingSoundPlaying = false;
 
+bool loadHappened = false;
 bool isPaused = false;
 
 static double timePassed = 0.0f;
@@ -296,18 +297,19 @@ void CGame::Run()
 		
 
 		loadScreenTime = timer.Delta() + loadScreenTime;
-
 		if (loadScreenTime < 0.5)
 		{
 			setGameState(GAME_STATE::LOAD_SCREEN);
 		}
 
 
-		if (loadScreenTime > 4 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN))
+		if (loadScreenTime > 4 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::MAIN_MENU);
+			loadHappened = true;
 		}
 
+		
 
 		for (int i = 0; i < keycodes.size(); ++i) {
 			keys[i].prevState = keys[i].currState;
@@ -2482,18 +2484,22 @@ void CGame::GamePlayLoop(double timePassed)
 		}
 
 		
-		
+		// Pause on DC
 		if (currNumControllers < prevNumControllers || currNumControllers == 0)
 		{
 			PauseMenuToggle = true;
 			isPaused = true;
 		}
+
 		g_pControllerInput->GetNumConnected(prevNumControllers);
+		
+
 		if (currNumControllers > prevNumControllers)
 		{
 			PauseMenuToggle = false;
 			isPaused = false;
 		}
+		// End DC Code
 
 		if (cont->IsControllerConnected())
 		{
@@ -3011,7 +3017,6 @@ void CGame::setGameState(int _gameState)
 	curGameState = _gameState;
 }
 
-
 void CGame::ClearPlayersAndBombs()
 {
 	for (int i = 0; i < v_cPlayers.size(); ++i)
@@ -3208,6 +3213,7 @@ void CGame::updateBombs(double timePassed)
 					Brenderer = (TTransformComponent*)cRenderer;
 					bombPos = Brenderer->fPosition;
 				}
+
 				//SpawnParticles((CObject*)v_cBombs[i], particleLife, timer.Delta());
 
 				if (v_cPlayers.at(0) && v_cPlayers.at(0)->isAlive())
