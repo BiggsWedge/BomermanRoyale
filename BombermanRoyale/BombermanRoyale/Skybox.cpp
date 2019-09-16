@@ -103,7 +103,7 @@ void Skybox::Update()
 {
 	tConstantBuffer.mModelMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(g_d3dData->camPos.x, g_d3dData->camPos.y, g_d3dData->camPos.z));
 	//tConstantBuffer.mModelMatrix = DirectX::XMMatrixTranspose(g_d3dData->camMat);
-	tConstantBuffer.mViewMatrix = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
+	tConstantBuffer.mViewMatrix = DirectX::XMMatrixTranspose(g_d3dData->viewMatSky);
 	tConstantBuffer.mProjMatrix = DirectX::XMMatrixTranspose(g_d3dData->projMat);
 
 	g_d3dData->d3dContext->UpdateSubresource(d3dConstantBuffer, 0, nullptr, &tConstantBuffer, 0, 0);

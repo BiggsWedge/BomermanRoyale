@@ -377,6 +377,7 @@ bool DirectXData::Initialize()
 	debugCamMat = DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(30)) * debugCamMat;
 
 	viewMat = camMat;// DirectX::XMMatrixInverse(nullptr, camMat);
+	viewMatSky = viewMat;
 	projMat = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(30), static_cast<float>(d3dSwapChainDesc.BufferDesc.Width) / static_cast<float>(d3dSwapChainDesc.BufferDesc.Height), 0.1f, 100.0f);
 
 #pragma endregion

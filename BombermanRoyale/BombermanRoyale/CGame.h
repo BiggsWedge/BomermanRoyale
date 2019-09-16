@@ -46,7 +46,7 @@ struct emitter
 class CGame
 {
 	float particleLife = 5.0f;
-	float particleSpeed = 1.5f;
+	float particleSpeed = 1.2f;
 	float particleGravity = 9.8f;
 	end::sorted_pool_t<particle, 500> sortedParticles;
 	end::pool_t<particle, 500> freeParticles;
@@ -97,11 +97,11 @@ public:
 
 	void InitSortedParticles(end::sorted_pool_t<particle, 500>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color);
 	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime);
-	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime, CObject* obj);
-	void SpawnParticles(CObject* obj, double time, double timePassed);
 
 	void LoadAnim();
-	void LoadObject();
+	void LoadObjectSmall();
+	void LoadObjectMedium();
+	void LoadObjectLarge();
 
 	CGame();
 	~CGame();

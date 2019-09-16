@@ -172,6 +172,7 @@ public:
 	DirectX::XMFLOAT2					camDelta;
 	DirectX::XMFLOAT2					debugCursorRot;
 	DirectX::XMMATRIX					viewMat;
+	DirectX::XMMATRIX					viewMatSky;
 	DirectX::XMMATRIX					projMat;
 	DirectX::XMFLOAT3					camPos;
 	DirectX::XMFLOAT3					newCamPos;
