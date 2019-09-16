@@ -1239,33 +1239,6 @@ void CGame::Run()
 		}
 
 		CustomMeshUpdate();
-
-
-
-		//Render Emitter
-		if (objects.size() > 0)
-		{
-			TComponent* cRenderer = nullptr;
-			TRendererComponent* renderer = nullptr;
-			if (objects[objects.size() - 1]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-			{
-				renderer = (TRendererComponent*)cRenderer;
-
-				if (renderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(objects[objects.size() - 1]);
-			}
-		}
-
-		if (menuBomb)
-		{
-			TComponent* renderer = nullptr;
-			if (menuBomb->GetComponent(COMPONENT_TYPE::RENDERER, renderer))
-			{
-				TRendererComponent* pRenderer = (TRendererComponent*)renderer;
-				if (pRenderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject((CObject*)menuBomb);
-			}
-		}
 		g_d3dData->updateCameras();
 
 
@@ -3991,6 +3964,31 @@ void CGame::CustomMeshUpdate()
 			TRendererComponent* pRenderer = (TRendererComponent*)renderer;
 			if (pRenderer->iUsedLoadState == curGameState)
 				p_cRendererManager->RenderObject((CObject*)AI);
+		}
+	}
+
+	//Render Emitter
+	if (objects.size() > 0)
+	{
+		TComponent* cRenderer = nullptr;
+		TRendererComponent* renderer = nullptr;
+		if (objects[objects.size() - 1]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+		{
+			renderer = (TRendererComponent*)cRenderer;
+
+			if (renderer->iUsedLoadState == curGameState)
+				p_cRendererManager->RenderObject(objects[objects.size() - 1]);
+		}
+	}
+
+	if (menuBomb)
+	{
+		TComponent* renderer = nullptr;
+		if (menuBomb->GetComponent(COMPONENT_TYPE::RENDERER, renderer))
+		{
+			TRendererComponent* pRenderer = (TRendererComponent*)renderer;
+			if (pRenderer->iUsedLoadState == curGameState)
+				p_cRendererManager->RenderObject((CObject*)menuBomb);
 		}
 	}
 }
