@@ -87,11 +87,13 @@ bool soundplaying;
 bool soundplaying2;
 bool warningSoundPlaying = false;
 bool fallingSoundPlaying = false;
-bool playingfallingSoundPlaying = false;
+bool playerfallingSoundPlaying = false;
 
+bool loadHappened = false;
 bool isPaused = false;
 
 static double timePassed = 0.0f;
+static double loadScreenTime = 0.0f;
 double AIbombaction = 0.0f;
 double tempTime = 0.0f;
 double tempMapTime = 0.0f;
@@ -273,7 +275,6 @@ void CGame::Run()
 	p1Pause.SetButtonID(G_START_BTN);
 	p1Help.SetButtonID(G_SELECT_BTN);
 
-	setGameState(GAME_STATE::MAIN_MENU);
 
 	p1Pause.Reset(false);
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
@@ -288,8 +289,24 @@ void CGame::Run()
 		prevFrame = currFrame;
 		currFrame = GetTickCount64();
 		timePassed = (currFrame - prevFrame) / 1000.0;
-		mapTime += timePassed;
 		timer.Signal();
+		mapTime += timePassed;
+
+
+		loadScreenTime = timer.Delta() + loadScreenTime;
+		if (loadScreenTime < 0.5)
+		{
+			setGameState(GAME_STATE::LOAD_SCREEN);
+		}
+
+
+		if (loadScreenTime > 4 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::MAIN_MENU);
+			loadHappened = true;
+		}
+
+
 
 		for (int i = 0; i < keycodes.size(); ++i) {
 			keys[i].prevState = keys[i].currState;
@@ -1739,17 +1756,22 @@ void CGame::GamePlayLoop(double timePassed)
 
 
 
+		// Pause on DC
 		if (currNumControllers < prevNumControllers || currNumControllers == 0)
 		{
 			PauseMenuToggle = true;
 			isPaused = true;
 		}
+
 		g_pControllerInput->GetNumConnected(prevNumControllers);
+
+
 		if (currNumControllers > prevNumControllers)
 		{
 			PauseMenuToggle = false;
 			isPaused = false;
 		}
+		// End DC Code
 
 		if (cont->IsControllerConnected())
 		{
@@ -2953,6 +2975,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 				if (i + width < GRID.size() && i + width > 0)
 					GRID[i + width] = GRID_SYSTEM::EXPLOSION_RADIUS;
 
+
 			}
 		}
 
@@ -3783,7 +3806,6 @@ void CGame::CustomMeshUpdate()
 		InitFreeParticles(thirdEmit, shared_pool, timePassed);
 		InitFreeParticles(fourthEmit, shared_pool, timePassed);
 	}
-
 
 	//RenderObjects
 	if (mapTime >= 17 && passes < 6)
