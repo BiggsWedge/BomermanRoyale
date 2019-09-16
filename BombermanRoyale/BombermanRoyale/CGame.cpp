@@ -786,10 +786,10 @@ void CGame::Run()
 		if (SprinklersOn == true)
 		{
 			//RenderParticles
-			InitFreeParticles(firstEmit, shared_pool, timer.Delta());
-			InitFreeParticles(secondEmit, shared_pool, timer.Delta());
-			InitFreeParticles(thirdEmit, shared_pool, timer.Delta());
-			InitFreeParticles(fourthEmit, shared_pool, timer.Delta());
+			InitFreeParticles(firstEmit, shared_pool, timePassed);
+			InitFreeParticles(secondEmit, shared_pool, timePassed);
+			InitFreeParticles(thirdEmit, shared_pool, timePassed);
+			InitFreeParticles(fourthEmit, shared_pool, timePassed);
 		}
 
 		//RenderObjects
@@ -2515,14 +2515,15 @@ void CGame::GamePlayLoop(double timePassed)
 		CharacterController* cont = currPlayer->GetCharacterController();
 		float deltaX = 0.0f, deltaZ = 0.0f;
 
-		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::PAUSE))
+		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::PAUSE) && !ControlScreenToggle)
 		{
-			int previndex = menuIndex;
-			menuIndex = 0;
-			previndex = menuIndex - previndex;
-			pauseMenuBomb->Move(0.0f, (-(float)previndex*1.2f), false);
-			PauseMenuToggle = !PauseMenuToggle;
-			isPaused = !isPaused;
+			
+				int previndex = menuIndex;
+				menuIndex = 0;
+				previndex = menuIndex - previndex;
+				pauseMenuBomb->Move(0.0f, (-(float)previndex*1.2f), false);
+				PauseMenuToggle = !PauseMenuToggle;
+				isPaused = !isPaused;
 		}
 
 		if (currNumControllers < prevNumControllers || currNumControllers == 0)
@@ -2880,6 +2881,9 @@ void CGame::setGameState(int _gameState)
 	{
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
+		g_pMusicStream->isStreamPlaying(soundplaying);
+		if (!soundplaying)
+			g_pMusicStream->ResumeStream();
 		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(-1.5f, 11.4f, -6.8f), GAME_STATE::MAIN_MENU, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
 		SprinklersOn = false;
 		mapTime = 0;
