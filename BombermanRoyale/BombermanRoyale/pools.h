@@ -46,7 +46,7 @@ namespace end
 				return -1;
 			}
 			active_count++;
-			return active_count-1;
+			return active_count - 1;
 		}
 
 		// Moves the element at 'index' to the inactive

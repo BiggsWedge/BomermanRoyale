@@ -17,34 +17,34 @@ void main(
 	inout TriangleStream<OutputVertex> output)
 {
     OutputVertex element0;
-    element0.xyzw = input[0].xyzw + float4(-1, 1, 1, 0);
+    element0.xyzw = input[0].xyzw + float4(-2, 2, -2, 0);
     element0.xyzw = mul(input[0].xyzw, mWorld);
     element0.xyzw = mul(element0.xyzw, mView);
     element0.xyzw = mul(element0.xyzw, mProjection);
     element0.rgba = input[0].rgba;
     output.Append(element0);
 
-    element0.xyzw = input[0].xyzw + float4(1, 1, 1, 0);
+    element0.xyzw = input[0].xyzw + float4(2, 2, -2, 0);
     element0.xyzw = mul(input[0].xyzw, mWorld);
     element0.xyzw = mul(element0.xyzw, mView);
     element0.xyzw = mul(element0.xyzw, mProjection);
     element0.rgba = input[0].rgba;
     output.Append(element0);
 
-    element0.xyzw = input[1].xyzw + float4(-1, -1, -1, 0);
+    element0.xyzw = input[1].xyzw + float4(-2, -2, -2, 0);
     element0.xyzw = mul(input[1].xyzw, mWorld);
     element0.xyzw = mul(element0.xyzw, mView);
     element0.xyzw = mul(element0.xyzw, mProjection);
     element0.rgba = input[1].rgba;
     output.Append(element0);
 
-    element0.xyzw = input[1].xyzw + float4(1, -1, -1, 0);
+    element0.xyzw = input[1].xyzw + float4(2, -2, -2, 0);
     element0.xyzw = mul(input[1].xyzw, mWorld);
     element0.xyzw = mul(element0.xyzw, mView);
     element0.xyzw = mul(element0.xyzw, mProjection);
     element0.rgba = input[1].rgba;
     output.Append(element0);
 
-    output.RestartStrip();
+    //output.RestartStrip();
 
 }
