@@ -107,6 +107,8 @@ public:
 
 	void InitSortedParticles(end::sorted_pool_t<particle, 500>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color);
 	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime);
+	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime, CObject* obj);
+	void SpawnParticles(CObject* obj, double time, double timePassed);
 
 	void LoadAnim();
 	void LoadObjectSmall();
