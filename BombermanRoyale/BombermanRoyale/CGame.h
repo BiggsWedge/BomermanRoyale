@@ -111,6 +111,7 @@ public:
 	void SpawnParticles(CObject* obj, double time, double timePassed);
 
 	void LoadAnim();
+	void LoadObjectBattle();
 	void LoadObjectSmall();
 	void LoadObjectMedium();
 	void LoadObjectLarge();
