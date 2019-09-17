@@ -18,6 +18,7 @@ struct GAME_STATE
 		ARCADE_MENU,
 		BATTLE_MENU,
 		ARCADE_GAME,
+		CHARACTER_SCREEN,
 		BATTLE_GAME,
 		WIN_SCREEN,
 		CONTROLS_SCREEN,
@@ -57,6 +58,7 @@ class CGame
 	emitter fourthEmit;
 	emitter freeEmit;
 	XTime timer;
+	
 
 	CRendererManager* p_cRendererManager;
 	CEntityManager* p_cEntityManager;
@@ -67,7 +69,10 @@ class CGame
 	std::vector<CItem*> items;
 	std::vector<double> explosionTimers;
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
-	std::vector<CPlayer*> v_cAI = { nullptr, nullptr, nullptr, nullptr };
+	std::vector<CPlayer*> PlayersInCustom = { nullptr, nullptr, nullptr, nullptr };
+	std::vector<CPlayer*> v_cAI = { nullptr, nullptr };
+	std::vector<CPlayer*> AiInCustom = { nullptr, nullptr};
+
 
 
 	int maxNumBombs = 48;
@@ -79,24 +84,31 @@ class CGame
 
 	double mouseIdleTimer;
 	double menucontroltimer = 0.0;
+	double AItime = 0.0;
 	bool prevShowMouse = true;
 	bool showMouse = true;
 	bool bombExploded = false;
 	bool SprinklersOn = false;
+	float CSx = -11.35f;
 
 
 public:
 	void Cleanup();
 	bool FullScreen = false;
 	unsigned int curGameState = 0;
+	int mapsize = 2;
 	int numAI = 0;
 	int numPLAYERS = 2;
+	int playermodel[4] = { 4, 4, 4, 4 };
+	int AImodel[2] = { 4, 4 };
 
 	bool Initialize();
 	void Run();
 
 	void InitSortedParticles(end::sorted_pool_t<particle, 500>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color);
 	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime);
+	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime, CObject* obj);
+	void SpawnParticles(CObject* obj, double time, double timePassed);
 
 	void LoadAnim();
 	void LoadObjectSmall();
@@ -116,6 +128,8 @@ public:
 	void PlayerCollision(CPlayer* playerToCheck, CObject* cObj, float dx, float dz);
 	void PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb);
 	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer * playerToCheck);
+	void AI_Method(double timepassed, double action_time);
+	void CustomMeshUpdate();
 
 	inline CPlayer* GetPlayer(int index) { if (index >= v_cPlayers.size())return nullptr; else return v_cPlayers.at(index); }
 	inline CPlayer* GetAI(int index) { if (index >= v_cAI.size()) return nullptr; else return v_cAI.at(index); }
