@@ -1933,13 +1933,13 @@ void CGame::GamePlayLoop(double timePassed)
 
 				switch (currPlayer->GetBombType()) {
 
-				case 4:
+				case 2:
 					bombs = p_cEntityManager->DropBomb0(currPlayer, objects);
 					break;
 				case 1:
 					bombs = p_cEntityManager->DropBomb1(currPlayer, objects);
 					break;
-				case 2:
+				case 4:
 					bombs = p_cEntityManager->DropBomb2(currPlayer, objects);
 
 					break;
@@ -3344,7 +3344,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 													switch (currAI->GetBombType()) {
 
 
-													case 4:
+													case 2:
 														if (v_cBombs[i]) {
 															bombs = p_cEntityManager->DropBomb0(currAI, objects);
 															for (int j = 0; j < bombs.size(); j++) {
@@ -3374,7 +3374,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 														}
 
 														break;
-													case 2:
+													case 4:
 														if (v_cBombs[i]) {
 															bombs = p_cEntityManager->DropBomb2(currAI, objects);
 															for (int j = 0; j < bombs.size(); j++) {
@@ -3625,7 +3625,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 														switch (currAI->GetBombType()) {
 
-														case 4:
+														case 2:
 															if (v_cBombs[i]) {
 																bombs = p_cEntityManager->DropBomb0(currAI, objects);
 																for (int j = 0; j < bombs.size(); j++) {
@@ -3655,7 +3655,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 															}
 
 															break;
-														case 2:
+														case 4:
 															if (v_cBombs[i]) {
 																bombs = p_cEntityManager->DropBomb2(currAI, objects);
 																for (int j = 0; j < bombs.size(); j++) {

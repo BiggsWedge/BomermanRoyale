@@ -847,6 +847,7 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 	//mat.material = _mat;
 
 	debugConstBuff.world = DirectX::XMMatrixIdentity();
+	debugConstBuff.world  *= DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
 	/*debugConstBuff.world = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
 	debugConstBuff.world = debugConstBuff.world * DirectX::XMMatrixTranslation(6.0f, 0.0f, 0.0f);
 	debugConstBuff.world = DirectX::XMMatrixTranspose(debugConstBuff.world);
