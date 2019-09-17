@@ -1242,252 +1242,252 @@ void CGame::Run()
 
 #pragma endregion
 
-		if (!p_cRendererManager->Draw(timePassed, curGameState, this))
+		/*if (!p_cRendererManager->Draw(timePassed, curGameState, this))
 		{
 			g_pLogger->LogCatergorized("FAILURE", "Failed to draw");
-		}
+		}*/
 
-		if (mapTime >= 10 && passes < 2)
-		{
-			passes += 1;
-			warningSoundPlaying = false;
-			fallingSoundPlaying = false;
+		//if (mapTime >= 10 && passes < 2)
+		//{
+		//	passes += 1;
+		//	warningSoundPlaying = false;
+		//	fallingSoundPlaying = false;
 
-			g_pControllerInput->StartVibration(0, 0.25f, 1, 0);
-			g_pControllerInput->StartVibration(0, 0.25f, 1, 1);
-			g_pControllerInput->StartVibration(0, 0.25f, 1, 2);
-			g_pControllerInput->StartVibration(0, 0.25f, 1, 3);
+		//	g_pControllerInput->StartVibration(0, 0.25f, 1, 0);
+		//	g_pControllerInput->StartVibration(0, 0.25f, 1, 1);
+		//	g_pControllerInput->StartVibration(0, 0.25f, 1, 2);
+		//	g_pControllerInput->StartVibration(0, 0.25f, 1, 3);
 
-			if (fallingSoundPlaying == false)
-			{
-				fallingSound->Play();
-				fallingSoundPlaying = true;
-			}
+		//	if (fallingSoundPlaying == false)
+		//	{
+		//		fallingSound->Play();
+		//		fallingSoundPlaying = true;
+		//	}
 
-			for (int passes = 0; passes < 7; passes++)
-			{
-				for (int i = 0; i < objects.size(); ++i)
-				{
-					TComponent* cRenderer = nullptr;
-					TTransformComponent* renderer = nullptr;
+		//	for (int passes = 0; passes < 7; passes++)
+		//	{
+		//		for (int i = 0; i < objects.size(); ++i)
+		//		{
+		//			TComponent* cRenderer = nullptr;
+		//			TTransformComponent* renderer = nullptr;
 
-					if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
-					{
-						renderer = (TTransformComponent*)cRenderer;
+		//			if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+		//			{
+		//				renderer = (TTransformComponent*)cRenderer;
 
-						if (renderer->fPosition.x == fMinX || renderer->fPosition.z == fMinZ || renderer->fPosition.x == fMaxX || renderer->fPosition.z == fMaxZ) {
-							objects[i] = nullptr;
-							SprinklersOn = false;
-							for (CPlayer* player : v_cPlayers)
-							{
-								if (!player || !player->isAlive())
-									continue;
+		//				if (renderer->fPosition.x == fMinX || renderer->fPosition.z == fMinZ || renderer->fPosition.x == fMaxX || renderer->fPosition.z == fMaxZ) {
+		//					objects[i] = nullptr;
+		//					SprinklersOn = false;
+		//					for (CPlayer* player : v_cPlayers)
+		//					{
+		//						if (!player || !player->isAlive())
+		//							continue;
 
-								TComponent* _prenderer = nullptr;
+		//						TComponent* _prenderer = nullptr;
 
-								if (player->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
-									TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
+		//						if (player->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
+		//							TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
-									if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z)
-									{
-										player->setAlive(false);
+		//							if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z)
+		//							{
+		//								player->setAlive(false);
 
-										playerfallingSound->Play();
-									}
-								}
+		//								playerfallingSound->Play();
+		//							}
+		//						}
 
-							}
+		//					}
 
-							for (CPlayer* AI : v_cAI) {
-								if (!AI || !AI->isAlive())
-									continue;
+		//					for (CPlayer* AI : v_cAI) {
+		//						if (!AI || !AI->isAlive())
+		//							continue;
 
-								TComponent* _prenderer = nullptr;
+		//						TComponent* _prenderer = nullptr;
 
-								if (AI->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
-									TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
+		//						if (AI->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
+		//							TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
-									if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z)
-										AI->setAlive(false);
-								}
-							}
+		//							if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z)
+		//								AI->setAlive(false);
+		//						}
+		//					}
 
-							for (int i = 0; i < items.size(); i++)
-							{
-								TComponent* _iRenderer = nullptr;
-								if (items[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, _iRenderer)) {
-									TTransformComponent* iRenderer = (TTransformComponent*)_iRenderer;
+		//					for (int i = 0; i < items.size(); i++)
+		//					{
+		//						TComponent* _iRenderer = nullptr;
+		//						if (items[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, _iRenderer)) {
+		//							TTransformComponent* iRenderer = (TTransformComponent*)_iRenderer;
 
-									if (iRenderer->fPosition.x == renderer->fPosition.x && iRenderer->fPosition.z == renderer->fPosition.z)
-										items.erase(items.begin() + i);
-								}
-							}
-							objects.erase(objects.begin() + i);
-						}
-					}
-				}
-			}
+		//							if (iRenderer->fPosition.x == renderer->fPosition.x && iRenderer->fPosition.z == renderer->fPosition.z)
+		//								items.erase(items.begin() + i);
+		//						}
+		//					}
+		//					objects.erase(objects.begin() + i);
+		//				}
+		//			}
+		//		}
+		//	}
 
-			//if (fMinX < -7.5) {
-			fMinX += 2.5;
-			fMinZ += 2.5;
-			fMaxX -= 2.5;
-			fMaxZ -= 2.5;
-			//}
+		//	//if (fMinX < -7.5) {
+		//	fMinX += 2.5;
+		//	fMinZ += 2.5;
+		//	fMaxX -= 2.5;
+		//	fMaxZ -= 2.5;
+		//	//}
 
-			mapTime = 0;
-		}
+		//	mapTime = 0;
+		//}
 
-		if (objects.size() > 0)
-		{
-			for (int i = 0; i < objects.size() - 1; ++i) {
-				TComponent* cRenderer = nullptr;
-				TComponent* fRenderer = nullptr;
-				TColliderComponent* floorRender = nullptr;
-				TRendererComponent* renderer = nullptr;
+		//if (objects.size() > 0)
+		//{
+		//	for (int i = 0; i < objects.size() - 1; ++i) {
+		//		TComponent* cRenderer = nullptr;
+		//		TComponent* fRenderer = nullptr;
+		//		TColliderComponent* floorRender = nullptr;
+		//		TRendererComponent* renderer = nullptr;
 
-				if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer)) {
-					renderer = (TRendererComponent*)cRenderer;
+		//		if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer)) {
+		//			renderer = (TRendererComponent*)cRenderer;
 
-					if (renderer->iUsedLoadState == curGameState)
-						p_cRendererManager->RenderObject(objects[i]);
-				}
+		//			if (renderer->iUsedLoadState == curGameState)
+		//				p_cRendererManager->RenderObject(objects[i]);
+		//		}
 
-				if (ControlScreenToggle == true) {
-					if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer)) {
-						renderer = (TRendererComponent*)cRenderer;
+		//		if (ControlScreenToggle == true) {
+		//			if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer)) {
+		//				renderer = (TRendererComponent*)cRenderer;
 
-						if (renderer->iUsedLoadState == GAME_STATE::CONTROLS_SCREEN)
-							p_cRendererManager->RenderObject(objects[i]);
-					}
-				}
-			}
-		}
+		//				if (renderer->iUsedLoadState == GAME_STATE::CONTROLS_SCREEN)
+		//					p_cRendererManager->RenderObject(objects[i]);
+		//			}
+		//		}
+		//	}
+		//}
 
-		//RenderBombs
-		for (CBomb* bomb : v_cBombs) {
-			if (!bomb || !bomb->isAlive())
-				continue;
+		////RenderBombs
+		//for (CBomb* bomb : v_cBombs) {
+		//	if (!bomb || !bomb->isAlive())
+		//		continue;
 
-			TComponent* renderer = nullptr;
+		//	TComponent* renderer = nullptr;
 
-			if (bomb->GetComponent(COMPONENT_TYPE::RENDERER, renderer)) {
-				TRendererComponent* tRenderer = (TRendererComponent*)renderer;
+		//	if (bomb->GetComponent(COMPONENT_TYPE::RENDERER, renderer)) {
+		//		TRendererComponent* tRenderer = (TRendererComponent*)renderer;
 
-				if (tRenderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject((CObject*)bomb);
-			}
+		//		if (tRenderer->iUsedLoadState == curGameState)
+		//			p_cRendererManager->RenderObject((CObject*)bomb);
+		//	}
 
-		}
+		//}
 
-		//RenderExplosions
-		for (int i = 0; i < explosionTimers.size(); ++i) {
-			TComponent* renderer = nullptr;
+		////RenderExplosions
+		//for (int i = 0; i < explosionTimers.size(); ++i) {
+		//	TComponent* renderer = nullptr;
 
-			if (Xexplosions[i]->GetComponent(COMPONENT_TYPE::RENDERER, renderer)) {
-				TRendererComponent* tRenderer = (TRendererComponent*)renderer;
+		//	if (Xexplosions[i]->GetComponent(COMPONENT_TYPE::RENDERER, renderer)) {
+		//		TRendererComponent* tRenderer = (TRendererComponent*)renderer;
 
-				if (tRenderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(Xexplosions[i]);
-			}
+		//		if (tRenderer->iUsedLoadState == curGameState)
+		//			p_cRendererManager->RenderObject(Xexplosions[i]);
+		//	}
 
-			if (Zexplosions[i]->GetComponent(COMPONENT_TYPE::RENDERER, renderer)) {
-				TRendererComponent* tRenderer = (TRendererComponent*)renderer;
+		//	if (Zexplosions[i]->GetComponent(COMPONENT_TYPE::RENDERER, renderer)) {
+		//		TRendererComponent* tRenderer = (TRendererComponent*)renderer;
 
-				if (tRenderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(Zexplosions[i]);
-			}
-		}
+		//		if (tRenderer->iUsedLoadState == curGameState)
+		//			p_cRendererManager->RenderObject(Zexplosions[i]);
+		//	}
+		//}
 
-		//Render Item
-		for (int i = 0; i < items.size(); i++) {
-			TComponent* cRenderer = nullptr;
-			TRendererComponent* renderer = nullptr;
+		////Render Item
+		//for (int i = 0; i < items.size(); i++) {
+		//	TComponent* cRenderer = nullptr;
+		//	TRendererComponent* renderer = nullptr;
 
-			if (items[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer)) {
-				renderer = (TRendererComponent*)cRenderer;
+		//	if (items[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer)) {
+		//		renderer = (TRendererComponent*)cRenderer;
 
-				if (renderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(items[i]);
-			}
-		}
+		//		if (renderer->iUsedLoadState == curGameState)
+		//			p_cRendererManager->RenderObject(items[i]);
+		//	}
+		//}
 
-		//screenshake
-		if (bombExploded) {
-			shakeTime += timePassed;
+		////screenshake
+		//if (bombExploded) {
+		//	shakeTime += timePassed;
 
-			viewPos = g_d3dData->screenShake();
+		//	viewPos = g_d3dData->screenShake();
 
-			if (shakeTime >= 0.5 || isPaused) {
-				bombExploded = false;
-				if (!bombExploded) {
-					g_d3dData->resetCamera();
-					shakeTime = 0;
-				}
-			}
-		}
-		while (!bombExploded)
-		{
-			for (int i = 0; i < sortedParticles.size(); i++)
-			{
-				sortedParticles.free(i);
-			}
-			break;
-		}
-		//Render Players
-		for (CPlayer* player : v_cPlayers) {
-			if (!player || !player->isAlive())
-				continue;
+		//	if (shakeTime >= 0.5 || isPaused) {
+		//		bombExploded = false;
+		//		if (!bombExploded) {
+		//			g_d3dData->resetCamera();
+		//			shakeTime = 0;
+		//		}
+		//	}
+		//}
+		//while (!bombExploded)
+		//{
+		//	for (int i = 0; i < sortedParticles.size(); i++)
+		//	{
+		//		sortedParticles.free(i);
+		//	}
+		//	break;
+		//}
+		////Render Players
+		//for (CPlayer* player : v_cPlayers) {
+		//	if (!player || !player->isAlive())
+		//		continue;
 
-			TComponent* renderer = nullptr;
+		//	TComponent* renderer = nullptr;
 
-			if (player->GetComponent(COMPONENT_TYPE::RENDERER, renderer)) {
-				TRendererComponent* pRenderer = (TRendererComponent*)renderer;
+		//	if (player->GetComponent(COMPONENT_TYPE::RENDERER, renderer)) {
+		//		TRendererComponent* pRenderer = (TRendererComponent*)renderer;
 
-				if (pRenderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject((CObject*)player);
-			}
-		}
+		//		if (pRenderer->iUsedLoadState == curGameState)
+		//			p_cRendererManager->RenderObject((CObject*)player);
+		//	}
+		//}
 
-		//Render AI
-		for (CPlayer* AI : v_cAI)
-		{
-			if (!AI || !AI->isAlive())
-				continue;
-			TComponent* renderer = nullptr;
-			if (AI->GetComponent(COMPONENT_TYPE::RENDERER, renderer))
-			{
-				TRendererComponent* pRenderer = (TRendererComponent*)renderer;
-				if (pRenderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject((CObject*)AI);
-			}
-		}
+		////Render AI
+		//for (CPlayer* AI : v_cAI)
+		//{
+		//	if (!AI || !AI->isAlive())
+		//		continue;
+		//	TComponent* renderer = nullptr;
+		//	if (AI->GetComponent(COMPONENT_TYPE::RENDERER, renderer))
+		//	{
+		//		TRendererComponent* pRenderer = (TRendererComponent*)renderer;
+		//		if (pRenderer->iUsedLoadState == curGameState)
+		//			p_cRendererManager->RenderObject((CObject*)AI);
+		//	}
+		//}
 
-		//Render Emitter
-		if (objects.size() > 0)
-		{
-			TComponent* cRenderer = nullptr;
-			TRendererComponent* renderer = nullptr;
-			if (objects[objects.size() - 1]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-			{
-				renderer = (TRendererComponent*)cRenderer;
+		////Render Emitter
+		//if (objects.size() > 0)
+		//{
+		//	TComponent* cRenderer = nullptr;
+		//	TRendererComponent* renderer = nullptr;
+		//	if (objects[objects.size() - 1]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+		//	{
+		//		renderer = (TRendererComponent*)cRenderer;
 
-				if (renderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject(objects[objects.size() - 1]);
-			}
-		}
+		//		if (renderer->iUsedLoadState == curGameState)
+		//			p_cRendererManager->RenderObject(objects[objects.size() - 1]);
+		//	}
+		//}
 
-		if (menuBomb)
-		{
-			TComponent* renderer = nullptr;
-			if (menuBomb->GetComponent(COMPONENT_TYPE::RENDERER, renderer))
-			{
-				TRendererComponent* pRenderer = (TRendererComponent*)renderer;
-				if (pRenderer->iUsedLoadState == curGameState)
-					p_cRendererManager->RenderObject((CObject*)menuBomb);
-			}
-		}
-		g_d3dData->updateCameras();
+		//if (menuBomb)
+		//{
+		//	TComponent* renderer = nullptr;
+		//	if (menuBomb->GetComponent(COMPONENT_TYPE::RENDERER, renderer))
+		//	{
+		//		TRendererComponent* pRenderer = (TRendererComponent*)renderer;
+		//		if (pRenderer->iUsedLoadState == curGameState)
+		//			p_cRendererManager->RenderObject((CObject*)menuBomb);
+		//	}
+		//}
+		//g_d3dData->updateCameras();
 
 
 #pragma region Input
@@ -2466,46 +2466,46 @@ void CGame::setGameState(int _gameState)
 		menuBomb = nullptr;
 		LoadObjectMedium();
 		if (playermodel[0] == MODELS::CHICKEN - 1)
-			v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, playermodel[0], DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-12.5f, 0.0f, 12.5f), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
+			v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, playermodel[0], DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
 		else
-			v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, playermodel[0], DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-12.5f, 0.0f, 12.5f));
+			v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, playermodel[0], DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMaxZ - 2.5));
 		if (playermodel[1] == MODELS::CHICKEN - 1)
-			v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, playermodel[1], DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(12.5f, 0.0f, -7.5f), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
+			v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, playermodel[1], DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
 		else
-			v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, playermodel[1], DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(12.5f, 0.0f, -7.5f));
+			v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, playermodel[1], DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMinZ + 2.5));
 
 		if (numPLAYERS > 2)
 		{
 			if (playermodel[2] == MODELS::CHICKEN - 1)
-				v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, playermodel[2], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
+				v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, playermodel[2], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
 			else
-				v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, playermodel[2], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
+				v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, playermodel[2], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5));
 		}
 		if (numPLAYERS > 3)
 		{
 			if (playermodel[3] == MODELS::CHICKEN - 1)
-				v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
+				v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
 			else
-				v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
+				v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5));
 		}
 		if (numAI > 0)
 		{
 			if (AImodel[1] == MODELS::CHICKEN - 1)
-				v_cAI[1] = p_cEntityManager->InstantiatePlayer(4, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
+				v_cAI[1] = p_cEntityManager->InstantiatePlayer(4, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
 			else
-				v_cAI[1] = p_cEntityManager->InstantiatePlayer(4, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(-12.5f, 0.0f, -7.5f));
+				v_cAI[1] = p_cEntityManager->InstantiatePlayer(4, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5));
 		}
 		if (numAI > 1)
 		{
 			if (AImodel[0] == MODELS::CHICKEN - 1)
-				v_cAI[0] = p_cEntityManager->InstantiatePlayer(3, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
+				v_cAI[0] = p_cEntityManager->InstantiatePlayer(3, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
 			else
-				v_cAI[0] = p_cEntityManager->InstantiatePlayer(3, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(12.5f, 0.0f, 12.5f));
+				v_cAI[0] = p_cEntityManager->InstantiatePlayer(3, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5));
 		}
-		fMinX = -20;
-		fMaxX = 20;
-		fMinZ = -15;
-		fMaxZ = 20;
+		fMinX = -25;
+		fMaxX = 25;
+		fMinZ = -20;
+		fMaxZ = 25;
 		mapTime = 0;
 
 
@@ -2522,10 +2522,10 @@ void CGame::setGameState(int _gameState)
 	}
 	case GAME_STATE::WIN_SCREEN:
 	{
-		fMinX = -20;
-		fMaxX = 20;
-		fMinZ = -15;
-		fMaxZ = 20;
+		fMinX = -25;
+		fMaxX = 25;
+		fMinZ = -20;
+		fMaxZ = 25;
 		mapTime = 0;
 		ClearPlayersAndBombs();
 		break;
