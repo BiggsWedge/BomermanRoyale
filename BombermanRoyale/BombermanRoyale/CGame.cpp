@@ -102,10 +102,10 @@ double offMapTimer = 0;
 int boxDropped;
 int currLayer = 0;
 int passes = 0;
-float fMinX = -10;
-float fMaxX = 10;
-float fMinZ = -5;
-float fMaxZ = 10;
+float fMinX = -25;
+float fMaxX = 25;
+float fMinZ = -20;
+float fMaxZ = 25;
 float bCollisionIgnore = 0.5f;
 int numPlayers = 2;
 
@@ -836,7 +836,7 @@ void CGame::Run()
 				fallingSoundPlaying = true;
 			}
 
-			for (int passes = 0; passes < 6; passes++)
+			for (int passes = 0; passes < 7; passes++)
 			{
 				for (int i = 0; i < objects.size(); ++i)
 				{
@@ -1183,10 +1183,6 @@ void CGame::LoadObjectSmall()
 
 void CGame::LoadObjectMedium()
 {
-	fMinX -= 5;
-	fMinZ -= 5;
-	fMaxX += 5;
-	fMaxZ += 5;
 	OBJLoadInfo loadInfo;
 
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
@@ -1203,17 +1199,17 @@ void CGame::LoadObjectMedium()
 	loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 
-	for (float z = fMinZ; z <= fMaxZ; z += 2.5f)
+	for (float z = fMinZ +2.5f; z < fMaxZ; z += 2.5f)
 	{
-		for (float x = fMinX; x <= fMaxX; x += 2.5f)
+		for (float x = fMinX+2.5f; x < fMaxX; x += 2.5f)
 		{
 			loadInfo.position = { x, -2.5f, z };
 			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 		}
 	}
 
-	for (float z = -2.5f; z < 10.0f; z += 2.5f) {
-		for (float x = -7.5f; x < 10.0f; x += 2.5f) {
+	for (float z = fMinZ + 5; z <= fMaxZ - 5; z += 2.5f) {
+		for (float x = fMinX + 5; x <= fMaxX - 5; x += 2.5f) {
 			if (rand() % 5 >= 1) {
 				loadInfo.position = { x, 0.0f, z };
 				loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
@@ -1234,8 +1230,8 @@ void CGame::LoadObjectMedium()
 		}
 	}
 
-	for (float x = -7.5; x <= 7.5; x += 2.5f) {
-		loadInfo.position = { x, 0.0f, 10 };
+	for (float x = fMinX + 7.5; x <= fMaxX - 7.5; x += 2.5f) {
+		loadInfo.position = { x, 0.0f, fMaxZ - 5.0f };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
@@ -1251,7 +1247,7 @@ void CGame::LoadObjectMedium()
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { x, 0.0f, -5 };
+		loadInfo.position = { x, 0.0f, fMinZ + 5.0f };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
@@ -1266,7 +1262,7 @@ void CGame::LoadObjectMedium()
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { x, 0.0f, 12.5 };
+		loadInfo.position = { x, 0.0f, fMaxZ - 2.5f };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
@@ -1281,7 +1277,7 @@ void CGame::LoadObjectMedium()
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { x, 0.0f, -7.5 };
+		loadInfo.position = { x, 0.0f, fMinZ + 2.5f };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
@@ -1297,8 +1293,8 @@ void CGame::LoadObjectMedium()
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
 
-	for (float z = -2.5; z <= 7.5; z += 2.5f) {
-		loadInfo.position = { -12.5, 0.0f, z };
+	for (float z = fMinZ + 7.5; z <= fMaxZ - 7.5; z += 2.5f) {
+		loadInfo.position = { fMinX + 2.5f, 0.0f, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
@@ -1314,7 +1310,7 @@ void CGame::LoadObjectMedium()
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { -10, 0.0f, z };
+		loadInfo.position = { fMinX + 5.0f, 0.0f, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
@@ -1329,7 +1325,7 @@ void CGame::LoadObjectMedium()
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { 10, 0.0f, z };
+		loadInfo.position = { fMaxX - 5.0f, 0.0f, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
@@ -1345,7 +1341,7 @@ void CGame::LoadObjectMedium()
 		loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { 12.5, 0.0f, z };
+		loadInfo.position = { fMaxX - 2.5f, 0.0f, z };
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.meshID = 0;
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HAY_TEX;
@@ -1394,59 +1390,52 @@ void CGame::LoadObjectMedium()
 		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	}
 
-	loadInfo.position = { -10, 0, 0 };
+	loadInfo.position = {fMinX +5,  0, fMinZ + 5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	loadInfo.position = { -10, 0, 5 };
+	loadInfo.position = { fMinX + 5, 0, fMaxZ - 5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	loadInfo.position = { -10, 0, -5 };
+	loadInfo.position = { fMaxX - 5, 0, fMinZ + 5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	loadInfo.position = { -10, 0, 10 };
+	loadInfo.position = { fMaxX - 5, 0, fMaxZ - 5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { -5, 0, -5 };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	//loadInfo.position = { -5, 0, 0 };
+	//loadInfo.position = { -5, 0, -5 };
 	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	//loadInfo.position = { -5, 0, 5 };
+	////loadInfo.position = { -5, 0, 0 };
+	////objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	////loadInfo.position = { -5, 0, 5 };
+	////objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.position = { -5, 0, 10 };
 	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	loadInfo.position = { -5, 0, 10 };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { 0, 0, 10 };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	loadInfo.position = { 0, 0, -5 };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
-	loadInfo.position = { 0, 0, 2.5 };
-	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
-	loadInfo.collisionLayer = COLLISION_LAYERS::WALL;
-	loadInfo.meshID = MODELS::CUBE;
-	loadInfo.LoadState = 3;
-	loadInfo.floor = false;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-
-
-	loadInfo.position = { 5, 0, -5 };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	//loadInfo.position = { 5, 0, 0 };
+	//loadInfo.position = { 0, 0, 10 };
 	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	//loadInfo.position = { 5, 0, 5 };
+	//loadInfo.position = { 0, 0, -5 };
 	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	loadInfo.position = { 5, 0, 10 };
+
+	loadInfo.position = { 0, 0, 2.5f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { 10, 0, 10 };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	loadInfo.position = { 10, 0, 0 };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	loadInfo.position = { 10, 0, 5 };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	loadInfo.position = { 10.0f, 0, -5.0f };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-	loadInfo.position = { -10.0f, 0, 10.0f };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	//loadInfo.position = { 5, 0, -5 };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	////loadInfo.position = { 5, 0, 0 };
+	////objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	////loadInfo.position = { 5, 0, 5 };
+	////objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.position = { 5, 0, 10 };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	//loadInfo.position = { 10, 0, 10 };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.position = { 10, 0, 0 };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.position = { 10, 0, 5 };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.position = { 10.0f, 0, -5.0f };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.position = { -10.0f, 0, 10.0f };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 	loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	loadInfo.position = { 0.0f, 0.0f, 2.5f };
@@ -2628,7 +2617,6 @@ void CGame::GamePlayLoop(double timePassed)
 						bomb->SetAlive(false);
 					}
 					bomb->updateBomb(timePassed);
-
 				}
 			}
 			bombindex++;
@@ -2897,6 +2885,7 @@ void CGame::setGameState(int _gameState)
 		menuBomb = nullptr;
 		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB, DirectX::XMFLOAT3(-4.35f, 11.9f, -5.6f), GAME_STATE::ARCADE_MENU, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
 		SprinklersOn = false;
+		mapTime = 0;
 		break;
 	}
 	case GAME_STATE::ARCADE_GAME:
@@ -2906,7 +2895,7 @@ void CGame::setGameState(int _gameState)
 		delete menuBomb;
 		shakeTime = 0;
 		menuBomb = nullptr;
-		LoadObjectSmall();
+		LoadObjectMedium();
 		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMaxZ - 2.5));
 		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMinZ + 2.5));
 
@@ -2918,10 +2907,10 @@ void CGame::setGameState(int _gameState)
 			v_cAI[1] = p_cEntityManager->InstantiatePlayer(4, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5));
 		if (numAI > 1)
 			v_cAI[0] = p_cEntityManager->InstantiatePlayer(3, MODELS::CHICKEN, DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5));
-		fMinX = -10;
-		fMaxX = 10;
-		fMinZ = -5;
-		fMaxZ = 10;
+		fMinX = -25;
+		fMaxX = 25;
+		fMinZ = -20;
+		fMaxZ = 25;
 		mapTime = 0;
 
 		spawnSound1->isSoundPlaying(soundplaying);
@@ -2937,10 +2926,10 @@ void CGame::setGameState(int _gameState)
 	}
 	case GAME_STATE::WIN_SCREEN:
 	{
-		fMinX = -10;
-		fMaxX = 10;
-		fMinZ = -5;
-		fMaxZ = 10;
+		fMinX = -25;
+		fMaxX = 25;
+		fMinZ = -20;
+		fMaxZ = 25;
 		mapTime = 0;
 		ClearPlayersAndBombs();
 		break;
