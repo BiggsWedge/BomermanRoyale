@@ -640,5 +640,5 @@ DirectX::XMMATRIX DirectXData::screenShake() {
 }
 
 void DirectXData::resetCamera() {
-	viewMat = camMat;
+	viewMat = tempCamera;
 }
