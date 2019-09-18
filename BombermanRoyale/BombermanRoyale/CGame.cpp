@@ -1191,6 +1191,7 @@ void CGame::Run()
 					TTextureComponent* Texture = (TTextureComponent*)cTexture;
 					if (renderer->iUsedLoadState == GAME_STATE::WIN_SCREEN)
 					{
+						g_d3dData->viewMat = g_d3dData->camMat;
 						for (CPlayer* player : v_cPlayers)
 						{
 							if (player != NULL)
