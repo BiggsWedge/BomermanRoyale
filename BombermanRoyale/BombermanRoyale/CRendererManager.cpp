@@ -72,9 +72,13 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 
 	/*********DRAW OTHER STUFF HERE************/
-	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
-	if (gamestate == 3)
-		v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext, timepassed);
+#pragma region BATTLE MAGE ANIMATION DRAW
+
+	//g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
+	//if (gamestate == 3)
+	//	v_tMeshTemplates[MODELS::BATTLEMAGE].render(g_d3dData->d3dContext, timepassed);
+
+#pragma endregion
 
 	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::DEFAULT]);
 	for (CObject* c : rendereableObjects)
