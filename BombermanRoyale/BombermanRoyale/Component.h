@@ -2,9 +2,7 @@
 
 #include "Utilities.h"
 
-
 struct COMPONENT_TYPE { enum { RENDERER = 0, MESH, TRANSFORM, TEXTURE, MATERIAL, ANIM, COLLIDER }; };
-
 
 struct TComponent
 {
@@ -87,18 +85,18 @@ public:
 	~TMaterialComponent();
 };
 
-
 struct TAnimComponent : TComponent
 {
 private:
 public:
-	std::vector<joint> _bindPose;
-	AnimationClip _anim;
+	std::vector<AnimationClip*> animations;
+	AnimationClip* currentAnimation;
+	int currentFrameIndex;
+	double _time;
 	TAnimComponent();
 	TAnimComponent(TMeshTemplate _template);
 	~TAnimComponent();
 };
-
 
 struct TColliderComponent : TComponent
 {
@@ -112,11 +110,4 @@ public:
 
 	inline DirectX::BoundingBox GetCollider() { return d3dCollider; }
 };
-
-
-
-
-
-
-
 

@@ -777,6 +777,7 @@ std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource, std::vector
 
 	return bombs;
 }
+
 std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
@@ -1323,6 +1324,7 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector
 
 	return bombs;
 }
+
 std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
@@ -1874,6 +1876,7 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector
 
 	return bombs;
 }
+
 std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
@@ -2428,6 +2431,7 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector
 	}
 	return bombs;
 }
+
 void CEntityManager::Cleanup()
 {
 
@@ -2562,6 +2566,7 @@ CObject* CEntityManager::SpawnObject(CObject* obj) {
 
 	return Item;
 }
+
 CPlayer* CEntityManager::InstantiatePlayer(int numPlayer, int playerModel, int playerSkin, DirectX::XMFLOAT3 spawnPos, int loadState, DirectX::XMFLOAT3 forwardVec, DirectX::XMFLOAT3 scale)
 {
 	OBJLoadInfo pLoadInfo;

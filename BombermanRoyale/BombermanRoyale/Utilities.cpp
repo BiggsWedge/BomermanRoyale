@@ -128,7 +128,6 @@ bool InitializeAudio() {
 			g_pLogger->LogCatergorized("FAILURE", "Audio Manager unsuccessfully created.");
 			return false;
 		}
-
 	}
 	else {
 		g_pLogger->LogCatergorized("FAILURE", "Audio Manager unsuccessfully created.");
@@ -210,155 +209,7 @@ void LoadModel(TMeshLoadInfo loadInfo)
 			}
 		}
 	}
-
-	if (loadInfo.matFile)
-	{
-		std::fstream inMatFile{ loadInfo.matFile, std::ios_base::in | std::ios_base::binary };
-
-		assert(inMatFile.is_open());
-
-		if (!inMatFile.is_open())
-		{
-			assert(false);
-			return;
-		}
-
-		int numMatFiles;
-		inMatFile.read((char*)&numMatFiles, sizeof(int));
-
-
-		for (int i = 0; i < numMatFiles; ++i)
-		{
-			material_t tempmat;
-			for (int j = 0; j < 4; ++j)
-			{
-				XMVECTOR temp2;
-				inMatFile.read((char*)&tempmat[j].value, sizeof(float) * 3);
-				inMatFile.read((char*)&tempmat[j].factor, sizeof(float));
-				inMatFile.read((char*)&tempmat[j].input, sizeof(int64_t));
-				if (j == material_t::COMPONENT::DIFFUSE)
-				{
-					temp2.m128_f32[0] = tempmat[j].value[0];
-					temp2.m128_f32[1] = tempmat[j].value[1];
-					temp2.m128_f32[2] = tempmat[j].value[2];
-					XMStoreFloat3(&temp._mat.fSurfaceDiffuse, temp2);
-					temp._mat.fDiffuseFactor = tempmat[j].factor;
-				}
-				if (j == material_t::COMPONENT::EMISSIVE)
-				{
-					temp2.m128_f32[0] = tempmat[j].value[0];
-					temp2.m128_f32[1] = tempmat[j].value[1];
-					temp2.m128_f32[2] = tempmat[j].value[2];
-					XMStoreFloat3(&temp._mat.fSurfaceEmissive, temp2);
-					temp._mat.fEmissiveFactor = tempmat[j].factor;
-				}
-				if (j == material_t::COMPONENT::SPECULAR)
-				{
-					temp2.m128_f32[0] = tempmat[j].value[0];
-					temp2.m128_f32[1] = tempmat[j].value[1];
-					temp2.m128_f32[2] = tempmat[j].value[2];
-					XMStoreFloat3(&temp._mat.fSurfaceSpecular, temp2);
-					temp._mat.fSpecularFactor = tempmat[j].factor;
-				}
-				if (j == material_t::COMPONENT::SHININESS)
-				{
-					temp2.m128_f32[0] = tempmat[j].value[0];
-					temp2.m128_f32[1] = tempmat[j].value[1];
-					temp2.m128_f32[2] = tempmat[j].value[2];
-					XMStoreFloat3(&temp._mat.fSurfaceShiny, temp2);
-					temp._mat.fShinyFactor = tempmat[j].factor;
-				}
-			}
-			temp.mats.push_back(tempmat);
-		}
-
-		int numPathsFiles;
-		inMatFile.read((char*)&numPathsFiles, sizeof(int));
-
-		for (int i = 0; i < numPathsFiles; ++i)
-		{
-			file_path_t _file;
-			inMatFile.read(_file.data(), sizeof(char) * 260);
-			temp.filePaths.push_back(_file);
-		}
-		inMatFile.close();
-
-	}
-	if (loadInfo.animFile)
-	{
-		std::fstream inAnimFile(loadInfo.animFile, std::ios_base::in | std::ios_base::binary);
-
-		assert(inAnimFile.is_open());
-
-		int num;
-		inAnimFile.read((char*)&num, sizeof(int));
-		temp._bindPose.resize(num);
-		for (int i = 0; i < num; ++i)
-		{
-			inAnimFile.read((char*)&temp._bindPose[i].parentIndex, sizeof(int));
-			DirectX::XMFLOAT4X4 mat;
-			inAnimFile.read((char*)mat.m, sizeof(float) * 16);
-			temp._bindPose[i]._mat = DirectX::XMLoadFloat4x4(&mat);
-		}
-
-
-
-
-		double _dur;
-		inAnimFile.read((char*)&_dur, sizeof(double));
-		temp._anim.duration = _dur;
-		int numFrames;
-		inAnimFile.read((char*)&numFrames, sizeof(int));
-
-		temp._anim.frames.resize(numFrames);
-		for (int i = 0; i < numFrames; ++i)
-		{
-			KeyFrame _key;
-			inAnimFile.read((char*)&_key.time, sizeof(double));
-			int numJoints;
-			inAnimFile.read((char*)&numJoints, sizeof(int));
-			_key.joints.resize(numJoints);
-
-			for (int j = 0; j < numJoints; ++j)
-			{
-				inAnimFile.read((char*)&_key.joints[j].parentIndex, sizeof(int));
-				DirectX::XMFLOAT4X4 _j;
-				inAnimFile.read((char*)_j.m, sizeof(float) * 16);
-				_key.joints[j]._mat = DirectX::XMLoadFloat4x4(&_j);
-			}
-			temp._anim.frames[i] = _key;
-		}
-		inAnimFile.close();
-		temp._anim.frames.push_back(temp._anim.frames[0]);
-		temp._anim.frames[temp._anim.frames.size() - 1].time = temp._anim.duration;
-	}
-
 	v_tMeshTemplates.push_back(temp);
-
-	//fstream file{ loadInfo.meshFile, ios::in | ios::binary };
-	//
-	//if (!file.is_open())
-	//{
-	//	std::string fail = "Failed to load " + loadInfo.name;
-	//	g_pLogger->LogCatergorized("FAILURE", fail.c_str());
-	//	return;
-	//}
-	//
-	//file.read((char*)&numIndices, sizeof(int));
-	//temp.v_iIndices.resize(numIndices);
-	//file.read((char*)temp.v_iIndices.data(), sizeof(int) * numIndices);
-	//
-	//file.read((char*)&numVerts, sizeof(int));
-	//temp.v_tVertices.resize(numVerts);
-	//file.read((char*)temp.v_tVertices.data(), sizeof(TSimpleVertex) * numVerts);
-	//
-	//file.close();
-	//
-	//for (auto& v : temp.v_tVertices)
-	//{
-	//	v.fPosition.x = -v.fPosition.x;
-	//	v.fNormal.x = -v.fNormal.x;
-	//}
 }
 
 void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) {
@@ -567,138 +418,7 @@ void TMeshTemplate::loadModel(const char* modelFile, const char* matFile, const 
 		file.read((char*)v_tVertices.data(), sizeof(TSimpleVertex) * numVerts);
 
 		file.close();
-
-
-		for (auto& v : v_tVertices)
-		{
-			//v.fPosition.x *= scale;
-			//v.fPosition.y *= scale;
-			//v.fPosition.z *= scale;
-		}
 	}
-
-	if (matFile)
-	{
-		std::fstream inMatFile{ matFile, std::ios_base::in | std::ios_base::binary };
-
-		assert(inMatFile.is_open());
-
-		if (!inMatFile.is_open())
-		{
-			assert(false);
-			return;
-		}
-
-		int numMatFiles;
-		inMatFile.read((char*)&numMatFiles, sizeof(int));
-
-
-		for (int i = 0; i < numMatFiles; ++i)
-		{
-			material_t temp;
-			for (int j = 0; j < 4; ++j)
-			{
-				XMVECTOR temp2;
-				inMatFile.read((char*)&temp[j].value, sizeof(float) * 3);
-				inMatFile.read((char*)&temp[j].factor, sizeof(float));
-				inMatFile.read((char*)&temp[j].input, sizeof(int64_t));
-				if (j == material_t::COMPONENT::DIFFUSE)
-				{
-					temp2.m128_f32[0] = temp[j].value[0];
-					temp2.m128_f32[1] = temp[j].value[1];
-					temp2.m128_f32[2] = temp[j].value[2];
-					XMStoreFloat3(&_mat.fSurfaceDiffuse, temp2);
-					_mat.fDiffuseFactor = temp[j].factor;
-				}
-				if (j == material_t::COMPONENT::EMISSIVE)
-				{
-					temp2.m128_f32[0] = temp[j].value[0];
-					temp2.m128_f32[1] = temp[j].value[1];
-					temp2.m128_f32[2] = temp[j].value[2];
-					XMStoreFloat3(&_mat.fSurfaceEmissive, temp2);
-					_mat.fEmissiveFactor = temp[j].factor;
-				}
-				if (j == material_t::COMPONENT::SPECULAR)
-				{
-					temp2.m128_f32[0] = temp[j].value[0];
-					temp2.m128_f32[1] = temp[j].value[1];
-					temp2.m128_f32[2] = temp[j].value[2];
-					XMStoreFloat3(&_mat.fSurfaceSpecular, temp2);
-					_mat.fSpecularFactor = temp[j].factor;
-				}
-				if (j == material_t::COMPONENT::SHININESS)
-				{
-					temp2.m128_f32[0] = temp[j].value[0];
-					temp2.m128_f32[1] = temp[j].value[1];
-					temp2.m128_f32[2] = temp[j].value[2];
-					XMStoreFloat3(&_mat.fSurfaceShiny, temp2);
-					_mat.fShinyFactor = temp[j].factor;
-				}
-			}
-			mats.push_back(temp);
-		}
-
-		int numPathsFiles;
-		inMatFile.read((char*)&numPathsFiles, sizeof(int));
-
-		for (int i = 0; i < numPathsFiles; ++i)
-		{
-			file_path_t _file;
-			inMatFile.read(_file.data(), sizeof(char) * 260);
-			filePaths.push_back(_file);
-		}
-		inMatFile.close();
-
-	}
-	if (animFile)
-	{
-		std::fstream inAnimFile(animFile, std::ios_base::in | std::ios_base::binary);
-
-		assert(inAnimFile.is_open());
-
-		int num;
-		inAnimFile.read((char*)&num, sizeof(int));
-		_bindPose.resize(num);
-		for (int i = 0; i < num; ++i)
-		{
-			inAnimFile.read((char*)&_bindPose[i].parentIndex, sizeof(int));
-			DirectX::XMFLOAT4X4 mat;
-			inAnimFile.read((char*)mat.m, sizeof(float) * 16);
-			_bindPose[i]._mat = DirectX::XMLoadFloat4x4(&mat);
-		}
-
-
-
-
-		double _dur;
-		inAnimFile.read((char*)&_dur, sizeof(double));
-		_anim.duration = _dur;
-		int numFrames;
-		inAnimFile.read((char*)&numFrames, sizeof(int));
-
-		_anim.frames.resize(numFrames);
-		for (int i = 0; i < numFrames; ++i)
-		{
-			KeyFrame _key;
-			inAnimFile.read((char*)&_key.time, sizeof(double));
-			int numJoints;
-			inAnimFile.read((char*)&numJoints, sizeof(int));
-			_key.joints.resize(numJoints);
-
-			for (int j = 0; j < numJoints; ++j)
-			{
-				inAnimFile.read((char*)&_key.joints[j].parentIndex, sizeof(int));
-				DirectX::XMFLOAT4X4 _j;
-				inAnimFile.read((char*)_j.m, sizeof(float) * 16);
-				_key.joints[j]._mat = DirectX::XMLoadFloat4x4(&_j);
-			}
-			_anim.frames[i] = _key;
-		}
-		inAnimFile.close();
-		_anim.frames.push_back(_anim.frames[0]);
-		_anim.frames[_anim.frames.size() - 1].time = _anim.duration;
-	}
-
 }
 
 void TMeshTemplate::initialize(ID3D11Device* _device)
@@ -737,7 +457,6 @@ void TMeshTemplate::initialize(ID3D11Device* _device)
 
 	_device->CreateBuffer(&indexBufferDesc, &indexBufferSubResourceData, &_indexBuffer);
 
-
 	for (int i = 0; i < mats.size(); ++i)
 	{
 		for (int j = 0; j < material_t::COMPONENT::COUNT; ++j)
@@ -765,119 +484,6 @@ void TMeshTemplate::initialize(ID3D11Device* _device)
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	_device->CreateSamplerState(&sampDesc, &_samState);
 
-}
-
-void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
-{
-
-	animTime += timepassed;
-	totalTime += timepassed;
-
-	float fractionalTime = timepassed - (int)timepassed;
-
-	UINT strides = sizeof(TSimpleVertex);
-	UINT offsets = 0;
-
-	if (currKeyFrame == _anim.frames.size())
-		currKeyFrame = 0;
-
-	while (animTime > _anim.frames[currFrameIndex + 1].time)
-	{
-		currFrameIndex++;
-		if (currFrameIndex == _anim.frames.size() - 1)
-		{
-			animTime -= _anim.duration;
-			currFrameIndex = 0;
-		}
-	}
-
-	float startTime, endTime;
-	startTime = _anim.frames[currFrameIndex].time;
-	endTime = _anim.frames[currFrameIndex + 1].time;
-
-	float ratio = (animTime - startTime) / (endTime - startTime);
-
-	KeyFrame _key = _anim.frames[currFrameIndex];
-
-	jointCB _jointsConst;
-	_jointsConst.numJoints = _anim.frames[currFrameIndex].joints.size();
-
-	for (int i = 0; i < _anim.frames[currFrameIndex].joints.size(); ++i)
-	{
-
-		DirectX::XMMATRIX tween = matLerp(_anim.frames[currFrameIndex].joints[i]._mat, _anim.frames[currFrameIndex + 1].joints[i]._mat, ratio);
-
-		//debug_renderer::drawMatrix(tween);
-
-		_jointsConst._joints[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, _bindPose[i]._mat) * tween);
-
-		if (_key.joints[i].parentIndex >= 0)
-		{
-			DirectX::XMFLOAT4X4 startMat, endMat;
-
-			DirectX::XMStoreFloat4x4(&startMat, matLerp(_anim.frames[currFrameIndex].joints[i]._mat, _anim.frames[currFrameIndex + 1].joints[i]._mat, ratio));
-			DirectX::XMStoreFloat4x4(&endMat, matLerp(_anim.frames[currFrameIndex].joints[_anim.frames[currFrameIndex].joints[i].parentIndex]._mat, _anim.frames[currFrameIndex + 1].joints[_anim.frames[currFrameIndex + 1].joints[i].parentIndex]._mat, ratio));
-		}
-
-
-	}
-
-	MVP_t debugConstBuff;
-	//debugConstBuff.world = DirectX::XMMatrixTranspose(mObjMatrix);
-	
-	if (g_d3dData->bUseDebugRenderCamera)
-		debugConstBuff.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
-	else
-		debugConstBuff.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
-	
-	debugConstBuff.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
-
-#pragma endregion
-
-	Light pointLight;
-	pointLight.position = DirectX::XMFLOAT3(0.0, 6.0f, -2.0f);
-	pointLight.color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	pointLight.intensity = 0.25f;
-	pointLight.type = 0;
-
-	LightBuffer _light;
-	_light.light = pointLight;
-
-	//MatBuffer mat;
-	//mat.material = _mat;
-
-	debugConstBuff.world = DirectX::XMMatrixIdentity();
-	/*debugConstBuff.world = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(180));
-	debugConstBuff.world = debugConstBuff.world * DirectX::XMMatrixTranslation(6.0f, 0.0f, 0.0f);
-	debugConstBuff.world = DirectX::XMMatrixTranspose(debugConstBuff.world);
-*/
-	_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MVP_t], 0, nullptr, &debugConstBuff, 0, 0);
-	_context->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MVP_t]);
-
-	_context->IASetInputLayout(g_d3dData->d3dInputLayout[INPUT_LAYOUT::BASIC]);
-
-	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::LIGHTS], 0, nullptr, &_light, 0, 0);
-	_context->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::LIGHTS]);
-
-	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MATERIAL], 0, nullptr, &_mat, 0, 0);
-	_context->PSSetConstantBuffers(1, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::MATERIAL]);
-
-	_context->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::JOINTS], 0, nullptr, &_jointsConst, 0, 0);
-	_context->VSSetConstantBuffers(1, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::JOINTS]);
-
-	_context->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	_context->IASetVertexBuffers(0, 1, &_vertexBuffer, &strides, &offsets);
-
-	_context->VSSetShader(g_d3dData->d3dVertexShader[VERTEX_SHADER::ANIM], 0, 0);
-	_context->PSSetShader(g_d3dData->d3dPixelShader[PIXEL_SHADER::ANIM], 0, 0);
-	_context->PSSetSamplers(0, 1, &_samState);
-	_context->PSSetShaderResources(0, 1, &_srv[DIFFUSE]);
-	_context->PSSetShaderResources(1, 1, &_srv[EMISSIVE]);
-	_context->PSSetShaderResources(2, 1, &_srv[SPECULAR]);
-
-	_context->DrawIndexed(numIndices, 0, 0);
 }
 
 //TMeshTemplate::~TMeshTemplate()
@@ -1002,6 +608,69 @@ void CleanGlobals()
 	GW_SAFE_RELEASE(g_pAudioHolder);
 
 	GW_SAFE_RELEASE(g_pLogger);
+}
+
+void LoadAnimations()
+{
+	for (int i = 0; i < ChickenAnimFiles.size(); ++i)
+	{
+		AnimationClip temp;
+		temp = ProcessAnimationFile(ChickenAnimFiles[i].file);
+		temp.AnimationName = ChickenAnimFiles[i].animationName;
+
+		v_tMeshTemplates[MODELS::CHICKEN]._animations.push_back(temp);
+	}
+}
+
+AnimationClip ProcessAnimationFile(const char * animFileName)
+{
+	AnimationClip temp;
+
+	std::fstream inAnimFile(animFileName, std::ios_base::in | std::ios_base::binary);
+
+	assert(inAnimFile.is_open());
+
+	unsigned int numBindJoints;
+	inAnimFile.read((char*)&numBindJoints, sizeof(unsigned int));
+	temp._bindPose.resize(numBindJoints);
+
+	for (int j = 0; j < numBindJoints; ++j)
+	{
+		inAnimFile.read((char*)&temp._bindPose[j]._mat, sizeof(float) * 16);
+		inAnimFile.read((char*)&temp._bindPose[j].parentIndex, sizeof(int));
+		for (int x = 0; x < 4; x++)
+			for (int y = 0; y < 4; ++y)
+				temp._bindPose[j]._mat.m[x][y] *= 20.0f;
+	}
+	double _dur;
+	inAnimFile.read((char*)&_dur, sizeof(double));
+	temp.duration = _dur;
+	unsigned int numFrames;
+	inAnimFile.read((char*)&numFrames, sizeof(unsigned int));
+
+	temp.frames.resize(numFrames);
+
+	for (unsigned int i = 0; i < numFrames; ++i)
+	{
+		KeyFrame _key;
+		inAnimFile.read((char*)&_key.time, sizeof(double));
+		unsigned int numJoints;
+		inAnimFile.read((char*)&numJoints, sizeof(unsigned int));
+		_key.joints.resize(numJoints);
+
+		for (int j = 0; j < numJoints; ++j)
+		{
+			inAnimFile.read((char*)&_key.joints[j].parentIndex, sizeof(int));
+
+			DirectX::XMFLOAT4X4 _j;
+			inAnimFile.read((char*)_j.m, sizeof(float) * 16);
+			_key.joints[j]._mat = _j;
+		}
+		temp.frames[i] = _key;
+	}
+	inAnimFile.close();
+
+	return temp;
 }
 
 

@@ -3,6 +3,7 @@
 
 #Compiled Shader Objects
 *.csh
+*.cso
 
 # Compiled Object files
 *.slo

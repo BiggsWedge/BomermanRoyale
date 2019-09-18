@@ -4,6 +4,12 @@
 #define CONST_EXPRESSIONS
 #include <vector>
 
+struct AnimFileName
+{
+	const char* file;
+	std::string animationName;
+};
+
 static const std::vector<const wchar_t*> diffuseTextures =
 {
 	L".//Assets//Cube.fbm//Crate.jpg",
@@ -68,7 +74,16 @@ struct TMeshLoadInfo
 	const char* animFile;
 };
 
-static const std::vector<TMeshLoadInfo> modelLoadInfos =
+static const std::vector<AnimFileName> ChickenAnimFiles
+{
+	{".//Assets//ChickenIdle.anim","Idle"},
+	{".//Assets//ChickenEat.anim","Eat"},
+	{".//Assets//ChickenWalk.anim","Walk"},
+	{".//Assets//ChickenRun.anim","Run"},
+	{".//Assets//ChickenDie.anim","Die"}
+};
+
+static const std::vector<TMeshLoadInfo> modelLoadInfos
 {
 	{"Cube", ".//Assets//Cube.mesh", nullptr, nullptr},
 	{"BattleMage", ".//Assets//BattleMage.mesh", ".\\Assets\\BattleMage.mat", ".\\Assets\\BattleMage.anim"},

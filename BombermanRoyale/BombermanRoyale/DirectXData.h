@@ -154,7 +154,7 @@ public:
 	DirectX::SpriteBatch*				d3dSpriteBatch;
 	DirectX::SpriteFont*				d3dSpriteFont;
 
-
+	bool								drawColliders;
 
 
 
