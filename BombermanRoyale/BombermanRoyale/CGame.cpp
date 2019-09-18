@@ -375,6 +375,7 @@ void CGame::Run()
 				mapTime = tempMapTime;
 				SprinklersOn = true;
 			}
+			
 		}
 
 		g_pControllerInput->GetNumConnected(currNumControllers);
@@ -1710,7 +1711,6 @@ CGame::~CGame()
 	delete p_cRendererManager;
 }
 
-
 void CGame::WindowResize() {
 
 	g_pWindow->GetClientWidth(g_d3dData->windowWidthHeight.x);
@@ -1761,8 +1761,28 @@ void CGame::GamePlayLoop(double timePassed)
 		{
 			PauseMenuToggle = true;
 			isPaused = true;
+
+			if (v_cPlayers[0]->GetControllerIndex() == 1)
+			{
+				
+			}
+			if (v_cPlayers[1]->GetControllerIndex() == 2)
+			{
+
+
+			}
+			if (v_cPlayers[2]->GetControllerIndex() == 3)
+			{
+
+			}
+			if (v_cPlayers[3]->GetControllerIndex() == 4)
+			{
+
+			}
+
 		}
 
+		
 		g_pControllerInput->GetNumConnected(prevNumControllers);
 
 
@@ -1863,6 +1883,7 @@ void CGame::GamePlayLoop(double timePassed)
 								bomb->Cleanup();
 								parent->deleteBomb(j);
 								parent->DecPlacedBombs();
+								fallingSound->Play();
 							}
 						}
 						bomb->SetAlive(false);
@@ -2308,7 +2329,6 @@ void CGame::setGameState(int _gameState)
 	curGameState = _gameState;
 }
 
-
 void CGame::ClearPlayersAndBombs()
 {
 	for (int i = 0; i < v_cPlayers.size(); ++i)
@@ -2622,6 +2642,38 @@ bool CGame::loadTempMenus() {
 	loadInfo.position = { 0.0f, 19.2f, -9.5f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::PAUSE_MENU;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.2f, 1.0f);
+	loadInfo.meshID = MODELS::MENU2;
+	loadInfo.LoadState = GAME_STATE::PAUSE_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 19.2f, -9.5f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::DC1;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.2f, 1.0f);
+	loadInfo.meshID = MODELS::MENU2;
+	loadInfo.LoadState = GAME_STATE::PAUSE_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 19.2f, -9.5f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::DC2;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.2f, 1.0f);
+	loadInfo.meshID = MODELS::MENU2;
+	loadInfo.LoadState = GAME_STATE::PAUSE_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 19.2f, -9.5f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::DC3;
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.2f, 1.0f);
+	loadInfo.meshID = MODELS::MENU2;
+	loadInfo.LoadState = GAME_STATE::PAUSE_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 19.2f, -9.5f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::DC4;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.2f, 1.0f);
 	loadInfo.meshID = MODELS::MENU2;
 	loadInfo.LoadState = GAME_STATE::PAUSE_MENU;
