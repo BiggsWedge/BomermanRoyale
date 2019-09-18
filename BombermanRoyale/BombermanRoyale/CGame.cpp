@@ -1034,7 +1034,7 @@ void CGame::Run()
 							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[2]));
 							setGameState(GAME_STATE::CHARACTER_SCREEN);
 						}
-						else if (numAI > 0 && AImodel[0] > 3)
+						else if (numAI > 0 && AImodel[0] > 3 && numPLAYERS < 3)
 						{
 							AImodel[0] -= 1;
 							AiInCustom[0]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
@@ -1054,7 +1054,7 @@ void CGame::Run()
 							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[2]));
 							setGameState(GAME_STATE::CHARACTER_SCREEN);
 						}
-						else if (numAI > 0 && AImodel[0] < 4)
+						else if (numAI > 0 && AImodel[0] < 4 && numPLAYERS < 3)
 						{
 							AImodel[0] += 1;
 							AiInCustom[0]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
@@ -1072,6 +1072,14 @@ void CGame::Run()
 							PlayersInCustom[3]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
 							TMeshComponent* mesh = (TMeshComponent*)cMesh;
 							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[3]));
+							setGameState(GAME_STATE::CHARACTER_SCREEN);
+						}
+						else if (numAI > 0 && AImodel[1] > 3 && numPLAYERS > 2)
+						{
+							AImodel[1] -= 1;
+							AiInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
+							TMeshComponent* mesh = (TMeshComponent*)cMesh;
+							mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[1]));
 							setGameState(GAME_STATE::CHARACTER_SCREEN);
 						}
 						else if (numAI > 1 && AImodel[1] > 3)
@@ -1092,6 +1100,14 @@ void CGame::Run()
 							PlayersInCustom[3]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
 							TMeshComponent* mesh = (TMeshComponent*)cMesh;
 							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[3]));
+							setGameState(GAME_STATE::CHARACTER_SCREEN);
+						}
+						else if (numAI > 0 && AImodel[1] < 4 && numPLAYERS > 2)
+						{
+							AImodel[1] += 1;
+							AiInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
+							TMeshComponent* mesh = (TMeshComponent*)cMesh;
+							mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[1]));
 							setGameState(GAME_STATE::CHARACTER_SCREEN);
 						}
 						else if (numAI > 1 && AImodel[1] < 4)
@@ -2996,9 +3012,9 @@ void CGame::setGameState(int _gameState)
 		if (numPLAYERS > 3)
 			PlayersInCustom[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(1.7f, 1.7f, 1.7f));
 		if (numAI > 0)
-			AiInCustom[0] = p_cEntityManager->InstantiatePlayer(3, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(1.7f, 1.7f, 1.7f));
+			AiInCustom[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(1.7f, 1.7f, 1.7f));
 		if (numAI > 1)
-			AiInCustom[1] = p_cEntityManager->InstantiatePlayer(4, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(1.7f, 1.7f, 1.7f));
+			AiInCustom[0] = p_cEntityManager->InstantiatePlayer(4, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(1.7f, 1.7f, 1.7f));
 		SprinklersOn = false;
 		break;
 	}
