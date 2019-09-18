@@ -4846,7 +4846,10 @@ void CGame::CustomMeshUpdate()
 		if (shakeTime >= 0.5 || isPaused) {
 			bombExploded = false;
 			if (!bombExploded) {
-				g_d3dData->resetCamera();
+				if (mapsize > 1)
+					g_d3dData->resetCamera();
+				else
+					g_d3dData->viewMat = g_d3dData->camMat;
 				shakeTime = 0;
 			}
 		}
