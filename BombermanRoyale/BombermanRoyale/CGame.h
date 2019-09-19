@@ -102,6 +102,8 @@ public:
 	int numPLAYERS = 2;
 	int playermodel[4] = { 4, 4, 4, 4 };
 	int AImodel[2] = { 4, 4 };
+	int PlayerDiscIndex = 0;
+	bool playerdisconnect = false;
 
 	bool Initialize();
 	void Run();

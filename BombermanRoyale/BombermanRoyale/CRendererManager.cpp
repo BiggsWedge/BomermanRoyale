@@ -106,7 +106,14 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 		rect.right = (float)g_d3dData->windowWidthHeight.x;
 		g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::HAY_TEX], rect, nullptr, { 0.75f, 0.75f, 0.75f, 0.75f });
 		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Arcade Mode", DirectX::XMVECTOR{ (0.5f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.01f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
-
+		if (parentGame->playerdisconnect)
+		{
+			rect.top = 0.13f * (float)g_d3dData->windowWidthHeight.y;
+			rect.bottom = 0.53f * (float)g_d3dData->windowWidthHeight.y;
+			rect.left = 0.25f * (float)g_d3dData->windowWidthHeight.x;
+			rect.right = 0.75f * (float)g_d3dData->windowWidthHeight.x;
+			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::DC1 + parentGame->PlayerDiscIndex], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+		}
 
 	}
 

@@ -2547,17 +2547,31 @@ void CGame::GamePlayLoop(double timePassed)
 
 
 		// Pause on DC
-		if (currNumControllers < prevNumControllers || currNumControllers == 0)
+		if (currNumControllers < numPLAYERS || currNumControllers == 0)
 		{
+			playerdisconnect = true;
 			PauseMenuToggle = true;
 			isPaused = true;
+			for (int i = 0; i < numPLAYERS; i++)
+			{
+				g_pControllerInput->IsConnected(i, playerdisconnect);
+				playerdisconnect = !playerdisconnect;
+				if (playerdisconnect)
+				{
+					PlayerDiscIndex = i;
+					break;
+				}
+			}
+			
 		}
 
+		
 		g_pControllerInput->GetNumConnected(prevNumControllers);
 
 
-		if (currNumControllers > prevNumControllers)
+		if (currNumControllers == numPLAYERS && playerdisconnect)
 		{
+			playerdisconnect = false;
 			PauseMenuToggle = false;
 			isPaused = false;
 		}
@@ -2796,7 +2810,8 @@ void CGame::GamePlayLoop(double timePassed)
 				}
 				case 1:
 				{
-					ControlScreenToggle = !ControlScreenToggle;
+					if(!playerdisconnect)
+						ControlScreenToggle = !ControlScreenToggle;
 					break;
 				}
 				case 2:
@@ -4854,9 +4869,9 @@ void CGame::CustomMeshUpdate()
 	}
 
 	//screenshake
-	if (bombExploded) {
+	if (bombExploded && curGameState == GAME_STATE::ARCADE_GAME) {
 		shakeTime += timePassed;
-
+		
 		viewPos = g_d3dData->screenShake();
 
 		if (shakeTime >= 0.5 || isPaused) {
@@ -4866,6 +4881,17 @@ void CGame::CustomMeshUpdate()
 					g_d3dData->resetCamera();
 				else
 					g_d3dData->viewMat = g_d3dData->camMat;
+				shakeTime = 0;
+			}
+		}
+	}
+	else if(bombExploded) {
+		shakeTime = 0.6f;
+
+		if (shakeTime >= 0.5 || isPaused) {
+			bombExploded = false;
+			if (!bombExploded) {
+				
 				shakeTime = 0;
 			}
 		}
