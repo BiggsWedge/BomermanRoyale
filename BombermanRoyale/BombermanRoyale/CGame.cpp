@@ -2320,6 +2320,7 @@ void CGame::setGameState(int _gameState) {
 	}
 	case GAME_STATE::WIN_SCREEN:
 	{
+		g_d3dData->viewMat = g_d3dData->camMat;
 		switch (mapsize) {
 		case 1:
 			fMinX = -15;
