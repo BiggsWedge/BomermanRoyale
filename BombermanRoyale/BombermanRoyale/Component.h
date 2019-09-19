@@ -89,7 +89,7 @@ struct TAnimComponent : TComponent
 {
 private:
 public:
-	std::vector<AnimationClip*> animations;
+	std::vector<AnimationClip> animations;
 	AnimationClip* currentAnimation;
 	int currentFrameIndex;
 	double _time;

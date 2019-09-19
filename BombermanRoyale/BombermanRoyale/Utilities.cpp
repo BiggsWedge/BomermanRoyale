@@ -193,14 +193,7 @@ void LoadModel(TMeshLoadInfo loadInfo)
 
 		file.close();
 
-		if (loadInfo.name == "BattleMage")
-		{
-			for (auto& v : temp.v_tVertices)
-			{
-				v.fPosition.x = v.fPosition.x;
-			}
-		}
-		else
+		if (loadInfo.name != "BattleMage")
 		{
 			for (auto& v : temp.v_tVertices)
 			{
@@ -638,9 +631,6 @@ AnimationClip ProcessAnimationFile(const char * animFileName)
 	{
 		inAnimFile.read((char*)&temp._bindPose[j]._mat, sizeof(float) * 16);
 		inAnimFile.read((char*)&temp._bindPose[j].parentIndex, sizeof(int));
-		for (int x = 0; x < 4; x++)
-			for (int y = 0; y < 4; ++y)
-				temp._bindPose[j]._mat.m[x][y] *= 20.0f;
 	}
 	double _dur;
 	inAnimFile.read((char*)&_dur, sizeof(double));

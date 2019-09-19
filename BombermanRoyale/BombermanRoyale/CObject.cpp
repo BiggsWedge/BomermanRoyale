@@ -90,6 +90,7 @@ void CObject::Draw(double timepassed)
 	g_d3dData->d3dContext->PSSetShader(g_d3dData->d3dPixelShader[renderer->iUsedPixelShaderIndex], 0, 0);
 	if (renderer->iUsedGeometryShaderIndex >= 0)
 		g_d3dData->d3dContext->GSSetShader(g_d3dData->d3dGeometryShader[renderer->iUsedGeometryShaderIndex], 0, 0);
+	//g_d3dData->d3dContext->OMSetBlendState
 
 	TBasicPixelConstBuff pConst;
 	for (int i = 0; i < 8; ++i)
@@ -112,6 +113,7 @@ void CObject::Draw(double timepassed)
 
 
 	g_d3dData->basicConstBuff.mModelMatrix = DirectX::XMMatrixTranspose(transform->mObjMatrix);
+
 	if (anim)
 	{
 		AnimationClip currentClip = *anim->currentAnimation;
@@ -137,9 +139,8 @@ void CObject::Draw(double timepassed)
 			jcb._joints[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, DirectX::XMLoadFloat4x4(&currentClip._bindPose[i]._mat))*tween);
 		}
 
-		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::JOINTS], 1, nullptr, &jcb, 0, 0);
+		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::JOINTS], 0, nullptr, &jcb, 0, 0);
 	}
-	g_d3dData->basicConstBuff.mModelMatrix = DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&transform->fScale)) * g_d3dData->basicConstBuff.mModelMatrix;
 
 	if (g_d3dData->bUseDebugRenderCamera)
 		g_d3dData->basicConstBuff.mViewMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
@@ -151,6 +152,7 @@ void CObject::Draw(double timepassed)
 	g_d3dData->basicConstBuff.mModelMatrix *= DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&transform->fScale));
 	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_BASIC], 0, nullptr, &g_d3dData->basicConstBuff, 0, 0);
 	g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_BASIC]);
+	g_d3dData->d3dContext->VSSetConstantBuffers(1, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::JOINTS]);
 
 	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC], 0, nullptr, &pConst, 0, 0);
 	g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC]);

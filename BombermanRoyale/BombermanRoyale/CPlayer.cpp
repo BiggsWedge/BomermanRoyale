@@ -25,13 +25,13 @@ void CPlayer::updatePlayer(double frameTime)
 		TAnimComponent* anim = (TAnimComponent*)c;
 
 		anim->_time += frameTime;
-		while (anim->currentAnimation->frames[anim->currentFrameIndex + 1].time)
+		while (anim->_time > anim->currentAnimation->frames[anim->currentFrameIndex + 1].time)
 		{
 			anim->currentFrameIndex++;
-			if (currFrameIndex == (anim->currentAnimation->frames.size() - 1))
+			if (anim->currentFrameIndex == (anim->currentAnimation->frames.size() - 1))
 			{
-				anim->_time -= anim->currentAnimation->frames[currFrameIndex].time;
-				currFrameIndex = 0;
+				anim->_time -= anim->currentAnimation->frames[anim->currentFrameIndex].time;
+				anim->currentFrameIndex = 0;
 			}
 		}
 	}
@@ -49,13 +49,27 @@ int CPlayer::SetCurrentAnimaion(std::string toChangeTo)
 
 		for (int i = 0; i < anim->animations.size(); ++i)
 		{
-			if (toChangeTo == anim->animations[i]->AnimationName)
+			if (toChangeTo == anim->animations[i].AnimationName)
 			{
+				anim->currentAnimation = &anim->animations[i];
 				return 1;
 			}
 		}
 	}
 	return -1;
+}
+
+void CPlayer::ResetAnimation()
+{
+
+	TComponent* c;
+	if (this->GetComponent(COMPONENT_TYPE::ANIM, c))
+	{
+		TAnimComponent* anim = (TAnimComponent*)c;
+
+		anim->currentFrameIndex = 0;
+		anim->_time = 0.0;
+	}
 }
 
 void CPlayer::Initialize()

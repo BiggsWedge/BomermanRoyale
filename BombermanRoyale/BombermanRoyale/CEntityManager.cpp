@@ -32,9 +32,6 @@ CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 	TMaterialComponent* mat = new TMaterialComponent(v_tMeshTemplates.at(loadInfo.meshID));
 	temp->AddComponent((TComponent*)mat);
 
-	TAnimComponent* anim = new TAnimComponent(v_tMeshTemplates.at(loadInfo.meshID));
-	temp->AddComponent((TComponent*)anim);
-
 	TColliderComponent* collider = new TColliderComponent(v_tMeshTemplates[loadInfo.meshID], loadInfo.scale, loadInfo.position, loadInfo.collisionLayer);
 	temp->AddComponent((TComponent*)collider);
 
@@ -58,10 +55,11 @@ CPlayer* CEntityManager::CreatePlayerFromTemplate(OBJLoadInfo loadInfo)
 
 	TMaterialComponent* mat = new TMaterialComponent(v_tMeshTemplates.at(loadInfo.meshID));
 	temp->AddComponent((TComponent*)mat);
-
-	TAnimComponent* anim = new TAnimComponent(v_tMeshTemplates.at(loadInfo.meshID));
-	temp->AddComponent((TComponent*)anim);
-
+	if (v_tMeshTemplates[loadInfo.meshID]._animations.size() > 0)
+	{
+		TAnimComponent* anim = new TAnimComponent(v_tMeshTemplates.at(loadInfo.meshID));
+		temp->AddComponent((TComponent*)anim);
+	}
 	TColliderComponent* collider = new TColliderComponent(v_tMeshTemplates[loadInfo.meshID], loadInfo.scale, loadInfo.position, loadInfo.collisionLayer);
 	temp->AddComponent((TComponent*)collider);
 
@@ -2575,8 +2573,8 @@ CPlayer* CEntityManager::InstantiatePlayer(int numPlayer, int playerModel, int p
 	pLoadInfo.forwardVec = forwardVec;
 	pLoadInfo.scale = scale;
 	pLoadInfo.usedDiffuse = playerSkin;
-	pLoadInfo.usedVertex = VERTEX_SHADER::BASIC;
-	pLoadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	pLoadInfo.usedVertex = VERTEX_SHADER::ANIM;
+	pLoadInfo.usedPixel = PIXEL_SHADER::ANIM;
 	pLoadInfo.collisionLayer = COLLISION_LAYERS::PLAYER;
 	pLoadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	pLoadInfo.usedGeo = -1;

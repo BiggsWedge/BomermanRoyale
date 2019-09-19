@@ -23,6 +23,7 @@ public:
 	void resetStats();
 	void updatePlayer(double frameTime);
 	int SetCurrentAnimaion(std::string toChangeTo);
+	void ResetAnimation();
 	void Initialize();
 
 	//ACCESSORS

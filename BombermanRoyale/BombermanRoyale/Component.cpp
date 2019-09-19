@@ -67,7 +67,7 @@ void TTransformComponent::ResetMatrix()
 
 	mObjMatrix = DirectX::XMMatrixLookAtLH(origin, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&fForwardVector)), DirectX::XMLoadFloat3(&up));
 	mObjMatrix = mObjMatrix * DirectX::XMMatrixTranslation(fPosition.x, fPosition.y, fPosition.z);
-	mObjMatrix = DirectX::XMMatrixScaling(fScale.x, fScale.y, fScale.z) * mObjMatrix;
+	//mObjMatrix = DirectX::XMMatrixScaling(fScale.x, fScale.y, fScale.z) * mObjMatrix;
 
 }
 
@@ -193,6 +193,17 @@ TAnimComponent::TAnimComponent()
 
 TAnimComponent::TAnimComponent(TMeshTemplate _template)
 {
+	this->componentType = COMPONENT_TYPE::ANIM;
+	if (_template._animations.size() == 0)
+		return;
+
+	for (AnimationClip clip : _template._animations)
+		animations.push_back(clip);
+
+	currentAnimation = &animations[3];
+	_time = 0.0;
+	currentFrameIndex = 0;
+
 
 }
 

@@ -184,7 +184,7 @@ struct TLineVertex {
 struct jointCB
 {
 	int numJoints;
-	DirectX::XMMATRIX _joints[30];
+	DirectX::XMMATRIX _joints[50];
 };
 
 struct bombconstbuffer

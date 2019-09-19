@@ -69,8 +69,8 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	}
 
 
+	g_d3dData->d3dContext->OMSetBlendState(g_d3dData->d3dBlendState[BLEND_STATE::DEFAULT], 0, 0xFFFFFFFF);
 
-	
 	/*********DRAW OTHER STUFF HERE************/
 	//g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState2);
 	//if (gamestate == 3)
@@ -79,13 +79,10 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::DEFAULT]);
 	for (CObject* c : rendereableObjects)
 		c->Draw(timepassed);
-	
-
-
 
 	g_d3dData->d3dContext->OMSetDepthStencilState(g_d3dData->d3dDepthStencilState[DEPTH_STENCIL_STATE::TWO_D], 0);
 
-	g_d3dData->d3dSpriteBatch->Begin();
+	g_d3dData->d3dSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, g_d3dData->d3dBlendState[BLEND_STATE::UI]);
 	float aspectRatio = (float)g_d3dData->windowWidthHeight.x / (float)g_d3dData->windowWidthHeight.y;
 	float invAspect = (float)g_d3dData->windowWidthHeight.y / (float)g_d3dData->windowWidthHeight.x;
 	DirectX::GXMVECTOR scale = { 0.1f * aspectRatio, 0.1f * aspectRatio, 0.1f * aspectRatio, 1.0f };
@@ -100,8 +97,8 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 	if (gamestate == GAME_STATE::ARCADE_MENU)
 	{
-		wchar_t numP[10]; 
-		wchar_t numA[10]; 
+		wchar_t numP[10];
+		wchar_t numA[10];
 		swprintf_s(numP, L"%d", parentGame->numPLAYERS);
 		swprintf_s(numA, L"%d", parentGame->numAI);
 		if (parentGame->mapsize == 1)
@@ -137,9 +134,9 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 		x += 0.16f *invAspect;
 		if (parentGame->GetPlayer(2))
-		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, (parentGame->GetPlayer(2)->isAlive()) ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.05f }, (parentGame->GetPlayer(2)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
-	else if (parentGame->GetAI(1))
-		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, parentGame->GetAI(1)->isAlive() ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.05f }, (parentGame->GetAI(1)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, (parentGame->GetPlayer(2)->isAlive()) ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.05f }, (parentGame->GetPlayer(2)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
+		else if (parentGame->GetAI(1))
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, parentGame->GetAI(1)->isAlive() ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.05f }, (parentGame->GetAI(1)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 	}
 	if (parentGame->GetPlayer(3) || parentGame->GetAI(0))
 	{

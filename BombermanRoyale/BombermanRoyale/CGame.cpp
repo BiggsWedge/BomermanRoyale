@@ -291,13 +291,11 @@ void CGame::Run()
 		timer.Signal();
 		mapTime += timePassed;
 
-
 		loadScreenTime = timer.Delta() + loadScreenTime;
 		if (loadScreenTime < 0.5)
 		{
 			setGameState(GAME_STATE::LOAD_SCREEN);
 		}
-
 
 		if (loadScreenTime > 4 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
 		{
@@ -525,10 +523,10 @@ void CGame::Run()
 						break;
 					}
 					}
-
 				}
 			}
 		}
+
 #pragma endregion
 
 #pragma region ARCADE MENU
@@ -856,7 +854,6 @@ void CGame::Run()
 						break;
 					}
 					}
-
 				}
 			}
 		}
@@ -873,7 +870,6 @@ void CGame::Run()
 				menucontroltimer += timePassed;
 				if (menuBomb->GetCharacterController()->GetLeftRight() > 0.0f && menucontroltimer > 0.3 && menuIndex < 7)
 				{
-
 					menucontroltimer = 0.0;
 					if (menuIndex % 2 == 0)
 					{
@@ -914,7 +910,6 @@ void CGame::Run()
 				}
 				if (menuBomb->GetCharacterController()->GetLeftRight() < 0.0f && menucontroltimer > 0.3 && menuIndex > 0)
 				{
-
 					menucontroltimer = 0.0;
 					if (menuIndex % 2 == 0)
 					{
@@ -1104,7 +1099,6 @@ void CGame::Run()
 						break;
 					}
 					}
-
 				}
 			}
 		}
@@ -1735,6 +1729,10 @@ void CGame::GamePlayLoop(double timePassed)
 
 		currPlayer->GetInput();
 
+
+
+		currPlayer->updatePlayer(timePassed);
+
 		CharacterController* cont = currPlayer->GetCharacterController();
 
 		float deltaX = 0.0f, deltaZ = 0.0f;
@@ -1769,27 +1767,45 @@ void CGame::GamePlayLoop(double timePassed)
 
 		if (cont->IsControllerConnected())
 		{
-			deltaX = cont->GetLeftRight() * timePassed * PLAYER_SPEED;
-			deltaZ = cont->GetUpDown() * timePassed * PLAYER_SPEED;
+			deltaX = cont->GetLeftRight();
+			deltaZ = cont->GetUpDown();
 		}
 		else
 		{
 			if (cont->ButtonHeld(DEFAULT_BUTTONS::LEFT))
-				deltaX -= 1.0f * timePassed	 * PLAYER_SPEED;
+				deltaX -= 1.0f;
 			if (cont->ButtonHeld(DEFAULT_BUTTONS::RIGHT))
-				deltaX += 1.0f * timePassed * PLAYER_SPEED;
+				deltaX += 1.0f;
 			if (cont->ButtonHeld(DEFAULT_BUTTONS::UP))
-				deltaZ += 1.0f * timePassed * PLAYER_SPEED;
+				deltaZ += 1.0f;
 			if (cont->ButtonHeld(DEFAULT_BUTTONS::DOWN))
-				deltaZ -= 1.0f * timePassed * PLAYER_SPEED;
+				deltaZ -= 1.0f;
 		}
 
+		if (abs(deltaX) <= 0.01f && abs(deltaZ) <= 0.01f)
+		{
+			if (currPlayer->SetCurrentAnimaion("Idle") == 1)
+				currPlayer->ResetAnimation();
+		}
+		else if (abs(deltaX) > 0.75f || abs(deltaZ) > 0.75f)
+		{
+			if (currPlayer->SetCurrentAnimaion("Run") == 1)
+				currPlayer->ResetAnimation();
+		}
+		else
+		{
+			if (currPlayer->SetCurrentAnimaion("Walk") == 1)
+				currPlayer->ResetAnimation();
+		}
+
+		deltaX *= timePassed * PLAYER_SPEED;
+		deltaZ *= timePassed * PLAYER_SPEED;
 
 		if (deltaX != 0.0f || deltaZ != 0.0f)
 		{
+
 			if (currPlayer->GetCrouchStatus() == false)
 			{
-
 				currPlayer->Move(deltaX, deltaZ);
 				bool walkplaying;
 				walktimer += timePassed;
@@ -1800,6 +1816,9 @@ void CGame::GamePlayLoop(double timePassed)
 					walkSound1->Play();
 				}
 			}
+			else
+				if (currPlayer->SetCurrentAnimaion("Idle") == 1)
+					currPlayer->ResetAnimation();
 		}
 
 		/*	if (deltaX != 0.0f || deltaZ != 0.0f)
