@@ -1762,7 +1762,8 @@ void CGame::GamePlayLoop(double timePassed)
 			PauseMenuToggle = true;
 			isPaused = true;
 
-			if (v_cPlayers[0]->GetControllerIndex() == 1)
+
+			/*if (v_cPlayers[0]->GetControllerIndex() == 1)
 			{
 				
 			}
@@ -1772,13 +1773,13 @@ void CGame::GamePlayLoop(double timePassed)
 
 			}
 			if (v_cPlayers[2]->GetControllerIndex() == 3)
-			{
+			{ 
 
 			}
 			if (v_cPlayers[3]->GetControllerIndex() == 4)
 			{
 
-			}
+			}*/
 
 		}
 
@@ -2602,7 +2603,7 @@ bool CGame::loadTempMenus() {
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::LOADING_SCREEN;
-	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(2.52f, 1.94f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::LOAD_SCREEN;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
