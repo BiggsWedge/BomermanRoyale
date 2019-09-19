@@ -177,6 +177,8 @@ public:
 	DirectX::XMMATRIX					projMat;
 	DirectX::XMFLOAT3					camPos;
 	DirectX::XMFLOAT3					newCamPos;
+	DirectX::XMMATRIX					tempCamera;
+
 
 	TBasicVertexConstBuff				basicConstBuff;
 

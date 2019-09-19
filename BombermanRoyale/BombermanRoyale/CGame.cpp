@@ -127,6 +127,8 @@ float isP1UDPADPressed = 0.0f;
 float isP1DDPADPressed = 0.0f;
 float isP1SouthButtonPressed = 0.0f;
 
+
+
 bool CGame::Initialize()
 {
 	keyboardInputs.resize(2);
@@ -2181,6 +2183,7 @@ void CGame::setGameState(int _gameState) {
 	switch (_gameState) {
 	case GAME_STATE::MAIN_MENU:
 	{
+		g_d3dData->viewMat = g_d3dData->camMat;
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
 		g_pMusicStream->isStreamPlaying(soundplaying);
@@ -2193,6 +2196,7 @@ void CGame::setGameState(int _gameState) {
 	}
 	case GAME_STATE::ARCADE_MENU:
 	{
+		g_d3dData->viewMat = g_d3dData->camMat;
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
 		delete menuBomb;
@@ -2243,6 +2247,7 @@ void CGame::setGameState(int _gameState) {
 			fMinZ = -10;
 			fMaxZ = 15;
 			LoadObjectSmall();
+
 			break;
 		case 2:
 			fMinX = -20;
@@ -2250,6 +2255,8 @@ void CGame::setGameState(int _gameState) {
 			fMinZ = -15;
 			fMaxZ = 20;
 			LoadObjectMedium();
+			g_d3dData->viewMat = DirectX::XMMatrixTranslation(0, -15.0f, 8.0f) * g_d3dData->viewMat;
+			g_d3dData->tempCamera = g_d3dData->viewMat;
 			break;
 		case 3:
 			fMinX = -25;
@@ -2257,6 +2264,8 @@ void CGame::setGameState(int _gameState) {
 			fMinZ = -20;
 			fMaxZ = 25;
 			LoadObjectLarge();
+			g_d3dData->viewMat = DirectX::XMMatrixTranslation(0, -27.0f, 17.0f) * g_d3dData->viewMat;
+			g_d3dData->tempCamera = g_d3dData->viewMat;
 			break;
 		}
 
