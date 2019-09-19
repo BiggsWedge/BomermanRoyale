@@ -2521,7 +2521,7 @@ void CGame::WindowResize() {
 void CGame::GamePlayLoop(double timePassed)
 {
 
-	AI_Method(timePassed, 0.05f);
+	AI_Method(timePassed, 0.016f);
 	for (CPlayer* currPlayer : v_cPlayers)
 	{
 		if (!currPlayer || !currPlayer->isAlive())

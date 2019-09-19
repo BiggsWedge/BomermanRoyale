@@ -162,7 +162,23 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Player 3:", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.05f }, DirectX::FXMVECTOR{ 0.059f, 0.231f, 0.047f, 1.0f }, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 
 		x += 0.16f *invAspect;
-		if (parentGame->GetPlayer(2))
+		if (parentGame->GetPlayer(2) && parentGame->GetAI(1))
+		{
+			bombtype = parentGame->GetPlayer(2)->GetBombType();
+			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, (parentGame->GetPlayer(2)->isAlive()) ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.05f }, (parentGame->GetPlayer(2)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
+
+			x += 0.14f * invAspect;
+			rect.left = (x * (float)g_d3dData->windowWidthHeight.x) - 20;
+			rect.right = (x * (float)g_d3dData->windowWidthHeight.x) + 40;
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Player 4:", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.05f }, DirectX::Colors::DarkMagenta, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
+			x += 0.16f *invAspect;
+			bombtype = parentGame->GetAI(1)->GetBombType();
+			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, parentGame->GetAI(1)->isAlive() ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.05f }, (parentGame->GetAI(1)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
+
+		}
+		else if (parentGame->GetPlayer(2))
 		{
 			bombtype = parentGame->GetPlayer(2)->GetBombType();
 			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
@@ -186,13 +202,13 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 		if (parentGame->GetPlayer(3))
 		{
 			bombtype = parentGame->GetPlayer(3)->GetBombType();
-			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 0.75f, 0.75f, 0.75f, 0.75f });
+			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, parentGame->GetPlayer(3)->isAlive() ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.05f }, (parentGame->GetPlayer(3)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 		}
 		else if (parentGame->GetAI(0))
 		{
 			bombtype = parentGame->GetAI(0)->GetBombType();
-			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 0.75f, 0.75f, 0.75f, 0.75f });
+			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, parentGame->GetAI(0)->isAlive() ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.05f }, (parentGame->GetAI(0)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 		}
 
