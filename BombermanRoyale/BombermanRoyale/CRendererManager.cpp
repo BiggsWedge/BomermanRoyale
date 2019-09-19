@@ -69,7 +69,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	}
 
 
-
+	g_d3dData->d3dContext->OMSetBlendState(g_d3dData->d3dBlendState[BLEND_STATE::DEFAULT], 0, 0xFFFFFFFF);
 
 	/*********DRAW OTHER STUFF HERE************/
 #pragma region BATTLE MAGE ANIMATION DRAW
@@ -84,12 +84,9 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	for (CObject* c : rendereableObjects)
 		c->Draw(timepassed);
 
-
-
-
 	g_d3dData->d3dContext->OMSetDepthStencilState(g_d3dData->d3dDepthStencilState[DEPTH_STENCIL_STATE::TWO_D], 0);
 
-	g_d3dData->d3dSpriteBatch->Begin();
+	g_d3dData->d3dSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, g_d3dData->d3dBlendState[BLEND_STATE::UI]);
 	float aspectRatio = (float)g_d3dData->windowWidthHeight.x / (float)g_d3dData->windowWidthHeight.y;
 	float invAspect = (float)g_d3dData->windowWidthHeight.y / (float)g_d3dData->windowWidthHeight.x;
 	DirectX::GXMVECTOR scale = { 0.1f * aspectRatio, 0.1f * aspectRatio, 0.1f * aspectRatio, 1.0f };
