@@ -64,6 +64,7 @@ class CGame
 	CRendererManager* p_cRendererManager;
 	CEntityManager* p_cEntityManager;
 	std::vector<CObject*> objects;
+	std::vector<CObject*> deleteLayer;
 	std::vector<CObject*> menuObjects;
 	std::vector<CObject*> Xexplosions;
 	std::vector<CObject*> Zexplosions;
@@ -110,8 +111,6 @@ public:
 
 	void InitSortedParticles(end::sorted_pool_t<particle, 500>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color);
 	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime);
-	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime, CObject* obj);
-	void SpawnParticles(CObject* obj, double time, double timePassed);
 
 	void LoadAnim();
 	void LoadObjectBattle();
@@ -127,13 +126,13 @@ public:
 	void setGameState(int _gameState);
 	void ClearPlayersAndBombs();
 	void updateBombs(double timePassed);
-	void loadMap(int index);
 	bool loadTempMenus();
 	void PlayerCollision(CPlayer* playerToCheck, CObject* cObj, float dx, float dz);
 	void PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb);
 	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer * playerToCheck);
 	void AI_Method(double timepassed, double action_time);
 	void CustomMeshUpdate();
+	void WallDrop(CObject* objectToCheck);
 
 	inline CPlayer* GetPlayer(int index) { if (index >= v_cPlayers.size())return nullptr; else return v_cPlayers.at(index); }
 	inline CPlayer* GetAI(int index) { if (index >= v_cAI.size()) return nullptr; else return v_cAI.at(index); }
