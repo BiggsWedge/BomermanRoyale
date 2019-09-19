@@ -2358,7 +2358,7 @@ void CGame::setGameState(int _gameState) {
 
 		if (numPLAYERS > 3) {
 			if (playermodel[3] == MODELS::CHICKEN - 1)
-				v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));;
+				v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
 			else
 				v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
 		}
