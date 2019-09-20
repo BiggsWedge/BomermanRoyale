@@ -57,7 +57,7 @@ struct KeyboardInput {
 
 static std::vector<KeyboardInput> keyboardInputs;
 struct KEYS {
-	enum { UP = 0, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE, HELP_MENU, GAME_STATE, FULLSCREEN, PAUSE, COUNT };
+	enum { UP = 0, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE, HELP_MENU, GAME_STATE, FULLSCREEN, PAUSE, DISC_TOG, COUNT };
 };
 static std::vector<key> keys(KEYS::COUNT);
 
@@ -72,7 +72,8 @@ static std::vector<int> keycodes = {
 	VK_F1,
 	'G',
 	'F',
-	VK_ESCAPE
+	VK_ESCAPE,
+	'T'
 };
 
 bool ControlScreenToggle = false;
@@ -84,7 +85,7 @@ bool soundplaying2;
 bool warningSoundPlaying = false;
 bool fallingSoundPlaying = false;
 bool playerfallingSoundPlaying = false;
-
+bool PlayerDisconnectToggle = false;
 bool loadHappened = false;
 bool isPaused = false;
 
@@ -287,7 +288,8 @@ void CGame::Run()
 		currFrame = GetTickCount64();
 		timePassed = (currFrame - prevFrame) / 1000.0;
 		timer.Signal();
-		mapTime += timePassed;
+		if(!isPaused)
+			mapTime += timePassed;
 
 		loadScreenTime = timer.Delta() + loadScreenTime;
 		if (loadScreenTime < 0.5)
@@ -357,6 +359,11 @@ void CGame::Run()
 			}
 		}
 
+		if (keys[KEYS::DISC_TOG].released())
+		{
+			PlayerDisconnectToggle = !PlayerDisconnectToggle;
+		}
+
 		if (keys[KEYS::PAUSE].pressed()) {
 			isPaused = !isPaused;
 			ControlScreenToggle = !ControlScreenToggle;
@@ -370,13 +377,13 @@ void CGame::Run()
 			}
 		}
 
+
 		g_pControllerInput->GetNumConnected(currNumControllers);
 
 		if (isPaused == true) {
 			g_pAudioHolder->PauseAll();
 			tempTime = timePassed;
 			tempMapTime = mapTime;
-			mapTime = 0;
 			SprinklersOn = false;
 			timePassed = 0;
 		}
@@ -1117,14 +1124,14 @@ void CGame::Run()
 			ShowCursor(true);
 		if (curGameState == GAME_STATE::ARCADE_GAME)
 		{
-			if (!isPaused)
-			{
-				g_pMusicStream->ResumeStream();
-				if (tempTime != 0)
-					timePassed = tempTime;
-				if (tempMapTime != 0)
-					mapTime = tempMapTime;
-			}
+			//if (!isPaused)
+			//{
+			//	g_pMusicStream->ResumeStream();
+			//	if (tempTime != 0)
+			//		timePassed = tempTime;
+			//	if (tempMapTime != 0)
+			//		mapTime = tempMapTime;
+			//}
 
 			updateBombs(timePassed);
 			prevCursor = currCursor;
@@ -1856,37 +1863,59 @@ void CGame::GamePlayLoop(double timePassed)
 			pauseMenuBomb->Move(0.0f, (-(float)previndex*1.2f), false);
 			PauseMenuToggle = !PauseMenuToggle;
 			isPaused = !isPaused;
+			if (isPaused == false) {
+				g_pMusicStream->ResumeStream();
+				g_pMusicStream->SetVolume(1.0f);
+				timePassed = tempTime;
+				mapTime = tempMapTime;
+				if(passes < 1)
+					SprinklersOn = true;
+			}
+			if (isPaused == true) {
+				g_pAudioHolder->PauseAll();
+				g_pMusicStream->ResumeStream();
+				g_pMusicStream->SetVolume(0.2f);
+				tempTime = timePassed;
+				tempMapTime = mapTime;
+				SprinklersOn = false;
+				timePassed = 0;
+			}
 		}
 
 		// Pause on DC
-		if (currNumControllers < numPLAYERS || currNumControllers == 0)
-
+		if (PlayerDisconnectToggle)
 		{
-			playerdisconnect = true;
-			PauseMenuToggle = true;
-			isPaused = true;
-			for (int i = 0; i < numPLAYERS; i++)
+
+			if (currNumControllers < numPLAYERS || currNumControllers == 0)
+
 			{
-				g_pControllerInput->IsConnected(i, playerdisconnect);
-				playerdisconnect = !playerdisconnect;
-				if (playerdisconnect)
+				playerdisconnect = true;
+				PauseMenuToggle = true;
+				isPaused = true;
+				for (int i = 0; i < numPLAYERS; i++)
 				{
-					PlayerDiscIndex = i;
-					break;
+					g_pControllerInput->IsConnected(i, playerdisconnect);
+					playerdisconnect = !playerdisconnect;
+					if (playerdisconnect)
+					{
+						PlayerDiscIndex = i;
+						break;
+					}
 				}
+
 			}
 
-		}
 
 
-		g_pControllerInput->GetNumConnected(prevNumControllers);
+			g_pControllerInput->GetNumConnected(prevNumControllers);
 
 
-		if (currNumControllers == numPLAYERS && playerdisconnect)
-		{
-			playerdisconnect = false;
-			PauseMenuToggle = false;
-			isPaused = false;
+			if (currNumControllers == numPLAYERS && playerdisconnect)
+			{
+				playerdisconnect = false;
+				PauseMenuToggle = false;
+				isPaused = false;
+			}
 		}
 		// End DC Code
 
@@ -2137,6 +2166,13 @@ void CGame::GamePlayLoop(double timePassed)
 				{
 					isPaused = !isPaused;
 					PauseMenuToggle = !PauseMenuToggle;
+					if (isPaused == false) {
+						g_pMusicStream->ResumeStream();
+						g_pMusicStream->SetVolume(1.0f);
+						timePassed = tempTime;
+						mapTime = tempMapTime;
+						SprinklersOn = true;
+					}
 					break;
 				}
 				case 1:
@@ -2147,13 +2183,15 @@ void CGame::GamePlayLoop(double timePassed)
 				}
 				case 2:
 				{
-					setGameState(GAME_STATE::MAIN_MENU);
 					int previndex = menuIndex;
 					menuIndex = 0;
 					previndex = menuIndex - previndex;
 					pauseMenuBomb->Move(0.0f, (-(float)previndex*1.2f), false);
-					PauseMenuToggle = !PauseMenuToggle;
 					isPaused = !isPaused;
+					PauseMenuToggle = !PauseMenuToggle;
+					mapTime = 0;
+					setGameState(GAME_STATE::MAIN_MENU);
+					
 					break;
 				}
 				default:
@@ -2255,11 +2293,33 @@ void CGame::setGameState(int _gameState) {
 	case GAME_STATE::MAIN_MENU:
 	{
 		g_d3dData->viewMat = g_d3dData->camMat;
-		p1Pause.Reset(false);
+		//p1Pause.Reset(false);
 		ClearPlayersAndBombs();
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (!soundplaying)
 			g_pMusicStream->ResumeStream();
+
+		switch (mapsize) {
+		case 1:
+			fMinX = -15;
+			fMaxX = 15;
+			fMinZ = -10;
+			fMaxZ = 15;
+			break;
+		case 2:
+			fMinX = -20;
+			fMaxX = 20;
+			fMinZ = -15;
+			fMaxZ = 20;
+			break;
+		case 3:
+			fMinX = -25;
+			fMaxX = 25;
+			fMinZ = -20;
+			fMaxZ = 25;
+			break;
+		}
+		mapTime = 0;
 
 		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(-1.5f, 11.4f, -6.8f), GAME_STATE::MAIN_MENU, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
 		SprinklersOn = false;
@@ -2310,6 +2370,7 @@ void CGame::setGameState(int _gameState) {
 		delete menuBomb;
 		shakeTime = 0;
 		menuBomb = nullptr;
+		mapTime = 0;
 
 		switch (mapsize) {
 		case 1:
@@ -2317,6 +2378,7 @@ void CGame::setGameState(int _gameState) {
 			fMaxX = 15;
 			fMinZ = -10;
 			fMaxZ = 15;
+			mapPasses = 4;
 			LoadObjectSmall();
 
 			break;
@@ -2325,6 +2387,7 @@ void CGame::setGameState(int _gameState) {
 			fMaxX = 20;
 			fMinZ = -15;
 			fMaxZ = 20;
+			mapPasses = 6;
 			LoadObjectMedium();
 			g_d3dData->viewMat = DirectX::XMMatrixTranslation(0, -15.0f, 8.0f) * g_d3dData->viewMat;
 			g_d3dData->tempCamera = g_d3dData->viewMat;
@@ -2334,6 +2397,7 @@ void CGame::setGameState(int _gameState) {
 			fMaxX = 25;
 			fMinZ = -20;
 			fMaxZ = 25;
+			mapPasses = 8;
 			LoadObjectLarge();
 			g_d3dData->viewMat = DirectX::XMMatrixTranslation(0, -27.0f, 17.0f) * g_d3dData->viewMat;
 			g_d3dData->tempCamera = g_d3dData->viewMat;
@@ -2377,7 +2441,7 @@ void CGame::setGameState(int _gameState) {
 				v_cAI[0] = p_cEntityManager->InstantiatePlayer(3, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 		}
 
-		mapTime = 0;
+		//mapTime = 0;
 		spawnSound1->isSoundPlaying(soundplaying);
 		if (!soundplaying)
 			spawnSound1->Play();
@@ -2873,7 +2937,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 		AItime = 0.0;
 		int width;
 		int height;
-		if (fMaxX == 15.0f)
+		if (passes <= 0)
 		{
 			width = (((fMaxX - 2.5f) - (fMinX + 2.5f)) / 2.5f) + 1;
 			height = (((fMaxZ - 2.5f) - (fMinZ + 2.5f)) / 2.5f) + 1;
@@ -2896,7 +2960,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 			int x = i % width;
 			float zpos;
 			float xpos;
-			if (fMaxX == 15.0f)
+			if (passes <= 0)
 			{
 				zpos = (fMaxZ - 2.5f) - (float(z) * 2.5f);
 				xpos = (fMaxX - 2.5f) - (float(x) * 2.5f);
@@ -3072,7 +3136,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 			int x = 0;
 			int z = 0;
 			float dec = 0;
-			if (fMaxX == 15.0f)
+			if (passes <= 0)
 			{
 				//dec = abs(AITransform->fPosition.x) / 2.5f;
 				//x = dec;
@@ -3871,8 +3935,11 @@ void CGame::CustomMeshUpdate() {
 	}
 
 	//RenderObjects
-	if (mapTime >= 5 && passes < 6) {
-		fallingSoundPlaying = false;
+	if (mapTime >=  5 && passes < mapPasses && !isPaused) {
+
+		warnSound->isSoundPlaying(warningSoundPlaying);
+		playerfallingSound->isSoundPlaying(playerfallingSoundPlaying);
+		fallingSound->isSoundPlaying(fallingSoundPlaying);
 		for (int i = 0; i < objects.size(); ++i) {
 			TComponent* cRenderer = nullptr;
 			TComponent* texture = nullptr;
@@ -3886,20 +3953,22 @@ void CGame::CustomMeshUpdate() {
 					objects[i]->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
 					newTexture = (TTextureComponent*)texture;
 					newTexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::FIRE_TEX;
+					if (!warningSoundPlaying)
+					{
+						warnSound->Play();
+					}
 					if (mapTime >= 8)
 					{
-						warningSoundPlaying = false;
-						fallingSoundPlaying = false;
+						if (!fallingSoundPlaying) {
+							fallingSound->Play();
+						}
 
 						g_pControllerInput->StartVibration(0, 0.125f, 1, 0);
 						g_pControllerInput->StartVibration(0, 0.125f, 1, 1);
 						g_pControllerInput->StartVibration(0, 0.125f, 1, 2);
 						g_pControllerInput->StartVibration(0, 0.125f, 1, 3);
 
-						if (fallingSoundPlaying == false) {
-							fallingSound->Play();
-							fallingSoundPlaying = true;
-						}
+						
 
 						objects[i]->CrouchRoll(0, 0, -1, false);
 						SprinklersOn = false;
@@ -3915,7 +3984,8 @@ void CGame::CustomMeshUpdate() {
 								if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z) {
 									//player->setAlive(false);
 									player->CrouchRoll(0, 0, -1, false);
-									playerfallingSound->Play();
+									if(!playerfallingSoundPlaying)
+										playerfallingSound->Play();
 								}
 							}
 						}
@@ -3943,10 +4013,10 @@ void CGame::CustomMeshUpdate() {
 							}
 						}
 
-
+						
 					}
 
-					if (mapTime >= 9 && passes < 6) {
+					if (mapTime >= 9 && passes < mapPasses) {
 						passes += 1;
 
 						for (int passes = 0; passes < 7; passes++) {

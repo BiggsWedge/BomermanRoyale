@@ -83,6 +83,7 @@ class CGame
 	std::vector<CBomb*> v_cBombs;
 	CPlayer* menuBomb = nullptr;
 	int menuIndex = 0;
+	int mapPasses = 4;
 
 	double mouseIdleTimer;
 	double menucontroltimer = 0.0;
