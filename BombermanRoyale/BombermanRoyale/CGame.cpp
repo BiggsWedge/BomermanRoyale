@@ -3127,6 +3127,24 @@ void CGame::AI_Method(double timepassed, double action_time)
 					PlayerCollision(currAI, cObj, deltaX, deltaZ);
 			}
 
+			if (x == 0 && z == 0)
+			{
+				if (currAI->SetCurrentAnimaion("Idle") == 1)
+					currAI->ResetAnimation();
+			}
+			else if (x > 0.75f || z > 0.75f)
+			{
+				if (currAI->SetCurrentAnimaion("Run") == 1)
+					currAI->ResetAnimation();
+			}
+			else
+			{
+				if (currAI->SetCurrentAnimaion("Walk") == 1)
+					currAI->ResetAnimation();
+			}
+
+
+
 			bool breakout = false;
 			int gridlocation = (z * width) + x;
 			if (gridlocation < GRID.size())
