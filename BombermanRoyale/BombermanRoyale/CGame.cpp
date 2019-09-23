@@ -291,17 +291,31 @@ void CGame::Run()
 		if(!isPaused)
 			mapTime += timePassed;
 
+
 		loadScreenTime = timer.Delta() + loadScreenTime;
 		if (loadScreenTime < 0.5)
 		{
-			setGameState(GAME_STATE::LOAD_SCREEN);
+			setGameState(GAME_STATE::GP_SPLASH);
 		}
 
-		if (loadScreenTime > 4 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
+		if (loadScreenTime > 4 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::GP_SPLASH) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::MAIN_MENU);
 			loadHappened = true;
 		}
+
+		
+		
+		/*if (loadScreenTime < 4.5)
+		{
+			setGameState(GAME_STATE::LOAD_SCREEN);
+		}
+
+		if (loadScreenTime > 8 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::MAIN_MENU);
+			loadHappened = true;
+		}*/
 
 		for (int i = 0; i < keycodes.size(); ++i) {
 			keys[i].prevState = keys[i].currState;
@@ -2731,6 +2745,14 @@ bool CGame::loadTempMenus() {
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::GP_LOGO;
+	loadInfo.scale = DirectX::XMFLOAT3(1.5f, 1.0f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::GP_SPLASH;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_MENU;
 	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 2.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
@@ -4018,7 +4040,7 @@ void CGame::CustomMeshUpdate() {
 
 								if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z)
 									AI->CrouchRoll(0, 0, -1, false);
-							}
+							} 
 						}
 
 						for (int i = 0; i < items.size(); i++) {
