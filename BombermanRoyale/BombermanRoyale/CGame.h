@@ -19,6 +19,7 @@ struct GAME_STATE
 		BATTLE_MENU,
 		ARCADE_GAME,
 		CHARACTER_SCREEN,
+		LOAD_SCREEN,
 		BATTLE_GAME,
 		WIN_SCREEN,
 		CONTROLS_SCREEN,
@@ -102,6 +103,8 @@ public:
 	int numPLAYERS = 2;
 	int playermodel[4] = { 4, 4, 4, 4 };
 	int AImodel[2] = { 4, 4 };
+	int PlayerDiscIndex = 0;
+	bool playerdisconnect = false;
 
 	bool Initialize();
 	void Run();

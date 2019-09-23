@@ -83,11 +83,13 @@ bool soundplaying;
 bool soundplaying2;
 bool warningSoundPlaying = false;
 bool fallingSoundPlaying = false;
-bool playingfallingSoundPlaying = false;
+bool playerfallingSoundPlaying = false;
+
+bool loadHappened = false;
 bool isPaused = false;
 
 static double timePassed = 0.0f;
-
+static double loadScreenTime = 0.0f;
 double AIbombaction = 0.0f;
 double tempTime = 0.0f;
 double tempMapTime = 0.0f;
@@ -271,7 +273,6 @@ void CGame::Run()
 	p1Pause.SetButtonID(G_START_BTN);
 	p1Help.SetButtonID(G_SELECT_BTN);
 
-	setGameState(GAME_STATE::MAIN_MENU);
 
 	p1Pause.Reset(false);
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
@@ -286,8 +287,24 @@ void CGame::Run()
 		prevFrame = currFrame;
 		currFrame = GetTickCount64();
 		timePassed = (currFrame - prevFrame) / 1000.0;
-		mapTime += timePassed;
 		timer.Signal();
+		mapTime += timePassed;
+
+
+		loadScreenTime = timer.Delta() + loadScreenTime;
+		if (loadScreenTime < 0.5)
+		{
+			setGameState(GAME_STATE::LOAD_SCREEN);
+		}
+
+
+		if (loadScreenTime > 4 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::MAIN_MENU);
+			loadHappened = true;
+		}
+
+
 
 		for (int i = 0; i < keycodes.size(); ++i) {
 			keys[i].prevState = keys[i].currState;
@@ -1006,7 +1023,7 @@ void CGame::Run()
 							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[2]));
 							setGameState(GAME_STATE::CHARACTER_SCREEN);
 						}
-						else if (numAI > 0 && AImodel[0] > 3)
+						else if (numAI > 0 && AImodel[0] > 3 && numPLAYERS < 3)
 						{
 							AImodel[0] -= 1;
 							AiInCustom[0]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
@@ -1026,7 +1043,7 @@ void CGame::Run()
 							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[2]));
 							setGameState(GAME_STATE::CHARACTER_SCREEN);
 						}
-						else if (numAI > 0 && AImodel[0] < 4)
+						else if (numAI > 0 && AImodel[0] < 4 && numPLAYERS < 3)
 						{
 							AImodel[0] += 1;
 							AiInCustom[0]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
@@ -1044,6 +1061,14 @@ void CGame::Run()
 							PlayersInCustom[3]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
 							TMeshComponent* mesh = (TMeshComponent*)cMesh;
 							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[3]));
+							setGameState(GAME_STATE::CHARACTER_SCREEN);
+						}
+						else if (numAI > 0 && AImodel[1] > 3 && numPLAYERS > 2)
+						{
+							AImodel[1] -= 1;
+							AiInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
+							TMeshComponent* mesh = (TMeshComponent*)cMesh;
+							mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[1]));
 							setGameState(GAME_STATE::CHARACTER_SCREEN);
 						}
 						else if (numAI > 1 && AImodel[1] > 3)
@@ -1064,6 +1089,14 @@ void CGame::Run()
 							PlayersInCustom[3]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
 							TMeshComponent* mesh = (TMeshComponent*)cMesh;
 							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[3]));
+							setGameState(GAME_STATE::CHARACTER_SCREEN);
+						}
+						else if (numAI > 0 && AImodel[1] < 4 && numPLAYERS > 2)
+						{
+							AImodel[1] += 1;
+							AiInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
+							TMeshComponent* mesh = (TMeshComponent*)cMesh;
+							mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[1]));
 							setGameState(GAME_STATE::CHARACTER_SCREEN);
 						}
 						else if (numAI > 1 && AImodel[1] < 4)
@@ -1163,6 +1196,7 @@ void CGame::Run()
 					TTextureComponent* Texture = (TTextureComponent*)cTexture;
 					if (renderer->iUsedLoadState == GAME_STATE::WIN_SCREEN)
 					{
+						g_d3dData->viewMat = g_d3dData->camMat;
 						for (CPlayer* player : v_cPlayers)
 						{
 							if (player != NULL)
@@ -1807,7 +1841,7 @@ void CGame::WindowResize() {
 
 void CGame::GamePlayLoop(double timePassed)
 {
-	AI_Method(timePassed, 0.05f);
+	AI_Method(timePassed, 0.016f);
 	for (CPlayer* currPlayer : v_cPlayers)
 	{
 		if (!currPlayer || !currPlayer->isAlive())
@@ -1830,17 +1864,37 @@ void CGame::GamePlayLoop(double timePassed)
 			isPaused = !isPaused;
 		}
 
-		if (currNumControllers < prevNumControllers || currNumControllers == 0)
+		// Pause on DC
+		if (currNumControllers < numPLAYERS || currNumControllers == 0)
+
 		{
+			playerdisconnect = true;
 			PauseMenuToggle = true;
 			isPaused = true;
+			for (int i = 0; i < numPLAYERS; i++)
+			{
+				g_pControllerInput->IsConnected(i, playerdisconnect);
+				playerdisconnect = !playerdisconnect;
+				if (playerdisconnect)
+				{
+					PlayerDiscIndex = i;
+					break;
+				}
+			}
+			
 		}
+
+		
 		g_pControllerInput->GetNumConnected(prevNumControllers);
-		if (currNumControllers > prevNumControllers)
+
+
+		if (currNumControllers == numPLAYERS && playerdisconnect)
 		{
+			playerdisconnect = false;
 			PauseMenuToggle = false;
 			isPaused = false;
 		}
+		// End DC Code
 
 		if (cont->IsControllerConnected())
 		{
@@ -2006,13 +2060,13 @@ void CGame::GamePlayLoop(double timePassed)
 
 				switch (currPlayer->GetBombType()) {
 
-				case 4:
+				case 2:
 					bombs = p_cEntityManager->DropBomb0(currPlayer, objects);
 					break;
 				case 1:
 					bombs = p_cEntityManager->DropBomb1(currPlayer, objects);
 					break;
-				case 2:
+				case 4:
 					bombs = p_cEntityManager->DropBomb2(currPlayer, objects);
 
 					break;
@@ -2079,7 +2133,8 @@ void CGame::GamePlayLoop(double timePassed)
 				}
 				case 1:
 				{
-					ControlScreenToggle = !ControlScreenToggle;
+					if(!playerdisconnect)
+						ControlScreenToggle = !ControlScreenToggle;
 					break;
 				}
 				case 2:
@@ -2232,9 +2287,9 @@ void CGame::setGameState(int _gameState) {
 		if (numPLAYERS > 3)
 			PlayersInCustom[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(1.7f, 1.7f, 1.7f));
 		if (numAI > 0)
-			AiInCustom[0] = p_cEntityManager->InstantiatePlayer(3, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(1.7f, 1.7f, 1.7f));
+			AiInCustom[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(1.7f, 1.7f, 1.7f));
 		if (numAI > 1)
-			AiInCustom[1] = p_cEntityManager->InstantiatePlayer(4, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(1.7f, 1.7f, 1.7f));
+			AiInCustom[0] = p_cEntityManager->InstantiatePlayer(4, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(1.7f, 1.7f, 1.7f));
 
 		SprinklersOn = false;
 		break;
@@ -2574,6 +2629,10 @@ void CGame::updateBombs(double timePassed) {
 
 bool CGame::loadTempMenus() {
 	OBJLoadInfo loadInfo;
+	float aspectratio = 0.0f;
+	aspectratio = g_d3dData->windowWidthHeight.x / g_d3dData->windowWidthHeight.y;
+	float fullscreen = 1920.0f / 1080.0f;
+	aspectratio = fullscreen / aspectratio;
 
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
@@ -2587,6 +2646,14 @@ bool CGame::loadTempMenus() {
 	loadInfo.scale = DirectX::XMFLOAT3(2.55f, 2.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::MAIN_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::LOADING_SCREEN;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::LOAD_SCREEN;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
@@ -2976,6 +3043,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 				if (i + width < GRID.size() && i + width > 0)
 					GRID[i + width] = GRID_SYSTEM::EXPLOSION_RADIUS;
 
+
 			}
 		}
 
@@ -3331,7 +3399,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 													switch (currAI->GetBombType()) {
 
 
-													case 4:
+													case 2:
 														if (v_cBombs[i]) {
 															bombs = p_cEntityManager->DropBomb0(currAI, objects);
 															for (int j = 0; j < bombs.size(); j++) {
@@ -3361,7 +3429,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 														}
 
 														break;
-													case 2:
+													case 4:
 														if (v_cBombs[i]) {
 															bombs = p_cEntityManager->DropBomb2(currAI, objects);
 															for (int j = 0; j < bombs.size(); j++) {
@@ -3607,7 +3675,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 														switch (currAI->GetBombType()) {
 
-														case 4:
+														case 2:
 															if (v_cBombs[i]) {
 																bombs = p_cEntityManager->DropBomb0(currAI, objects);
 																for (int j = 0; j < bombs.size(); j++) {
@@ -3637,7 +3705,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 															}
 
 															break;
-														case 2:
+														case 4:
 															if (v_cBombs[i]) {
 																bombs = p_cEntityManager->DropBomb2(currAI, objects);
 																for (int j = 0; j < bombs.size(); j++) {
@@ -4011,14 +4079,29 @@ void CGame::CustomMeshUpdate() {
 	}
 
 	//screenshake
-	if (bombExploded) {
+	if (bombExploded && curGameState == GAME_STATE::ARCADE_GAME) {
 		shakeTime += timePassed;
+
 		viewPos = g_d3dData->screenShake();
 		if (shakeTime >= 0.5 || isPaused) {
 			bombExploded = false;
 
 			if (!bombExploded) {
-				g_d3dData->resetCamera();
+				if (mapsize > 1)
+					g_d3dData->resetCamera();
+				else
+					g_d3dData->viewMat = g_d3dData->camMat;
+				shakeTime = 0;
+			}
+		}
+	}
+	else if(bombExploded) {
+		shakeTime = 0.6f;
+
+		if (shakeTime >= 0.5 || isPaused) {
+			bombExploded = false;
+			if (!bombExploded) {
+				
 				shakeTime = 0;
 			}
 		}
