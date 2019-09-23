@@ -386,10 +386,10 @@ bool DirectXData::Initialize()
 
 	D3D11_BLEND_DESC blendDesc;
 	blendDesc.RenderTarget[0].BlendEnable = false;
-
+	
 	d3dDevice->CreateBlendState(&blendDesc, &d3dBlendState[BLEND_STATE::DEFAULT]);
-
-
+	
+	
 	blendDesc.RenderTarget[0].BlendEnable = true;
 	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
@@ -398,7 +398,7 @@ bool DirectXData::Initialize()
 	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
+	
 	d3dDevice->CreateBlendState(&blendDesc, &d3dBlendState[BLEND_STATE::UI]);
 
 #pragma endregion
