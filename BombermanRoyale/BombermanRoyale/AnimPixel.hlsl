@@ -5,50 +5,51 @@ SamplerState txSampler : register(s0);
 
 struct Light
 {
-	float3 dir;
-	float intensity;
-	float3 position;
-	float pad1;
-	float3 color;
-	float pad2;
-	int type;
+    float3 dir;
+    float intensity;
+    float3 position;
+    float pad1;
+    float3 color;
+    float pad2;
+    int type;
 };
 
 struct Material
 {
-	float3 surfaceDiffuse;
-	float diffuseFactor;
-	float3 surfaceEmissive;
-	float emissiveFactor;
-	float3 surfaceSpecular;
-	float specularFactor;
-	float3 surfaceShiny;
-	float shininess;
+    float3 surfaceDiffuse;
+    float diffuseFactor;
+    float3 surfaceEmissive;
+    float emissiveFactor;
+    float3 surfaceSpecular;
+    float specularFactor;
+    float3 surfaceShiny;
+    float shininess;
 };
 
 cbuffer LightBuffer : register(b0)
 {
-	Light light;
+    Light light;
 }
 cbuffer MatBuffer : register(b1)
 {
-	Material _mat;
+    Material _mat;
 }
 
 struct PS_IN
 {
-	float4 pos : SV_POSITION;
-	float3 norm : NORMAL;
-	float2 tex : TEXCOORD1;
-	float4 wPos : WORLD;
-	float4 eye : EYE;
+    float4 pos : SV_POSITION;
+    float3 norm : NORMAL;
+    float2 tex : TEXCOORD1;
+    float4 wPos : WORLD;
+    float4 eye : EYE;
 };
 
 static float4 ambient_light = { 0.75f, 0.75f, 0.75f, 1.0f };
 
 float4 main(PS_IN input) : SV_TARGET
 {
-	float4 finalColor;
+    float4 finalColor;
+    /*
 
 	float3 light_dir = light.position - input.wPos.xyz;
 	float sq_distance = dot(light_dir, light_dir);
@@ -71,12 +72,12 @@ float4 main(PS_IN input) : SV_TARGET
 	float4 mat_emissive = txEmissive.Sample(txSampler, input.tex) * float4(_mat.surfaceEmissive, 0.0) * _mat.emissiveFactor;
 	float4 emissive = mat_emissive;
 	float4 ambient = mat_Diffuse * ambient_light;
-	float4 specular = mat_specular * specIntensity /** lightIntensity*/;
-	float4 diffuse = mat_Diffuse * diffuse_intensity /** lightIntensity*/;
-
+	float4 specular = mat_specular * specIntensity /** lightIntensity;
+	float4 diffuse = mat_Diffuse * diffuse_intensity /** lightIntensity;
 	diffuse.xyz -= specular.xyz;
 	diffuse.xyz = saturate(diffuse.xyz);
 	finalColor = ambient + specular + diffuse + emissive;
-
-	return finalColor;
+    */
+    finalColor = txDiffuse.Sample(txSampler, input.tex);
+    return finalColor;
 }

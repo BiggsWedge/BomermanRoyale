@@ -13,7 +13,7 @@ CBomb::~CBomb()
 
 void CBomb::Explode()
 {
-	
+
 	bool soundplaying;
 	for (int i = 0; i < explosionSound.size(); ++i)
 	{
@@ -41,7 +41,6 @@ void CBomb::initialize(CPlayer* parent)
 
 void CBomb::Draw(double timepassed)
 {
-
 	ID3D11CommandList* d3dCommandList = nullptr;
 	TRendererComponent* renderer = nullptr;
 	TMeshComponent* mesh = nullptr;
@@ -98,51 +97,49 @@ void CBomb::Draw(double timepassed)
 	g_d3dData->d3dContext->IASetInputLayout(g_d3dData->d3dInputLayout[renderer->iUsedInputLayout]);
 	g_d3dData->d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	if (mesh->mName != "BattleMage")
+	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::DEFAULT]);
+
+	g_d3dData->d3dContext->IASetVertexBuffers(0, 1, &mesh->d3dVertexBuffer, strides, offsets);
+	g_d3dData->d3dContext->IASetIndexBuffer(mesh->d3dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+
+	g_d3dData->d3dContext->VSSetShader(g_d3dData->d3dVertexShader[renderer->iUsedVertexShaderIndex], 0, 0);
+
+	g_d3dData->d3dContext->PSSetShader(g_d3dData->d3dPixelShader[renderer->iUsedPixelShaderIndex], 0, 0);
+	if (renderer->iUsedGeometryShaderIndex >= 0)
+		g_d3dData->d3dContext->GSSetShader(g_d3dData->d3dGeometryShader[renderer->iUsedGeometryShaderIndex], 0, 0);
+
+	if (tex->iUsedDiffuseIndex >= 0)
 	{
-		g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::DEFAULT]);
-
-		g_d3dData->d3dContext->IASetVertexBuffers(0, 1, &mesh->d3dVertexBuffer, strides, offsets);
-		g_d3dData->d3dContext->IASetIndexBuffer(mesh->d3dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-
-		g_d3dData->d3dContext->VSSetShader(g_d3dData->d3dVertexShader[renderer->iUsedVertexShaderIndex], 0, 0);
-
-		g_d3dData->d3dContext->PSSetShader(g_d3dData->d3dPixelShader[renderer->iUsedPixelShaderIndex], 0, 0);
-		if (renderer->iUsedGeometryShaderIndex >= 0)
-			g_d3dData->d3dContext->GSSetShader(g_d3dData->d3dGeometryShader[renderer->iUsedGeometryShaderIndex], 0, 0);
-
-		if (tex->iUsedDiffuseIndex >= 0)
-		{
-			g_d3dData->d3dContext->PSSetShaderResources(0, 1, &g_d3dData->d3dDiffuseTextures[tex->iUsedDiffuseIndex]);
-		}
-		else
-			g_d3dData->d3dContext->PSSetShaderResources(0, 0, nullptr);
-
-		g_d3dData->d3dContext->PSSetSamplers(0, 1, &g_d3dData->d3dSamplerState);
-
-		bombconstbuffer bombconst;
-		bombconst.world = DirectX::XMMatrixTranspose(transform->mObjMatrix);
-
-		bombpixelbuffer bombpconst;
-		bombpconst.time = DirectX::XMFLOAT4(timer, 0.0f, 0.0f, 0.0f);
-
-		if (g_d3dData->bUseDebugRenderCamera)
-			bombconst.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
-		else
-			bombconst.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
-
-		bombconst.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
-		bombconst.time = timer;
-
-		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST], 0, nullptr, &bombconst, 0, 0);
-		g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST]);
-
-		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMB_P_CONST], 0, nullptr, &bombpconst, 0, 0);
-		g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMB_P_CONST]);
-
-		g_d3dData->d3dContext->DrawIndexed(mesh->indexCount, 0, 0);
+		g_d3dData->d3dContext->PSSetShaderResources(0, 1, &g_d3dData->d3dDiffuseTextures[tex->iUsedDiffuseIndex]);
 	}
+	else
+		g_d3dData->d3dContext->PSSetShaderResources(0, 0, nullptr);
+
+	g_d3dData->d3dContext->PSSetSamplers(0, 1, &g_d3dData->d3dSamplerState);
+
+	bombconstbuffer bombconst;
+	bombconst.world = DirectX::XMMatrixTranspose(transform->mObjMatrix);
+	bombconst.world *= DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&transform->fScale));
+
+	bombpixelbuffer bombpconst;
+	bombpconst.time = DirectX::XMFLOAT4(timer, 0.0f, 0.0f, 0.0f);
+
+	if (g_d3dData->bUseDebugRenderCamera)
+		bombconst.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
+	else
+		bombconst.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
+
+	bombconst.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
+	bombconst.time = timer;
+
+	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST], 0, nullptr, &bombconst, 0, 0);
+	g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST]);
+
+	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMB_P_CONST], 0, nullptr, &bombpconst, 0, 0);
+	g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMB_P_CONST]);
+
+	g_d3dData->d3dContext->DrawIndexed(mesh->indexCount, 0, 0);
 }
 
 CBomb& CBomb::operator=(const CBomb& other)

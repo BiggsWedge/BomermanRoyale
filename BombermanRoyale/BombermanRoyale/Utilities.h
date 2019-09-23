@@ -184,7 +184,7 @@ struct TLineVertex {
 struct jointCB
 {
 	int numJoints;
-	DirectX::XMMATRIX _joints[30];
+	DirectX::XMMATRIX _joints[50];
 };
 
 struct bombconstbuffer
@@ -220,7 +220,8 @@ private:
 	component_t components[COMPONENT::COUNT];
 };
 
-struct TMaterial {
+struct TMaterial
+{
 	DirectX::XMFLOAT3		fSurfaceDiffuse;
 	float					fDiffuseFactor;
 	DirectX::XMFLOAT3		fSurfaceEmissive;
@@ -233,7 +234,7 @@ struct TMaterial {
 
 struct joint
 {
-	DirectX::XMMATRIX _mat;
+	DirectX::XMFLOAT4X4 _mat;
 	int parentIndex;
 };
 
@@ -245,17 +246,22 @@ struct KeyFrame
 
 struct AnimationClip
 {
+	std::string AnimationName;
+	std::vector<joint> _bindPose;
 	double duration;
 	std::vector<KeyFrame> frames;
 };
 
-struct TMeshTemplate {
+struct TMeshTemplate
+{
 	UINT uID;
 	std::string						sName;
 	std::vector<TSimpleVertex>		v_tVertices;
 	std::vector<int>				v_iIndices;
 
 	std::vector<joint> _bindPose;
+
+	std::vector<AnimationClip>		_animations;
 
 	uint32_t numVerts;
 	uint32_t numIndices;
@@ -267,8 +273,6 @@ struct TMeshTemplate {
 	float totalTime;
 
 	TMaterial _mat;
-
-	AnimationClip _anim;
 
 	ID3D11Buffer* _vertexBuffer = nullptr;
 	ID3D11Buffer* _indexBuffer = nullptr;
@@ -284,7 +288,6 @@ struct TMeshTemplate {
 
 	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr, float scale = 1.0f);
 	void initialize(ID3D11Device* _device);
-	void render(ID3D11DeviceContext* _context, double timepassed);
 	/*~TMeshTemplate();
 	TMeshTemplate();*/
 };
@@ -354,7 +357,6 @@ float3 XMVector2Float3(DirectX::XMVECTOR vector);
 
 DirectX::XMVECTOR Float32XMVector(float3 point);
 
-
 DirectX::XMVECTOR RPYFromVector(DirectX::XMVECTOR RPY);
 
 DirectX::XMMATRIX TurnTo(DirectX::XMMATRIX _mat, DirectX::XMVECTOR _target, float speed);
@@ -364,4 +366,8 @@ float lerp(float x, float y, float ratio);
 DirectX::XMMATRIX matLerp(DirectX::XMMATRIX x, DirectX::XMMATRIX y, float ratio);
 
 void CleanGlobals();
+
+void LoadAnimations();
+
+AnimationClip ProcessAnimationFile(const char* animFileName);
 

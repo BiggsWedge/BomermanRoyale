@@ -32,9 +32,6 @@ CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 	TMaterialComponent* mat = new TMaterialComponent(v_tMeshTemplates.at(loadInfo.meshID));
 	temp->AddComponent((TComponent*)mat);
 
-	TAnimComponent* anim = new TAnimComponent(v_tMeshTemplates.at(loadInfo.meshID));
-	temp->AddComponent((TComponent*)anim);
-
 	TColliderComponent* collider = new TColliderComponent(v_tMeshTemplates[loadInfo.meshID], loadInfo.scale, loadInfo.position, loadInfo.collisionLayer);
 	temp->AddComponent((TComponent*)collider);
 
@@ -58,10 +55,11 @@ CPlayer* CEntityManager::CreatePlayerFromTemplate(OBJLoadInfo loadInfo)
 
 	TMaterialComponent* mat = new TMaterialComponent(v_tMeshTemplates.at(loadInfo.meshID));
 	temp->AddComponent((TComponent*)mat);
-
-	TAnimComponent* anim = new TAnimComponent(v_tMeshTemplates.at(loadInfo.meshID));
-	temp->AddComponent((TComponent*)anim);
-
+	if (v_tMeshTemplates[loadInfo.meshID]._animations.size() > 0)
+	{
+		TAnimComponent* anim = new TAnimComponent(v_tMeshTemplates.at(loadInfo.meshID));
+		temp->AddComponent((TComponent*)anim);
+	}
 	TColliderComponent* collider = new TColliderComponent(v_tMeshTemplates[loadInfo.meshID], loadInfo.scale, loadInfo.position, loadInfo.collisionLayer);
 	temp->AddComponent((TComponent*)collider);
 
@@ -777,6 +775,7 @@ std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource, std::vector
 
 	return bombs;
 }
+
 std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
@@ -1323,6 +1322,7 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector
 
 	return bombs;
 }
+
 std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
@@ -1874,6 +1874,7 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector
 
 	return bombs;
 }
+
 std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
@@ -2428,6 +2429,7 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector
 	}
 	return bombs;
 }
+
 void CEntityManager::Cleanup()
 {
 
@@ -2562,6 +2564,7 @@ CObject* CEntityManager::SpawnObject(CObject* obj) {
 
 	return Item;
 }
+
 CPlayer* CEntityManager::InstantiatePlayer(int numPlayer, int playerModel, int playerSkin, DirectX::XMFLOAT3 spawnPos, int loadState, DirectX::XMFLOAT3 forwardVec, DirectX::XMFLOAT3 scale)
 {
 	OBJLoadInfo pLoadInfo;
@@ -2570,8 +2573,8 @@ CPlayer* CEntityManager::InstantiatePlayer(int numPlayer, int playerModel, int p
 	pLoadInfo.forwardVec = forwardVec;
 	pLoadInfo.scale = scale;
 	pLoadInfo.usedDiffuse = playerSkin;
-	pLoadInfo.usedVertex = VERTEX_SHADER::BASIC;
-	pLoadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	pLoadInfo.usedVertex = VERTEX_SHADER::ANIM;
+	pLoadInfo.usedPixel = PIXEL_SHADER::ANIM;
 	pLoadInfo.collisionLayer = COLLISION_LAYERS::PLAYER;
 	pLoadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	pLoadInfo.usedGeo = -1;

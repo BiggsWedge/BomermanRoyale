@@ -50,7 +50,7 @@ TTransformComponent::TTransformComponent(DirectX::XMFLOAT3 spawnPosition, Direct
 	nLayer = layer;
 	mObjMatrix = DirectX::XMMatrixLookAtLH(origin, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&forwardVector)), DirectX::XMLoadFloat3(&up));
 	mObjMatrix = mObjMatrix * DirectX::XMMatrixTranslation(spawnPosition.x, spawnPosition.y, spawnPosition.z);
-	mObjMatrix = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) * mObjMatrix;
+	//mObjMatrix = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) * mObjMatrix;
 }
 
 TTransformComponent::~TTransformComponent()
@@ -67,7 +67,7 @@ void TTransformComponent::ResetMatrix()
 
 	mObjMatrix = DirectX::XMMatrixLookAtLH(origin, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&fForwardVector)), DirectX::XMLoadFloat3(&up));
 	mObjMatrix = mObjMatrix * DirectX::XMMatrixTranslation(fPosition.x, fPosition.y, fPosition.z);
-	mObjMatrix = DirectX::XMMatrixScaling(fScale.x, fScale.y, fScale.z) * mObjMatrix;
+	//mObjMatrix = DirectX::XMMatrixScaling(fScale.x, fScale.y, fScale.z) * mObjMatrix;
 
 }
 
@@ -105,7 +105,7 @@ TMeshComponent::TMeshComponent()
 TMeshComponent::TMeshComponent(TMeshTemplate _template)
 {
 	componentType = COMPONENT_TYPE::MESH;
-	 mName = _template.sName;
+	mName = _template.sName;
 
 	indexCount = _template.v_iIndices.size();
 	vertexCount = _template.v_tVertices.size();
@@ -193,9 +193,18 @@ TAnimComponent::TAnimComponent()
 
 TAnimComponent::TAnimComponent(TMeshTemplate _template)
 {
-	componentType = COMPONENT_TYPE::ANIM;
-	_anim = _template._anim;
-	_bindPose = _template._bindPose;
+	this->componentType = COMPONENT_TYPE::ANIM;
+	if (_template._animations.size() == 0)
+		return;
+
+	for (AnimationClip clip : _template._animations)
+		animations.push_back(clip);
+
+	currentAnimation = &animations[3];
+	_time = 0.0;
+	currentFrameIndex = 0;
+
+
 }
 
 TAnimComponent::~TAnimComponent()
@@ -240,5 +249,5 @@ TColliderComponent::TColliderComponent(TMeshTemplate mtemplate, DirectX::XMFLOAT
 
 TComponent::~TComponent()
 {
-	
+
 }

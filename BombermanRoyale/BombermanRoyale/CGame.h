@@ -83,6 +83,7 @@ class CGame
 	std::vector<CBomb*> v_cBombs;
 	CPlayer* menuBomb = nullptr;
 	int menuIndex = 0;
+	int mapPasses = 4;
 
 	double mouseIdleTimer;
 	double menucontroltimer = 0.0;
@@ -105,6 +106,7 @@ public:
 	int AImodel[2] = { 4, 4 };
 	int PlayerDiscIndex = 0;
 	bool playerdisconnect = false;
+	bool PlayerDisconnectToggle = false;
 
 	bool Initialize();
 	void Run();
