@@ -3302,7 +3302,8 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 														deltaX = timepassed * PLAYER_SPEED * -xchange;
 														deltaZ = timepassed * PLAYER_SPEED * -zchange;
-														currAI->Move(deltaX, deltaZ);
+														currAI->Move(deltaX, 0);
+														currAI->Move(0, deltaZ);
 														for (CObject* cObj : objects) {
 															if (currAI->Collides(cObj))
 																PlayerCollision(currAI, cObj, deltaX, deltaZ);
@@ -3359,7 +3360,8 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 														deltaX = timepassed * PLAYER_SPEED * -xchange;
 														deltaZ = timepassed * PLAYER_SPEED * -zchange;
-														currAI->Move(deltaX, deltaZ);
+														currAI->Move(deltaX, 0);
+														currAI->Move(0, deltaZ);
 														for (CObject* cObj : objects) {
 															if (currAI->Collides(cObj))
 																PlayerCollision(currAI, cObj, deltaX, deltaZ);
@@ -3594,7 +3596,8 @@ void CGame::AI_Method(double timepassed, double action_time)
 										{
 											deltaX = timepassed * PLAYER_SPEED * xchange;
 											deltaZ = timepassed * PLAYER_SPEED * zchange;
-											currAI->Move(deltaX, deltaZ);
+											currAI->Move(deltaX, 0);
+											currAI->Move(0, deltaZ);
 											for (CObject* cObj : objects) {
 												if (currAI->Collides(cObj))
 													PlayerCollision(currAI, cObj, deltaX, deltaZ);
@@ -3637,7 +3640,8 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 															deltaX = timepassed * PLAYER_SPEED * -xchange;
 															deltaZ = timepassed * PLAYER_SPEED * -zchange;
-															currAI->Move(deltaX, deltaZ);
+															currAI->Move(deltaX, 0);
+															currAI->Move(0, deltaZ);
 															for (CObject* cObj : objects) {
 																if (currAI->Collides(cObj))
 																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
@@ -3756,7 +3760,8 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 											deltaX = timepassed * PLAYER_SPEED * -xchange;
 											deltaZ = timepassed * PLAYER_SPEED * -zchange;
-											currAI->Move(deltaX, deltaZ);
+											currAI->Move(deltaX, 0);
+											currAI->Move(0, deltaZ);
 											for (CObject* cObj : objects) {
 												if (currAI->Collides(cObj))
 													PlayerCollision(currAI, cObj, deltaX, deltaZ);
