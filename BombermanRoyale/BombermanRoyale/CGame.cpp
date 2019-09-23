@@ -1916,20 +1916,28 @@ void CGame::GamePlayLoop(double timePassed)
 				{
 					if (bomb->isAlive())
 					{
-						CPlayer* parent = bomb->getParent();
-						for (int j = 0; j < parent->getBombIndices().size(); ++j)
+						if (bomb->getTimer() <= 2.0f)
 						{
-							if (parent->getBombIndices()[j] == bombindex)
-							{
-								bomb->Cleanup();
-								parent->deleteBomb(j);
-								parent->DecPlacedBombs();
-							}
+							bomb->CrouchRoll(0, 0, -0.05f, false);
 						}
-						bomb->SetAlive(false);
-					}
-					bomb->updateBomb(timePassed);
+						if (bomb->getTimer() >= 2.0f)
+						{
+							CPlayer* parent = bomb->getParent();
+							for (int j = 0; j < parent->getBombIndices().size(); ++j)
+							{
+								if (parent->getBombIndices()[j] == bombindex)
+								{
+									bomb->Cleanup();
+									parent->deleteBomb(j);
+									parent->DecPlacedBombs();
+								}
+							}
+							bomb->SetAlive(false);
 
+						}
+					}
+
+					bomb->updateBomb(timePassed);
 				}
 			}
 			bombindex++;
@@ -1963,7 +1971,7 @@ void CGame::GamePlayLoop(double timePassed)
 			TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
 
-			if (pRenderer->fPosition.x < fMinX - 1.5 || pRenderer->fPosition.x > fMaxX + 1.5 || pRenderer->fPosition.z < fMinZ - 1.5 || pRenderer->fPosition.z > fMaxZ + 1.5) {
+			if (pRenderer->fPosition.x < fMinX - 1.3 || pRenderer->fPosition.x > fMaxX + 1.3 || pRenderer->fPosition.z < fMinZ - 1.3 || pRenderer->fPosition.z > fMaxZ + 1.3) {
 				offMapTimer += timePassed;
 
 				if (offMapTimer >= 0.25) {
@@ -2791,13 +2799,13 @@ void CGame::AI_Method(double timepassed, double action_time)
 		int height;
 		if (fMaxX == 15.0f)
 		{
-			width = (((fMaxX - 2.5f) - (fMinX + 2.5f)) / 2.5f) + 1;
-			height = (((fMaxZ - 2.5f) - (fMinZ + 2.5f)) / 2.5f) + 1;
+			width = (((fMaxX - 2.5f) - (fMinX + 2.5f)) / 2.5f);
+			height = (((fMaxZ - 2.5f) - (fMinZ + 2.5f)) / 2.5f);
 		}
 		else
 		{
-			width = (((fMaxX)-(fMinX)) / 2.5f) + 1;
-			height = (((fMaxZ)-(fMinZ)) / 2.5f) + 1;
+			width = (((fMaxX)-(fMinX)) / 2.5f);
+			height = (((fMaxZ)-(fMinZ)) / 2.5f);
 
 		}
 		int gridsize = width * height;
@@ -3816,7 +3824,7 @@ void CGame::CustomMeshUpdate() {
 							fallingSoundPlaying = true;
 						}
 
-						objects[i]->CrouchRoll(0, 0, -1, false);
+						objects[i]->CrouchRoll(0, 0, -0.75f, false);
 						SprinklersOn = false;
 
 						for (CPlayer* player : v_cPlayers) {
@@ -3829,7 +3837,7 @@ void CGame::CustomMeshUpdate() {
 
 								if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z) {
 									//player->setAlive(false);
-									player->CrouchRoll(0, 0, -1, false);
+									player->CrouchRoll(0, 0, -0.5f, false);
 									playerfallingSound->Play();
 								}
 							}
@@ -3844,7 +3852,7 @@ void CGame::CustomMeshUpdate() {
 								TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
 								if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z)
-									AI->CrouchRoll(0, 0, -1, false);
+									AI->CrouchRoll(0, 0, -0.5f, false);
 							}
 						}
 
@@ -3854,7 +3862,7 @@ void CGame::CustomMeshUpdate() {
 								TTransformComponent* iRenderer = (TTransformComponent*)_iRenderer;
 
 								if (iRenderer->fPosition.x == renderer->fPosition.x && iRenderer->fPosition.z == renderer->fPosition.z)
-									items[i]->CrouchRoll(0, 0, -1, false);
+									items[i]->CrouchRoll(0, 0, -0.5f, false);
 							}
 						}
 
