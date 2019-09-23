@@ -85,7 +85,6 @@ bool soundplaying2;
 bool warningSoundPlaying = false;
 bool fallingSoundPlaying = false;
 bool playerfallingSoundPlaying = false;
-bool PlayerDisconnectToggle = false;
 bool loadHappened = false;
 bool isPaused = false;
 

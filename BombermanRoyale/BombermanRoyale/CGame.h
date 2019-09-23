@@ -106,6 +106,7 @@ public:
 	int AImodel[2] = { 4, 4 };
 	int PlayerDiscIndex = 0;
 	bool playerdisconnect = false;
+	bool PlayerDisconnectToggle = false;
 
 	bool Initialize();
 	void Run();
