@@ -4,6 +4,7 @@
 #include "pools.h"
 
 #define PLAYER_SPEED 5.0f
+#define AI_SPEED 1.0f
 
 const char* backgroundMusicFilePath = ".//Assets//Music//RushedDevelopment_BattleDemo.wav";
 const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
@@ -87,6 +88,8 @@ bool fallingSoundPlaying = false;
 bool playerfallingSoundPlaying = false;
 bool loadHappened = false;
 bool isPaused = false;
+bool step1 = false;
+bool step2 = false;
 
 static double timePassed = 0.0f;
 static double loadScreenTime = 0.0f;
@@ -106,6 +109,8 @@ int passes = 0;
 int numPlayers = 2;
 int currNumControllers = 0;
 int prevNumControllers = 0;
+int AIXChange = 0;
+int AIZChange = 0;
 
 float pauseMenuTimer;
 float fMinX;
@@ -287,7 +292,7 @@ void CGame::Run()
 		currFrame = GetTickCount64();
 		timePassed = (currFrame - prevFrame) / 1000.0;
 		timer.Signal();
-		if(!isPaused)
+		if (!isPaused)
 			mapTime += timePassed;
 
 		loadScreenTime = timer.Delta() + loadScreenTime;
@@ -1867,7 +1872,7 @@ void CGame::GamePlayLoop(double timePassed)
 				g_pMusicStream->SetVolume(1.0f);
 				timePassed = tempTime;
 				mapTime = tempMapTime;
-				if(passes < 1)
+				if (passes < 1)
 					SprinklersOn = true;
 			}
 			if (isPaused == true) {
@@ -2198,7 +2203,7 @@ void CGame::GamePlayLoop(double timePassed)
 					PauseMenuToggle = !PauseMenuToggle;
 					mapTime = 0;
 					setGameState(GAME_STATE::MAIN_MENU);
-					
+
 					break;
 				}
 				default:
@@ -2944,17 +2949,11 @@ void CGame::AI_Method(double timepassed, double action_time)
 		AItime = 0.0;
 		int width;
 		int height;
-		if (passes <= 0)
-		{
-			width = (((fMaxX - 2.5f) - (fMinX + 2.5f)) / 2.5f);
-			height = (((fMaxZ - 2.5f) - (fMinZ + 2.5f)) / 2.5f);
-		}
-		else
-		{
-			width = (((fMaxX)-(fMinX)) / 2.5f);
-			height = (((fMaxZ)-(fMinZ)) / 2.5f);
 
-		}
+		width = (((fMaxX)-(fMinX)) / 2.5f);
+		height = (((fMaxZ)-(fMinZ)) / 2.5f);
+
+
 		int gridsize = width * height;
 
 
@@ -2969,8 +2968,8 @@ void CGame::AI_Method(double timepassed, double action_time)
 			float xpos;
 			if (passes <= 0)
 			{
-				zpos = (fMaxZ - 2.5f) - (float(z) * 2.5f);
-				xpos = (fMaxX - 2.5f) - (float(x) * 2.5f);
+				zpos = (fMaxZ)-(float(z) * 2.5f);
+				xpos = (fMaxX)-(float(x) * 2.5f);
 			}
 			else
 			{
@@ -3143,55 +3142,30 @@ void CGame::AI_Method(double timepassed, double action_time)
 			int x = 0;
 			int z = 0;
 			float dec = 0;
-			if (passes <= 0)
-			{
-				//dec = abs(AITransform->fPosition.x) / 2.5f;
-				//x = dec;
-				//dec = dec - x;
-				dec = abs((fMaxX - 2.5f) - AITransform->fPosition.x) / 2.5f;
-				dec += 1.0f;
-				x = dec;
-				//if (dec > 0.0f)
-				//	x = abs((fMaxX - 2.5f) - AITransform->fPosition.x + 2.5f) / 2.5f;
-				if (x > width - 1)
-					x = width - 1;
 
-				//dec = abs(AITransform->fPosition.z) / 2.5f;
-				//z = dec;
-				//dec = dec - z;
-				dec = abs((fMaxZ - 2.5f) - AITransform->fPosition.z) / 2.5f;
-				dec += 1.0f;
-				z = dec;
-				//if (dec > 0.0f)
-				//	z = abs((fMaxZ - 2.5f) - AITransform->fPosition.z + 2.5f) / 2.5f;
-				if (z > height - 1)
-					z = height - 1;
-			}
-			else
-			{
-				//dec = abs(AITransform->fPosition.x) / 2.5f;
-				//x = dec;
-				//dec = dec - x;
-				dec = abs(fMaxX - AITransform->fPosition.x) / 2.5f;
-				dec += 1.0f;
-				x = dec;
-				//if (dec > 0.0f)
-				//	x = abs(fMaxX - AITransform->fPosition.x + 2.5f) / 2.5f;
-				if (x > width - 1)
-					x = width - 1;
+			//dec = abs(AITransform->fPosition.x) / 2.5f;
+			//x = dec;
+			//dec = dec - x;
+			dec = abs(fMaxX - AITransform->fPosition.x) / 2.5f;
+			dec += 1.0f;
+			x = dec;
+			//if (dec > 0.0f)
+			//	x = abs(fMaxX - AITransform->fPosition.x + 2.5f) / 2.5f;
+			if (x > width - 1)
+				x = width - 1;
 
-				//dec = abs(AITransform->fPosition.z) / 2.5f;
-				//z = dec;
-				//dec = dec - z;
-				dec = abs(fMaxZ - AITransform->fPosition.z) / 2.5f;
-				dec += 1.0f;
-				z = dec;
-				//if (dec > 0.0f)
-				//	z = abs(fMaxZ - AITransform->fPosition.z + 2.5f) / 2.5f;
-				if (z > height - 1)
-					z = height - 1;
+			//dec = abs(AITransform->fPosition.z) / 2.5f;
+			//z = dec;
+			//dec = dec - z;
+			dec = abs(fMaxZ - AITransform->fPosition.z) / 2.5f;
+			dec += 1.0f;
+			z = dec;
+			//if (dec > 0.0f)
+			//	z = abs(fMaxZ - AITransform->fPosition.z + 2.5f) / 2.5f;
+			if (z > height - 1)
+				z = height - 1;
 
-			}
+
 
 			for (CObject* cObj : objects) {
 				if (currAI->Collides(cObj))
@@ -3254,12 +3228,66 @@ void CGame::AI_Method(double timepassed, double action_time)
 							if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
 							{
 
-								deltaX = timepassed * PLAYER_SPEED * -xchange;
-								deltaZ = timepassed * PLAYER_SPEED * -zchange;
-								currAI->Move(deltaX, deltaZ);
-								for (CObject* cObj : objects) {
-									if (currAI->Collides(cObj))
-										PlayerCollision(currAI, cObj, deltaX, deltaZ);
+								if (xchange == 0 && step1 == false)
+								{
+									AIZChange++;
+									deltaX = timepassed * PLAYER_SPEED * -xchange;
+									deltaZ = timepassed * PLAYER_SPEED * -zchange;
+									//currAI->Move(0, deltaZ);
+									//currAI->Move(deltaX, 0);
+
+									moveAI(currAI, 0, deltaX, deltaZ);
+
+									//moveAI(currAI, 1, deltaX, deltaZ);
+									//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+									//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+									for (CObject* cObj : objects) {
+										if (currAI->Collides(cObj))
+											PlayerCollision(currAI, cObj, deltaX, deltaZ);
+									}
+									if (AIZChange == 30)
+									{
+										step1 = true;
+
+									}
+
+								}
+								if (zchange == 0 && step1 == true)
+								{
+									AIXChange++;
+									deltaX = timepassed * PLAYER_SPEED * -xchange;
+									deltaZ = timepassed * PLAYER_SPEED * -zchange;
+									//currAI->Move(0, deltaZ);
+									//currAI->Move(deltaX, 0);
+
+										//moveAI(currAI, 0, deltaX, deltaZ);
+
+									moveAI(currAI, 1, deltaX, deltaZ);
+									//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+									//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+									for (CObject* cObj : objects) {
+										if (currAI->Collides(cObj))
+											PlayerCollision(currAI, cObj, deltaX, deltaZ);
+									}
+									if (AIXChange == 30)
+									{
+										step1 = false;
+										AIXChange = 0;
+										AIZChange = 0;
+
+									}
 								}
 							}
 						}
@@ -3299,12 +3327,66 @@ void CGame::AI_Method(double timepassed, double action_time)
 							if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
 							{
 
-								deltaX = timepassed * PLAYER_SPEED * -xchange;
-								deltaZ = timepassed * PLAYER_SPEED * -zchange;
-								currAI->Move(deltaX, deltaZ);
-								for (CObject* cObj : objects) {
-									if (currAI->Collides(cObj))
-										PlayerCollision(currAI, cObj, deltaX, deltaZ);
+								if (xchange == 0 && step1 == false)
+								{
+									AIZChange++;
+									deltaX = timepassed * PLAYER_SPEED * -xchange;
+									deltaZ = timepassed * PLAYER_SPEED * -zchange;
+									//currAI->Move(0, deltaZ);
+									//currAI->Move(deltaX, 0);
+
+									moveAI(currAI, 0, deltaX, deltaZ);
+
+									//moveAI(currAI, 1, deltaX, deltaZ);
+									//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+									//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+									for (CObject* cObj : objects) {
+										if (currAI->Collides(cObj))
+											PlayerCollision(currAI, cObj, deltaX, deltaZ);
+									}
+									if (AIZChange == 30)
+									{
+										step1 = true;
+
+									}
+
+								}
+								if (zchange == 0 && step1 == true)
+								{
+									AIXChange++;
+									deltaX = timepassed * PLAYER_SPEED * -xchange;
+									deltaZ = timepassed * PLAYER_SPEED * -zchange;
+									//currAI->Move(0, deltaZ);
+									//currAI->Move(deltaX, 0);
+
+										//moveAI(currAI, 0, deltaX, deltaZ);
+
+									moveAI(currAI, 1, deltaX, deltaZ);
+									//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+									//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+									for (CObject* cObj : objects) {
+										if (currAI->Collides(cObj))
+											PlayerCollision(currAI, cObj, deltaX, deltaZ);
+									}
+									if (AIXChange == 30)
+									{
+										step1 = false;
+										AIXChange = 0;
+										AIZChange = 0;
+
+									}
 								}
 							}
 						}
@@ -3354,13 +3436,67 @@ void CGame::AI_Method(double timepassed, double action_time)
 								{
 									if (tile == GRID_SYSTEM::BOMB /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
 									{
-										deltaX = timepassed * PLAYER_SPEED * xchange;
-										deltaZ = timepassed * PLAYER_SPEED * zchange;
-										currAI->Move(deltaX, deltaZ);
-										for (CObject* cObj : objects) {
-											if (currAI->Collides(cObj))
-												PlayerCollision(currAI, cObj, deltaX, deltaZ);
-										}
+										//if (xchange == 0 && step1 == false)
+										//{
+										//	AIZChange++;
+										//	deltaX = timepassed * PLAYER_SPEED * -xchange;
+										//	deltaZ = timepassed * PLAYER_SPEED * -zchange;
+										//	//currAI->Move(0, deltaZ);
+										//	//currAI->Move(deltaX, 0);
+
+										//	moveAI(currAI, 0, deltaX, deltaZ);
+
+										//	//moveAI(currAI, 1, deltaX, deltaZ);
+										//	//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+										//	//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+										//	for (CObject* cObj : objects) {
+										//		if (currAI->Collides(cObj))
+										//			PlayerCollision(currAI, cObj, deltaX, deltaZ);
+										//	}
+										//	if (AIZChange == 30)
+										//	{
+										//		step1 = true;
+
+										//	}
+
+										//}
+										//if (zchange == 0 && step1 == true)
+										//{
+										//	AIXChange++;
+										//	deltaX = timepassed * PLAYER_SPEED * -xchange;
+										//	deltaZ = timepassed * PLAYER_SPEED * -zchange;
+										//	//currAI->Move(0, deltaZ);
+										//	//currAI->Move(deltaX, 0);
+
+										//		//moveAI(currAI, 0, deltaX, deltaZ);
+
+										//	moveAI(currAI, 1, deltaX, deltaZ);
+										//	//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+										//	//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+										//	for (CObject* cObj : objects) {
+										//		if (currAI->Collides(cObj))
+										//			PlayerCollision(currAI, cObj, deltaX, deltaZ);
+										//	}
+										//	if (AIXChange == 30)
+										//	{
+										//		step1 = false;
+										//		AIXChange = 0;
+										//		AIZChange = 0;
+
+										//	}
+										//}
 
 										for (int dZ = -1; dZ <= 1; ++dZ)
 										{
@@ -3398,13 +3534,66 @@ void CGame::AI_Method(double timepassed, double action_time)
 													{
 
 
-														deltaX = timepassed * PLAYER_SPEED * -xchange;
-														deltaZ = timepassed * PLAYER_SPEED * -zchange;
-														currAI->Move(deltaX, 0);
-														currAI->Move(0, deltaZ);
-														for (CObject* cObj : objects) {
-															if (currAI->Collides(cObj))
-																PlayerCollision(currAI, cObj, deltaX, deltaZ);
+														if (xchange == 0 && step1 == false)
+														{
+															AIZChange++;
+															deltaX = timepassed * PLAYER_SPEED * -xchange;
+															deltaZ = timepassed * PLAYER_SPEED * -zchange;
+															//currAI->Move(0, deltaZ);
+															//currAI->Move(deltaX, 0);
+
+															moveAI(currAI, 0, deltaX, deltaZ);
+
+															//moveAI(currAI, 1, deltaX, deltaZ);
+															//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+															//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+															for (CObject* cObj : objects) {
+																if (currAI->Collides(cObj))
+																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
+															}
+															if (AIZChange == 30)
+															{
+																step1 = true;
+
+															}
+
+														}
+														if (zchange == 0 && step1 == true)
+														{
+															AIXChange++;
+															deltaX = timepassed * PLAYER_SPEED * -xchange;
+															deltaZ = timepassed * PLAYER_SPEED * -zchange;
+															//currAI->Move(0, deltaZ);
+															//currAI->Move(deltaX, 0);
+
+																//moveAI(currAI, 0, deltaX, deltaZ);
+
+															moveAI(currAI, 1, deltaX, deltaZ);
+															//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+															//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+															for (CObject* cObj : objects) {
+																if (currAI->Collides(cObj))
+																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
+															}
+															if (AIXChange == 30)
+															{
+																step1 = false;
+																AIXChange = 0;
+																AIZChange = 0;
+
+															}
 														}
 													}
 												}
@@ -3416,12 +3605,66 @@ void CGame::AI_Method(double timepassed, double action_time)
 								{
 									if (tile == GRID_SYSTEM::POWERUP /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
 									{
-										deltaX = timepassed * PLAYER_SPEED * -xchange;
-										deltaZ = timepassed * PLAYER_SPEED * -zchange;
-										currAI->Move(deltaX, deltaZ);
-										for (CObject* cObj : objects) {
-											if (currAI->Collides(cObj))
-												PlayerCollision(currAI, cObj, deltaX, deltaZ);
+										if (xchange == 0 && step1 == false)
+										{
+											AIZChange++;
+											deltaX = timepassed * PLAYER_SPEED * -xchange;
+											deltaZ = timepassed * PLAYER_SPEED * -zchange;
+											//currAI->Move(0, deltaZ);
+											//currAI->Move(deltaX, 0);
+
+											moveAI(currAI, 0, deltaX, deltaZ);
+
+											//moveAI(currAI, 1, deltaX, deltaZ);
+											//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+											//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+											for (CObject* cObj : objects) {
+												if (currAI->Collides(cObj))
+													PlayerCollision(currAI, cObj, deltaX, deltaZ);
+											}
+											if (AIZChange == 30)
+											{
+												step1 = true;
+
+											}
+
+										}
+										if (zchange == 0 && step1 == true)
+										{
+											AIXChange++;
+											deltaX = timepassed * PLAYER_SPEED * -xchange;
+											deltaZ = timepassed * PLAYER_SPEED * -zchange;
+											//currAI->Move(0, deltaZ);
+											//currAI->Move(deltaX, 0);
+
+												//moveAI(currAI, 0, deltaX, deltaZ);
+
+											moveAI(currAI, 1, deltaX, deltaZ);
+											//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+											//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+											for (CObject* cObj : objects) {
+												if (currAI->Collides(cObj))
+													PlayerCollision(currAI, cObj, deltaX, deltaZ);
+											}
+											if (AIXChange == 30)
+											{
+												step1 = false;
+												AIXChange = 0;
+												AIZChange = 0;
+
+											}
 										}
 										for (int dZ = -1; dZ <= 1; ++dZ)
 										{
@@ -3456,13 +3699,66 @@ void CGame::AI_Method(double timepassed, double action_time)
 													if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
 													{
 
-														deltaX = timepassed * PLAYER_SPEED * -xchange;
-														deltaZ = timepassed * PLAYER_SPEED * -zchange;
-														currAI->Move(deltaX, 0);
-														currAI->Move(0, deltaZ);
-														for (CObject* cObj : objects) {
-															if (currAI->Collides(cObj))
-																PlayerCollision(currAI, cObj, deltaX, deltaZ);
+														if (xchange == 0 && step1 == false)
+														{
+															AIZChange++;
+															deltaX = timepassed * PLAYER_SPEED * -xchange;
+															deltaZ = timepassed * PLAYER_SPEED * -zchange;
+															//currAI->Move(0, deltaZ);
+															//currAI->Move(deltaX, 0);
+
+															moveAI(currAI, 0, deltaX, deltaZ);
+
+															//moveAI(currAI, 1, deltaX, deltaZ);
+															//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+															//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+															for (CObject* cObj : objects) {
+																if (currAI->Collides(cObj))
+																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
+															}
+															if (AIZChange == 30)
+															{
+																step1 = true;
+
+															}
+
+														}
+														if (zchange == 0 && step1 == true)
+														{
+															AIXChange++;
+															deltaX = timepassed * PLAYER_SPEED * -xchange;
+															deltaZ = timepassed * PLAYER_SPEED * -zchange;
+															//currAI->Move(0, deltaZ);
+															//currAI->Move(deltaX, 0);
+
+																//moveAI(currAI, 0, deltaX, deltaZ);
+
+															moveAI(currAI, 1, deltaX, deltaZ);
+															//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+															//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+															for (CObject* cObj : objects) {
+																if (currAI->Collides(cObj))
+																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
+															}
+															if (AIXChange == 30)
+															{
+																step1 = false;
+																AIXChange = 0;
+																AIZChange = 0;
+
+															}
 														}
 													}
 												}
@@ -3575,15 +3871,68 @@ void CGame::AI_Method(double timepassed, double action_time)
 								}
 								else if (gridcheck == 4)
 								{
-									if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
+									if (tile == GRID_SYSTEM::FREE && xbounds && zbounds)
 									{
+										if (xchange == 0 && step1 == false)
+										{
+											AIZChange++;
+											deltaX = timepassed * PLAYER_SPEED * -xchange;
+											deltaZ = timepassed * PLAYER_SPEED * -zchange;
+											//currAI->Move(0, deltaZ);
+											//currAI->Move(deltaX, 0);
 
-										deltaX = timepassed * PLAYER_SPEED * -xchange;
-										deltaZ = timepassed * PLAYER_SPEED * -zchange;
-										currAI->Move(deltaX, deltaZ);
-										for (CObject* cObj : objects) {
-											if (currAI->Collides(cObj))
-												PlayerCollision(currAI, cObj, deltaX, deltaZ);
+											moveAI(currAI, 0, deltaX, deltaZ);
+
+											//moveAI(currAI, 1, deltaX, deltaZ);
+											//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+											//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+											for (CObject* cObj : objects) {
+												if (currAI->Collides(cObj))
+													PlayerCollision(currAI, cObj, deltaX, deltaZ);
+											}
+											if (AIZChange == 30)
+											{
+												step1 = true;
+
+											}
+
+										}
+										if (zchange == 0 && step1 == true)
+										{
+											AIXChange++;
+											deltaX = timepassed * PLAYER_SPEED * -xchange;
+											deltaZ = timepassed * PLAYER_SPEED * -zchange;
+											//currAI->Move(0, deltaZ);
+											//currAI->Move(deltaX, 0);
+
+												//moveAI(currAI, 0, deltaX, deltaZ);
+
+											moveAI(currAI, 1, deltaX, deltaZ);
+											//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+											//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+											for (CObject* cObj : objects) {
+												if (currAI->Collides(cObj))
+													PlayerCollision(currAI, cObj, deltaX, deltaZ);
+											}
+											if (AIXChange == 30)
+											{
+												step1 = false;
+												AIXChange = 0;
+												AIZChange = 0;
+
+											}
 										}
 									}
 								}
@@ -3633,14 +3982,68 @@ void CGame::AI_Method(double timepassed, double action_time)
 								xbounds = false;
 								xchange = x;
 							}
-							if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+							if (tile == GRID_SYSTEM::FREE && xbounds && zbounds)
 							{
-								deltaX = timepassed * PLAYER_SPEED * -dX;
-								deltaZ = timepassed * PLAYER_SPEED * -dZ;
-								currAI->Move(deltaX, deltaZ);
-								for (CObject* cObj : objects) {
-									if (currAI->Collides(cObj))
-										PlayerCollision(currAI, cObj, deltaX, deltaZ);
+								if (xchange == 0 && step1 == false)
+								{
+									AIZChange++;
+									deltaX = timepassed * PLAYER_SPEED * -xchange;
+									deltaZ = timepassed * PLAYER_SPEED * -zchange;
+									//currAI->Move(0, deltaZ);
+									//currAI->Move(deltaX, 0);
+
+									moveAI(currAI, 0, deltaX, deltaZ);
+
+									//moveAI(currAI, 1, deltaX, deltaZ);
+									//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+									//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+									for (CObject* cObj : objects) {
+										if (currAI->Collides(cObj))
+											PlayerCollision(currAI, cObj, deltaX, deltaZ);
+									}
+									if (AIZChange == 30)
+									{
+										step1 = true;
+
+									}
+
+								}
+								if (zchange == 0 && step1 == true)
+								{
+									AIXChange++;
+									deltaX = timepassed * PLAYER_SPEED * -xchange;
+									deltaZ = timepassed * PLAYER_SPEED * -zchange;
+									//currAI->Move(0, deltaZ);
+									//currAI->Move(deltaX, 0);
+
+										//moveAI(currAI, 0, deltaX, deltaZ);
+
+									moveAI(currAI, 1, deltaX, deltaZ);
+									//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+									//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+									for (CObject* cObj : objects) {
+										if (currAI->Collides(cObj))
+											PlayerCollision(currAI, cObj, deltaX, deltaZ);
+									}
+									if (AIXChange == 30)
+									{
+										step1 = false;
+										AIXChange = 0;
+										AIZChange = 0;
+
+									}
 								}
 							}
 						}
@@ -3690,15 +4093,68 @@ void CGame::AI_Method(double timepassed, double action_time)
 									int tile = GRID[gridlocation];
 									if (gridcheck == 0)
 									{
-										if (tile == GRID_SYSTEM::BOMB && (zchange == 0 xor xchange == 0) && xbounds && zbounds)
+										if (tile == GRID_SYSTEM::BOMB && xbounds && zbounds)
 										{
-											deltaX = timepassed * PLAYER_SPEED * xchange;
-											deltaZ = timepassed * PLAYER_SPEED * zchange;
-											currAI->Move(deltaX, 0);
-											currAI->Move(0, deltaZ);
-											for (CObject* cObj : objects) {
-												if (currAI->Collides(cObj))
-													PlayerCollision(currAI, cObj, deltaX, deltaZ);
+											if (xchange == 0 && step1 == false)
+											{
+												AIZChange++;
+												deltaX = timepassed * PLAYER_SPEED * -xchange;
+												deltaZ = timepassed * PLAYER_SPEED * -zchange;
+												//currAI->Move(0, deltaZ);
+												//currAI->Move(deltaX, 0);
+
+												moveAI(currAI, 0, deltaX, deltaZ);
+
+												//moveAI(currAI, 1, deltaX, deltaZ);
+												//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+												//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+												for (CObject* cObj : objects) {
+													if (currAI->Collides(cObj))
+														PlayerCollision(currAI, cObj, deltaX, deltaZ);
+												}
+												if (AIZChange == 30)
+												{
+													step1 = true;
+
+												}
+
+											}
+											if (zchange == 0 && step1 == true)
+											{
+												AIXChange++;
+												deltaX = timepassed * PLAYER_SPEED * -xchange;
+												deltaZ = timepassed * PLAYER_SPEED * -zchange;
+												//currAI->Move(0, deltaZ);
+												//currAI->Move(deltaX, 0);
+
+													//moveAI(currAI, 0, deltaX, deltaZ);
+
+												moveAI(currAI, 1, deltaX, deltaZ);
+												//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+												//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+												for (CObject* cObj : objects) {
+													if (currAI->Collides(cObj))
+														PlayerCollision(currAI, cObj, deltaX, deltaZ);
+												}
+												if (AIXChange == 30)
+												{
+													step1 = false;
+													AIXChange = 0;
+													AIZChange = 0;
+
+												}
 											}
 
 
@@ -3736,13 +4192,66 @@ void CGame::AI_Method(double timepassed, double action_time)
 														if (tile == GRID_SYSTEM::FREE  && xbounds && zbounds)
 														{
 
-															deltaX = timepassed * PLAYER_SPEED * -xchange;
-															deltaZ = timepassed * PLAYER_SPEED * -zchange;
-															currAI->Move(deltaX, 0);
-															currAI->Move(0, deltaZ);
-															for (CObject* cObj : objects) {
-																if (currAI->Collides(cObj))
-																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
+															if (step1 == false)
+															{
+																AIZChange++;
+																deltaX = timepassed * PLAYER_SPEED * -xchange;
+																deltaZ = timepassed * PLAYER_SPEED * -zchange;
+																//currAI->Move(0, deltaZ);
+																//currAI->Move(deltaX, 0);
+
+																moveAI(currAI, 0, deltaX, deltaZ);
+
+																//moveAI(currAI, 1, deltaX, deltaZ);
+																//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+																//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+																for (CObject* cObj : objects) {
+																	if (currAI->Collides(cObj))
+																		PlayerCollision(currAI, cObj, deltaX, deltaZ);
+																}
+																if (AIZChange == 30)
+																{
+																	step1 = true;
+
+																}
+
+															}
+															if ( step1 == true)
+															{
+																AIXChange++;
+																deltaX = timepassed * PLAYER_SPEED * -xchange;
+																deltaZ = timepassed * PLAYER_SPEED * -zchange;
+																//currAI->Move(0, deltaZ);
+																//currAI->Move(deltaX, 0);
+
+																	//moveAI(currAI, 0, deltaX, deltaZ);
+
+																moveAI(currAI, 1, deltaX, deltaZ);
+																//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+																//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+																for (CObject* cObj : objects) {
+																	if (currAI->Collides(cObj))
+																		PlayerCollision(currAI, cObj, deltaX, deltaZ);
+																}
+																if (AIXChange == 30)
+																{
+																	step1 = false;
+																	AIXChange = 0;
+																	AIZChange = 0;
+
+																}
 															}
 														}
 													}
@@ -3856,13 +4365,66 @@ void CGame::AI_Method(double timepassed, double action_time)
 										if (tile == GRID_SYSTEM::FREE /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds)
 										{
 
-											deltaX = timepassed * PLAYER_SPEED * -xchange;
-											deltaZ = timepassed * PLAYER_SPEED * -zchange;
-											currAI->Move(deltaX, 0);
-											currAI->Move(0, deltaZ);
-											for (CObject* cObj : objects) {
-												if (currAI->Collides(cObj))
-													PlayerCollision(currAI, cObj, deltaX, deltaZ);
+											if (xchange == 0 && step1 == false)
+											{
+												AIZChange++;
+												deltaX = timepassed * PLAYER_SPEED * -xchange;
+												deltaZ = timepassed * PLAYER_SPEED * -zchange;
+												//currAI->Move(0, deltaZ);
+												//currAI->Move(deltaX, 0);
+
+												moveAI(currAI, 0, deltaX, deltaZ);
+
+												//moveAI(currAI, 1, deltaX, deltaZ);
+												//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+												//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+												for (CObject* cObj : objects) {
+													if (currAI->Collides(cObj))
+														PlayerCollision(currAI, cObj, deltaX, deltaZ);
+												}
+												if (AIZChange == 30)
+												{
+													step1 = true;
+
+												}
+
+											}
+											if (zchange == 0 && step1 == true)
+											{
+												AIXChange++;
+												deltaX = timepassed * PLAYER_SPEED * -xchange;
+												deltaZ = timepassed * PLAYER_SPEED * -zchange;
+												//currAI->Move(0, deltaZ);
+												//currAI->Move(deltaX, 0);
+
+													//moveAI(currAI, 0, deltaX, deltaZ);
+
+												moveAI(currAI, 1, deltaX, deltaZ);
+												//moveAI(currAI, 2, deltaX, deltaZ);
+
+
+												//moveAI(currAI, 3, deltaX, deltaZ);
+
+
+
+
+												for (CObject* cObj : objects) {
+													if (currAI->Collides(cObj))
+														PlayerCollision(currAI, cObj, deltaX, deltaZ);
+												}
+												if (AIXChange == 30)
+												{
+													step1 = false;
+													AIXChange = 0;
+													AIZChange = 0;
+
+												}
 											}
 										}
 									}
@@ -3934,7 +4496,29 @@ void CGame::AI_Method(double timepassed, double action_time)
 		}
 	}
 }
+void CGame::moveAI(CPlayer* AI, int direction, float deltaX, float deltaZ) {
+	TComponent* _prenderer = nullptr;
+	AI->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer);
+	TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
+	float x = pRenderer->fPosition.x;
+	float z = pRenderer->fPosition.z;
 
+	switch (direction) {
+	case 0:
+		AI->Move(0, deltaZ, true);
+		break;
+	case 1:
+		AI->Move(deltaX, 0, true);
+		break;
+	case 2:
+		AI->Move(0, deltaZ, true);
+		break;
+	case 3:
+		AI->Move(deltaX, 0, true);
+		break;
+	}
+
+}
 void CGame::CustomMeshUpdate() {
 
 	//RenderMenus
@@ -3965,7 +4549,7 @@ void CGame::CustomMeshUpdate() {
 	}
 
 	//RenderObjects
-	if (mapTime >=  5 && passes < mapPasses && !isPaused) {
+	if (mapTime >= 5 && passes < mapPasses && !isPaused) {
 
 		warnSound->isSoundPlaying(warningSoundPlaying);
 		playerfallingSound->isSoundPlaying(playerfallingSoundPlaying);
@@ -3998,7 +4582,7 @@ void CGame::CustomMeshUpdate() {
 						g_pControllerInput->StartVibration(0, 0.125f, 1, 2);
 						g_pControllerInput->StartVibration(0, 0.125f, 1, 3);
 
-						
+
 
 						objects[i]->CrouchRoll(0, 0, -0.75f, false);
 						SprinklersOn = false;
@@ -4014,7 +4598,7 @@ void CGame::CustomMeshUpdate() {
 								if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z) {
 									//player->setAlive(false);
 									player->CrouchRoll(0, 0, -1, false);
-									if(!playerfallingSoundPlaying)
+									if (!playerfallingSoundPlaying)
 										playerfallingSound->Play();
 								}
 							}
@@ -4043,7 +4627,7 @@ void CGame::CustomMeshUpdate() {
 							}
 						}
 
-						
+
 					}
 
 					if (mapTime >= 9 && passes < mapPasses) {

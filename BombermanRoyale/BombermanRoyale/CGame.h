@@ -133,6 +133,7 @@ public:
 	void PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb);
 	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer * playerToCheck);
 	void AI_Method(double timepassed, double action_time);
+	void moveAI(CPlayer* player, int direction, float deltaX, float deltaZ);
 	void CustomMeshUpdate();
 	void WallDrop(CObject* objectToCheck);
 
