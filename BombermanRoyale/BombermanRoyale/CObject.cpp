@@ -232,7 +232,7 @@ bool CObject::CrouchRoll(float _x, float _z, float _y, bool rotation)
 	return true;
 }
 
-bool CObject::MoveOverTime(float _x, float _z)
+bool CObject::MoveOverTime(float start_x, float end_x, float start_z , float end_z, float timepassed)
 {
 	TComponent* cTransform;
 	TTransformComponent* transform;
@@ -243,8 +243,17 @@ bool CObject::MoveOverTime(float _x, float _z)
 	if (!GetComponent(COMPONENT_TYPE::COLLIDER, cTransform))
 		return false;
 	collider = (TColliderComponent*)cTransform;
+
+	movetimer += timepassed;
+	float ratio = movetimer / 5.0f;
+	float _x = lerp(start_x, end_x, ratio);
+	_x = _x - start_x;
+	float _z = lerp(start_z, end_z, ratio);
+	_z = _z - start_z;
 	collider->d3dCollider.Center.x += _x;
 	collider->d3dCollider.Center.z += _z;
+	if (ratio >= 1.0f)
+		movetimer = 0.0f;
 
 	transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
 
@@ -252,8 +261,13 @@ bool CObject::MoveOverTime(float _x, float _z)
 	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
 	DirectX::XMStoreFloat3(&transform->fForwardVector, DirectX::XMVector3Normalize(transform->mObjMatrix.r[2]));
 	transform->fPosition = DirectX::XMFLOAT3(pos.x, pos.y, pos.z);
-
-	return true;
+	
+	if (ratio >= 1.0f)
+	{
+		return true;
+	}
+	else
+		return false;
 }
 
 bool CObject::Collides(CObject * _other)
