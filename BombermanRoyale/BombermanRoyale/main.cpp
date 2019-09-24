@@ -25,11 +25,8 @@ int main(void)
 	LoadModels();
 	LoadAnimations();
 
-	//v_tMeshTemplates[MODELS::BATTLEMAGE].loadModel(".\\Assets\\BattleMage.mesh", ".\\Assets\\BattleMage.mat", ".\\Assets\\BattleMage.anim", 0.5f);
-	//v_tMeshTemplates[MODELS::BATTLEMAGE].initialize(g_d3dData->d3dDevice);
 	LoadMenuScreen(15, 11, 0, ".//Assets//Menu.mat");
 	LoadMenuScreen(19, 11, 0, ".//Assets//Menu.mat");
-
 	CGame* p_cGame = new CGame();
 	bool result = p_cGame->Initialize();
 	if (!result)
@@ -42,6 +39,8 @@ int main(void)
 	p_cGame->loadTempMenus();
 
 	p_cGame->Run();
+	/*
+	*/
 
 	p_cGame->Cleanup();
 	delete p_cGame;

@@ -385,24 +385,22 @@ bool DirectXData::Initialize()
 #pragma region Blend State Creation
 
 	D3D11_BLEND_DESC blendDesc;
-	blendDesc.RenderTarget[0].BlendEnable = false;
-	
-	d3dDevice->CreateBlendState(&blendDesc, &d3dBlendState[BLEND_STATE::DEFAULT]);
-	
-	
+
 	blendDesc.RenderTarget[0].BlendEnable = true;
-	//blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	//blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	//blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	//blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	//blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	//blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	//blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-	
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
 	d3dDevice->CreateBlendState(&blendDesc, &d3dBlendState[BLEND_STATE::UI]);
 
-#pragma endregion
+	blendDesc.RenderTarget[0].BlendEnable = false;
 
+	d3dDevice->CreateBlendState(&blendDesc, &d3dBlendState[BLEND_STATE::DEFAULT]);
+
+#pragma endregion
 
 #pragma region Depth Stencil State Creation
 
@@ -568,10 +566,6 @@ bool DirectXData::Initialize()
 #pragma endregion
 
 
-	d3dDevice->CreateDeferredContext(0, &d3dDeferredContext);
-
-
-
 #pragma region Index Buffer Creation
 
 	//Sky Index Buffer
@@ -594,36 +588,64 @@ DirectXData::~DirectXData()
 
 void DirectXData::Cleanup()
 {
-	SAFE_RELEASE(d3dSamplerState);
-	for (int i = 0; i < RASTERIZER_STATE::COUNT; ++i)
-		SAFE_RELEASE(d3dRasterizerState[i]);
-	SAFE_RELEASE(d3dRasterizerState2);
-	SAFE_RELEASE(d3dDepthStencilView);
-	SAFE_RELEASE(d3dRenderTargetView);
+#pragma region Release Skybox Stuff
+
 	SAFE_RELEASE(JungleSampler);
 	SAFE_RELEASE(Jungle);
 	SAFE_RELEASE(JungleSRV);
 	SAFE_RELEASE(JungleVertexBuffer);
 	SAFE_RELEASE(JungleIndexBuffer);
 
+#pragma endregion
 
-	for (int i = 0; i < CONSTANT_BUFFER::COUNT; ++i)
-		SAFE_RELEASE(d3dConstBuffers[i]);
-	for (int i = 0; i < INPUT_LAYOUT::COUNT; ++i)
-		SAFE_RELEASE(d3dInputLayout[i]);
-	for (int i = 0; i < GEOMETRY_SHADER::COUNT; ++i)
-		SAFE_RELEASE(d3dGeometryShader[i]);
-	for (int i = 0; i < PIXEL_SHADER::COUNT; ++i)
-		SAFE_RELEASE(d3dPixelShader[i]);
-	for (int i = 0; i < VERTEX_SHADER::COUNT; ++i)
-		SAFE_RELEASE(d3dVertexShader[i]);
+#pragma region Release Texture Stuff
+
+	for (int i = 0; i < RASTERIZER_STATE::COUNT; ++i)
+		SAFE_RELEASE(d3dRasterizerState[i]);
+	SAFE_RELEASE(d3dSamplerState);
 	for (int i = 0; i < DIFFUSE_TEXTURES::COUNT; ++i)
 		SAFE_RELEASE(d3dDiffuseTextures[i]);
+	for (int i = 0; i < BLEND_STATE::COUNT; ++i)
+		SAFE_RELEASE(d3dBlendState[i]);
 
-	GW_SAFE_RELEASE(d3dSurface);
+#pragma endregion
+
+#pragma region Release ShaderStuff
+
+	for (int i = 0; i < INPUT_LAYOUT::COUNT; ++i)
+		SAFE_RELEASE(d3dInputLayout[i]);
+	for (int i = 0; i < VERTEX_SHADER::COUNT; ++i)
+		SAFE_RELEASE(d3dVertexShader[i]);
+	for (int i = 0; i < PIXEL_SHADER::COUNT; ++i)
+		SAFE_RELEASE(d3dPixelShader[i]);
+	for (int i = 0; i < GEOMETRY_SHADER::COUNT; ++i)
+		SAFE_RELEASE(d3dGeometryShader[i]);
+	for (int i = 0; i < COMPUTE_SHADER::COUNT; ++i)
+		SAFE_RELEASE(d3dComputeShader[i]);
+	for (int i = 0; i < CONSTANT_BUFFER::COUNT; ++i)
+		SAFE_RELEASE(d3dConstBuffers[i]);
+
+#pragma endregion
+
+#pragma region Release SpriteStuff
+
+	delete d3dSpriteFont;
+	delete d3dSpriteBatch;
+
+#pragma endregion
+
+#pragma region Release Essentials
+
+	SAFE_RELEASE(d3dRenderTargetView);
+	SAFE_RELEASE(d3dDepthStencilView);
+	for (int i = 0; i < DEPTH_STENCIL_STATE::COUNT; ++i)
+		SAFE_RELEASE(d3dDepthStencilState[i]);
 	SAFE_RELEASE(d3dSwapChain);
 	SAFE_RELEASE(d3dContext);
 	SAFE_RELEASE(d3dDevice);
+	GW_SAFE_RELEASE(d3dSurface);
+
+#pragma endregion
 }
 
 void DirectXData::updateCameras()

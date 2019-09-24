@@ -29,9 +29,6 @@ CObject* CEntityManager::CreateOBJFromTemplate(OBJLoadInfo loadInfo)
 	TTextureComponent* tex = new TTextureComponent(loadInfo.usedDiffuse);
 	temp->AddComponent((TComponent*)tex);
 
-	TMaterialComponent* mat = new TMaterialComponent(v_tMeshTemplates.at(loadInfo.meshID));
-	temp->AddComponent((TComponent*)mat);
-
 	TColliderComponent* collider = new TColliderComponent(v_tMeshTemplates[loadInfo.meshID], loadInfo.scale, loadInfo.position, loadInfo.collisionLayer);
 	temp->AddComponent((TComponent*)collider);
 
@@ -53,13 +50,12 @@ CPlayer* CEntityManager::CreatePlayerFromTemplate(OBJLoadInfo loadInfo)
 	TTextureComponent* tex = new TTextureComponent(loadInfo.usedDiffuse);
 	temp->AddComponent((TComponent*)tex);
 
-	TMaterialComponent* mat = new TMaterialComponent(v_tMeshTemplates.at(loadInfo.meshID));
-	temp->AddComponent((TComponent*)mat);
 	if (v_tMeshTemplates[loadInfo.meshID]._animations.size() > 0)
 	{
 		TAnimComponent* anim = new TAnimComponent(v_tMeshTemplates.at(loadInfo.meshID));
 		temp->AddComponent((TComponent*)anim);
 	}
+
 	TColliderComponent* collider = new TColliderComponent(v_tMeshTemplates[loadInfo.meshID], loadInfo.scale, loadInfo.position, loadInfo.collisionLayer);
 	temp->AddComponent((TComponent*)collider);
 

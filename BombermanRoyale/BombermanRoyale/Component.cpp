@@ -152,37 +152,6 @@ TMeshComponent::~TMeshComponent()
 
 #pragma endregion
 
-#pragma region TMaterial
-
-TMaterialComponent::TMaterialComponent()
-{
-	componentType = COMPONENT_TYPE::MATERIAL;
-}
-
-TMaterialComponent::TMaterialComponent(TMeshTemplate _template)
-{
-	componentType = COMPONENT_TYPE::MATERIAL;
-	filepaths = _template.filePaths;
-	mats = _template.mats;
-	_mat = _template._mat;
-	_textures[TEXTURES::DIFFUSE] = _template._textures[TEXTURES::DIFFUSE];
-	_textures[TEXTURES::EMISSIVE] = _template._textures[TEXTURES::EMISSIVE];
-	_textures[TEXTURES::SPECULAR] = _template._textures[TEXTURES::SPECULAR];
-	_samState = _template._samState;
-	_srv[TEXTURES::DIFFUSE] = _template._srv[TEXTURES::DIFFUSE];
-	_srv[TEXTURES::EMISSIVE] = _template._srv[TEXTURES::EMISSIVE];
-	_srv[TEXTURES::SPECULAR] = _template._srv[TEXTURES::SPECULAR];
-}
-
-
-
-TMaterialComponent::~TMaterialComponent()
-{
-
-}
-
-#pragma endregion
-
 
 #pragma region TAnim
 
