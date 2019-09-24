@@ -107,6 +107,8 @@ public:
 	int PlayerDiscIndex = 0;
 	bool playerdisconnect = false;
 	bool PlayerDisconnectToggle = false;
+	bool AI_1_Moving = false;
+	bool AI_1_STARTMoving = false;
 
 	bool Initialize();
 	void Run();

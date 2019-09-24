@@ -28,6 +28,7 @@ public:
 	float currFrameIndex = 0;
 	float animTime = 0.0f;
 	float totalTime;
+	float movetimer = 0.0f;
 
 	CObject();
 	virtual ~CObject();
@@ -39,7 +40,7 @@ public:
 	bool Move(float _x, float _z, bool rotation = true);
 	bool CrouchRoll(float _x, float _z, float _y, bool rotation = true);
 	bool Collides(CObject* _other);
-	bool MoveOverTime(float _x, float _z);
+	bool MoveOverTime(float start_x, float end_x, float start_z, float end_z, float timepassed);
 	virtual void Cleanup();
 
 };
