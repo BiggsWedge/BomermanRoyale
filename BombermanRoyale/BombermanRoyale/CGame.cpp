@@ -2011,12 +2011,12 @@ void CGame::GamePlayLoop(double timePassed)
 		//CROUCH
 		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_BUTTONS::CROUCH) && !isPaused) {
 
-			currPlayer->CrouchRoll(0, 0, -1.5f, false);
+			currPlayer->CrouchRoll(0, 0, -1.0f, false);
 			currPlayer->ChangeCrouchStatus();
 		}
 		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::CROUCH) && !isPaused) {
 
-			currPlayer->CrouchRoll(0, 0, 1.5f, false);
+			currPlayer->CrouchRoll(0, 0, 1.0f, false);
 			currPlayer->ChangeCrouchStatus();
 		}
 
