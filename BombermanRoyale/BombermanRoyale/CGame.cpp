@@ -298,24 +298,25 @@ void CGame::Run()
 			setGameState(GAME_STATE::GP_SPLASH);
 		}
 
-		if (loadScreenTime > 4 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::GP_SPLASH) && loadHappened == false)
+		if (loadScreenTime > 4 && (curGameState == GAME_STATE::FS_SPLASH || curGameState == GAME_STATE::GP_SPLASH) && loadHappened == false)
 		{
-			setGameState(GAME_STATE::MAIN_MENU);
-			loadHappened = true;
+			setGameState(GAME_STATE::FS_SPLASH);
+			
 		}
 
-		
-		
-		/*if (loadScreenTime < 4.5)
+		if (loadScreenTime > 8 && (curGameState == GAME_STATE::LOAD_SCREEN || curGameState == GAME_STATE::FS_SPLASH) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::LOAD_SCREEN);
+
 		}
 
-		if (loadScreenTime > 8 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
+		if (loadScreenTime > 12 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::MAIN_MENU);
 			loadHappened = true;
-		}*/
+		}
+
+
 
 		for (int i = 0; i < keycodes.size(); ++i) {
 			keys[i].prevState = keys[i].currState;
@@ -333,10 +334,13 @@ void CGame::Run()
 			keyboardInputs[1].controls[i].currState = GetAsyncKeyState(keyboardInputs[1].keycodes[i]);
 		}
 
-		if (keys[KEYS::FULLSCREEN].pressed()) {
+
+		if (keys[KEYS::FULLSCREEN].pressed()) 
+		{
 			FullScreen = !FullScreen;
 			this->WindowResize();
 		}
+
 
 		if (keys[KEYS::HELP_MENU].pressed() || p1Help.Pressed()) {
 			ControlScreenToggle = !ControlScreenToggle;
@@ -2746,9 +2750,17 @@ bool CGame::loadTempMenus() {
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::GP_LOGO;
-	loadInfo.scale = DirectX::XMFLOAT3(1.5f, 1.0f, 1.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::GP_SPLASH;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FS_LOGO;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f) ;
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::FS_SPLASH;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
@@ -3975,7 +3987,7 @@ void CGame::CustomMeshUpdate() {
 	}
 
 	//RenderObjects
-	if (mapTime >=  5 && passes < mapPasses && !isPaused) {
+	if (mapTime >=  30 && passes < mapPasses && !isPaused) {
 
 		warnSound->isSoundPlaying(warningSoundPlaying);
 		playerfallingSound->isSoundPlaying(playerfallingSoundPlaying);
@@ -3997,7 +4009,7 @@ void CGame::CustomMeshUpdate() {
 					{
 						warnSound->Play();
 					}
-					if (mapTime >= 8)
+					if (mapTime >= 35)
 					{
 						if (!fallingSoundPlaying) {
 							fallingSound->Play();
