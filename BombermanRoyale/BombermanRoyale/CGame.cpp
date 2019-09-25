@@ -3214,7 +3214,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 				if (dX <= 1.25f && dZ <= 1.25f)
 				{
 
-					if (centerAItimer1 >= 3.0f)
+					if (centerAItimer1 >= 2.0f)
 					{
 						currAI->Move(cX, cZ, true);
 						centerAItimer1 = 0.0f;
@@ -3309,12 +3309,12 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 									deltaX = timepassed * AI_SPEED * -xchange;
 									deltaZ = timepassed * AI_SPEED * -zchange;
-									if (abs(deltaX) + abs(deltaZ) <= 0.2f)
+									if (abs(deltaX) <= 0.02f || abs(deltaZ) <= 0.02f)
 									{
 										if (currAI->SetCurrentAnimaion("Idle") == 1)
 											currAI->ResetAnimation();
 									}
-									else if (abs(deltaX) + abs(deltaZ) >= 1.5f)
+									else if (abs(deltaX) >= 0.05f || abs(deltaZ) >= 0.05f)
 									{
 										if (currAI->SetCurrentAnimaion("Run") == 1)
 											currAI->ResetAnimation();
@@ -3372,12 +3372,12 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 									deltaX = timepassed * AI_SPEED * -xchange;
 									deltaZ = timepassed * AI_SPEED * -zchange;
-									if (abs(deltaX) + abs(deltaZ) <= 0.2f)
+									if (abs(deltaX) <= 0.02f || abs(deltaZ) <= 0.02f)
 									{
 										if (currAI->SetCurrentAnimaion("Idle") == 1)
 											currAI->ResetAnimation();
 									}
-									else if (abs(deltaX) + abs(deltaZ) >= 1.5f)
+									else if (abs(deltaX) >= 0.05f || abs(deltaZ) >= 0.05f)
 									{
 										if (currAI->SetCurrentAnimaion("Run") == 1)
 											currAI->ResetAnimation();
@@ -3445,12 +3445,12 @@ void CGame::AI_Method(double timepassed, double action_time)
 										{
 											deltaX = timepassed * AI_SPEED * xchange;
 											deltaZ = timepassed * AI_SPEED * zchange;
-											if (abs(deltaX) + abs(deltaZ) <= 0.2f)
+											if (abs(deltaX) <= 0.02f || abs(deltaZ) <= 0.02f)
 											{
 												if (currAI->SetCurrentAnimaion("Idle") == 1)
 													currAI->ResetAnimation();
 											}
-											else if (abs(deltaX) + abs(deltaZ) >= 1.5f)
+											else if (abs(deltaX) >= 0.05f || abs(deltaZ) >= 0.05f)
 											{
 												if (currAI->SetCurrentAnimaion("Run") == 1)
 													currAI->ResetAnimation();
@@ -3507,12 +3507,12 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 															deltaX = timepassed * AI_SPEED * -xchange;
 															deltaZ = timepassed * AI_SPEED * -zchange;
-															if (abs(deltaX) + abs(deltaZ) <= 0.2f)
+															if (abs(deltaX) <= 0.02f || abs(deltaZ) <= 0.02f)
 															{
 																if (currAI->SetCurrentAnimaion("Idle") == 1)
 																	currAI->ResetAnimation();
 															}
-															else if (abs(deltaX) + abs(deltaZ) >= 1.5f)
+															else if (abs(deltaX) >= 0.05f || abs(deltaZ) >= 0.05f)
 															{
 																if (currAI->SetCurrentAnimaion("Run") == 1)
 																	currAI->ResetAnimation();
@@ -3570,12 +3570,12 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 														deltaX = timepassed * AI_SPEED * -xchange;
 														deltaZ = timepassed * AI_SPEED * -zchange;
-														if (abs(deltaX) + abs(deltaZ) <= 0.2f)
+														if (abs(deltaX) <= 0.02f || abs(deltaZ) <= 0.02f)
 														{
 															if (currAI->SetCurrentAnimaion("Idle") == 1)
 																currAI->ResetAnimation();
 														}
-														else if (abs(deltaX) + abs(deltaZ) >= 1.5f)
+														else if (abs(deltaX) >= 0.05f || abs(deltaZ) >= 0.05f)
 														{
 															if (currAI->SetCurrentAnimaion("Run") == 1)
 																currAI->ResetAnimation();
@@ -3645,12 +3645,12 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 															deltaX = timepassed * AI_SPEED * xchange;
 															deltaZ = timepassed * AI_SPEED * zchange;
-															if (abs(deltaX) + abs(deltaZ) <= 0.2f)
+															if (abs(deltaX) <= 0.02f || abs(deltaZ) <= 0.02f)
 															{
 																if (currAI->SetCurrentAnimaion("Idle") == 1)
 																	currAI->ResetAnimation();
 															}
-															else if (abs(deltaX) + abs(deltaZ) >= 1.5f)
+															else if (abs(deltaX) >= 0.05f || abs(deltaZ) >= 0.05f)
 															{
 																if (currAI->SetCurrentAnimaion("Run") == 1)
 																	currAI->ResetAnimation();
@@ -3788,12 +3788,12 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 											deltaX = timepassed * AI_SPEED * -xchange;
 											deltaZ = timepassed * AI_SPEED * -zchange;
-											if (abs(deltaX) + abs(deltaZ) <= 0.2f)
+											if (abs(deltaX) <= 0.02f || abs(deltaZ) <= 0.02f)
 											{
 												if (currAI->SetCurrentAnimaion("Idle") == 1)
 													currAI->ResetAnimation();
 											}
-											else if (abs(deltaX) + abs(deltaZ) >= 1.5f)
+											else if (abs(deltaX) >= 0.05f || abs(deltaZ) >= 0.05f)
 											{
 												if (currAI->SetCurrentAnimaion("Run") == 1)
 													currAI->ResetAnimation();
@@ -3865,12 +3865,12 @@ void CGame::AI_Method(double timepassed, double action_time)
 								{
 									deltaX = timepassed * AI_SPEED * -dX;
 									deltaZ = timepassed * AI_SPEED * -dZ;
-									if (abs(deltaX) + abs(deltaZ) <= 0.2f)
+									if (abs(deltaX) <= 0.02f || abs(deltaZ) <= 0.02f)
 									{
 										if (currAI->SetCurrentAnimaion("Idle") == 1)
 											currAI->ResetAnimation();
 									}
-									else if (abs(deltaX) + abs(deltaZ) >= 1.5f)
+									else if (abs(deltaX) >= 0.05f || abs(deltaZ) >= 0.05f)
 									{
 										if (currAI->SetCurrentAnimaion("Run") == 1)
 											currAI->ResetAnimation();
@@ -3942,12 +3942,12 @@ void CGame::AI_Method(double timepassed, double action_time)
 											{
 												deltaX = timepassed * AI_SPEED * xchange;
 												deltaZ = timepassed * AI_SPEED * zchange;
-												if (abs(deltaX) + abs(deltaZ) <= 0.2f)
+												if (abs(deltaX) <= 0.02f || abs(deltaZ) <= 0.02f)
 												{
 													if (currAI->SetCurrentAnimaion("Idle") == 1)
 														currAI->ResetAnimation();
 												}
-												else if (abs(deltaX) + abs(deltaZ) >= 1.5f)
+												else if (abs(deltaX) >= 0.05f || abs(deltaZ) >= 0.05f)
 												{
 													if (currAI->SetCurrentAnimaion("Run") == 1)
 														currAI->ResetAnimation();
@@ -4003,12 +4003,12 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 																deltaX = timepassed * AI_SPEED * -xchange;
 																deltaZ = timepassed * AI_SPEED * -zchange;
-																if (abs(deltaX) + abs(deltaZ) <= 0.2f)
+																if (abs(deltaX) <= 0.02f || abs(deltaZ) <= 0.02f)
 																{
 																	if (currAI->SetCurrentAnimaion("Idle") == 1)
 																		currAI->ResetAnimation();
 																}
-																else if (abs(deltaX) + abs(deltaZ) >= 1.5f)
+																else if (abs(deltaX) >= 0.05f || abs(deltaZ) >= 0.05f)
 																{
 																	if (currAI->SetCurrentAnimaion("Run") == 1)
 																		currAI->ResetAnimation();
@@ -4141,12 +4141,12 @@ void CGame::AI_Method(double timepassed, double action_time)
 
 												deltaX = timepassed * AI_SPEED * -xchange;
 												deltaZ = timepassed * AI_SPEED * -zchange;
-												if (abs(deltaX) + abs(deltaZ) <= 0.2f)
+												if (abs(deltaX) <= 0.02f || abs(deltaZ) <= 0.02f)
 												{
 													if (currAI->SetCurrentAnimaion("Idle") == 1)
 														currAI->ResetAnimation();
 												}
-												else if (abs(deltaX) + abs(deltaZ) >= 1.5f)
+												else if (abs(deltaX) >= 0.05f || abs(deltaZ) >= 0.05f)
 												{
 													if (currAI->SetCurrentAnimaion("Run") == 1)
 														currAI->ResetAnimation();
