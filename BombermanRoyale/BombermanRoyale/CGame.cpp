@@ -305,6 +305,7 @@ void CGame::Run()
 		{
 			setGameState(GAME_STATE::MAIN_MENU);
 			loadHappened = true;
+			continue;
 		}
 
 		for (int i = 0; i < keycodes.size(); ++i) {
@@ -338,28 +339,35 @@ void CGame::Run()
 			if (curGameState == GAME_STATE::MAIN_MENU)
 			{
 				setGameState(GAME_STATE::ARCADE_MENU);
+				continue;
 			}
 			else if (curGameState == GAME_STATE::ARCADE_MENU) {
 				setGameState(GAME_STATE::ARCADE_GAME);
+				continue;
 			}
 			else if (curGameState == GAME_STATE::ARCADE_GAME) {
 				setGameState(GAME_STATE::MAIN_MENU);
+				continue;
 			}
 			else if (curGameState == GAME_STATE::WIN_SCREEN) {
 				setGameState(GAME_STATE::MAIN_MENU);
+				continue;
 			}
 			else if (curGameState == GAME_STATE::CREDIT_SCREEN)
 			{
 				setGameState(GAME_STATE::MAIN_MENU);
+				continue;
 			}
 		}
 		if (p1Pause.Released())
 		{
 			if (curGameState == GAME_STATE::WIN_SCREEN) {
 				setGameState(GAME_STATE::MAIN_MENU);
+				continue;
 			}
 			else if (curGameState == GAME_STATE::CREDIT_SCREEN) {
 				setGameState(GAME_STATE::MAIN_MENU);
+				continue;
 			}
 		}
 
@@ -502,7 +510,7 @@ void CGame::Run()
 				case 0:
 				{
 					setGameState(GAME_STATE::ARCADE_MENU);
-					break;
+					continue;
 				}
 				case 1:
 				{
@@ -764,7 +772,7 @@ void CGame::Run()
 					menux = 0;
 					menuIndex = 0;
 					setGameState(GAME_STATE::ARCADE_GAME);
-					break;
+					continue;
 				}
 				case 7:
 				{
@@ -787,7 +795,7 @@ void CGame::Run()
 					menux = 0;
 					menuIndex = 0;
 					setGameState(GAME_STATE::MAIN_MENU);
-					break;
+					continue;
 				}
 				case 8:
 				{
@@ -810,7 +818,7 @@ void CGame::Run()
 					menuIndex = 0;
 					setGameState(GAME_STATE::CHARACTER_SCREEN);
 					CSx = -11.35f;
-					break;
+					continue;
 				}
 				}
 			}
@@ -822,14 +830,20 @@ void CGame::Run()
 
 		if (curGameState == GAME_STATE::CHARACTER_SCREEN)
 		{
-			for (int p = 0; p < 4; ++p)
+			for (int i = 0; i < PlayersInCustom.size(); ++i)
 			{
-				if (PlayersInCustom[p])
-					PlayersInCustom[p]->updatePlayer(timePassed);
-				if (p < 2)
-					if (AiInCustom[p])
-						AiInCustom[p]->updatePlayer(timePassed);
+				if (PlayersInCustom[i])
+					PlayersInCustom[i]->updatePlayer(timePassed);
 			}
+			for (int i = 0; i < AiInCustom.size(); ++i)
+			{
+				if (AiInCustom[i])
+					AiInCustom[i]->updatePlayer(i);
+			}
+
+
+			bool playerChanges[4] = { false };
+			bool aiChanges[2] = { false };
 
 			menucontroltimer += timePassed;
 			if (menuController.GetLeftRight() > 0.0f && menucontroltimer > 0.3 && menuIndex < 7)
@@ -908,9 +922,10 @@ void CGame::Run()
 			}
 			if (menuController.ButtonReleased(DEFAULT_BUTTONS::PAUSE))
 			{
-				setGameState(GAME_STATE::ARCADE_MENU);
 				CSx = -11.35;
 				menuIndex = 0;
+				setGameState(GAME_STATE::ARCADE_MENU);
+				continue;
 			}
 			if (menuController.ButtonReleased(DEFAULT_BUTTONS::ACTION))
 			{
@@ -930,10 +945,8 @@ void CGame::Run()
 					if (playermodel[0] > 3)
 					{
 						playermodel[0] -= 1;
-						PlayersInCustom[0]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[0]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						playerChanges[0] = true;
+
 					}
 					break;
 				}
@@ -942,10 +955,7 @@ void CGame::Run()
 					if (playermodel[0] < 4)
 					{
 						playermodel[0] += 1;
-						PlayersInCustom[0]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[0]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						playerChanges[0] = true;
 					}
 					break;
 				}
@@ -954,10 +964,7 @@ void CGame::Run()
 					if (playermodel[1] > 3)
 					{
 						playermodel[1] -= 1;
-						PlayersInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[1]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						playerChanges[1] = true;
 					}
 					break;
 				}
@@ -966,10 +973,7 @@ void CGame::Run()
 					if (playermodel[1] < 4)
 					{
 						playermodel[1] += 1;
-						PlayersInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[1]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						playerChanges[1] = true;
 					}
 					break;
 				}
@@ -978,18 +982,17 @@ void CGame::Run()
 					if (numPLAYERS > 2 && playermodel[2] > 3)
 					{
 						playermodel[2] -= 1;
-						PlayersInCustom[2]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[2]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						playerChanges[2] = true;
+
 					}
 					else if (numAI > 0 && AImodel[0] > 3 && numPLAYERS < 3)
 					{
 						AImodel[0] -= 1;
-						AiInCustom[0]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[0]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						delete AiInCustom[0];
+						AiInCustom[0] = p_cEntityManager->InstantiatePlayer(4, AImodel[0], (AImodel[0] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN3 : DIFFUSE_TEXTURES::BOMB3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), (AImodel[0] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f));
+
+						if (AiInCustom[0]->SetCurrentAnimaion("Idle") >= 0)
+							AiInCustom[0]->ResetAnimation();
 					}
 					break;
 				}
@@ -998,18 +1001,16 @@ void CGame::Run()
 					if (numPLAYERS > 2 && playermodel[2] < 4)
 					{
 						playermodel[2] += 1;
-						PlayersInCustom[2]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[2]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						playerChanges[2] = true;
 					}
 					else if (numAI > 0 && AImodel[0] < 4 && numPLAYERS < 3)
 					{
 						AImodel[0] += 1;
-						AiInCustom[0]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[0]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						delete AiInCustom[0];
+						AiInCustom[0] = p_cEntityManager->InstantiatePlayer(4, AImodel[0], (AImodel[0] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN3 : DIFFUSE_TEXTURES::BOMB3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), (AImodel[0] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f));
+
+						if (AiInCustom[0]->SetCurrentAnimaion("Idle") >= 0)
+							AiInCustom[0]->ResetAnimation();
 					}
 					break;
 				}
@@ -1018,26 +1019,27 @@ void CGame::Run()
 					if (numPLAYERS > 3 && playermodel[3] > 3)
 					{
 						playermodel[3] -= 1;
-						PlayersInCustom[3]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[3]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						playerChanges[3] = true;
 					}
 					else if (numAI > 0 && AImodel[1] > 3 && numPLAYERS > 2)
 					{
 						AImodel[1] -= 1;
-						AiInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[1]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						delete AiInCustom[1];
+
+						AiInCustom[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], AImodel[1] == MODELS::CHICKEN ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), (AImodel[1] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f));
+						if (AiInCustom[1]->SetCurrentAnimaion("Idle") >= 0)
+							AiInCustom[1]->ResetAnimation();
+
+
 					}
 					else if (numAI > 1 && AImodel[1] > 3)
 					{
 						AImodel[1] -= 1;
-						AiInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[1]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						delete AiInCustom[1];
+
+						AiInCustom[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], AImodel[1] == MODELS::CHICKEN ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), (AImodel[1] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f));
+						if (AiInCustom[1]->SetCurrentAnimaion("Idle") >= 0)
+							AiInCustom[1]->ResetAnimation();
 					}
 					break;
 				}
@@ -1046,26 +1048,25 @@ void CGame::Run()
 					if (numPLAYERS > 3 && playermodel[3] < 4)
 					{
 						playermodel[3] += 1;
-						PlayersInCustom[3]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[3]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						playerChanges[3] = true;
 					}
 					else if (numAI > 0 && AImodel[1] < 4 && numPLAYERS > 2)
 					{
 						AImodel[1] += 1;
-						AiInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[1]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						delete AiInCustom[1];
+
+						AiInCustom[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], AImodel[1] == MODELS::CHICKEN ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), (AImodel[1] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f));
+						if (AiInCustom[1]->SetCurrentAnimaion("Idle") >= 0)
+							AiInCustom[1]->ResetAnimation();
 					}
 					else if (numAI > 1 && AImodel[1] < 4)
 					{
 						AImodel[1] += 1;
-						AiInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-						TMeshComponent* mesh = (TMeshComponent*)cMesh;
-						mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[1]));
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
+						delete AiInCustom[1];
+
+						AiInCustom[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], AImodel[1] == MODELS::CHICKEN ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), (AImodel[1] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f));
+						if (AiInCustom[1]->SetCurrentAnimaion("Idle") >= 0)
+							AiInCustom[1]->ResetAnimation();
 					}
 					break;
 				}
@@ -1073,6 +1074,59 @@ void CGame::Run()
 				{
 					break;
 				}
+				}
+
+				for (int i = 0; i < PlayersInCustom.size(); ++i)
+				{
+					if (playerChanges[i])
+					{
+						int ntexture = 0;
+						DirectX::XMFLOAT3 nposition = { 0.0f, 0.0f, 0.0f };
+						DirectX::XMFLOAT3 nscale = { 1.0f, 1.0f, 1.0f };
+						DirectX::XMFLOAT3 nforVec = { 1.0f, 1.0f, 1.0f };
+
+						switch (i)
+						{
+						case 0:
+						{
+							ntexture = (playermodel[i] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN1 : DIFFUSE_TEXTURES::BOMB;
+							nposition = DirectX::XMFLOAT3(-10.3f, 11.4f, -8.4f);
+							nforVec = DirectX::XMFLOAT3(0.4f, 1.6f, -1.0f);
+							break;
+						}
+						case 1:
+						{
+							ntexture = (playermodel[i] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN2 : DIFFUSE_TEXTURES::BOMB2;
+							nposition = DirectX::XMFLOAT3(-4.0f, 11.4f, -8.4f);
+							nforVec = DirectX::XMFLOAT3(0.5f, 1.6f, -1.0f);
+							break;
+						}
+						case 2:
+						{
+							ntexture = (playermodel[i] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN3 : DIFFUSE_TEXTURES::BOMB3;
+							nposition = DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f);
+							nforVec = DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f);
+							break;
+						}
+						case 3:
+						{
+							ntexture = (playermodel[i] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4;
+							nposition = DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f);
+							nforVec = DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f);
+							break;
+						}
+						default:
+						{
+
+							break;
+						}
+						}
+						delete PlayersInCustom[i];
+						PlayersInCustom[i] = p_cEntityManager->InstantiatePlayer(i + 1, playermodel[i], ntexture, nposition, GAME_STATE::CHARACTER_SCREEN, nforVec, (playermodel[i] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
+						if (PlayersInCustom[i]->SetCurrentAnimaion("Idle") >= 0)
+							PlayersInCustom[i]->ResetAnimation();
+
+					}
 				}
 			}
 
@@ -2245,7 +2299,8 @@ void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& fre
 }
 
 void CGame::setGameState(int _gameState) {
-	switch (_gameState) {
+	switch (_gameState)
+	{
 	case GAME_STATE::MAIN_MENU:
 	{
 		g_d3dData->viewMat = g_d3dData->camMat;
@@ -2292,41 +2347,40 @@ void CGame::setGameState(int _gameState) {
 	{
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
+		PlayersInCustom.resize(numPLAYERS);
+		AiInCustom.resize(numAI);
 
-
-		PlayersInCustom[0] = p_cEntityManager->InstantiatePlayer(1, playermodel[0], DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-10.3f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.4f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
-		PlayersInCustom[1] = p_cEntityManager->InstantiatePlayer(2, playermodel[1], DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(-4.0f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.5f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
+		PlayersInCustom[0] = p_cEntityManager->InstantiatePlayer(1, playermodel[0], DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-10.3f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.4f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
+		PlayersInCustom[1] = p_cEntityManager->InstantiatePlayer(2, playermodel[1], DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(-4.0f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.5f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
 
 		PlayersInCustom[0]->SetCurrentAnimaion("Idle");
 		PlayersInCustom[0]->ResetAnimation();
 		PlayersInCustom[1]->SetCurrentAnimaion("Idle");
 		PlayersInCustom[1]->ResetAnimation();
 
-
-
 		if (numPLAYERS > 2)
 		{
-			PlayersInCustom[2] = p_cEntityManager->InstantiatePlayer(3, playermodel[2], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
+			PlayersInCustom[2] = p_cEntityManager->InstantiatePlayer(3, playermodel[2], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
 			PlayersInCustom[2]->SetCurrentAnimaion("Idle");
 			PlayersInCustom[2]->ResetAnimation();
 		}
 		if (numPLAYERS > 3)
 		{
-			PlayersInCustom[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
+			PlayersInCustom[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
 			PlayersInCustom[3]->SetCurrentAnimaion("Idle");
 			PlayersInCustom[3]->ResetAnimation();
 		}
 		if (numAI > 0)
 		{
-			AiInCustom[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
-			AiInCustom[1]->SetCurrentAnimaion("Idle");
-			AiInCustom[1]->ResetAnimation();
+			AiInCustom[0] = p_cEntityManager->InstantiatePlayer(3, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
+			AiInCustom[0]->SetCurrentAnimaion("Idle");
+			AiInCustom[0]->ResetAnimation();
 		}
 		if (numAI > 1)
 		{
-			AiInCustom[0] = p_cEntityManager->InstantiatePlayer(4, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
-			AiInCustom[0]->SetCurrentAnimaion("Idle");
-			AiInCustom[0]->ResetAnimation();
+			AiInCustom[1] = p_cEntityManager->InstantiatePlayer(4, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
+			AiInCustom[1]->SetCurrentAnimaion("Idle");
+			AiInCustom[1]->ResetAnimation();
 		}
 
 		SprinklersOn = false;
@@ -2339,6 +2393,9 @@ void CGame::setGameState(int _gameState) {
 		ClearPlayersAndBombs();
 		shakeTime = 0;
 		mapTime = 0;
+
+		v_cPlayers.resize(numPLAYERS);
+		v_cAI.resize(numAI);
 
 		switch (mapsize) {
 		case 1:
@@ -2381,28 +2438,32 @@ void CGame::setGameState(int _gameState) {
 		else
 			v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, playermodel[1], DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 
-		if (numPLAYERS > 2) {
+		if (numPLAYERS > 2)
+		{
 			if (playermodel[2] == MODELS::CHICKEN - 1)
 				v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, playermodel[2], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 			else
 				v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, playermodel[2], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 		}
 
-		if (numPLAYERS > 3) {
+		if (numPLAYERS > 3)
+		{
 			if (playermodel[3] == MODELS::CHICKEN - 1)
 				v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
 			else
 				v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
 		}
 
-		if (numAI > 0) {
+		if (numAI > 0)
+		{
 			if (AImodel[1] == MODELS::CHICKEN - 1)
 				v_cAI[1] = p_cEntityManager->InstantiatePlayer(4, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 			else
 				v_cAI[1] = p_cEntityManager->InstantiatePlayer(4, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 		}
 
-		if (numAI > 1) {
+		if (numAI > 1)
+		{
 			if (AImodel[0] == MODELS::CHICKEN - 1)
 				v_cAI[0] = p_cEntityManager->InstantiatePlayer(3, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 			else
@@ -2455,69 +2516,88 @@ void CGame::setGameState(int _gameState) {
 
 void CGame::ClearPlayersAndBombs() {
 	for (int i = 0; i < v_cPlayers.size(); ++i)
-		if (v_cPlayers[i]) {
-			v_cPlayers[i]->Cleanup();
+	{
+		if (v_cPlayers[i])
+		{
 			delete v_cPlayers[i];
 			v_cPlayers[i] = nullptr;
 		}
+	}
+	v_cPlayers.clear();
 
 	for (CBomb* bomb : v_cBombs) {
 		if (bomb)
+		{
 			delete bomb;
-		bomb = nullptr;
+			bomb = nullptr;
+		}
 	}
-
 	v_cBombs.clear();
+
 	for (int i = 0; i < v_cAI.size(); ++i)
+	{
 		if (v_cAI[i]) {
 			v_cAI[i]->Cleanup();
 			delete v_cAI[i];
 			v_cAI[i] = nullptr;
 		}
+	}
+	v_cAI.clear();
 
 	for (int i = 0; i < AiInCustom.size(); ++i)
+	{
 		if (AiInCustom[i]) {
 			AiInCustom[i]->Cleanup();
 			delete AiInCustom[i];
 			AiInCustom[i] = nullptr;
 		}
+	}
+	AiInCustom.clear();
 
 	for (int i = 0; i < PlayersInCustom.size(); ++i)
+	{
 		if (PlayersInCustom[i]) {
 			PlayersInCustom[i]->Cleanup();
 			delete PlayersInCustom[i];
 			PlayersInCustom[i] = nullptr;
 		}
+	}
+	PlayersInCustom.clear();
 
 	for (CObject* object : objects) {
 		if (object)
+		{
 			delete object;
-		object = nullptr;
+			object = nullptr;
+		}
 	}
+	objects.clear();
 
 	for (CObject* exp : Xexplosions) {
 		if (exp)
 			delete exp;
 		exp = nullptr;
 	}
-
 	Xexplosions.clear();
-	for (CObject* exp : Zexplosions) {
+
+	for (CObject* exp : Zexplosions)
+	{
 		if (exp)
 			delete exp;
 		exp = nullptr;
 	}
+	Zexplosions.clear();
 
 	for (CItem* item : items) {
 		if (item)
 			delete item;
 		item = nullptr;
 	}
-
-	Zexplosions.clear();
-	explosionTimers.clear();
-	objects.clear();
 	items.clear();
+
+
+	explosionTimers.clear();
+
 	shakeTime = 0;
 }
 
@@ -2640,6 +2720,14 @@ void CGame::updateBombs(double timePassed) {
 					bombPos = Brenderer->fPosition;
 				}
 
+				for (int i = 0; i < v_cPlayers.size(); ++i)
+				{
+					if (v_cPlayers.at(i) && v_cPlayers.at(i)->isAlive())
+					{
+						g_pControllerInput->StartVibration(0, 0.25f, 1, v_cPlayers[i]->GetCharacterController()->GetControllerIndex());
+					}
+				}
+				/*
 				if (v_cPlayers.at(0) && v_cPlayers.at(0)->isAlive())
 					g_pControllerInput->StartVibration(0, 0.25f, 1, 0);
 				if (v_cPlayers.at(1) && v_cPlayers.at(1)->isAlive())
@@ -2648,6 +2736,7 @@ void CGame::updateBombs(double timePassed) {
 					g_pControllerInput->StartVibration(0, 0.25f, 1, 2);
 				if (v_cPlayers.at(3) && v_cPlayers.at(3)->isAlive())
 					g_pControllerInput->StartVibration(0, 0.25f, 1, 3);
+				*/
 
 				CPlayer* parent = v_cBombs[i]->getParent();
 				for (int j = 0; j < parent->getBombIndices().size(); ++j) {

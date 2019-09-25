@@ -2569,12 +2569,21 @@ CPlayer* CEntityManager::InstantiatePlayer(int numPlayer, int playerModel, int p
 	pLoadInfo.forwardVec = forwardVec;
 	pLoadInfo.scale = scale;
 	pLoadInfo.usedDiffuse = playerSkin;
-	pLoadInfo.usedVertex = VERTEX_SHADER::ANIM;
-	pLoadInfo.usedPixel = PIXEL_SHADER::ANIM;
+	if (v_tMeshTemplates[playerModel]._animations.size() > 0)
+	{
+		pLoadInfo.usedVertex = VERTEX_SHADER::ANIM;
+		pLoadInfo.usedPixel = PIXEL_SHADER::ANIM;
+	}
+	else
+	{
+		pLoadInfo.usedVertex = VERTEX_SHADER::BASIC;
+		pLoadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	}
 	pLoadInfo.collisionLayer = COLLISION_LAYERS::PLAYER;
 	pLoadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	pLoadInfo.usedGeo = -1;
 	pLoadInfo.LoadState = loadState;
+
 
 	CPlayer* player = nullptr;
 	player = CreatePlayerFromTemplate(pLoadInfo);

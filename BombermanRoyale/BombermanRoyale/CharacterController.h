@@ -46,4 +46,5 @@ public:
 	void SetButtonCodes(int actionButton, int pauseButton, int helpButton, int crouchButton);
 	inline float GetLeftRight() { return LeftXAxis; };
 	inline float GetUpDown() { return LeftYAxis; }
+	inline float GetControllerIndex() { return controllerIndex; }
 };
