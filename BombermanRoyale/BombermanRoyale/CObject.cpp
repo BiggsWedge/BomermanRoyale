@@ -245,29 +245,23 @@ bool CObject::MoveOverTime(float start_x, float end_x, float start_z , float end
 	collider = (TColliderComponent*)cTransform;
 
 	movetimer += timepassed;
-	float ratio = movetimer / 5.0f;
+	float ratio = movetimer / 1.5f;
 	float _x = lerp(start_x, end_x, ratio);
 	_x = _x - start_x;
 	float _z = lerp(start_z, end_z, ratio);
 	_z = _z - start_z;
-	collider->d3dCollider.Center.x += _x;
-	collider->d3dCollider.Center.z += _z;
+	_x = end_x - start_x;
+	_z = end_z - start_z;
+	_x *= timepassed * 5.0f;
+	_z *= timepassed * 5.0f;
+	this->Move(_x, _z);
 	if (ratio >= 1.0f)
 		movetimer = 0.0f;
-
-	transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
-
-	DirectX::XMFLOAT4 pos;
-	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
-	DirectX::XMStoreFloat3(&transform->fForwardVector, DirectX::XMVector3Normalize(transform->mObjMatrix.r[2]));
-	transform->fPosition = DirectX::XMFLOAT3(pos.x, pos.y, pos.z);
-	
-	if (ratio >= 1.0f)
-	{
-		return true;
-	}
-	else
+	if (transform->fPosition.x >= end_x && transform->fPosition.z >= end_z)
 		return false;
+	else
+		return true;
+	
 }
 
 bool CObject::Collides(CObject * _other)
