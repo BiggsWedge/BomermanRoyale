@@ -133,44 +133,57 @@ public:
 
 	bool collisionMatrix[COLLISION_LAYERS::COUNT][COLLISION_LAYERS::COUNT];
 
+#pragma region Essentials
+
 	GW::GRAPHICS::GDirectX11Surface*	d3dSurface = nullptr;
 	ID3D11Device*						d3dDevice = nullptr;
 	IDXGISwapChain*						d3dSwapChain = nullptr;
 	ID3D11DeviceContext*				d3dContext = nullptr;
+	ID3D11RenderTargetView*				d3dRenderTargetView = nullptr;
+	ID3D11DepthStencilView*				d3dDepthStencilView = nullptr;
+	ID3D11DepthStencilState*			d3dDepthStencilState[DEPTH_STENCIL_STATE::COUNT] = {};
 
-	ID3D11VertexShader*					d3dVertexShader[VERTEX_SHADER::COUNT] = {};
+#pragma endregion
+
+#pragma region Shader Stuff
+
 	ID3D11InputLayout*					d3dInputLayout[INPUT_LAYOUT::COUNT] = {};
+	ID3D11VertexShader*					d3dVertexShader[VERTEX_SHADER::COUNT] = {};
 	ID3D11PixelShader*					d3dPixelShader[PIXEL_SHADER::COUNT] = {};
 	ID3D11GeometryShader*				d3dGeometryShader[GEOMETRY_SHADER::COUNT] = {};
 	ID3D11ComputeShader*				d3dComputeShader[COMPUTE_SHADER::COUNT] = {};
-
 	ID3D11Buffer*						d3dConstBuffers[CONSTANT_BUFFER::COUNT] = {};
-	ID3D11RenderTargetView*				d3dRenderTargetView = nullptr;
-	ID3D11DepthStencilView*				d3dDepthStencilView = nullptr;
+
+#pragma endregion
+
+#pragma region Texture Stuff
+
 	ID3D11RasterizerState*				d3dRasterizerState[RASTERIZER_STATE::COUNT] = {};
-	ID3D11RasterizerState*				d3dRasterizerState2 = nullptr;
-	ID3D11RasterizerState*				d3dRasterizerStateSKYBOX = nullptr;
 	ID3D11SamplerState*					d3dSamplerState = nullptr;
-	ID3D11DepthStencilState*			d3dDepthStencilState[DEPTH_STENCIL_STATE::COUNT] = {};
-	ID3D11DeviceContext*				d3dDeferredContext = nullptr;
 	ID3D11ShaderResourceView*			d3dDiffuseTextures[DIFFUSE_TEXTURES::COUNT] = {};
 	ID3D11BlendState*					d3dBlendState[BLEND_STATE::COUNT] = {};
 
-	bool								bUseDebugRenderCamera = false;
+#pragma endregion
+
+#pragma region Sprite Stuff
 
 	DirectX::SpriteBatch*				d3dSpriteBatch;
 	DirectX::SpriteFont*				d3dSpriteFont;
 
+#pragma endregion
+
+#pragma region Skybox Stuff
+
+	ID3D11Texture2D*					Jungle = nullptr;
+	ID3D11ShaderResourceView*			JungleSRV = nullptr;
+	ID3D11SamplerState*					JungleSampler = nullptr;
+	ID3D11Buffer*						JungleVertexBuffer = nullptr;
+	ID3D11Buffer*						JungleIndexBuffer = nullptr;
+
+#pragma endregion
+	
+	bool								bUseDebugRenderCamera = false;
 	bool								drawColliders;
-
-
-
-	//Skybox Stuff
-	ID3D11Texture2D						*Jungle = nullptr;
-	ID3D11ShaderResourceView			*JungleSRV = nullptr;
-	ID3D11SamplerState					*JungleSampler = nullptr;
-	ID3D11Buffer						*JungleVertexBuffer = nullptr;
-	ID3D11Buffer						*JungleIndexBuffer = nullptr;
 
 	DirectX::XMMATRIX					camMat;
 	DirectX::XMMATRIX					debugCamMat;
@@ -184,7 +197,6 @@ public:
 	DirectX::XMFLOAT3					camPos;
 	DirectX::XMFLOAT3					newCamPos;
 	DirectX::XMMATRIX					tempCamera;
-
 
 	TBasicVertexConstBuff				basicConstBuff;
 

@@ -266,28 +266,15 @@ struct TMeshTemplate
 	uint32_t numVerts;
 	uint32_t numIndices;
 
-	int currKeyFrame = 0;
-	float frameTime = 0;
-	float currFrameIndex = 0;
-	float animTime = 0.0f;
-	float totalTime;
-
 	TMaterial _mat;
-
-	ID3D11Buffer* _vertexBuffer = nullptr;
-	ID3D11Buffer* _indexBuffer = nullptr;
 
 	std::vector<file_path_t> filePaths;
 	std::vector<material_t> mats;
 
 	enum TEXTURES { DIFFUSE = 0, EMISSIVE, SPECULAR, COUNT };
 
-	ID3D11ShaderResourceView*	_srv[TEXTURES::COUNT];
-	ID3D11Resource*				_textures[TEXTURES::COUNT];
-	ID3D11SamplerState*			_samState;
-
 	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr, float scale = 1.0f);
-	void initialize(ID3D11Device* _device);
+
 	/*~TMeshTemplate();
 	TMeshTemplate();*/
 };

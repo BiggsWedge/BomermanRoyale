@@ -29,7 +29,6 @@ void CObject::Draw(double timepassed)
 	TMeshComponent* mesh = nullptr;
 	TTransformComponent* transform = nullptr;
 	TTextureComponent* tex = nullptr;
-	TMaterialComponent* mat = nullptr;
 	TAnimComponent* anim = nullptr;
 
 	for (TComponent* c : v_tComponents)
@@ -53,11 +52,6 @@ void CObject::Draw(double timepassed)
 		case COMPONENT_TYPE::TEXTURE:
 		{
 			tex = (TTextureComponent*)c;
-			break;
-		}
-		case COMPONENT_TYPE::MATERIAL:
-		{
-			mat = (TMaterialComponent*)c;
 			break;
 		}
 		case COMPONENT_TYPE::ANIM:

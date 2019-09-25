@@ -148,6 +148,9 @@ bool CGame::Initialize()
 	viewPos = g_d3dData->viewMat;
 	shakeTime = 0;
 
+	menuController.SetControllerIndex(0);
+	menuController.SetButtonCodes(G_SOUTH_BTN, G_START_BTN, G_SELECT_BTN, G_RIGHT_SHOULDER_BTN);
+
 	v_cBombs.resize(maxNumBombs);
 	p_cRendererManager = new CRendererManager();
 	return true;
@@ -287,6 +290,8 @@ void CGame::Run()
 		static ULONGLONG currFrame = GetTickCount64();
 		static ULONGLONG prevFrame = GetTickCount64();
 
+		menuController.Update();
+
 		prevFrame = currFrame;
 		currFrame = GetTickCount64();
 		timePassed = (currFrame - prevFrame) / 1000.0;
@@ -317,6 +322,7 @@ void CGame::Run()
 		{
 			setGameState(GAME_STATE::MAIN_MENU);
 			loadHappened = true;
+			continue;
 		}
 
 
@@ -355,28 +361,35 @@ void CGame::Run()
 			if (curGameState == GAME_STATE::MAIN_MENU)
 			{
 				setGameState(GAME_STATE::ARCADE_MENU);
+				continue;
 			}
 			else if (curGameState == GAME_STATE::ARCADE_MENU) {
 				setGameState(GAME_STATE::ARCADE_GAME);
+				continue;
 			}
 			else if (curGameState == GAME_STATE::ARCADE_GAME) {
 				setGameState(GAME_STATE::MAIN_MENU);
+				continue;
 			}
 			else if (curGameState == GAME_STATE::WIN_SCREEN) {
 				setGameState(GAME_STATE::MAIN_MENU);
+				continue;
 			}
 			else if (curGameState == GAME_STATE::CREDIT_SCREEN)
 			{
 				setGameState(GAME_STATE::MAIN_MENU);
+				continue;
 			}
 		}
 		if (p1Pause.Released())
 		{
 			if (curGameState == GAME_STATE::WIN_SCREEN) {
 				setGameState(GAME_STATE::MAIN_MENU);
+				continue;
 			}
 			else if (curGameState == GAME_STATE::CREDIT_SCREEN) {
 				setGameState(GAME_STATE::MAIN_MENU);
+				continue;
 			}
 		}
 
@@ -413,107 +426,13 @@ void CGame::Run()
 
 		if (curGameState == GAME_STATE::MAIN_MENU)
 		{
-			if (menuBomb)
+			menucontroltimer += timePassed;
+			if (menuController.GetUpDown() > 0.0f && menucontroltimer > 0.2 && menuIndex > 0)
 			{
-				menuBomb->GetInput();
-
-				menucontroltimer += timePassed;
-				if (menuBomb->GetCharacterController()->GetUpDown() > 0.0f && menucontroltimer > 0.2 && menuIndex > 0)
+				if (menuIndex != 3)
 				{
-					if (menuIndex != 3)
-					{
-						menucontroltimer = 0.0;
-						menuBomb->Move(0.0f, 2.45f, false);
-						menuIndex -= 1;
-						for (int i = 0; i < MenuSounds.size(); ++i)
-						{
-							MenuSounds.at(i)->isSoundPlaying(soundplaying);
-							if (!soundplaying)
-							{
-								MenuSounds.at(i)->Play();
-								break;
-							}
-						}
-					}
-					else {
-						menucontroltimer = 0.0;
-						menuBomb->Move(0.0f, 4.9f + 2.45f, false);
-						menuIndex -= 3;
-						for (int i = 0; i < MenuSounds.size(); ++i)
-						{
-							MenuSounds.at(i)->isSoundPlaying(soundplaying);
-							if (!soundplaying)
-							{
-								MenuSounds.at(i)->Play();
-								break;
-							}
-						}
-					}
-					for (CObject* menu : menuObjects)
-					{
-						TComponent* cRenderer;
-						TComponent* cTexture;
-						if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-							continue;
-						menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
-						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
-						TTextureComponent* Texture = (TTextureComponent*)cTexture;
-						if (renderer->iUsedLoadState == GAME_STATE::MAIN_MENU)
-						{
-							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::MAIN_MENU;
-						}
-					}
-					setGameState(GAME_STATE::MAIN_MENU);
-				}
-				if (menuBomb->GetCharacterController()->GetUpDown() < 0.0f && menucontroltimer > 0.2 && menuIndex < 3)
-				{
-					if (menuIndex != 0)
-					{
-						menucontroltimer = 0.0;
-						menuBomb->Move(0.0f, -2.45f, false);
-						menuIndex += 1;
-						for (int i = 0; i < MenuSounds.size(); ++i)
-						{
-							MenuSounds.at(i)->isSoundPlaying(soundplaying);
-							if (!soundplaying)
-							{
-								MenuSounds.at(i)->Play();
-								break;
-							}
-						}
-					}
-					else {
-						menucontroltimer = 0.0;
-						menuBomb->Move(0.0f, -4.9f - 2.45f, false);
-						menuIndex += 3;
-						for (int i = 0; i < MenuSounds.size(); ++i)
-						{
-							MenuSounds.at(i)->isSoundPlaying(soundplaying);
-							if (!soundplaying)
-							{
-								MenuSounds.at(i)->Play();
-								break;
-							}
-						}
-					}
-					for (CObject* menu : menuObjects)
-					{
-						TComponent* cRenderer;
-						TComponent* cTexture;
-						if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-							continue;
-						menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
-						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
-						TTextureComponent* Texture = (TTextureComponent*)cTexture;
-						if (renderer->iUsedLoadState == GAME_STATE::MAIN_MENU)
-						{
-							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::MAIN_MENU + 1;
-						}
-					}
-					setGameState(GAME_STATE::MAIN_MENU);
-				}
-				if (menuBomb->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::ACTION))
-				{
+					menucontroltimer = 0.0;
+					menuIndex -= 1;
 					for (int i = 0; i < MenuSounds.size(); ++i)
 					{
 						MenuSounds.at(i)->isSoundPlaying(soundplaying);
@@ -523,34 +442,120 @@ void CGame::Run()
 							break;
 						}
 					}
-					switch (menuIndex) {
-					case 0:
+				}
+				else {
+					menucontroltimer = 0.0;
+					menuIndex -= 3;
+					for (int i = 0; i < MenuSounds.size(); ++i)
 					{
-						setGameState(GAME_STATE::ARCADE_MENU);
-						break;
-					}
-					case 1:
-					{
-						break;
-					}
-					case 2:
-					{
-						break;
-					}
-					case 3:
-					{
-						HWND windowHandle;
-						g_pWindow->GetWindowHandle(sizeof(HWND), (void**)& windowHandle);
-						SendMessage(windowHandle, WM_CLOSE, 0, 0);
-						break;
-					}
-					default:
-					{
-						break;
-					}
+						MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						if (!soundplaying)
+						{
+							MenuSounds.at(i)->Play();
+							break;
+						}
 					}
 				}
+				for (CObject* menu : menuObjects)
+				{
+					TComponent* cRenderer;
+					TComponent* cTexture;
+					if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+						continue;
+					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+					TTextureComponent* Texture = (TTextureComponent*)cTexture;
+					if (renderer->iUsedLoadState == GAME_STATE::MAIN_MENU)
+					{
+						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::MAIN_MENU;
+					}
+				}
+				//setGameState(GAME_STATE::MAIN_MENU);
 			}
+			if (menuController.GetUpDown() < 0.0f && menucontroltimer > 0.2 && menuIndex < 3)
+			{
+				if (menuIndex != 0)
+				{
+					menucontroltimer = 0.0;
+					menuIndex += 1;
+					for (int i = 0; i < MenuSounds.size(); ++i)
+					{
+						MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						if (!soundplaying)
+						{
+							MenuSounds.at(i)->Play();
+							break;
+						}
+					}
+				}
+				else {
+					menucontroltimer = 0.0;
+					menuIndex += 3;
+					for (int i = 0; i < MenuSounds.size(); ++i)
+					{
+						MenuSounds.at(i)->isSoundPlaying(soundplaying);
+						if (!soundplaying)
+						{
+							MenuSounds.at(i)->Play();
+							break;
+						}
+					}
+				}
+				for (CObject* menu : menuObjects)
+				{
+					TComponent* cRenderer;
+					TComponent* cTexture;
+					if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+						continue;
+					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+					TTextureComponent* Texture = (TTextureComponent*)cTexture;
+					if (renderer->iUsedLoadState == GAME_STATE::MAIN_MENU)
+					{
+						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::MAIN_MENU + 1;
+					}
+				}
+				//setGameState(GAME_STATE::MAIN_MENU);
+			}
+			if (menuController.ButtonReleased(DEFAULT_BUTTONS::ACTION))
+			{
+				for (int i = 0; i < MenuSounds.size(); ++i)
+				{
+					MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					if (!soundplaying)
+					{
+						MenuSounds.at(i)->Play();
+						break;
+					}
+				}
+				switch (menuIndex) {
+				case 0:
+				{
+					setGameState(GAME_STATE::ARCADE_MENU);
+					continue;
+				}
+				case 1:
+				{
+					break;
+				}
+				case 2:
+				{
+					break;
+				}
+				case 3:
+				{
+					HWND windowHandle;
+					g_pWindow->GetWindowHandle(sizeof(HWND), (void**)& windowHandle);
+					SendMessage(windowHandle, WM_CLOSE, 0, 0);
+					break;
+				}
+				default:
+				{
+					break;
+				}
+				}
+			}
+
 		}
 
 #pragma endregion
@@ -567,181 +572,218 @@ void CGame::Run()
 			{
 				numAI++;
 			}
-			if (menuBomb)
+
+			menucontroltimer += timePassed;
+			if (menuController.GetUpDown() > 0.0f && menucontroltimer > 0.2 && menuz > 0)
 			{
-				menuBomb->GetInput();
-
-				menucontroltimer += timePassed;
-				if (menuBomb->GetCharacterController()->GetUpDown() > 0.0f && menucontroltimer > 0.2 && menuz > 0)
+				menucontroltimer = 0.0;
+				for (int i = 0; i < MenuSounds.size(); ++i)
 				{
-
-					menucontroltimer = 0.0;
-					if (menuz < 3)
-						menuBomb->Move(0.0f, 3.5f, false);
-					else if (menuz == 4)
-						menuBomb->Move(0.0f, 3.0f, false);
-					else
-						menuBomb->Move(0.0f, 2.5f, false);
-
-					for (int i = 0; i < MenuSounds.size(); ++i)
+					MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					if (!soundplaying)
 					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
-						{
-							MenuSounds.at(i)->Play();
-							break;
-						}
+						MenuSounds.at(i)->Play();
+						break;
 					}
-					if (menuz == 1 && menux == 2)
-					{
-						menuBomb->Move(-1.0f, 0.0f, false);
-						menux -= 1;
-					}
-					menuz -= 1;
-					menuIndex = (menuz * 2) + menux;
-					if (menuz > 3)
-						menuIndex = 7;
-					if (menux == 2)
-						menuIndex = 8;
-					for (CObject* menu : menuObjects)
-					{
-						TComponent* cRenderer;
-						TComponent* cTexture;
-						if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-							continue;
-						menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
-						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
-						TTextureComponent* Texture = (TTextureComponent*)cTexture;
-						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
-						{
-							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
-						}
-					}
-					setGameState(GAME_STATE::ARCADE_MENU);
 				}
-				if (menuBomb->GetCharacterController()->GetUpDown() < 0.0f && menucontroltimer > 0.2 && menuz < 4)
+				if (menuz == 1 && menux == 2)
 				{
-
-					menucontroltimer = 0.0;
-					if (menuz < 2)
-						menuBomb->Move(0.0f, -3.5f, false);
-					else if (menuz == 3)
-						menuBomb->Move(0.0f, -3.0f, false);
-					else
-						menuBomb->Move(0.0f, -2.5f, false);
-
-					for (int i = 0; i < MenuSounds.size(); ++i)
-					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
-						{
-							MenuSounds.at(i)->Play();
-							break;
-						}
-					}
-					if (menuz >= 2 && menux > 0)
-					{
-						menuBomb->Move(-8.0f, 0.0f, false);
-						menux -= 1;
-					}
-					if (menuz == 1 && menux == 2)
-					{
-						menuBomb->Move(-1.0f, 0.0f, false);
-						menux -= 1;
-					}
-					menuz += 1;
-					menuIndex = (menuz * 2) + menux;
-					if (menuz > 3)
-						menuIndex = 7;
-					if (menux == 2)
-						menuIndex = 8;
-					for (CObject* menu : menuObjects)
-					{
-						TComponent* cRenderer;
-						TComponent* cTexture;
-						if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-							continue;
-						menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
-						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
-						TTextureComponent* Texture = (TTextureComponent*)cTexture;
-						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
-						{
-							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
-						}
-					}
-					setGameState(GAME_STATE::ARCADE_MENU);
-				}
-				if (menuBomb->GetCharacterController()->GetLeftRight() > 0.0f && menucontroltimer > 0.2 && menux < 2 && menuz < 3)
-				{
-
-					menucontroltimer = 0.0;
-					if (menux < 1)
-						menuBomb->Move(8.0f, 0.0f, false);
-					else if (menux == 1)
-					{
-						if (menuz < 3)
-							menuBomb->Move(1.0f, ((float)menuz - 1.0f) * 3.5f, false);
-						else if (menuz == 3)
-							menuBomb->Move(1.0f, 9.0f, false);
-						else if (menuz > 3)
-							menuBomb->Move(1.0f, (((float)menuz - 3) * 2.5f) + 9.0f, false);
-						menuz = 1;
-					}
-					menux += 1;
-					for (int i = 0; i < MenuSounds.size(); ++i)
-					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
-						{
-							MenuSounds.at(i)->Play();
-							break;
-						}
-					}
-					menuIndex = (menuz * 2) + menux;
-					if (menuz > 3)
-						menuIndex = 7;
-					if (menux == 2)
-						menuIndex = 8;
-					for (CObject* menu : menuObjects)
-					{
-						TComponent* cRenderer;
-						TComponent* cTexture;
-						if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-							continue;
-						menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
-						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
-						TTextureComponent* Texture = (TTextureComponent*)cTexture;
-						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
-						{
-							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
-						}
-					}
-					setGameState(GAME_STATE::ARCADE_MENU);
-
-				}
-				if (menuBomb->GetCharacterController()->GetLeftRight() < 0.0f && menucontroltimer > 0.2 && menux > 0)
-				{
-
-					menucontroltimer = 0.0;
-					if (menux == 2)
-						menuBomb->Move(-1.0f, 0.0f, false);
-					else
-						menuBomb->Move(-8.0f, 0.0f, false);
 					menux -= 1;
-					for (int i = 0; i < MenuSounds.size(); ++i)
+				}
+				menuz -= 1;
+				menuIndex = (menuz * 2) + menux;
+				if (menuz > 3)
+					menuIndex = 7;
+				if (menux == 2)
+					menuIndex = 8;
+				for (CObject* menu : menuObjects)
+				{
+					TComponent* cRenderer;
+					TComponent* cTexture;
+					if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+						continue;
+					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+					TTextureComponent* Texture = (TTextureComponent*)cTexture;
+					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
 					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
-						{
-							MenuSounds.at(i)->Play();
-							break;
-						}
+						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
 					}
-					menuIndex = (menuz * 2) + menux;
-					if (menuz > 3)
-						menuIndex = 7;
-					if (menux == 2)
-						menuIndex = 8;
+				}
+				//setGameState(GAME_STATE::ARCADE_MENU);
+			}
+			if (menuController.GetUpDown() < 0.0f && menucontroltimer > 0.2 && menuz < 4)
+			{
+
+				menucontroltimer = 0.0;
+				for (int i = 0; i < MenuSounds.size(); ++i)
+				{
+					MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					if (!soundplaying)
+					{
+						MenuSounds.at(i)->Play();
+						break;
+					}
+				}
+				if (menuz >= 2 && menux > 0)
+				{
+					menux -= 1;
+				}
+				if (menuz == 1 && menux == 2)
+				{
+					menux -= 1;
+				}
+				menuz += 1;
+				menuIndex = (menuz * 2) + menux;
+				if (menuz > 3)
+					menuIndex = 7;
+				if (menux == 2)
+					menuIndex = 8;
+				for (CObject* menu : menuObjects)
+				{
+					TComponent* cRenderer;
+					TComponent* cTexture;
+					if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+						continue;
+					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+					TTextureComponent* Texture = (TTextureComponent*)cTexture;
+					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
+					{
+						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
+					}
+				}
+				//setGameState(GAME_STATE::ARCADE_MENU);
+			}
+			if (menuController.GetLeftRight() > 0.0f && menucontroltimer > 0.2 && menux < 2 && menuz < 3)
+			{
+
+				menucontroltimer = 0.0;
+				if (menux == 1)
+				{
+					menuz = 1;
+				}
+				menux += 1;
+				for (int i = 0; i < MenuSounds.size(); ++i)
+				{
+					MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					if (!soundplaying)
+					{
+						MenuSounds.at(i)->Play();
+						break;
+					}
+				}
+				menuIndex = (menuz * 2) + menux;
+				if (menuz > 3)
+					menuIndex = 7;
+				if (menux == 2)
+					menuIndex = 8;
+				for (CObject* menu : menuObjects)
+				{
+					TComponent* cRenderer;
+					TComponent* cTexture;
+					if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+						continue;
+					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+					TTextureComponent* Texture = (TTextureComponent*)cTexture;
+					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
+					{
+						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
+					}
+				}
+				//setGameState(GAME_STATE::ARCADE_MENU);
+
+			}
+			if (menuController.GetLeftRight() < 0.0f && menucontroltimer > 0.2 && menux > 0)
+			{
+				menucontroltimer = 0.0;
+				menux -= 1;
+				for (int i = 0; i < MenuSounds.size(); ++i)
+				{
+					MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					if (!soundplaying)
+					{
+						MenuSounds.at(i)->Play();
+						break;
+					}
+				}
+				menuIndex = (menuz * 2) + menux;
+				if (menuz > 3)
+					menuIndex = 7;
+				if (menux == 2)
+					menuIndex = 8;
+				for (CObject* menu : menuObjects)
+				{
+					TComponent* cRenderer;
+					TComponent* cTexture;
+					if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+						continue;
+					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+					TTextureComponent* Texture = (TTextureComponent*)cTexture;
+					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
+					{
+						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
+					}
+				}
+				//setGameState(GAME_STATE::ARCADE_MENU);
+			}
+			if (menuController.ButtonReleased(DEFAULT_BUTTONS::ACTION))
+			{
+				menuIndex = (menuz * 2) + menux;
+				if (menuz > 3)
+					menuIndex = 7;
+				if (menux == 2)
+					menuIndex = 8;
+				for (int i = 0; i < MenuSounds.size(); ++i)
+				{
+					MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					if (!soundplaying)
+					{
+						MenuSounds.at(i)->Play();
+						break;
+					}
+				}
+				switch (menuIndex) {
+				case 0:
+				{
+					if (mapsize > 1)
+						mapsize--;
+					break;
+				}
+				case 1:
+				{
+					if (mapsize < 3)
+						mapsize++;
+					break;
+				}
+				case 2:
+				{
+					if (numPLAYERS > 2)
+						numPLAYERS--;
+					break;
+				}
+				case 3:
+				{
+					if (numPLAYERS < 4 && numAI + numPLAYERS < 4)
+						numPLAYERS++;
+					break;
+				}
+				case 4:
+				{
+					if (numAI > 0)
+						numAI--;
+					break;
+				}
+				case 5:
+				{
+					if (numAI < 2 && numPLAYERS + numAI < 4)
+						numAI++;
+					break;
+				}
+				case 6:
+				{
 					for (CObject* menu : menuObjects)
 					{
 						TComponent* cRenderer;
@@ -753,136 +795,65 @@ void CGame::Run()
 						TTextureComponent* Texture = (TTextureComponent*)cTexture;
 						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
 						{
-							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
+							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
 						}
 					}
-					setGameState(GAME_STATE::ARCADE_MENU);
+					//menuBomb->Move(0.0f, 6.0f, false);
+					menuz = 0;
+					menux = 0;
+					menuIndex = 0;
+					setGameState(GAME_STATE::ARCADE_GAME);
+					continue;
 				}
-				if (menuBomb->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::ACTION))
+				case 7:
 				{
-					menuIndex = (menuz * 2) + menux;
-					if (menuz > 3)
-						menuIndex = 7;
-					if (menux == 2)
-						menuIndex = 8;
-					for (int i = 0; i < MenuSounds.size(); ++i)
+					for (CObject* menu : menuObjects)
 					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
+						TComponent* cRenderer;
+						TComponent* cTexture;
+						if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+							continue;
+						menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+						TTextureComponent* Texture = (TTextureComponent*)cTexture;
+						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
 						{
-							MenuSounds.at(i)->Play();
-							break;
+							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
 						}
 					}
-					switch (menuIndex) {
-					case 0:
+					//menuBomb->Move(0.0f, 9.0f, false);
+					menuz = 0;
+					menux = 0;
+					menuIndex = 0;
+					setGameState(GAME_STATE::MAIN_MENU);
+					continue;
+				}
+				case 8:
+				{
+					for (CObject* menu : menuObjects)
 					{
-						if (mapsize > 1)
-							mapsize--;
-						break;
-					}
-					case 1:
-					{
-						if (mapsize < 3)
-							mapsize++;
-						break;
-					}
-					case 2:
-					{
-						if (numPLAYERS > 2)
-							numPLAYERS--;
-						break;
-					}
-					case 3:
-					{
-						if (numPLAYERS < 4 && numAI + numPLAYERS < 4)
-							numPLAYERS++;
-						break;
-					}
-					case 4:
-					{
-						if (numAI > 0)
-							numAI--;
-						break;
-					}
-					case 5:
-					{
-						if (numAI < 2 && numPLAYERS + numAI < 4)
-							numAI++;
-						break;
-					}
-					case 6:
-					{
-						for (CObject* menu : menuObjects)
+						TComponent* cRenderer;
+						TComponent* cTexture;
+						if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+							continue;
+						menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+						TTextureComponent* Texture = (TTextureComponent*)cTexture;
+						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
 						{
-							TComponent* cRenderer;
-							TComponent* cTexture;
-							if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-								continue;
-							menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
-							TRendererComponent* renderer = (TRendererComponent*)cRenderer;
-							TTextureComponent* Texture = (TTextureComponent*)cTexture;
-							if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
-							{
-								Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
-							}
+							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
 						}
-						//menuBomb->Move(0.0f, 6.0f, false);
-						menuz = 0;
-						menux = 0;
-						menuIndex = 0;
-						setGameState(GAME_STATE::ARCADE_GAME);
-						break;
 					}
-					case 7:
-					{
-						for (CObject* menu : menuObjects)
-						{
-							TComponent* cRenderer;
-							TComponent* cTexture;
-							if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-								continue;
-							menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
-							TRendererComponent* renderer = (TRendererComponent*)cRenderer;
-							TTextureComponent* Texture = (TTextureComponent*)cTexture;
-							if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
-							{
-								Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
-							}
-						}
-						//menuBomb->Move(0.0f, 9.0f, false);
-						menuz = 0;
-						menux = 0;
-						menuIndex = 0;
-						setGameState(GAME_STATE::MAIN_MENU);
-						break;
-					}
-					case 8:
-					{
-						for (CObject* menu : menuObjects)
-						{
-							TComponent* cRenderer;
-							TComponent* cTexture;
-							if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-								continue;
-							menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
-							TRendererComponent* renderer = (TRendererComponent*)cRenderer;
-							TTextureComponent* Texture = (TTextureComponent*)cTexture;
-							if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
-							{
-								Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
-							}
-						}
-						menuz = 0;
-						menux = 0;
-						menuIndex = 0;
-						setGameState(GAME_STATE::CHARACTER_SCREEN);
-						CSx = -11.35f;
-						break;
-					}
-					}
+					menuz = 0;
+					menux = 0;
+					menuIndex = 0;
+					setGameState(GAME_STATE::CHARACTER_SCREEN);
+					CSx = -11.35f;
+					continue;
+				}
 				}
 			}
+
 		}
 #pragma endregion
 
@@ -890,260 +861,306 @@ void CGame::Run()
 
 		if (curGameState == GAME_STATE::CHARACTER_SCREEN)
 		{
-			if (menuBomb)
+			for (int i = 0; i < PlayersInCustom.size(); ++i)
 			{
-				menuBomb->GetInput();
+				if (PlayersInCustom[i])
+					PlayersInCustom[i]->updatePlayer(timePassed);
+			}
+			for (int i = 0; i < AiInCustom.size(); ++i)
+			{
+				if (AiInCustom[i])
+					AiInCustom[i]->updatePlayer(i);
+			}
 
-				menucontroltimer += timePassed;
-				if (menuBomb->GetCharacterController()->GetLeftRight() > 0.0f && menucontroltimer > 0.3 && menuIndex < 7)
-				{
-					menucontroltimer = 0.0;
-					if (menuIndex % 2 == 0)
-					{
-						menuBomb->Move(3.1f, 0.0f, false);
-						CSx += 3.1f;
-					}
-					else
-					{
-						menuBomb->Move(3.0f, 0.0f, false);
-						CSx += 3.0f;
-					}
-					menuIndex += 1;
-					for (int i = 0; i < MenuSounds.size(); ++i)
-					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
-						{
-							MenuSounds.at(i)->Play();
-							break;
-						}
-					}
-					for (CObject* menu : menuObjects)
-					{
-						TComponent* cRenderer;
-						TComponent* cTexture;
-						if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-							continue;
-						menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
-						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
-						TTextureComponent* Texture = (TTextureComponent*)cTexture;
-						if (renderer->iUsedLoadState == GAME_STATE::CHARACTER_SCREEN)
-						{
-							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::CHARACTER_SCREEN1 + menuIndex;
-						}
-					}
-					setGameState(GAME_STATE::CHARACTER_SCREEN);
 
-				}
-				if (menuBomb->GetCharacterController()->GetLeftRight() < 0.0f && menucontroltimer > 0.3 && menuIndex > 0)
+			bool playerChanges[4] = { false };
+			bool aiChanges[2] = { false };
+
+			menucontroltimer += timePassed;
+			if (menuController.GetLeftRight() > 0.0f && menucontroltimer > 0.3 && menuIndex < 7)
+			{
+				menucontroltimer = 0.0;
+				if (menuIndex % 2 == 0)
 				{
-					menucontroltimer = 0.0;
-					if (menuIndex % 2 == 0)
+					CSx += 3.1f;
+				}
+				else
+				{
+					CSx += 3.0f;
+				}
+				menuIndex += 1;
+				for (int i = 0; i < MenuSounds.size(); ++i)
+				{
+					MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					if (!soundplaying)
 					{
-						menuBomb->Move(-3.0f, 0.0f, false);
-						CSx -= 3.0f;
+						MenuSounds.at(i)->Play();
+						break;
 					}
-					else
+				}
+				for (CObject* menu : menuObjects)
+				{
+					TComponent* cRenderer;
+					TComponent* cTexture;
+					if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+						continue;
+					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+					TTextureComponent* Texture = (TTextureComponent*)cTexture;
+					if (renderer->iUsedLoadState == GAME_STATE::CHARACTER_SCREEN)
 					{
-						menuBomb->Move(-3.1f, 0.0f, false);
-						CSx -= 3.1f;
+						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::CHARACTER_SCREEN1 + menuIndex;
 					}
-					menuIndex -= 1;
-					for (int i = 0; i < MenuSounds.size(); ++i)
+				}
+				//setGameState(GAME_STATE::CHARACTER_SCREEN);
+			}
+			if (menuController.GetLeftRight() < 0.0f && menucontroltimer > 0.3 && menuIndex > 0)
+			{
+				menucontroltimer = 0.0;
+				if (menuIndex % 2 == 0)
+				{
+					CSx -= 3.0f;
+				}
+				else
+				{
+					CSx -= 3.1f;
+				}
+				menuIndex -= 1;
+				for (int i = 0; i < MenuSounds.size(); ++i)
+				{
+					MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					if (!soundplaying)
 					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
+						MenuSounds.at(i)->Play();
+						break;
+					}
+				}
+				for (CObject* menu : menuObjects)
+				{
+					TComponent* cRenderer;
+					TComponent* cTexture;
+					if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+						continue;
+					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+					TTextureComponent* Texture = (TTextureComponent*)cTexture;
+					if (renderer->iUsedLoadState == GAME_STATE::CHARACTER_SCREEN)
+					{
+						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::CHARACTER_SCREEN1 + menuIndex;
+					}
+				}
+				//setGameState(GAME_STATE::CHARACTER_SCREEN);
+			}
+			if (menuController.ButtonReleased(DEFAULT_BUTTONS::PAUSE))
+			{
+				CSx = -11.35;
+				menuIndex = 0;
+				setGameState(GAME_STATE::ARCADE_MENU);
+				continue;
+			}
+			if (menuController.ButtonReleased(DEFAULT_BUTTONS::ACTION))
+			{
+				TComponent* cMesh;
+				for (int i = 0; i < MenuSounds.size(); ++i)
+				{
+					MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					if (!soundplaying)
+					{
+						MenuSounds.at(i)->Play();
+						break;
+					}
+				}
+				switch (menuIndex) {
+				case 0:
+				{
+					if (playermodel[0] > 3)
+					{
+						playermodel[0] -= 1;
+						playerChanges[0] = true;
+
+					}
+					break;
+				}
+				case 1:
+				{
+					if (playermodel[0] < 4)
+					{
+						playermodel[0] += 1;
+						playerChanges[0] = true;
+					}
+					break;
+				}
+				case 2:
+				{
+					if (playermodel[1] > 3)
+					{
+						playermodel[1] -= 1;
+						playerChanges[1] = true;
+					}
+					break;
+				}
+				case 3:
+				{
+					if (playermodel[1] < 4)
+					{
+						playermodel[1] += 1;
+						playerChanges[1] = true;
+					}
+					break;
+				}
+				case 4:
+				{
+					if (numPLAYERS > 2 && playermodel[2] > 3)
+					{
+						playermodel[2] -= 1;
+						playerChanges[2] = true;
+
+					}
+					else if (numAI > 0 && AImodel[0] > 3 && numPLAYERS < 3)
+					{
+						AImodel[0] -= 1;
+						delete AiInCustom[0];
+						AiInCustom[0] = p_cEntityManager->InstantiatePlayer(4, AImodel[0], (AImodel[0] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN3 : DIFFUSE_TEXTURES::BOMB3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), (AImodel[0] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f));
+
+						if (AiInCustom[0]->SetCurrentAnimaion("Idle") >= 0)
+							AiInCustom[0]->ResetAnimation();
+					}
+					break;
+				}
+				case 5:
+				{
+					if (numPLAYERS > 2 && playermodel[2] < 4)
+					{
+						playermodel[2] += 1;
+						playerChanges[2] = true;
+					}
+					else if (numAI > 0 && AImodel[0] < 4 && numPLAYERS < 3)
+					{
+						AImodel[0] += 1;
+						delete AiInCustom[0];
+						AiInCustom[0] = p_cEntityManager->InstantiatePlayer(4, AImodel[0], (AImodel[0] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN3 : DIFFUSE_TEXTURES::BOMB3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), (AImodel[0] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f));
+
+						if (AiInCustom[0]->SetCurrentAnimaion("Idle") >= 0)
+							AiInCustom[0]->ResetAnimation();
+					}
+					break;
+				}
+				case 6:
+				{
+					if (numPLAYERS > 3 && playermodel[3] > 3)
+					{
+						playermodel[3] -= 1;
+						playerChanges[3] = true;
+					}
+					else if (numAI > 0 && AImodel[1] > 3 && numPLAYERS > 2)
+					{
+						AImodel[1] -= 1;
+						delete AiInCustom[1];
+
+						AiInCustom[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], AImodel[1] == MODELS::CHICKEN ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), (AImodel[1] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f));
+						if (AiInCustom[1]->SetCurrentAnimaion("Idle") >= 0)
+							AiInCustom[1]->ResetAnimation();
+
+
+					}
+					else if (numAI > 1 && AImodel[1] > 3)
+					{
+						AImodel[1] -= 1;
+						delete AiInCustom[1];
+
+						AiInCustom[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], AImodel[1] == MODELS::CHICKEN ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), (AImodel[1] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f));
+						if (AiInCustom[1]->SetCurrentAnimaion("Idle") >= 0)
+							AiInCustom[1]->ResetAnimation();
+					}
+					break;
+				}
+				case 7:
+				{
+					if (numPLAYERS > 3 && playermodel[3] < 4)
+					{
+						playermodel[3] += 1;
+						playerChanges[3] = true;
+					}
+					else if (numAI > 0 && AImodel[1] < 4 && numPLAYERS > 2)
+					{
+						AImodel[1] += 1;
+						delete AiInCustom[1];
+
+						AiInCustom[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], AImodel[1] == MODELS::CHICKEN ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), (AImodel[1] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f));
+						if (AiInCustom[1]->SetCurrentAnimaion("Idle") >= 0)
+							AiInCustom[1]->ResetAnimation();
+					}
+					else if (numAI > 1 && AImodel[1] < 4)
+					{
+						AImodel[1] += 1;
+						delete AiInCustom[1];
+
+						AiInCustom[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], AImodel[1] == MODELS::CHICKEN ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), (AImodel[1] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f));
+						if (AiInCustom[1]->SetCurrentAnimaion("Idle") >= 0)
+							AiInCustom[1]->ResetAnimation();
+					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+				}
+
+				for (int i = 0; i < PlayersInCustom.size(); ++i)
+				{
+					if (playerChanges[i])
+					{
+						int ntexture = 0;
+						DirectX::XMFLOAT3 nposition = { 0.0f, 0.0f, 0.0f };
+						DirectX::XMFLOAT3 nscale = { 1.0f, 1.0f, 1.0f };
+						DirectX::XMFLOAT3 nforVec = { 1.0f, 1.0f, 1.0f };
+
+						switch (i)
 						{
-							MenuSounds.at(i)->Play();
+						case 0:
+						{
+							ntexture = (playermodel[i] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN1 : DIFFUSE_TEXTURES::BOMB;
+							nposition = DirectX::XMFLOAT3(-10.3f, 11.4f, -8.4f);
+							nforVec = DirectX::XMFLOAT3(0.4f, 1.6f, -1.0f);
 							break;
 						}
-					}
-					for (CObject* menu : menuObjects)
-					{
-						TComponent* cRenderer;
-						TComponent* cTexture;
-						if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
-							continue;
-						menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
-						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
-						TTextureComponent* Texture = (TTextureComponent*)cTexture;
-						if (renderer->iUsedLoadState == GAME_STATE::CHARACTER_SCREEN)
+						case 1:
 						{
-							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::CHARACTER_SCREEN1 + menuIndex;
-						}
-					}
-					setGameState(GAME_STATE::CHARACTER_SCREEN);
-				}
-				if (menuBomb->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::PAUSE))
-				{
-					setGameState(GAME_STATE::ARCADE_MENU);
-					CSx = -11.35;
-					menuIndex = 0;
-				}
-				if (menuBomb->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::ACTION))
-				{
-					TComponent* cMesh;
-					for (int i = 0; i < MenuSounds.size(); ++i)
-					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
-						{
-							MenuSounds.at(i)->Play();
+							ntexture = (playermodel[i] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN2 : DIFFUSE_TEXTURES::BOMB2;
+							nposition = DirectX::XMFLOAT3(-4.0f, 11.4f, -8.4f);
+							nforVec = DirectX::XMFLOAT3(0.5f, 1.6f, -1.0f);
 							break;
 						}
-					}
-					switch (menuIndex) {
-					case 0:
-					{
-						if (playermodel[0] > 3)
+						case 2:
 						{
-							playermodel[0] -= 1;
-							PlayersInCustom[0]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[0]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
+							ntexture = (playermodel[i] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN3 : DIFFUSE_TEXTURES::BOMB3;
+							nposition = DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f);
+							nforVec = DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f);
+							break;
 						}
-						break;
-					}
-					case 1:
-					{
-						if (playermodel[0] < 4)
+						case 3:
 						{
-							playermodel[0] += 1;
-							PlayersInCustom[0]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[0]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
+							ntexture = (playermodel[i] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4;
+							nposition = DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f);
+							nforVec = DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f);
+							break;
 						}
-						break;
-					}
-					case 2:
-					{
-						if (playermodel[1] > 3)
+						default:
 						{
-							playermodel[1] -= 1;
-							PlayersInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[1]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
+
+							break;
 						}
-						break;
-					}
-					case 3:
-					{
-						if (playermodel[1] < 4)
-						{
-							playermodel[1] += 1;
-							PlayersInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[1]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
 						}
-						break;
-					}
-					case 4:
-					{
-						if (numPLAYERS > 2 && playermodel[2] > 3)
-						{
-							playermodel[2] -= 1;
-							PlayersInCustom[2]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[2]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
-						}
-						else if (numAI > 0 && AImodel[0] > 3 && numPLAYERS < 3)
-						{
-							AImodel[0] -= 1;
-							AiInCustom[0]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[0]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
-						}
-						break;
-					}
-					case 5:
-					{
-						if (numPLAYERS > 2 && playermodel[2] < 4)
-						{
-							playermodel[2] += 1;
-							PlayersInCustom[2]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[2]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
-						}
-						else if (numAI > 0 && AImodel[0] < 4 && numPLAYERS < 3)
-						{
-							AImodel[0] += 1;
-							AiInCustom[0]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[0]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
-						}
-						break;
-					}
-					case 6:
-					{
-						if (numPLAYERS > 3 && playermodel[3] > 3)
-						{
-							playermodel[3] -= 1;
-							PlayersInCustom[3]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[3]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
-						}
-						else if (numAI > 0 && AImodel[1] > 3 && numPLAYERS > 2)
-						{
-							AImodel[1] -= 1;
-							AiInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[1]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
-						}
-						else if (numAI > 1 && AImodel[1] > 3)
-						{
-							AImodel[1] -= 1;
-							AiInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[1]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
-						}
-						break;
-					}
-					case 7:
-					{
-						if (numPLAYERS > 3 && playermodel[3] < 4)
-						{
-							playermodel[3] += 1;
-							PlayersInCustom[3]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(playermodel[3]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
-						}
-						else if (numAI > 0 && AImodel[1] < 4 && numPLAYERS > 2)
-						{
-							AImodel[1] += 1;
-							AiInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[1]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
-						}
-						else if (numAI > 1 && AImodel[1] < 4)
-						{
-							AImodel[1] += 1;
-							AiInCustom[1]->GetComponent(COMPONENT_TYPE::MESH, cMesh);
-							TMeshComponent* mesh = (TMeshComponent*)cMesh;
-							mesh = new TMeshComponent(v_tMeshTemplates.at(AImodel[1]));
-							setGameState(GAME_STATE::CHARACTER_SCREEN);
-						}
-						break;
-					}
-					default:
-					{
-						break;
-					}
+						delete PlayersInCustom[i];
+						PlayersInCustom[i] = p_cEntityManager->InstantiatePlayer(i + 1, playermodel[i], ntexture, nposition, GAME_STATE::CHARACTER_SCREEN, nforVec, (playermodel[i] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f) : DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
+						if (PlayersInCustom[i]->SetCurrentAnimaion("Idle") >= 0)
+							PlayersInCustom[i]->ResetAnimation();
+
 					}
 				}
 			}
+
 		}
 #pragma endregion
 
@@ -1193,10 +1210,6 @@ void CGame::Run()
 
 			prevNumPlayersAlive = numPlayersAlive;
 			numPlayersAlive = 0;
-			if (menuBomb && menuBomb->isAlive())
-			{
-				numPlayersAlive++;
-			}
 			for (int i = 0; i < v_cPlayers.size(); ++i)
 			{
 				if (v_cPlayers[i] && v_cPlayers[i]->isAlive())
@@ -1776,18 +1789,9 @@ void CGame::LoadObjectLarge() {
 void CGame::Cleanup()
 {
 	delete p_cEntityManager;
-	delete menuBomb;
-	menuBomb = nullptr;
 	p_cEntityManager = nullptr;
 	delete p_cRendererManager;
 	p_cRendererManager = nullptr;
-
-	if (menuBomb)
-	{
-		menuBomb->Cleanup();
-		delete menuBomb;
-		menuBomb = nullptr;
-	}
 
 	for (CObject* object : objects)
 	{
@@ -2326,7 +2330,8 @@ void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& fre
 }
 
 void CGame::setGameState(int _gameState) {
-	switch (_gameState) {
+	switch (_gameState)
+	{
 	case GAME_STATE::MAIN_MENU:
 	{
 		g_d3dData->viewMat = g_d3dData->camMat;
@@ -2358,7 +2363,6 @@ void CGame::setGameState(int _gameState) {
 		}
 		mapTime = 0;
 
-		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(-1.5f, 11.4f, -6.8f), GAME_STATE::MAIN_MENU, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
 		SprinklersOn = false;
 		break;
 	}
@@ -2367,9 +2371,6 @@ void CGame::setGameState(int _gameState) {
 		g_d3dData->viewMat = g_d3dData->camMat;
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
-		delete menuBomb;
-		menuBomb = nullptr;
-		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB, DirectX::XMFLOAT3(-8.45f, 15.7f, 2.6f), GAME_STATE::ARCADE_MENU, DirectX::XMFLOAT3(0.0f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
 		SprinklersOn = false;
 		break;
 	}
@@ -2377,24 +2378,41 @@ void CGame::setGameState(int _gameState) {
 	{
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
+		PlayersInCustom.resize(numPLAYERS);
+		AiInCustom.resize(numAI);
 
-		if (menuBomb) {
-			delete menuBomb;
-			menuBomb = nullptr;
-		}
+		PlayersInCustom[0] = p_cEntityManager->InstantiatePlayer(1, playermodel[0], DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-10.3f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.4f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
+		PlayersInCustom[1] = p_cEntityManager->InstantiatePlayer(2, playermodel[1], DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(-4.0f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.5f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
 
-		menuBomb = p_cEntityManager->InstantiatePlayer(1, MODELS::BOMB, DIFFUSE_TEXTURES::BOMB, DirectX::XMFLOAT3(-8.45f, 15.7f, 2.6f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.2f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f));
-		PlayersInCustom[0] = p_cEntityManager->InstantiatePlayer(1, playermodel[0], DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-10.3f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.4f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
-		PlayersInCustom[1] = p_cEntityManager->InstantiatePlayer(2, playermodel[1], DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(-4.0f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.5f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
+		PlayersInCustom[0]->SetCurrentAnimaion("Idle");
+		PlayersInCustom[0]->ResetAnimation();
+		PlayersInCustom[1]->SetCurrentAnimaion("Idle");
+		PlayersInCustom[1]->ResetAnimation();
 
 		if (numPLAYERS > 2)
-			PlayersInCustom[2] = p_cEntityManager->InstantiatePlayer(3, playermodel[2], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
+		{
+			PlayersInCustom[2] = p_cEntityManager->InstantiatePlayer(3, playermodel[2], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
+			PlayersInCustom[2]->SetCurrentAnimaion("Idle");
+			PlayersInCustom[2]->ResetAnimation();
+		}
 		if (numPLAYERS > 3)
-			PlayersInCustom[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
+		{
+			PlayersInCustom[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
+			PlayersInCustom[3]->SetCurrentAnimaion("Idle");
+			PlayersInCustom[3]->ResetAnimation();
+		}
 		if (numAI > 0)
-			AiInCustom[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
+		{
+			AiInCustom[0] = p_cEntityManager->InstantiatePlayer(3, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
+			AiInCustom[0]->SetCurrentAnimaion("Idle");
+			AiInCustom[0]->ResetAnimation();
+		}
 		if (numAI > 1)
-			AiInCustom[0] = p_cEntityManager->InstantiatePlayer(4, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
+		{
+			AiInCustom[1] = p_cEntityManager->InstantiatePlayer(4, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
+			AiInCustom[1]->SetCurrentAnimaion("Idle");
+			AiInCustom[1]->ResetAnimation();
+		}
 
 		SprinklersOn = false;
 		break;
@@ -2404,11 +2422,12 @@ void CGame::setGameState(int _gameState) {
 		SprinklersOn = true;
 		passes = 0;
 		ClearPlayersAndBombs();
-		delete menuBomb;
 		shakeTime = 0;
-		menuBomb = nullptr;
 		mapTime = 0;
 		centerAItimer1 = 2.0f;
+
+		v_cPlayers.resize(numPLAYERS);
+		v_cAI.resize(numAI);
 
 		switch (mapsize) {
 		case 1:
@@ -2451,28 +2470,32 @@ void CGame::setGameState(int _gameState) {
 		else
 			v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, playermodel[1], DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 
-		if (numPLAYERS > 2) {
+		if (numPLAYERS > 2)
+		{
 			if (playermodel[2] == MODELS::CHICKEN - 1)
 				v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, playermodel[2], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 			else
 				v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, playermodel[2], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 		}
 
-		if (numPLAYERS > 3) {
+		if (numPLAYERS > 3)
+		{
 			if (playermodel[3] == MODELS::CHICKEN - 1)
 				v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
 			else
 				v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, playermodel[3], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.6f, 0.8f, 0.6f));
 		}
 
-		if (numAI > 0) {
+		if (numAI > 0)
+		{
 			if (AImodel[1] == MODELS::CHICKEN - 1)
 				v_cAI[1] = p_cEntityManager->InstantiatePlayer(4, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 			else
 				v_cAI[1] = p_cEntityManager->InstantiatePlayer(4, AImodel[1], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 		}
 
-		if (numAI > 1) {
+		if (numAI > 1)
+		{
 			if (AImodel[0] == MODELS::CHICKEN - 1)
 				v_cAI[0] = p_cEntityManager->InstantiatePlayer(3, AImodel[0], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f));
 			else
@@ -2525,69 +2548,88 @@ void CGame::setGameState(int _gameState) {
 
 void CGame::ClearPlayersAndBombs() {
 	for (int i = 0; i < v_cPlayers.size(); ++i)
-		if (v_cPlayers[i]) {
-			v_cPlayers[i]->Cleanup();
+	{
+		if (v_cPlayers[i])
+		{
 			delete v_cPlayers[i];
 			v_cPlayers[i] = nullptr;
 		}
+	}
+	v_cPlayers.clear();
 
 	for (CBomb* bomb : v_cBombs) {
 		if (bomb)
+		{
 			delete bomb;
-		bomb = nullptr;
+			bomb = nullptr;
+		}
 	}
-
 	v_cBombs.clear();
+
 	for (int i = 0; i < v_cAI.size(); ++i)
+	{
 		if (v_cAI[i]) {
 			v_cAI[i]->Cleanup();
 			delete v_cAI[i];
 			v_cAI[i] = nullptr;
 		}
+	}
+	v_cAI.clear();
 
 	for (int i = 0; i < AiInCustom.size(); ++i)
+	{
 		if (AiInCustom[i]) {
 			AiInCustom[i]->Cleanup();
 			delete AiInCustom[i];
 			AiInCustom[i] = nullptr;
 		}
+	}
+	AiInCustom.clear();
 
 	for (int i = 0; i < PlayersInCustom.size(); ++i)
+	{
 		if (PlayersInCustom[i]) {
 			PlayersInCustom[i]->Cleanup();
 			delete PlayersInCustom[i];
 			PlayersInCustom[i] = nullptr;
 		}
+	}
+	PlayersInCustom.clear();
 
 	for (CObject* object : objects) {
 		if (object)
+		{
 			delete object;
-		object = nullptr;
+			object = nullptr;
+		}
 	}
+	objects.clear();
 
 	for (CObject* exp : Xexplosions) {
 		if (exp)
 			delete exp;
 		exp = nullptr;
 	}
-
 	Xexplosions.clear();
-	for (CObject* exp : Zexplosions) {
+
+	for (CObject* exp : Zexplosions)
+	{
 		if (exp)
 			delete exp;
 		exp = nullptr;
 	}
+	Zexplosions.clear();
 
 	for (CItem* item : items) {
 		if (item)
 			delete item;
 		item = nullptr;
 	}
-
-	Zexplosions.clear();
-	explosionTimers.clear();
-	objects.clear();
 	items.clear();
+
+
+	explosionTimers.clear();
+
 	shakeTime = 0;
 }
 
@@ -2710,6 +2752,14 @@ void CGame::updateBombs(double timePassed) {
 					bombPos = Brenderer->fPosition;
 				}
 
+				for (int i = 0; i < v_cPlayers.size(); ++i)
+				{
+					if (v_cPlayers.at(i) && v_cPlayers.at(i)->isAlive())
+					{
+						g_pControllerInput->StartVibration(0, 0.25f, 1, v_cPlayers[i]->GetCharacterController()->GetControllerIndex());
+					}
+				}
+				/*
 				if (v_cPlayers.at(0) && v_cPlayers.at(0)->isAlive())
 					g_pControllerInput->StartVibration(0, 0.25f, 1, 0);
 				if (v_cPlayers.at(1) && v_cPlayers.at(1)->isAlive())
@@ -2718,6 +2768,7 @@ void CGame::updateBombs(double timePassed) {
 					g_pControllerInput->StartVibration(0, 0.25f, 1, 2);
 				if (v_cPlayers.at(3) && v_cPlayers.at(3)->isAlive())
 					g_pControllerInput->StartVibration(0, 0.25f, 1, 3);
+				*/
 
 				CPlayer* parent = v_cBombs[i]->getParent();
 				for (int j = 0; j < parent->getBombIndices().size(); ++j) {
@@ -4266,7 +4317,6 @@ void CGame::CustomMeshUpdate() {
 	//RenderObjects
 	if (mapTime >= 25 && passes < mapPasses && !isPaused) {
 
-
 		warnSound->isSoundPlaying(warningSoundPlaying);
 		playerfallingSound->isSoundPlaying(playerfallingSoundPlaying);
 		fallingSound->isSoundPlaying(fallingSoundPlaying);
@@ -4582,16 +4632,6 @@ void CGame::CustomMeshUpdate() {
 
 			if (renderer->iUsedLoadState == curGameState)
 				p_cRendererManager->RenderObject(objects[objects.size() - 1]);
-		}
-	}
-
-	if (menuBomb) {
-		TComponent* renderer = nullptr;
-		if (menuBomb->GetComponent(COMPONENT_TYPE::RENDERER, renderer)) {
-			TRendererComponent* pRenderer = (TRendererComponent*)renderer;
-
-			if (pRenderer->iUsedLoadState == curGameState)
-				p_cRendererManager->RenderObject((CObject*)menuBomb);
 		}
 	}
 }

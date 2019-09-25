@@ -140,7 +140,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	if (parentGame->GetPlayer(0))
 	{
 		bombtype = parentGame->GetPlayer(0)->GetBombType();
-		g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, {1.0f, 1.0f, 1.0f, 1.0f});
+		g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Player 1:", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x , (float)g_d3dData->windowWidthHeight.y * 0.05f }, DirectX::Colors::Red, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 
 		x += 0.15f *invAspect;
@@ -251,4 +251,15 @@ CRendererManager::CRendererManager()
 
 CRendererManager::~CRendererManager()
 {
+	for (int i = 0; i < rendereableObjects.size(); ++i)
+	{
+		if (!(rendereableObjects[i] == nullptr))
+			continue;
+		delete rendereableObjects[i];
+		rendereableObjects[i] = nullptr;
+	}
+
+	rendereableObjects.clear();
+	delete theSkybox;
+	theSkybox = nullptr;
 }

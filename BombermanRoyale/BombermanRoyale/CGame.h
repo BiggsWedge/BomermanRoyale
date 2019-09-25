@@ -83,7 +83,8 @@ class CGame
 	DirectX::XMMATRIX viewPos;
 	DirectX::XMFLOAT3 bombPos;
 	std::vector<CBomb*> v_cBombs;
-	CPlayer* menuBomb = nullptr;
+	//CPlayer* menuBomb = nullptr;
+	CharacterController menuController;
 	int menuIndex = 0;
 	int mapPasses = 4;
 
