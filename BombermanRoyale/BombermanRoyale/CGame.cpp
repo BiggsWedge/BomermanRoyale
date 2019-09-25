@@ -3214,7 +3214,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 				if (dX <= 1.25f && dZ <= 1.25f)
 				{
 
-					if (centerAItimer1 >= 2.0f)
+					if (centerAItimer1 >= 3.0f)
 					{
 						currAI->Move(cX, cZ, true);
 						centerAItimer1 = 0.0f;
