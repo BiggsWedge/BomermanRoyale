@@ -27,6 +27,7 @@ public:
 	float frameTime = 0;
 	float currFrameIndex = 0;
 	float animTime = 0.0f;
+	float explosiontime = 0.0f;
 	float totalTime;
 	float movetimer = 0.0f;
 

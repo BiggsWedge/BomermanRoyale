@@ -203,7 +203,15 @@ bool DirectXData::Initialize()
 		return false;
 	}
 	else
-		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the animation vertex shader");
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the bomb vertex shader");
+
+	if (FAILED(d3dDevice->CreateVertexShader(ExplosionVertex, sizeof(ExplosionVertex), nullptr, &d3dVertexShader[VERTEX_SHADER::EXPLOSION])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the explosion vertex shader");
 
 #pragma endregion
 

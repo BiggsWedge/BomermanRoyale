@@ -58,7 +58,7 @@ struct VERTEX_BUFFER
 
 struct VERTEX_SHADER
 {
-	enum { BASIC = 0, LINE, ANIM, SKY, BOMB, COUNT };
+	enum { BASIC = 0, LINE, ANIM, SKY, BOMB, EXPLOSION, COUNT };
 };
 
 struct PIXEL_SHADER

@@ -20,6 +20,7 @@ void CObject::Draw(double timepassed)
 {
 	animTime += timepassed;
 	totalTime += timepassed;
+	explosiontime += timepassed;
 
 
 	float fractionalTime = timepassed - (int)timepassed;
@@ -135,18 +136,43 @@ void CObject::Draw(double timepassed)
 
 		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::JOINTS], 0, nullptr, &jcb, 0, 0);
 	}
+	bombconstbuffer bombconst;
+	if (renderer->iUsedVertexShaderIndex != VERTEX_SHADER::EXPLOSION)
+	{
+		if (g_d3dData->bUseDebugRenderCamera)
+			g_d3dData->basicConstBuff.mViewMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
+		else
+			g_d3dData->basicConstBuff.mViewMatrix = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
 
-	if (g_d3dData->bUseDebugRenderCamera)
-		g_d3dData->basicConstBuff.mViewMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
+		g_d3dData->basicConstBuff.mProjMatrix = DirectX::XMMatrixTranspose(g_d3dData->projMat);
+
+		g_d3dData->basicConstBuff.mModelMatrix *= DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&transform->fScale));
+		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_BASIC], 0, nullptr, &g_d3dData->basicConstBuff, 0, 0);
+		g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_BASIC]);
+		g_d3dData->d3dContext->VSSetConstantBuffers(1, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::JOINTS]);
+	}
 	else
-		g_d3dData->basicConstBuff.mViewMatrix = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
+	{
 
-	g_d3dData->basicConstBuff.mProjMatrix = DirectX::XMMatrixTranspose(g_d3dData->projMat);
+		bombconst.world = DirectX::XMMatrixTranspose(transform->mObjMatrix);
+		bombconst.world *= DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&transform->fScale));
 
-	g_d3dData->basicConstBuff.mModelMatrix *= DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&transform->fScale));
-	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_BASIC], 0, nullptr, &g_d3dData->basicConstBuff, 0, 0);
-	g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_BASIC]);
-	g_d3dData->d3dContext->VSSetConstantBuffers(1, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::JOINTS]);
+		if (g_d3dData->bUseDebugRenderCamera)
+			bombconst.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
+		else
+			bombconst.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
+
+		bombconst.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
+		bombconst.time = totalTime * 10.0f;
+		DirectX::XMVECTOR scale = DirectX::XMLoadFloat3(&transform->fScale);
+		DirectX::XMStoreFloat3(&bombconst.padding, scale);
+
+
+		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST], 0, nullptr, &bombconst, 0, 0);
+		g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST]);
+	}
+
+	
 
 	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC], 0, nullptr, &pConst, 0, 0);
 	g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC]);

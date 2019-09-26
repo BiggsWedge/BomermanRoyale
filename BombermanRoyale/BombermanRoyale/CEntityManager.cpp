@@ -2447,7 +2447,7 @@ CObject* CEntityManager::BombExplosionX(CBomb* BombSource)
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.meshID = MODELS::CUBE;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedVertex = VERTEX_SHADER::EXPLOSION;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::EXPLOSION;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
@@ -2476,7 +2476,7 @@ CObject* CEntityManager::BombExplosionZ(CBomb* BombSource)
 	loadInfo.meshID = MODELS::CUBE;
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
 	loadInfo.collisionLayer = COLLISION_LAYERS::EXPLOSION;
-	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedVertex = VERTEX_SHADER::EXPLOSION;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;

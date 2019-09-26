@@ -1571,14 +1571,19 @@ void CGame::LoadObjectMedium() {
 
 	for (float z = fMinZ + 2.5f; z < fMaxZ; z += 2.5f) {
 		for (float x = fMinX + 2.5f; x < fMaxX; x += 2.5f) {
+			if (rand() % 7 >= 3)
+				loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
+			else
+				loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLACK_TEX;
 			loadInfo.position = { x, -2.5f, z };
 			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+			
 		}
 	}
 
 	for (float z = fMinZ + 7.5; z <= fMaxZ - 7.5; z += 2.5f) {
 		for (float x = fMinX + 7.5; x <= fMaxX - 7.5; x += 2.5f) {
-			if (rand() % 7 >= 1) {
+			if (rand() % 7 >= 3) {
 				loadInfo.position = { x, 0.0f, z };
 				loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 				loadInfo.meshID = MODELS::CUBE;
@@ -1599,31 +1604,37 @@ void CGame::LoadObjectMedium() {
 	}
 
 	for (float x = fMinX + 7.5; x <= fMaxX - 7.5; x += 2.5f) {
-		loadInfo.position = { x, 0.0f, fMaxZ - 5.0f };
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+		if (rand() % 7 >= 3)
+		{
+			loadInfo.position = { x, 0.0f, fMaxZ - 5.0f };
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { x, 0.0f, fMinZ + 5.0f };
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+				loadInfo.position = { x, 0.0f, fMinZ + 5.0f };
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { x, 0.0f, fMaxZ - 2.5f };
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+			loadInfo.position = { x, 0.0f, fMaxZ - 2.5f };
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { x, 0.0f, fMinZ + 2.5f };
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+			loadInfo.position = { x, 0.0f, fMinZ + 2.5f };
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+		}
 	}
 
 	for (float z = fMinZ + 7.5; z <= fMaxZ - 7.5; z += 2.5f) {
-		loadInfo.position = { fMinX + 2.5f, 0.0f, z };
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+		if (rand() % 7 >= 3)
+		{
+			loadInfo.position = { fMinX + 2.5f, 0.0f, z };
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { fMinX + 5.0f, 0.0f, z };
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+			loadInfo.position = { fMinX + 5.0f, 0.0f, z };
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { fMaxX - 5.0f, 0.0f, z };
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+			loadInfo.position = { fMaxX - 5.0f, 0.0f, z };
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-		loadInfo.position = { fMaxX - 2.5f, 0.0f, z };
-		objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+			loadInfo.position = { fMaxX - 2.5f, 0.0f, z };
+			objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+		}
 	}
 
 	for (float x = fMinX; x <= fMaxX; x += 2.5f) {
