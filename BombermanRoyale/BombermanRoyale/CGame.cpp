@@ -101,6 +101,7 @@ double tempShakeTime = 0.0f;
 double mapTime = 0.0f;
 double shakeTime = 0.0f;
 double offMapTimer = 0;
+float fireWallTime = 0;
 
 int menux = 0;
 int menuz = 0;
@@ -1148,7 +1149,6 @@ void CGame::Run()
 						}
 						default:
 						{
-
 							break;
 						}
 						}
@@ -1294,7 +1294,7 @@ void CGame::Run()
 			this->GamePlayLoop(timePassed);
 		}
 
-		CustomMeshUpdate();
+		CustomMeshUpdate(timePassed);
 		g_d3dData->updateCameras();
 
 #pragma region Input
@@ -1811,6 +1811,14 @@ void CGame::Cleanup()
 		object = nullptr;
 	}
 	objects.clear();
+
+	for (CObject* object : particleObjects)
+	{
+		object->Cleanup();
+		delete object;
+		object = nullptr;
+	}
+	particleObjects.clear();
 
 	for (CObject* object : menuObjects)
 	{
@@ -4285,7 +4293,7 @@ void CGame::AI_Method(double timepassed, double action_time)
 	}
 }
 
-void CGame::CustomMeshUpdate() {
+void CGame::CustomMeshUpdate(float timepassed) {
 
 	//RenderMenus
 	for (CObject* menu : menuObjects) {
@@ -4302,6 +4310,17 @@ void CGame::CustomMeshUpdate() {
 		}
 	}
 
+	//render fire sprites
+	for (CObject* fire : particleObjects) {
+		TComponent* cRenderer;
+		if (!fire->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+			continue;
+
+		TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+		if (renderer->iUsedLoadState == curGameState)
+			p_cRendererManager->RenderParticle(fire);
+	}
+
 	//render particles
 	if (bombExploded) {
 		InitSortedParticles(sortedParticles, timer.Delta(), bombPos, { 1,1,0,1 });
@@ -4316,7 +4335,7 @@ void CGame::CustomMeshUpdate() {
 
 	//RenderObjects
 	if (mapTime >= 25 && passes < mapPasses && !isPaused) {
-
+		fireWallTime += timepassed;
 		warnSound->isSoundPlaying(warningSoundPlaying);
 		playerfallingSound->isSoundPlaying(playerfallingSoundPlaying);
 		fallingSound->isSoundPlaying(fallingSoundPlaying);
@@ -4333,6 +4352,8 @@ void CGame::CustomMeshUpdate() {
 					objects[i]->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
 					newTexture = (TTextureComponent*)texture;
 					newTexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::FIRE_TEX;
+
+					WallFlames(objects[i], 6.0f, 13);
 					if (!warningSoundPlaying)
 					{
 						warnSound->Play();
@@ -4409,6 +4430,7 @@ void CGame::CustomMeshUpdate() {
 									if (renderer->fPosition.x == fMinX || renderer->fPosition.z == fMinZ || renderer->fPosition.x == fMaxX || renderer->fPosition.z == fMaxZ) {
 										//SprinklersOn = false;
 
+										
 										for (CPlayer* player : v_cPlayers) {
 											if (!player || !player->isAlive())
 												continue;
@@ -4448,6 +4470,14 @@ void CGame::CustomMeshUpdate() {
 											}
 										}
 
+										for (int i = 0; i < particleObjects.size(); ++i)
+										{
+											if (particleObjects[i])
+											{
+												particleObjects.erase(particleObjects.begin() + i);
+											}
+										}
+
 										objects.erase(objects.begin() + i);
 									}
 								}
@@ -4459,6 +4489,7 @@ void CGame::CustomMeshUpdate() {
 						fMaxX -= 2.5;
 						fMaxZ -= 2.5;
 						mapTime = 0;
+						fireWallTime = 0;
 					}
 				}
 			}
@@ -4642,4 +4673,64 @@ void CGame::WallDrop(CObject* objectToCheck) {
 	objectToCheck->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer);
 	renderer = (TTransformComponent*)cRenderer;
 	renderer->fPosition.y -= 1.5f;
+}
+
+void CGame::WallFlames(CObject* wall, float duration, int frames)
+{
+	float frameDuration = duration / ((float)frames - 1.0f);
+	int frame = fireWallTime / frameDuration;
+	if (frame > frames - 1)
+		frame = frames - 1;
+
+	OBJLoadInfo loadInfo;
+	TComponent* cRenderer = nullptr;
+	TTransformComponent* renderer = nullptr;
+
+	if (wall->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+		renderer = (TTransformComponent*)cRenderer;
+
+	bool NoMatchingWall = true;
+
+	float newY = renderer->fPosition.y + 5.0f;
+	float xvec = g_d3dData->camPos.x - renderer->fPosition.x;
+	float zvec = g_d3dData->camPos.z - renderer->fPosition.z;
+	float yvec = g_d3dData->camPos.y - renderer->fPosition.y;
+
+	loadInfo.position = { renderer->fPosition.x, newY, renderer->fPosition.z };
+
+	for (CObject* firewalls : particleObjects)
+	{
+		TComponent* pRenderer = nullptr;
+		TComponent* pTexture = nullptr;
+		TTransformComponent* prenderer = nullptr;
+		TTextureComponent* Texture = nullptr;
+	
+		if (firewalls->GetComponent(COMPONENT_TYPE::TEXTURE, pTexture))
+			Texture = (TTextureComponent*)pTexture;
+	
+		if (firewalls->GetComponent(COMPONENT_TYPE::TRANSFORM, pRenderer))
+			prenderer = (TTransformComponent*)pRenderer;
+		if (fireWallTime >= duration/2.0f)
+			firewalls->CrouchRoll(0.0f, 0.0f, -0.75f, false);
+		if (loadInfo.position.x == prenderer->fPosition.x && loadInfo.position.z == prenderer->fPosition.z)
+		{
+			Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::FIRE_WALL1 + frame;
+			NoMatchingWall = false;
+		}
+	}
+		
+
+		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+		loadInfo.usedPixel = PIXEL_SHADER::FIRE;
+		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+		loadInfo.usedGeo = -1;
+		loadInfo.forwardVec = { -xvec, yvec, zvec };
+
+		
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_WALL1 + frame;
+		loadInfo.scale = DirectX::XMFLOAT3(0.2f, 0.2f, 1.0f);
+		loadInfo.meshID = MODELS::MENU1;
+		loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
+		if(NoMatchingWall)
+			particleObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }

@@ -21,6 +21,7 @@
 #include "GeometryShader.csh"
 #include "ComputeShader.csh"
 #include "ExplosionVertex.csh"
+#include "FirePixel.csh"
 #include "DirectXData.h"
 #include "SharedDefines.h"
 #include <fstream>
