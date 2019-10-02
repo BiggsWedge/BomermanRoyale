@@ -2854,7 +2854,7 @@ bool CGame::loadTempMenus() {
 
 	loadInfo.position = { 0.0f, 20.5f, -9.5f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::HELP_MENU;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::LOADING_SCREEN;
 	loadInfo.scale = DirectX::XMFLOAT3(0.8f, 1.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU2;
 	loadInfo.LoadState = GAME_STATE::CONTROLS_SCREEN;
@@ -4408,9 +4408,11 @@ void CGame::CustomMeshUpdate() {
 												continue;
 
 											TComponent* _prenderer = nullptr;
-											if (player->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
+											if (player->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) 
+											{
 												TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
+												
 
 												if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z) {
 													player->setAlive(false);
