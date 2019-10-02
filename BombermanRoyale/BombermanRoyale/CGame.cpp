@@ -2299,6 +2299,42 @@ void CGame::InitSortedParticles(end::sorted_pool_t<particle, 500>& sortedPool, d
 	}
 }
 
+void CGame::InitSortedParticles_vs_2(end::sorted_pool_t<particle, 500>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color, DirectX::XMFLOAT4 direction) {
+
+	//Init number of particles as loop
+	for (size_t i = 0; i < 1; i++) {
+		int count = sortedPool.alloc();
+
+		if (count != -1) {
+			sortedPool[count].pos.x = 0.8f + pos.x - ((float)rand() / (float)RAND_MAX) + ((float)rand() / (float)RAND_MAX);
+			sortedPool[count].pos.y = pos.y - ((float)rand() / (float)RAND_MAX) + ((float)rand() / (float)RAND_MAX);
+			sortedPool[count].pos.z = -2.0f + pos.z - ((float)rand() / (float)RAND_MAX) + ((float)rand() / (float)RAND_MAX);
+			sortedPool[count].speed.x = (((direction.x) + ((float)rand() / (float)RAND_MAX)) * ((float)rand() / (float)RAND_MAX));
+			sortedPool[count].speed.y = (((direction.y) + ((float)rand() / (float)RAND_MAX)) * ((float)rand() / (float)RAND_MAX));
+			sortedPool[count].speed.z = (((direction.z) + ((float)rand() / (float)RAND_MAX)) * ((float)rand() / (float)RAND_MAX));
+			sortedPool[count].speed.y *= particleSpeed;
+			sortedPool[count].timer = 1.5f + (1.8f - 1.5f) * ((float)rand() / (float)RAND_MAX);
+			sortedPool[count].color = color;
+		}
+
+
+		for (size_t i = 0; i < sortedPool.size(); i++) {
+			sortedPool[i].prev_pos = sortedPool[i].pos;
+			sortedPool[i].pos.x += (sortedPool[i].speed.x * deltaTime);
+			sortedPool[i].pos.y += (sortedPool[i].speed.y * deltaTime);
+			sortedPool[i].pos.z += (sortedPool[i].speed.z * deltaTime);
+			sortedPool[i].speed.y;
+			sortedPool[i].timer -= deltaTime;
+			add_line(sortedPool[i].pos, sortedPool[i].prev_pos, sortedPool[i].color);
+
+			if (sortedPool[i].timer <= 0) {
+				sortedPool.free(i);
+				i--;
+			}
+		}
+	}
+}
+
 void CGame::InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime) {
 
 	//init emitters
@@ -4323,7 +4359,11 @@ void CGame::CustomMeshUpdate(float timepassed) {
 
 	//render particles
 	if (bombExploded) {
-		InitSortedParticles(sortedParticles, timer.Delta(), bombPos, { 1,1,0,1 });
+		InitSortedParticles_vs_2(sortedParticles, timer.Delta(), bombPos, (rand() % 2 > 0) ? DirectX::XMFLOAT4(1, 1, 0, 1) : DirectX::XMFLOAT4(1, 0.5, 0, 1), { 4, 0, 0, 0 });
+		InitSortedParticles_vs_2(sortedParticles, timer.Delta(), bombPos, (rand() % 2 > 0) ? DirectX::XMFLOAT4( 1, 1, 0, 1 ) : DirectX::XMFLOAT4( 1, 0.5, 0, 1), { -4,0,0,0 });
+		InitSortedParticles_vs_2(sortedParticles, timer.Delta(), bombPos, (rand() % 2 > 0) ? DirectX::XMFLOAT4(1, 1, 0, 1) : DirectX::XMFLOAT4(1, 0.5, 0, 1), { 0,0,-4,0 });
+		InitSortedParticles_vs_2(sortedParticles, timer.Delta(), bombPos, (rand() % 2 > 0) ? DirectX::XMFLOAT4(1, 1, 0, 1) : DirectX::XMFLOAT4(1, 0.5, 0, 1), { 0, 0,4,0 });
+		
 	}
 
 	if (SprinklersOn == true) {
@@ -4353,7 +4393,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 					newTexture = (TTextureComponent*)texture;
 					newTexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::FIRE_TEX;
 
-					WallFlames(objects[i], 6.0f, 13);
+					//WallFlames(objects[i], 6.0f, 13);
 					if (!warningSoundPlaying)
 					{
 						warnSound->Play();
@@ -4677,7 +4717,7 @@ void CGame::WallDrop(CObject* objectToCheck) {
 
 void CGame::WallFlames(CObject* wall, float duration, int frames)
 {
-	float frameDuration = duration / ((float)frames - 1.0f);
+	float frameDuration = duration / (((float)frames - 1.0f) * 2.0f);
 	int frame = fireWallTime / frameDuration;
 	if (frame > frames - 1)
 		frame = frames - 1;
@@ -4720,17 +4760,17 @@ void CGame::WallFlames(CObject* wall, float duration, int frames)
 	}
 		
 
-		loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-		loadInfo.usedPixel = PIXEL_SHADER::FIRE;
-		loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-		loadInfo.usedGeo = -1;
-		loadInfo.forwardVec = { -xvec, yvec, zvec };
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::FIRE;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.forwardVec = { -xvec, yvec, zvec };
 
-		
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_WALL1 + frame;
-		loadInfo.scale = DirectX::XMFLOAT3(0.2f, 0.2f, 1.0f);
-		loadInfo.meshID = MODELS::MENU1;
-		loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
-		if(NoMatchingWall)
-			particleObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_WALL1 + frame;
+	loadInfo.scale = DirectX::XMFLOAT3(0.2f, 0.2f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
+	if(NoMatchingWall)
+		particleObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
