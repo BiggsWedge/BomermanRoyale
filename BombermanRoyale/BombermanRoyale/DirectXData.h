@@ -9,7 +9,6 @@
 #include "../Gateware/Interface/G_Graphics/GDirectX11Surface.h"
 #include "DXTK/SpriteFont.h"
 
-
 #define SAFE_RELEASE(ptr){if(ptr){ptr->Release(); ptr = nullptr;}}
 #define GW_SAFE_RELEASE(ptr){if(ptr){ptr->DecrementCount(); ptr = nullptr;}}
 
@@ -113,8 +112,7 @@ struct DIFFUSE_TEXTURES
 		HELP_MENU, ARCADE_MENU, ARCADE_MENU2, ARCADE_MENU3, ARCADE_MENU4, ARCADE_MENU5, ARCADE_MENU6, ARCADE_MENU7, ARCADE_MENU8, ARCADE_MENU9, CHARACTER_SCREEN1, 
 		CHARACTER_SCREEN2, CHARACTER_SCREE3, CHARACTER_SCREEN4, CHARACTER_SCREEN5, CHARACTER_SCREEN6, CHARACTER_SCREEN7, CHARACTER_SCREEN8, ARCADE_BUTTON, 
 		BATTLE_BUTTON, OPTIONS_BUTTON, EXIT_BUTTON, RED_TEX, BLUE_TEX, BLACK_TEX, FIRE_TEX, HAY_TEX, BOMB, BOMB2, BOMB3, BOMB4, BD, BD2, BD3, BD4, BD5, CHICKEN1, CHICKEN2, CHICKEN3, CHICKEN4, FIRE_WALL1,
-		FIRE_WALL2, FIRE_WALL3, FIRE_WALL4, FIRE_WALL5, FIRE_WALL6, FIRE_WALL7, FIRE_WALL8, FIRE_WALL9, FIRE_WALL10, FIRE_WALL11, FIRE_WALL12, FIRE_WALL13, COUNT
-
+		FIRE_WALL2, FIRE_WALL3, FIRE_WALL4, FIRE_WALL5, FIRE_WALL6, FIRE_WALL7, FIRE_WALL8, FIRE_WALL9, FIRE_WALL10, FIRE_WALL11, FIRE_WALL12, FIRE_WALL13, GOAT, BOAR, BOAR2, COUNT
 	};
 };
 
@@ -141,6 +139,7 @@ public:
 	IDXGISwapChain*						d3dSwapChain = nullptr;
 	ID3D11DeviceContext*				d3dContext = nullptr;
 	ID3D11RenderTargetView*				d3dRenderTargetView = nullptr;
+	ID3D11RenderTargetView*				d3dPreMSAATargetView = nullptr;
 	ID3D11DepthStencilView*				d3dDepthStencilView = nullptr;
 	ID3D11DepthStencilState*			d3dDepthStencilState[DEPTH_STENCIL_STATE::COUNT] = {};
 
@@ -182,7 +181,7 @@ public:
 	ID3D11Buffer*						JungleIndexBuffer = nullptr;
 
 #pragma endregion
-	
+
 	bool								bUseDebugRenderCamera = false;
 	bool								drawColliders;
 

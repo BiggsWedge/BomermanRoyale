@@ -61,7 +61,7 @@ class CGame
 	emitter fourthEmit;
 	emitter freeEmit;
 	XTime timer;
-	
+
 
 	CRendererManager* p_cRendererManager;
 	CEntityManager* p_cEntityManager;
@@ -76,7 +76,7 @@ class CGame
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
 	std::vector<CPlayer*> PlayersInCustom = { nullptr, nullptr, nullptr, nullptr };
 	std::vector<CPlayer*> v_cAI = { nullptr, nullptr };
-	std::vector<CPlayer*> AiInCustom = { nullptr, nullptr};
+	std::vector<CPlayer*> AiInCustom = { nullptr, nullptr };
 
 
 
@@ -106,7 +106,8 @@ public:
 	int mapsize = 2;
 	int numAI = 0;
 	int numPLAYERS = 2;
-	int playermodel[4] = { 4, 4, 4, 4 };
+	int playermodel[4] = { 0,0,0,0 };
+	int playertextures[4] = { DIFFUSE_TEXTURES::CHICKEN1, DIFFUSE_TEXTURES::CHICKEN2, DIFFUSE_TEXTURES::CHICKEN3, DIFFUSE_TEXTURES::CHICKEN4 };
 	int AImodel[2] = { 4, 4 };
 	int PlayerDiscIndex = 0;
 	bool playerdisconnect = false;

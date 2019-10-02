@@ -36,6 +36,8 @@ GController* g_pControllerInput = nullptr;
 
 std::vector<TMeshTemplate> v_tMeshTemplates = {};
 
+std::vector<unsigned int> availablePlayerModels = { MODELS::CHICKEN, MODELS::GOAT, MODELS::BOAR };
+
 string GetCurrentDateAndTime()
 {
 	string currDateTime;
@@ -666,8 +668,24 @@ void LoadAnimations()
 		AnimationClip temp;
 		temp = ProcessAnimationFile(ChickenAnimFiles[i].file);
 		temp.AnimationName = ChickenAnimFiles[i].animationName;
-
+		temp.loops = ChickenAnimFiles[i].loopable;
 		v_tMeshTemplates[MODELS::CHICKEN]._animations.push_back(temp);
+	}
+	for (int i = 0; i < GoatAnimFiles.size(); ++i)
+	{
+		AnimationClip temp;
+		temp = ProcessAnimationFile(GoatAnimFiles[i].file);
+		temp.AnimationName = GoatAnimFiles[i].animationName;
+		temp.loops = GoatAnimFiles[i].loopable;
+		v_tMeshTemplates[MODELS::GOAT]._animations.push_back(temp);
+	}
+	for (int i = 0; i < BoarAnimFiles.size(); ++i)
+	{
+		AnimationClip temp;
+		temp = ProcessAnimationFile(BoarAnimFiles[i].file);
+		temp.AnimationName = BoarAnimFiles[i].animationName;
+		temp.loops = BoarAnimFiles[i].loopable;
+		v_tMeshTemplates[MODELS::BOAR]._animations.push_back(temp);
 	}
 }
 
