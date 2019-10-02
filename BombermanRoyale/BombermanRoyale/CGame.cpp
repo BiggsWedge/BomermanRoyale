@@ -355,6 +355,9 @@ void CGame::Run()
 		if (keys[KEYS::HELP_MENU].pressed() || p1Help.Pressed()) {
 			ControlScreenToggle = !ControlScreenToggle;
 			isPaused = !isPaused;
+
+			if (isPaused == false)
+				g_pMusicStream->SetVolume(0.5f);
 		}
 
 		if (keys[KEYS::GAME_STATE].pressed())
@@ -404,11 +407,11 @@ void CGame::Run()
 			ControlScreenToggle = !ControlScreenToggle;
 
 			if (isPaused == false) {
-				g_pAudioHolder->ResumeAll();
-				g_pMusicStream->ResumeStream();
+				g_pMusicStream->SetVolume(0.5f);
 				timePassed = tempTime;
 				mapTime = tempMapTime;
-				SprinklersOn = true;
+				if(curGameState == GAME_STATE::ARCADE_GAME)
+					SprinklersOn = true;
 			}
 		}
 
@@ -417,6 +420,8 @@ void CGame::Run()
 
 		if (isPaused == true) {
 			g_pAudioHolder->PauseAll();
+			g_pMusicStream->ResumeStream();
+			g_pMusicStream->SetVolume(0.2f);
 			tempTime = timePassed;
 			tempMapTime = mapTime;
 			SprinklersOn = false;
@@ -1977,7 +1982,7 @@ void CGame::GamePlayLoop(double timePassed)
 			isPaused = !isPaused;
 			if (isPaused == false) {
 				g_pMusicStream->ResumeStream();
-				g_pMusicStream->SetVolume(1.0f);
+				g_pMusicStream->SetVolume(0.5f);
 				timePassed = tempTime;
 				mapTime = tempMapTime;
 				if (passes < 1)
@@ -2279,7 +2284,7 @@ void CGame::GamePlayLoop(double timePassed)
 					PauseMenuToggle = !PauseMenuToggle;
 					if (isPaused == false) {
 						g_pMusicStream->ResumeStream();
-						g_pMusicStream->SetVolume(1.0f);
+						g_pMusicStream->SetVolume(0.5f);
 						timePassed = tempTime;
 						mapTime = tempMapTime;
 						SprinklersOn = true;
@@ -2301,6 +2306,7 @@ void CGame::GamePlayLoop(double timePassed)
 					isPaused = !isPaused;
 					PauseMenuToggle = !PauseMenuToggle;
 					mapTime = 0;
+					g_pMusicStream->SetVolume(0.5f);
 					setGameState(GAME_STATE::MAIN_MENU);
 
 					break;
