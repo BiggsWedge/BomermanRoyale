@@ -25,17 +25,29 @@ void CPlayer::updatePlayer(double frameTime)
 		TAnimComponent* anim = (TAnimComponent*)c;
 
 		anim->_time += frameTime;
+
 		while (anim->_time > anim->currentAnimation->frames[anim->currentFrameIndex + 1].time)
 		{
 			anim->currentFrameIndex++;
+
 			if (anim->currentFrameIndex == (anim->currentAnimation->frames.size() - 1))
 			{
-				anim->_time -= anim->currentAnimation->frames[anim->currentFrameIndex].time;
-				anim->currentFrameIndex = 0;
+				if (anim->currentAnimation->loops)
+				{
+					anim->_time -= anim->currentAnimation->frames[anim->currentFrameIndex].time;
+					anim->currentFrameIndex = 0;
+				}
+				else
+				{
+					anim->currentFrameIndex--;
+					anim->_time = anim->currentAnimation->frames[anim->currentFrameIndex].time;
+					return;
+				}
 			}
 		}
 	}
 }
+
 
 int CPlayer::SetCurrentAnimaion(std::string toChangeTo)
 {

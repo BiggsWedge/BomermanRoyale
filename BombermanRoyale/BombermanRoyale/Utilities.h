@@ -49,7 +49,7 @@ extern std::vector<GW::AUDIO::GSound*> explosionSound;
 extern std::vector<GW::AUDIO::GSound*> bombPlaceSound;
 extern std::vector<GW::AUDIO::GSound*> powerUpSound;
 extern GW::SYSTEM::GController* g_pControllerInput;
-
+extern std::vector<unsigned int> availablePlayerModels;
 
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the
@@ -251,6 +251,7 @@ struct AnimationClip
 	std::vector<joint> _bindPose;
 	double duration;
 	std::vector<KeyFrame> frames;
+	bool loops;
 };
 
 struct TMeshTemplate
