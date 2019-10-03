@@ -110,7 +110,7 @@ CItem * CEntityManager::CreateItemFromTemplate(OBJLoadInfo loadInfo)
 	return temp;
 }
 
-CBomb* CEntityManager::DropBomb(CPlayer* playerSource)
+CBomb* CEntityManager::DropBomb0(CPlayer* playerSource)
 {
 	CBomb* bomb;
 	TComponent* transform;
@@ -185,7 +185,7 @@ CBomb* CEntityManager::DropBomb(CPlayer* playerSource)
 	return bomb;
 }
 
-std::vector<CBomb*> CEntityManager::DropBomb0(CPlayer* playerSource, std::vector<CObject*> objects)
+std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
 	CBomb* bomb;
@@ -1323,7 +1323,7 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector
 	return bombs;
 }
 
-std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector<CObject*> objects)
+std::vector<CBomb*> CEntityManager::DropBomb4(CPlayer* playerSource, std::vector<CObject*> objects)
 {
 	std::vector<CBomb*> bombs;
 	CBomb* bomb;

@@ -173,6 +173,14 @@ bool CObject::GetComponent(int componentType, TComponent* & component)
 	return false;
 }
 
+void CObject::TurnPlayerTo(float _x, float _z) {
+	TComponent* cTransform;
+	TTransformComponent* transform;
+	GetComponent(COMPONENT_TYPE::TRANSFORM, cTransform);
+	transform = (TTransformComponent*)cTransform;
+	DirectX::XMFLOAT3 targetVec = { _x, 0.0f, _z };
+	transform->mObjMatrix = TurnTo(transform->mObjMatrix, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec))), 10.0f);
+}
 bool CObject::Move(float _x, float _z, bool rotation)
 {
 	TComponent* cTransform;
@@ -187,12 +195,12 @@ bool CObject::Move(float _x, float _z, bool rotation)
 	collider->d3dCollider.Center.x += _x;
 	collider->d3dCollider.Center.z += _z;
 
-	transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
 	DirectX::XMFLOAT3 targetVec = { _x, 0.0f, _z };
 	if (rotation)
 	{
 		transform->mObjMatrix = TurnTo(transform->mObjMatrix, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec))), 0.5f);
 	}
+	transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
 
 	DirectX::XMFLOAT4 pos;
 	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
@@ -232,7 +240,7 @@ bool CObject::CrouchRoll(float _x, float _z, float _y, bool rotation)
 	return true;
 }
 
-bool CObject::MoveOverTime(float start_x, float end_x, float start_z , float end_z, float timepassed)
+bool CObject::MoveOverTime(float start_x, float end_x, float start_z , float end_z, float timepassed, bool rotation)
 {
 	TComponent* cTransform;
 	TTransformComponent* transform;
@@ -245,7 +253,7 @@ bool CObject::MoveOverTime(float start_x, float end_x, float start_z , float end
 	collider = (TColliderComponent*)cTransform;
 
 	movetimer += timepassed;
-	float ratio = movetimer / 5.0f;
+	float ratio =  movetimer / 3.0f;
 	float _x = lerp(start_x, end_x, ratio);
 	_x = _x - start_x;
 	float _z = lerp(start_z, end_z, ratio);
@@ -256,6 +264,11 @@ bool CObject::MoveOverTime(float start_x, float end_x, float start_z , float end
 		movetimer = 0.0f;
 
 	transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
+	DirectX::XMFLOAT3 targetVec = { _x, 0, _z };
+	if (rotation)
+	{
+		transform->mObjMatrix = TurnTo(transform->mObjMatrix, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec))), 0.5f);
+	}
 
 	DirectX::XMFLOAT4 pos;
 	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
