@@ -2453,7 +2453,7 @@ CObject* CEntityManager::BombExplosionX(CBomb* BombSource)
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 15.0f, 1.0f / 75.0f, 1.0f / 75.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 13.5f, 1.0f / 72.5f, 1.0f / 72.5f);
 	explosion = CreateOBJFromTemplate(loadInfo);
 
 	return explosion;
@@ -2481,7 +2481,7 @@ CObject* CEntityManager::BombExplosionZ(CBomb* BombSource)
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 75.0f, 1.0f / 75.0f, 1.0f / 15.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 72.5f, 1.0f / 72.5f, 1.0f / 13.5f);
 	explosion = CreateOBJFromTemplate(loadInfo);
 
 	return explosion;
