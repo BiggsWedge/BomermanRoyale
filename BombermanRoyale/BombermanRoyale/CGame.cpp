@@ -321,7 +321,7 @@ void CGame::Run()
 		}
 
 
-		if (loadScreenTime > 12 && (curGameState == GAME_STATE::LOAD_SCREEN || curGameState == GAME_STATE::DEV_LOGO) && loadHappened == false)
+		if (loadScreenTime > 12 && (curGameState == GAME_STATE::LOAD_SCREE  N || curGameState == GAME_STATE::DEV_LOGO) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::LOAD_SCREEN);
 
