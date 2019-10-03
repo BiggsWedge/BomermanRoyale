@@ -15,6 +15,11 @@ void CRendererManager::RenderObject(CObject* _objToDraw)
 	rendereableObjects.push_back(_objToDraw);
 }
 
+void CRendererManager::RenderParticle(CObject* _particleToDraw)
+{
+	renderableParticles.push_back(_particleToDraw);
+}
+
 void CRendererManager::RenderObjectCollider(CObject * _objToDraw)
 {
 	TComponent* tCollider = nullptr;
@@ -84,6 +89,8 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	for (CObject* c : rendereableObjects)
 		c->Draw(timepassed);
 
+	
+
 	g_d3dData->d3dContext->OMSetDepthStencilState(g_d3dData->d3dDepthStencilState[DEPTH_STENCIL_STATE::TWO_D], 0);
 
 	g_d3dData->d3dSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, g_d3dData->d3dBlendState[BLEND_STATE::UI]);
@@ -91,6 +98,13 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	float invAspect = (float)g_d3dData->windowWidthHeight.y / (float)g_d3dData->windowWidthHeight.x;
 	DirectX::GXMVECTOR scale = { 0.1f * aspectRatio, 0.1f * aspectRatio, 0.1f * aspectRatio, 1.0f };
 	DirectX::GXMVECTOR scale2 = { 0.2f * aspectRatio, 0.2f * aspectRatio, 0.2f * aspectRatio, 1.0f };
+
+	g_d3dData->d3dContext->OMSetDepthStencilState(g_d3dData->d3dDepthStencilState[DEPTH_STENCIL_STATE::DEFAULT], 0);
+	g_d3dData->d3dContext->OMSetBlendState(g_d3dData->d3dBlendState[BLEND_STATE::UI], 0, 0xFFFFFFFF);
+	for (CObject* p : renderableParticles)
+		p->Draw(timepassed);
+
+	g_d3dData->d3dContext->OMSetDepthStencilState(g_d3dData->d3dDepthStencilState[DEPTH_STENCIL_STATE::TWO_D], 0);
 
 	DirectX::XMVECTOR measurement = g_d3dData->d3dSpriteFont->MeasureString("Arcade Mode");
 
@@ -220,7 +234,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	UINT strides[] = { sizeof(TLineVertex) };
 	UINT offsets[] = { 0 };
 
-	g_d3dData->d3dContext->OMSetBlendState(g_d3dData->d3dBlendState[BLEND_STATE::DEFAULT], 0, 0xFFFFFFFF);
+	//g_d3dData->d3dContext->OMSetBlendState(g_d3dData->d3dBlendState[BLEND_STATE::DEFAULT], 0, 0xFFFFFFFF);
 	g_d3dData->d3dContext->RSSetState(g_d3dData->d3dRasterizerState[RASTERIZER_STATE::DEFAULT]);
 	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_LINE], 0, nullptr, get_line_verts(), 0, 0);
 	g_d3dData->d3dContext->IASetVertexBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::V_LINE], strides, offsets);
@@ -236,6 +250,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	g_d3dData->d3dSwapChain->Present(1, 0);
 
 	rendereableObjects.clear();
+	renderableParticles.clear();
 
 	SAFE_RELEASE(g_d3dData->d3dDepthStencilView);
 	SAFE_RELEASE(g_d3dData->d3dRenderTargetView);
@@ -260,6 +275,16 @@ CRendererManager::~CRendererManager()
 	}
 
 	rendereableObjects.clear();
+
+	for (int i = 0; i < renderableParticles.size(); ++i)
+	{
+		if (!(renderableParticles[i] == nullptr))
+			continue;
+		delete renderableParticles[i];
+		renderableParticles[i] = nullptr;
+	}
+
+	renderableParticles.clear();
 	delete theSkybox;
 	theSkybox = nullptr;
 }

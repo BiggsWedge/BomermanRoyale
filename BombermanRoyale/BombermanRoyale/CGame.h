@@ -69,6 +69,7 @@ class CGame
 	std::vector<CObject*> objects;
 	std::vector<CObject*> deleteLayer;
 	std::vector<CObject*> menuObjects;
+	std::vector<CObject*> particleObjects;
 	std::vector<CObject*> Xexplosions;
 	std::vector<CObject*> Zexplosions;
 	std::vector<CItem*> items;
@@ -118,6 +119,7 @@ public:
 	void Run();
 
 	void InitSortedParticles(end::sorted_pool_t<particle, 500>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color);
+	void InitSortedParticles_vs_2(end::sorted_pool_t<particle, 500>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color, DirectX::XMFLOAT4 direction);
 	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime);
 
 	void LoadAnim();
@@ -139,8 +141,9 @@ public:
 	void PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb);
 	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer * playerToCheck);
 	void AI_Method(double timepassed, double action_time);
-	void CustomMeshUpdate();
+	void CustomMeshUpdate(float timepassed);
 	void WallDrop(CObject* objectToCheck);
+	void WallFlames(CObject* wall, float duration, int frames);
 
 	inline CPlayer* GetPlayer(int index) { if (index >= v_cPlayers.size())return nullptr; else return v_cPlayers.at(index); }
 	inline CPlayer* GetAI(int index) { if (index >= v_cAI.size()) return nullptr; else return v_cAI.at(index); }

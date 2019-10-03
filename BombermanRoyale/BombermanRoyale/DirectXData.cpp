@@ -260,6 +260,15 @@ bool DirectXData::Initialize()
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the bomb pixel shader");
 
+	if (FAILED(d3dDevice->CreatePixelShader(FirePixel, sizeof(FirePixel), nullptr, &d3dPixelShader[PIXEL_SHADER::FIRE])))
+
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the fire pixel shader");
+
 #pragma endregion
 
 #pragma region Geometry
