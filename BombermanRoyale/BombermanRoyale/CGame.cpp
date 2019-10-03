@@ -303,22 +303,30 @@ void CGame::Run()
 		loadScreenTime = timer.Delta() + loadScreenTime;
 		if (loadScreenTime < 0.5)
 		{
-			setGameState(GAME_STATE::GP_SPLASH);
-		}
-
-		if (loadScreenTime > 4 && (curGameState == GAME_STATE::FS_SPLASH || curGameState == GAME_STATE::GP_SPLASH) && loadHappened == false)
-		{
 			setGameState(GAME_STATE::FS_SPLASH);
+		}
+
+		if (loadScreenTime > 4 && (curGameState == GAME_STATE::GP_SPLASH || curGameState == GAME_STATE::FS_SPLASH) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::GP_SPLASH);
 
 		}
 
-		if (loadScreenTime > 8 && (curGameState == GAME_STATE::LOAD_SCREEN || curGameState == GAME_STATE::FS_SPLASH) && loadHappened == false)
+
+		if (loadScreenTime > 8 && (curGameState == GAME_STATE::DEV_LOGO || curGameState == GAME_STATE::GP_SPLASH) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::DEV_LOGO);
+
+		}
+
+
+		if (loadScreenTime > 12 && (curGameState == GAME_STATE::LOAD_SCREEN || curGameState == GAME_STATE::DEV_LOGO) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::LOAD_SCREEN);
 
 		}
 
-		if (loadScreenTime > 12 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
+		if (loadScreenTime > 16 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::MAIN_MENU);
 			loadHappened = true;
@@ -2826,6 +2834,14 @@ bool CGame::loadTempMenus() {
 	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::FS_SPLASH;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::DEV_ICON;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::DEV_LOGO;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
