@@ -45,11 +45,11 @@ public:
 	CBomb* CreateBombFromTemplate(OBJLoadInfo loadInfo);
 	CItem* CreateItemFromTemplate(OBJLoadInfo loadInfo);
 
-	CBomb* DropBomb(CPlayer* playerSource);
-	std::vector<CBomb*> DropBomb0(CPlayer* playerSource, std::vector<CObject*>);
+	CBomb* DropBomb0(CPlayer* playerSource);
 	std::vector<CBomb*> DropBomb1(CPlayer* playerSource, std::vector<CObject*>);
 	std::vector<CBomb*> DropBomb2(CPlayer* playerSource, std::vector<CObject*>);
 	std::vector<CBomb*> DropBomb3(CPlayer* playerSource, std::vector<CObject*>);
+	std::vector<CBomb*> DropBomb4(CPlayer* playerSource, std::vector<CObject*>);
 
 	void Cleanup();
 

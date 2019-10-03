@@ -44,6 +44,7 @@ struct emitter
 {
 	DirectX::XMFLOAT3 spawn_pos;
 	DirectX::XMFLOAT4 spawn_color;
+
 	// indices into the shared_pool 
 	end::sorted_pool_t<int16_t, 256> indices;
 };
@@ -140,10 +141,11 @@ public:
 	void updateBombs(double timePassed);
 	bool loadTempMenus();
 	void PlayerCollision(CPlayer* playerToCheck, CObject* cObj, float dx, float dz);
-	void PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb);
-	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer * playerToCheck);
+	void PlayerBombCollision(CPlayer* playerToCheck, CBomb* cBomb);
+	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer* playerToCheck);
 	void AI_Method(double timepassed, double action_time);
 	void CustomMeshUpdate(float timepassed);
+	void moveAI(CPlayer* player, int direction, float deltaX, float deltaZ);
 	void WallDrop(CObject* objectToCheck);
 	void WallFlames(CObject* wall, float duration, int frames);
 
