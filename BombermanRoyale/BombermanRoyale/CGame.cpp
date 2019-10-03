@@ -4472,7 +4472,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 					newTexture = (TTextureComponent*)texture;
 					newTexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::FIRE_TEX;
 
-					WallFlames(objects[i], 6.0f, 13);
+					//WallFlames(objects[i], 6.0f, 13);
 					if (!warningSoundPlaying)
 					{
 						warnSound->Play();
