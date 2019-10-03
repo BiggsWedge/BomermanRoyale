@@ -51,6 +51,7 @@ extern std::vector<GW::AUDIO::GSound*> bombPlaceSound;
 extern std::vector<GW::AUDIO::GSound*> powerUpSound;
 extern GW::SYSTEM::GController* g_pControllerInput;
 extern std::vector<unsigned int> availablePlayerModels;
+extern std::vector<unsigned int> availablePlayerTextures;
 
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the

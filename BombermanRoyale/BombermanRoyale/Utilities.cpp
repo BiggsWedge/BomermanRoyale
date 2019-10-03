@@ -37,6 +37,7 @@ GController* g_pControllerInput = nullptr;
 std::vector<TMeshTemplate> v_tMeshTemplates = {};
 
 std::vector<unsigned int> availablePlayerModels = { MODELS::CHICKEN, MODELS::GOAT, MODELS::BOAR };
+std::vector<unsigned int> availablePlayerTextures = { DIFFUSE_TEXTURES::CHICKEN1, DIFFUSE_TEXTURES::GOAT, DIFFUSE_TEXTURES::BOAR };
 
 string GetCurrentDateAndTime()
 {
