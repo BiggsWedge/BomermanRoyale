@@ -104,6 +104,7 @@ public:
 	void Cleanup();
 	bool FullScreen = false;
 	unsigned int curGameState = 0;
+	bool initialLoad = true;
 	int mapsize = 2;
 	int numAI = 0;
 	int numPLAYERS = 2;

@@ -37,8 +37,11 @@ int main(void)
 	g_pLogger->LogCatergorized("SUCCESS", "Successfully initialized the game");
 
 	p_cGame->loadTempMenus();
-
+	
 	p_cGame->Run();
+
+	//if (!p_cGame->FullScreen)
+	//	p_cGame->WindowResize();
 	/*
 	*/
 

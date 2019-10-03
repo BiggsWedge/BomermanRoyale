@@ -151,7 +151,6 @@ bool CGame::Initialize()
 
 	menuController.SetControllerIndex(0);
 	menuController.SetButtonCodes(G_SOUTH_BTN, G_START_BTN, G_SELECT_BTN, G_RIGHT_SHOULDER_BTN);
-
 	v_cBombs.resize(maxNumBombs);
 	p_cRendererManager = new CRendererManager();
 	return true;
@@ -352,7 +351,12 @@ void CGame::Run()
 			keyboardInputs[1].controls[i].currState = GetAsyncKeyState(keyboardInputs[1].keycodes[i]);
 		}
 
-
+		if (initialLoad)
+		{
+			FullScreen = true;
+			this->WindowResize();
+			initialLoad = false;
+		}
 		if (keys[KEYS::FULLSCREEN].pressed())
 		{
 			FullScreen = !FullScreen;
@@ -4468,7 +4472,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 					newTexture = (TTextureComponent*)texture;
 					newTexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::FIRE_TEX;
 
-					//WallFlames(objects[i], 6.0f, 13);
+					WallFlames(objects[i], 6.0f, 13);
 					if (!warningSoundPlaying)
 					{
 						warnSound->Play();
