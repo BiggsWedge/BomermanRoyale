@@ -38,10 +38,10 @@ float4 main(in inPixel _inPix) : SV_TARGET
 	if (texFlags[0] == 1)
 		diff += _diffuse.Sample(_samState, _inPix.texCoord);
 	else
-		diff = float4(1.0f, 1.0f, 1.0f, 1.0f);
+		diff = float4(1.0f, 1.0f, 1.0f, 0.0f);
 
-	//if (diff.x == 0.0f && diff.y == 0.0f && diff.z == 0.0f)
-	//	diff = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	if (diff.x <= 0.1f && diff.y <= 0.1f && diff.z <= 0.1f)
+		diff = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	float lightRatio = saturate(dot(normalize(lightDir), norm));
 	outColor += lightRatio * lightColor;

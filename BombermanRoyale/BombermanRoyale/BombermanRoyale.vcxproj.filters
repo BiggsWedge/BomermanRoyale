@@ -139,6 +139,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="XTime.cpp" />
+    <ClCompile Include="CExplosion.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBomb.h">
@@ -238,6 +241,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="XTime.h" />
+    <ClInclude Include="CExplosion.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">

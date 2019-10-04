@@ -2685,26 +2685,41 @@ void CGame::ClearPlayersAndBombs() {
 
 	for (CObject* exp : Xexplosions) {
 		if (exp)
+		{
 			delete exp;
-		exp = nullptr;
+			exp = nullptr;
+		}
 	}
 	Xexplosions.clear();
 
 	for (CObject* exp : Zexplosions)
 	{
 		if (exp)
+		{
 			delete exp;
-		exp = nullptr;
+			exp = nullptr;
+		}
 	}
 	Zexplosions.clear();
 
 	for (CItem* item : items) {
 		if (item)
+		{
 			delete item;
-		item = nullptr;
+			item = nullptr;
+		}
 	}
 	items.clear();
 
+	for (CObject* firewalls : particleObjects)
+	{
+		if (firewalls)
+		{
+			delete firewalls;
+			firewalls = nullptr;
+		}
+	}
+	particleObjects.clear();
 
 	explosionTimers.clear();
 
@@ -2785,11 +2800,16 @@ void CGame::updateBombs(double timePassed) {
 					if (player->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 0 || ZexplosionTrans->fPosition.y == 0) {
 						if (player->SetCurrentAnimaion("Die") == 1)
 							player->ResetAnimation();
-						player->setAlive(false);
-
+						if (player != Xexplosions[i]->getParent() && player->isAlive())
+							Xexplosions[i]->getParent()->setScore(1);
+						else if(player->isAlive())
+							Xexplosions[i]->getParent()->setScore(-1);
 						DeathSound->Play();
+						player->setAlive(false);
+						
 					}
 				}
+				
 			}
 		}
 
@@ -2797,6 +2817,10 @@ void CGame::updateBombs(double timePassed) {
 			if (AI) {
 				if (Xexplosions[i]->Collides((CObject*)AI) || Zexplosions[i]->Collides((CObject*)AI)) {
 					if (AI->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 0 || ZexplosionTrans->fPosition.y == 0) {
+						if (AI != Xexplosions[i]->getParent() && AI->isAlive())
+							Xexplosions[i]->getParent()->setScore(1);
+						else if (AI->isAlive())
+							Xexplosions[i]->getParent()->setScore(-1);
 						AI->setAlive(false);
 						DeathSound->Play();
 					}
@@ -2808,6 +2832,7 @@ void CGame::updateBombs(double timePassed) {
 			if (v_cBombs[k] && v_cBombs[k]->isAlive()) {
 				if (Xexplosions[i]->Collides((CObject*)v_cBombs[k]) || Zexplosions[i]->Collides((CObject*)v_cBombs[k])) {
 					v_cBombs[k]->SetToExplode();
+					v_cBombs[k]->setParent(Xexplosions[i]->getParent());
 				}
 			}
 		}
@@ -2859,8 +2884,8 @@ void CGame::updateBombs(double timePassed) {
 				}
 
 				explosionTimers.push_back(0.0f);
-				Xexplosions.push_back(p_cEntityManager->BombExplosionX(v_cBombs[i]));
-				Zexplosions.push_back(p_cEntityManager->BombExplosionZ(v_cBombs[i]));
+				Xexplosions.push_back(p_cEntityManager->BombExplosionX(v_cBombs[i], parent));
+				Zexplosions.push_back(p_cEntityManager->BombExplosionZ(v_cBombs[i], parent));
 				v_cBombs[i]->SetAlive(false);
 			}
 
@@ -4695,7 +4720,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 					newTexture = (TTextureComponent*)texture;
 					newTexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::FIRE_TEX;
 
-					//WallFlames(objects[i], 6.0f, 13);
+					WallFlames(objects[i], 5.0f, 13);
 					if (!warningSoundPlaying)
 						warnSound->Play();
 
@@ -5025,9 +5050,9 @@ void CGame::WallDrop(CObject* objectToCheck) {
 
 void CGame::WallFlames(CObject* wall, float duration, int frames)
 {
-	float frameDuration = duration / (((float)frames - 1.0f) * 2.0f);
+	float frameDuration = duration / ((float)frames - 1.0f);
 	int frame = fireWallTime / frameDuration;
-	if (frame > frames - 1)
+	if (frame >= frames - 1)
 		frame = frames - 1;
 
 	OBJLoadInfo loadInfo;

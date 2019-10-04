@@ -83,6 +83,27 @@ CBomb * CEntityManager::CreateBombFromTemplate(OBJLoadInfo loadInfo)
 	return temp;
 }
 
+CExplosion * CEntityManager::CreateExplosionFromTemplate(OBJLoadInfo loadInfo)
+{
+	CExplosion* temp = new CExplosion();
+	TTransformComponent* transform = new TTransformComponent(loadInfo.position, loadInfo.forwardVec, loadInfo.scale, loadInfo.floor, loadInfo.destroyable, loadInfo.item, loadInfo.itemType, loadInfo.layer);
+	temp->AddComponent((TComponent*)transform);
+
+	TRendererComponent* renderer = new TRendererComponent(loadInfo.usedVertex, loadInfo.usedPixel, loadInfo.usedInput, loadInfo.usedGeo, loadInfo.LoadState);
+	temp->AddComponent((TComponent*)renderer);
+
+	TMeshComponent* mesh = new TMeshComponent(v_tMeshTemplates.at(loadInfo.meshID));
+	temp->AddComponent((TComponent*)mesh);
+
+	TTextureComponent* tex = new TTextureComponent(loadInfo.usedDiffuse);
+	temp->AddComponent((TComponent*)tex);
+
+	TColliderComponent* collider = new TColliderComponent(v_tMeshTemplates[loadInfo.meshID], loadInfo.scale, loadInfo.position, loadInfo.collisionLayer);
+	temp->AddComponent((TComponent*)collider);
+
+	return temp;
+}
+
 CItem * CEntityManager::CreateItemFromTemplate(OBJLoadInfo loadInfo)
 {
 	CItem* temp = new CItem();
@@ -2431,9 +2452,9 @@ void CEntityManager::Cleanup()
 
 }
 
-CObject* CEntityManager::BombExplosionX(CBomb* BombSource)
+CExplosion* CEntityManager::BombExplosionX(CBomb* BombSource, CPlayer* _player)
 {
-	CObject* explosion;
+	CExplosion* explosion;
 	TComponent* transform;
 	TTransformComponent* cTransform;
 	BombSource->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
@@ -2454,14 +2475,15 @@ CObject* CEntityManager::BombExplosionX(CBomb* BombSource)
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 13.5f, 1.0f / 72.5f, 1.0f / 72.5f);
-	explosion = CreateOBJFromTemplate(loadInfo);
+	explosion = CreateExplosionFromTemplate(loadInfo);
+	explosion->initialize(_player);
 
 	return explosion;
 }
 
-CObject* CEntityManager::BombExplosionZ(CBomb* BombSource)
+CExplosion* CEntityManager::BombExplosionZ(CBomb* BombSource, CPlayer* _player)
 {
-	CObject* explosion;
+	CExplosion* explosion;
 	TComponent* transform;
 	TTransformComponent* cTransform;
 	BombSource->GetComponent(COMPONENT_TYPE::TRANSFORM, transform);
@@ -2482,7 +2504,8 @@ CObject* CEntityManager::BombExplosionZ(CBomb* BombSource)
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = 3;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 72.5f, 1.0f / 72.5f, 1.0f / 13.5f);
-	explosion = CreateOBJFromTemplate(loadInfo);
+	explosion = CreateExplosionFromTemplate(loadInfo);
+	explosion->initialize(_player);
 
 	return explosion;
 }

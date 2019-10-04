@@ -126,6 +126,7 @@
     <ClCompile Include="..\Gateware\Source\G_System\GWindow.cpp" />
     <ClCompile Include="CBomb.cpp" />
     <ClCompile Include="CEntityManager.cpp" />
+    <ClCompile Include="CExplosion.cpp" />
     <ClCompile Include="CharacterController.cpp" />
     <ClCompile Include="CItem.cpp" />
     <ClCompile Include="CObject.cpp" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="CBomb.h" />
     <ClInclude Include="CEntityManager.h" />
+    <ClInclude Include="CExplosion.h" />
     <ClInclude Include="CItem.h" />
     <ClInclude Include="CharacterController.h" />
     <ClInclude Include="Component.h" />

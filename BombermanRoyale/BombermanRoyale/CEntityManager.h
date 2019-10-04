@@ -43,6 +43,7 @@ public:
 	CObject* CreateOBJFromTemplate(OBJLoadInfo loadInfo);
 	CPlayer* CreatePlayerFromTemplate(OBJLoadInfo loadInfo);
 	CBomb* CreateBombFromTemplate(OBJLoadInfo loadInfo);
+	CExplosion* CreateExplosionFromTemplate(OBJLoadInfo loadInfo);
 	CItem* CreateItemFromTemplate(OBJLoadInfo loadInfo);
 
 	CBomb* DropBomb0(CPlayer* playerSource);
@@ -53,8 +54,8 @@ public:
 
 	void Cleanup();
 
-	CObject* BombExplosionX(CBomb* BombSource);
-	CObject* BombExplosionZ(CBomb* BombSource);
+	CExplosion* BombExplosionX(CBomb* BombSource, CPlayer* _player);
+	CExplosion* BombExplosionZ(CBomb* BombSource, CPlayer* _player);
 	CItem* ItemDrop(CObject* ItemSource, int itemType);
 	CObject* SpawnObject(CObject* obj);
 	CPlayer* InstantiatePlayer(int numPlayer, int playerModel, int playerSkin, DirectX::XMFLOAT3 spawnPos, int loadState = 3, DirectX::XMFLOAT3 forwardVec = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3 scale = DirectX::XMFLOAT3(1.0f, 1.0f, 0.75f));

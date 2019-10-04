@@ -71,8 +71,8 @@ class CGame
 	std::vector<CObject*> deleteLayer;
 	std::vector<CObject*> menuObjects;
 	std::vector<CObject*> particleObjects;
-	std::vector<CObject*> Xexplosions;
-	std::vector<CObject*> Zexplosions;
+	std::vector<CExplosion*> Xexplosions;
+	std::vector<CExplosion*> Zexplosions;
 	std::vector<CItem*> items;
 	std::vector<double> explosionTimers;
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
