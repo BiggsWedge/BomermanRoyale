@@ -108,7 +108,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 	DirectX::XMVECTOR measurement = g_d3dData->d3dSpriteFont->MeasureString("Arcade Mode");
 
-	if (gamestate == GAME_STATE::ARCADE_GAME)
+	if (gamestate == GAME_STATE::ARCADE_GAME || gamestate == GAME_STATE::BATTLE_GAME)
 	{
 		RECT rect;
 		rect.top = 0;
@@ -128,7 +128,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 	}
 
-	if (gamestate == GAME_STATE::ARCADE_MENU)
+	if (gamestate == GAME_STATE::ARCADE_MENU || gamestate == GAME_STATE::BATTLE_MENU)
 	{
 		wchar_t numP[10];
 		wchar_t numA[10];

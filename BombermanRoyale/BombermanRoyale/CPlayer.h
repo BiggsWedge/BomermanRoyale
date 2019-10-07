@@ -19,6 +19,9 @@ private:
 	bool crouched = false;
 	bool renderable = true;
 	int score = 0;
+	int killstreak = 0;
+	float deathtimer = 0.0f;
+	DirectX::XMFLOAT3 spawnPos;
 
 public:
 	CPlayer();
@@ -43,6 +46,12 @@ public:
 	inline void SetRespawnTimer(float timepassed) { respawntimer += timepassed; }
 	inline int getScore() { return score; }
 	inline void setScore(int scorechange) { score += scorechange; }
+	inline int getKillStreak() { return killstreak; }
+	inline void setKillStreak(int kschange) { killstreak += kschange; }
+	inline float getDeathTimer() { return deathtimer; }
+	inline void setDeathTimer(float timepassed) { deathtimer += timepassed; }
+	inline DirectX::XMFLOAT3 getSpawnPos() { return spawnPos; }
+	inline void setSpawnPos(DirectX::XMFLOAT3 newSpawnPos) { spawnPos = newSpawnPos; }
 	inline CharacterController* GetCharacterController() { return &controller; }
 
 	//MUTATORS

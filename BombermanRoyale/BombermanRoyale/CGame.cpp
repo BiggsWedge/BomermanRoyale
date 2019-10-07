@@ -270,7 +270,10 @@ void CGame::Run() {
 		timePassed = (currFrame - prevFrame) / 1000.0;
 		timer.Signal();
 		if (!isPaused)
+		{
 			mapTime += timePassed;
+			DeathTimerforRespawnUpdate(timePassed);
+		}
 
 
 		loadScreenTime = timer.Delta() + loadScreenTime;
@@ -315,7 +318,7 @@ void CGame::Run() {
 			keys[i].currState = GetAsyncKeyState(keycodes[i]) & 0x8000;
 		}
 
-		p1Pause.Update(0, curGameState != GAME_STATE::ARCADE_GAME);
+		p1Pause.Update(0, curGameState != (GAME_STATE::ARCADE_GAME || GAME_STATE::BATTLE_GAME));
 
 		for (int i = 0; i < CONTROL_KEYS::COUNT; ++i) {
 			keyboardInputs[0].controls[i].prevState = keyboardInputs[0].controls[i].currState;
@@ -357,6 +360,10 @@ void CGame::Run() {
 				continue;
 			}
 			else if (curGameState == GAME_STATE::ARCADE_GAME) {
+				setGameState(GAME_STATE::BATTLE_GAME);
+				continue;
+			}
+			else if (curGameState == GAME_STATE::BATTLE_GAME) {
 				setGameState(GAME_STATE::MAIN_MENU);
 				continue;
 			}
@@ -394,7 +401,7 @@ void CGame::Run() {
 				g_pMusicStream->SetVolume(0.5f);
 				timePassed = tempTime;
 				mapTime = tempMapTime;
-				if (curGameState == GAME_STATE::ARCADE_GAME)
+				if (curGameState == (GAME_STATE::ARCADE_GAME || GAME_STATE::BATTLE_GAME))
 					SprinklersOn = true;
 			}
 		}
@@ -418,7 +425,7 @@ void CGame::Run() {
 			menucontroltimer += timePassed;
 			if (menuController.GetUpDown() > 0.0f && menucontroltimer > 0.2 && menuIndex > 0)
 			{
-				if (menuIndex != 3)
+				if (menuIndex == 1)
 				{
 					menucontroltimer = 0.0;
 					menuIndex -= 1;
@@ -432,9 +439,10 @@ void CGame::Run() {
 						}
 					}
 				}
-				else {
+				if(menuIndex == 3)
+				{
 					menucontroltimer = 0.0;
-					menuIndex -= 3;
+					menuIndex -= 2;
 					for (int i = 0; i < MenuSounds.size(); ++i)
 					{
 						MenuSounds.at(i)->isSoundPlaying(soundplaying);
@@ -445,6 +453,19 @@ void CGame::Run() {
 						}
 					}
 				}
+				//else {
+				//	menucontroltimer = 0.0;
+				//	menuIndex -= 3;
+				//	for (int i = 0; i < MenuSounds.size(); ++i)
+				//	{
+				//		MenuSounds.at(i)->isSoundPlaying(soundplaying);
+				//		if (!soundplaying)
+				//		{
+				//			MenuSounds.at(i)->Play();
+				//			break;
+				//		}
+				//	}
+				//}
 				for (CObject* menu : menuObjects)
 				{
 					TComponent* cRenderer;
@@ -466,7 +487,7 @@ void CGame::Run() {
 				if (menuIndex != 0)
 				{
 					menucontroltimer = 0.0;
-					menuIndex += 1;
+					menuIndex += 2;
 					for (int i = 0; i < MenuSounds.size(); ++i)
 					{
 						MenuSounds.at(i)->isSoundPlaying(soundplaying);
@@ -477,9 +498,10 @@ void CGame::Run() {
 						}
 					}
 				}
-				else {
+				if(menuIndex == 0)
+				{
 					menucontroltimer = 0.0;
-					menuIndex += 3;
+					menuIndex += 1;
 					for (int i = 0; i < MenuSounds.size(); ++i)
 					{
 						MenuSounds.at(i)->isSoundPlaying(soundplaying);
@@ -525,6 +547,7 @@ void CGame::Run() {
 				}
 				case 1:
 				{
+					setGameState(GAME_STATE::BATTLE_MENU);
 					break;
 				}
 				case 2:
@@ -552,7 +575,7 @@ void CGame::Run() {
 #pragma region ARCADE MENU
 
 
-		if (curGameState == GAME_STATE::ARCADE_MENU)
+		if (curGameState == GAME_STATE::ARCADE_MENU || curGameState == GAME_STATE::BATTLE_MENU)
 		{
 			if (keys[KEYS::AI_DEC_COUNT].released())
 			{
@@ -595,7 +618,7 @@ void CGame::Run() {
 					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
 					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 					TTextureComponent* Texture = (TTextureComponent*)cTexture;
-					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
+					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
 					{
 						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
 					}
@@ -638,7 +661,7 @@ void CGame::Run() {
 					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
 					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 					TTextureComponent* Texture = (TTextureComponent*)cTexture;
-					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
+					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
 					{
 						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
 					}
@@ -677,7 +700,7 @@ void CGame::Run() {
 					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
 					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 					TTextureComponent* Texture = (TTextureComponent*)cTexture;
-					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
+					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
 					{
 						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
 					}
@@ -712,7 +735,7 @@ void CGame::Run() {
 					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
 					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 					TTextureComponent* Texture = (TTextureComponent*)cTexture;
-					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
+					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
 					{
 						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
 					}
@@ -788,7 +811,7 @@ void CGame::Run() {
 						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 						TTextureComponent* Texture = (TTextureComponent*)cTexture;
 
-						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
+						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
 						{
 							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
 						}
@@ -797,7 +820,10 @@ void CGame::Run() {
 					menuz = 0;
 					menux = 0;
 					menuIndex = 0;
-					setGameState(GAME_STATE::ARCADE_GAME);
+					if(curGameState == GAME_STATE::ARCADE_MENU)
+						setGameState(GAME_STATE::ARCADE_GAME);
+					else
+						setGameState(GAME_STATE::BATTLE_GAME);
 					continue;
 				}
 				case 7:
@@ -816,7 +842,7 @@ void CGame::Run() {
 						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 						TTextureComponent* Texture = (TTextureComponent*)cTexture;
 
-						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
+						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
 						{
 							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
 						}
@@ -844,7 +870,7 @@ void CGame::Run() {
 						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 						TTextureComponent* Texture = (TTextureComponent*)cTexture;
 
-						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU)
+						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
 						{
 							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
 						}
@@ -1343,6 +1369,119 @@ void CGame::Run() {
 			this->GamePlayLoop(timePassed);
 		}
 
+		if (curGameState == GAME_STATE::BATTLE_GAME)
+		{
+			updateBombs(timePassed);
+			prevCursor = currCursor;
+			GetCursorPos(&currCursor);
+			if (!isPaused)
+			{
+				BattleDuration -= timePassed;
+			}
+
+			g_d3dData->debugCamDelta = { 0.0f, 0.0f };
+
+			if (keys[KEYS::ZERO].pressed())
+				g_d3dData->ToggleUseDebugCamera();
+
+			if (keys[KEYS::UP].held())
+				g_d3dData->debugCamDelta.y += 0.1f;
+
+			if (keys[KEYS::DOWN].held())
+				g_d3dData->debugCamDelta.y += -0.1f;
+
+			if (keys[KEYS::LEFT].held())
+				g_d3dData->debugCamDelta.x += -0.1f;
+
+			if (keys[KEYS::RIGHT].held())
+				g_d3dData->debugCamDelta.x += 0.1f;
+
+			if (keys[KEYS::RMB].held()) {
+				g_d3dData->debugCursorRot.y = 0.002f*(currCursor.y - prevCursor.y);
+				g_d3dData->debugCursorRot.x = 0.002f*(currCursor.x - prevCursor.x);
+			}
+
+			static int numPlayersAlive = 0;
+			static int prevNumPlayersAlive = 0;
+			HighScore = 0;
+			highscoreINDEX = 0;
+			prevNumPlayersAlive = numPlayersAlive;
+			numPlayersAlive = 0;
+			for (int i = 0; i < v_cPlayers.size(); ++i)
+			{
+				if (v_cPlayers[i] && v_cPlayers[i]->isAlive())
+					numPlayersAlive++;
+				if (v_cPlayers[i] && v_cPlayers[i]->getScore() >= HighScore)
+				{
+					HighScore = v_cPlayers[i]->getScore();
+					highscoreINDEX = i + 1;
+				}
+			}
+
+			for (int i = 0; i < v_cAI.size(); ++i) {
+				if (v_cAI[i] && v_cAI[i]->isAlive())
+					numPlayersAlive++;
+				if (v_cAI[i] && v_cAI[i]->getScore() >= HighScore)
+				{
+					HighScore = v_cAI[i]->getScore();
+					if (i == 1)
+						highscoreINDEX = numPLAYERS;
+
+					else
+						highscoreINDEX = numPLAYERS + 1;
+				}
+			}
+
+			if (BattleDuration <= 0.0f || HighScore >= 10) {
+				int winner = 0;
+				int aiwinner = 0;
+
+				for (CObject* menu : menuObjects) {
+					TComponent* cRenderer;
+					TComponent* cTexture;
+
+					if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+						continue;
+
+					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+
+					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+					TTextureComponent* Texture = (TTextureComponent*)cTexture;
+
+					if (renderer->iUsedLoadState == GAME_STATE::WIN_SCREEN) {
+						g_d3dData->viewMat = g_d3dData->camMat;
+
+
+
+						if (highscoreINDEX == 0) {
+							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::PLAYER_1_WIN;
+							WinScreenSound->Play();
+						}
+						else if (highscoreINDEX == 1) {
+							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::PLAYER_2_WIN;
+							WinScreenSound->Play();
+						}
+						else if (highscoreINDEX == 2) {
+							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::PLAYER_3_WIN;
+							WinScreenSound->Play();
+						}
+						else if (highscoreINDEX == 3) {
+							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::PLAYER_4_WIN;
+							WinScreenSound->Play();
+						}
+						else {
+							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::DRAW_SCREEN;
+							WinScreenSound->Play();
+						}
+					}
+				}
+
+				setGameState(GAME_STATE::WIN_SCREEN);
+			}
+
+			this->GamePlayLoop(timePassed);
+		}
+
 		CustomMeshUpdate(timePassed);
 		g_d3dData->updateCameras();
 
@@ -1389,7 +1528,7 @@ void CGame::LoadAnim()
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
-void CGame::LoadObjectBattle() {
+void CGame::LoadObjectBattle(int game_state) {
 	OBJLoadInfo loadInfo;
 
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
@@ -1399,7 +1538,7 @@ void CGame::LoadObjectBattle() {
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
 	loadInfo.meshID = MODELS::CUBE;
-	loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
+	loadInfo.LoadState = game_state;
 	loadInfo.floor = true;
 	loadInfo.item = false;
 	loadInfo.destroyable = false;
@@ -1452,7 +1591,7 @@ void CGame::LoadObjectBattle() {
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
-void CGame::LoadObjectSmall() {
+void CGame::LoadObjectSmall(int game_state) {
 	OBJLoadInfo loadInfo;
 
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
@@ -1462,7 +1601,7 @@ void CGame::LoadObjectSmall() {
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
 	loadInfo.meshID = MODELS::CUBE;
-	loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
+	loadInfo.LoadState = game_state;
 	loadInfo.floor = true;
 	loadInfo.item = false;
 	loadInfo.destroyable = false;
@@ -1596,7 +1735,7 @@ void CGame::LoadObjectSmall() {
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
-void CGame::LoadObjectMedium() {
+void CGame::LoadObjectMedium(int game_state) {
 	OBJLoadInfo loadInfo;
 
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
@@ -1606,7 +1745,7 @@ void CGame::LoadObjectMedium() {
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
 	loadInfo.meshID = MODELS::CUBE;
-	loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
+	loadInfo.LoadState = game_state;
 	loadInfo.floor = true;
 	loadInfo.item = false;
 	loadInfo.destroyable = false;
@@ -1724,7 +1863,7 @@ void CGame::LoadObjectMedium() {
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
-void CGame::LoadObjectLarge() {
+void CGame::LoadObjectLarge(int game_state) {
 	OBJLoadInfo loadInfo;
 
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
@@ -1734,7 +1873,7 @@ void CGame::LoadObjectLarge() {
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BLUE_TEX;
 	loadInfo.meshID = MODELS::CUBE;
-	loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
+	loadInfo.LoadState = game_state;
 	loadInfo.floor = true;
 	loadInfo.item = false;
 	loadInfo.destroyable = false;
@@ -1935,6 +2074,40 @@ void CGame::WindowResize() {
 void CGame::GamePlayLoop(double timePassed)
 {
 	AI_Method(timePassed, 5.0f);
+	for (CPlayer* currPlayer : v_cPlayers)
+	{
+		if (currPlayer && !currPlayer->isAlive() && curGameState == GAME_STATE::BATTLE_GAME && currPlayer->getDeathTimer() >= 1.0f)
+		{
+			TComponent* _prenderer = nullptr;
+			TComponent* _brenderer = nullptr;
+
+			currPlayer->setSpawnPos(DirectX::XMFLOAT3{ (currPlayer->getSpawnPos().x < 0) ? ((droppedLayers == 0) ? fMinX + 2.5f : fMinX) : ((droppedLayers == 0) ? fMaxX - 2.5f : fMaxX),
+				0.0f, (currPlayer->getSpawnPos().z < 0) ? ((droppedLayers == 0) ? fMinZ + 2.5f : fMinZ) : ((droppedLayers == 0) ? fMaxZ - 2.5f : fMaxZ) });
+			if (currPlayer->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
+				TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
+				currPlayer->setAlive(true);
+				currPlayer->setDeathTimer(-currPlayer->getDeathTimer());
+				currPlayer->CrouchRoll(currPlayer->getSpawnPos().x - pRenderer->fPosition.x, currPlayer->getSpawnPos().z - pRenderer->fPosition.z, pRenderer->fPosition.y - currPlayer->getSpawnPos().y, false);
+			}
+		}
+	}
+	for (CPlayer* currAI : v_cAI)
+	{
+		if (currAI && !currAI->isAlive() && curGameState == GAME_STATE::BATTLE_GAME && currAI->getDeathTimer() >= 1.0f)
+		{
+			TComponent* _prenderer = nullptr;
+			TComponent* _brenderer = nullptr;
+
+			currAI->setSpawnPos(DirectX::XMFLOAT3{ (currAI->getSpawnPos().x < 0) ? ((droppedLayers == 0) ? fMinX + 2.5f : fMinX) : ((droppedLayers == 0) ? fMaxX - 2.5f : fMaxX),
+				0.0f, (currAI->getSpawnPos().z < 0) ? ((droppedLayers == 0) ? fMinZ + 2.5f : fMinZ) : ((droppedLayers == 0) ? fMaxZ - 2.5f : fMaxZ) });
+			if (currAI->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
+				TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
+				currAI->setAlive(true);
+				currAI->setDeathTimer(-currAI->getDeathTimer());
+				currAI->CrouchRoll(currAI->getSpawnPos().x - pRenderer->fPosition.x, currAI->getSpawnPos().z - pRenderer->fPosition.z, pRenderer->fPosition.y - currAI->getSpawnPos().y, false);
+			}
+		}
+	}
 	for (CPlayer* currPlayer : v_cPlayers)
 	{
 
@@ -2463,6 +2636,13 @@ void CGame::setGameState(int _gameState) {
 		ClearPlayersAndBombs();
 		SprinklersOn = false;
 		break;
+	case GAME_STATE::BATTLE_MENU:
+
+		g_d3dData->viewMat = g_d3dData->camMat;
+		p1Pause.Reset(false);
+		ClearPlayersAndBombs();
+		SprinklersOn = false;
+		break;
 
 	case GAME_STATE::CHARACTER_SCREEN:
 
@@ -2532,7 +2712,7 @@ void CGame::setGameState(int _gameState) {
 			fMinZ = -10;
 			fMaxZ = 15;
 			mapPasses = 4;
-			LoadObjectSmall();
+			LoadObjectSmall(_gameState);
 
 			break;
 		case 2:
@@ -2541,7 +2721,7 @@ void CGame::setGameState(int _gameState) {
 			fMinZ = -15;
 			fMaxZ = 20;
 			mapPasses = 6;
-			LoadObjectMedium();
+			LoadObjectMedium(_gameState);
 			g_d3dData->viewMat = DirectX::XMMatrixTranslation(0, -15.0f, 8.0f) * g_d3dData->viewMat;
 			g_d3dData->tempCamera = g_d3dData->viewMat;
 			break;
@@ -2551,7 +2731,7 @@ void CGame::setGameState(int _gameState) {
 			fMinZ = -20;
 			fMaxZ = 25;
 			mapPasses = 8;
-			LoadObjectLarge();
+			LoadObjectLarge(_gameState);
 			g_d3dData->viewMat = DirectX::XMMatrixTranslation(0, -27.0f, 17.0f) * g_d3dData->viewMat;
 			g_d3dData->tempCamera = g_d3dData->viewMat;
 			break;
@@ -2620,6 +2800,86 @@ void CGame::setGameState(int _gameState) {
 		ClearPlayersAndBombs();
 		break;
 
+
+	case GAME_STATE::BATTLE_GAME:
+
+		SprinklersOn = true;
+		droppedLayers = 0;
+		ClearPlayersAndBombs();
+		shakeTime = 0;
+		mapTime = 0;
+		centerAItimer1 = 2.0f;
+
+		v_cPlayers.resize(numPLAYERS);
+		v_cAI.resize(numAI);
+
+		switch (mapsize) {
+		case 1:
+			fMinX = -15;
+			fMaxX = 15;
+			fMinZ = -10;
+			fMaxZ = 15;
+			mapPasses = 4;
+			LoadObjectSmall(_gameState);
+
+			break;
+		case 2:
+			fMinX = -20;
+			fMaxX = 20;
+			fMinZ = -15;
+			fMaxZ = 20;
+			mapPasses = 6;
+			LoadObjectMedium(_gameState);
+			g_d3dData->viewMat = DirectX::XMMatrixTranslation(0, -15.0f, 8.0f) * g_d3dData->viewMat;
+			g_d3dData->tempCamera = g_d3dData->viewMat;
+			break;
+		case 3:
+			fMinX = -25;
+			fMaxX = 25;
+			fMinZ = -20;
+			fMaxZ = 25;
+			mapPasses = 8;
+			LoadObjectLarge(_gameState);
+			g_d3dData->viewMat = DirectX::XMMatrixTranslation(0, -27.0f, 17.0f) * g_d3dData->viewMat;
+			g_d3dData->tempCamera = g_d3dData->viewMat;
+			break;
+		}
+
+		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, availablePlayerModels[playermodel[0]], playertextures[0], DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[playermodel[0]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.02f, 0.02f, 0.01f));
+
+		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, availablePlayerModels[playermodel[1]], playertextures[1], DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[playermodel[1]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.02f, 0.02f, 0.01f));
+
+		if (numPLAYERS > 2)
+		{
+			v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, availablePlayerModels[playermodel[2]], playertextures[2], DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[playermodel[2]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.02f, 0.02f, 0.01f));
+		}
+
+		if (numPLAYERS > 3)
+		{
+			v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, availablePlayerModels[playermodel[3]], playertextures[3], DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[playermodel[3]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.02f, 0.02f, 0.01f));
+		}
+
+		if (numAI > 0)
+		{
+			v_cAI[0] = p_cEntityManager->InstantiatePlayer(4, AImodel[0], (AImodel[0] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (AImodel[0] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.55f, 0.55f, 0.55f));
+		}
+
+		if (numAI > 1)
+		{
+			v_cAI[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], (AImodel[1] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN3 : DIFFUSE_TEXTURES::BOMB3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (AImodel[1] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.55f, 0.55f, 0.55f));
+		}
+
+		//mapTime = 0;
+		spawnSound1->isSoundPlaying(soundplaying);
+		if (!soundplaying)
+			spawnSound1->Play();
+
+		spawnSound2->isSoundPlaying(soundplaying);
+		if (!soundplaying)
+			spawnSound2->Play();
+
+		v_cBombs.resize(maxNumBombs);
+		break;
 	}
 	curGameState = _gameState;
 }
@@ -2801,15 +3061,20 @@ void CGame::updateBombs(double timePassed) {
 						if (player->SetCurrentAnimaion("Die") == 1)
 							player->ResetAnimation();
 						if (player != Xexplosions[i]->getParent() && player->isAlive())
-							Xexplosions[i]->getParent()->setScore(1);
-						else if(player->isAlive())
-							Xexplosions[i]->getParent()->setScore(-1);
+						{
+							Xexplosions[i]->getParent()->setScore(1 + (int)(Xexplosions[i]->getParent()->getKillStreak() * 0.5f));
+							Xexplosions[i]->getParent()->setKillStreak(1);
+							player->setKillStreak(-player->getKillStreak());
+						}
+
+						//else if(player->isAlive())
+						//	Xexplosions[i]->getParent()->setScore(-1);
 						DeathSound->Play();
 						player->setAlive(false);
-						
+
 					}
 				}
-				
+
 			}
 		}
 
@@ -2818,9 +3083,14 @@ void CGame::updateBombs(double timePassed) {
 				if (Xexplosions[i]->Collides((CObject*)AI) || Zexplosions[i]->Collides((CObject*)AI)) {
 					if (AI->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 0 || ZexplosionTrans->fPosition.y == 0) {
 						if (AI != Xexplosions[i]->getParent() && AI->isAlive())
-							Xexplosions[i]->getParent()->setScore(1);
-						else if (AI->isAlive())
-							Xexplosions[i]->getParent()->setScore(-1);
+						{
+							Xexplosions[i]->getParent()->setScore(1 + (int)(Xexplosions[i]->getParent()->getKillStreak() * 0.5f));
+							Xexplosions[i]->getParent()->setKillStreak(1);
+							AI->setKillStreak(-AI->getKillStreak());
+						}
+
+						//else if (AI->isAlive())
+						//	Xexplosions[i]->getParent()->setScore(-1);
 						AI->setAlive(false);
 						DeathSound->Play();
 					}
@@ -2953,6 +3223,14 @@ bool CGame::loadTempMenus() {
 	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 2.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::ARCADE_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_MENU;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 2.0f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::BATTLE_MENU;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
@@ -4936,7 +5214,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 	}
 
 	//screenshake
-	if (bombExploded && curGameState == GAME_STATE::ARCADE_GAME) {
+	if (bombExploded && (curGameState == GAME_STATE::ARCADE_GAME || curGameState == GAME_STATE::BATTLE_GAME)) {
 		shakeTime += timePassed;
 		viewPos = g_d3dData->screenShake();
 
@@ -5106,4 +5384,19 @@ void CGame::WallFlames(CObject* wall, float duration, int frames)
 	loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
 	if (NoMatchingWall)
 		particleObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+}
+
+void CGame::DeathTimerforRespawnUpdate(float timepassed)
+{
+	for (CPlayer* player : v_cPlayers) {
+		if (player && !player->isAlive()) {
+			player->setDeathTimer(timepassed);
+		}
+	}
+
+	for (CPlayer* AI : v_cAI) {
+		if (AI && !AI->isAlive()) {
+			AI->setDeathTimer(timepassed);
+		}
+	}
 }

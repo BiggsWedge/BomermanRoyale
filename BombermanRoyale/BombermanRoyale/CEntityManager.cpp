@@ -2610,6 +2610,7 @@ CPlayer* CEntityManager::InstantiatePlayer(int numPlayer, int playerModel, int p
 
 	CPlayer* player = nullptr;
 	player = CreatePlayerFromTemplate(pLoadInfo);
+	player->setSpawnPos(spawnPos);
 	player->resetStats();
 	player->Initialize();
 	player->setControllerIndex(numPlayer - 1);
