@@ -285,7 +285,13 @@ void LoadTextures()
 	for (int i = 0; i < (int)diffuseTextures.size(); ++i)
 	{
 		if (FAILED(DirectX::CreateWICTextureFromFile(g_d3dData->d3dDevice, diffuseTextures[i], nullptr, &g_d3dData->d3dDiffuseTextures[i])))
-			g_pLogger->LogCatergorized("FAILURE", "Failed to load texture");
+		{
+			std::string outS = "Failed to load texture ";
+			outS.append(std::to_string(i));
+			outS.append(" of ");
+			outS.append(std::to_string(diffuseTextures.size()));
+			g_pLogger->LogCatergorized("FAILURE", outS.c_str());
+		}
 	}
 }
 

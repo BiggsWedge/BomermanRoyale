@@ -44,11 +44,27 @@ struct PS_IN
     float4 eye : EYE;
 };
 
-static float4 ambient_light = { 0.75f, 0.75f, 0.75f, 1.0f };
+static float4 ambient_light = { 0.9f, 0.75f, 0.5f, 1.0f };
+static float4 light_dir = { 0.0f, -1.0f, 1.0f, 1.0f };
 
 float4 main(PS_IN input) : SV_TARGET
 {
-    float4 finalColor;
+
+
+    float4 finalColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    float4 norm = float4(normalize(input.norm), 1.0f);
+
+    //finalColor += ambient_light;
+
+
+
+    float lightRatio = saturate(dot(-normalize(light_dir.xyz), norm.xyz));
+    
+    finalColor += lightRatio * (float4(float3(0.9f, 0.75f, 0.5f) * 1.0f, 1.0f));
+
+
+
+
     /*
 
 	float3 light_dir = light.position - input.wPos.xyz;
@@ -78,6 +94,6 @@ float4 main(PS_IN input) : SV_TARGET
 	diffuse.xyz = saturate(diffuse.xyz);
 	finalColor = ambient + specular + diffuse + emissive;
     */
-    finalColor = txDiffuse.Sample(txSampler, input.tex);
-    return finalColor;
+    //finalColor = txDiffuse.Sample(txSampler, input.tex);
+    return saturate(finalColor * txDiffuse.Sample(txSampler, input.tex));
 }

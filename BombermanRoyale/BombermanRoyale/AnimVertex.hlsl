@@ -43,7 +43,7 @@ VS_OUT main(VS_IN input)
 		if (input.joints[i] >= 0)
 		{
 			skinnedPos += mul(float4(input.pos, 1.0f), joints[input.joints[i]]) * input.weights[i];
-			skinnedNorm += mul(float4(input.norm, 0.0f), joints[input.joints[i]]) * input.weights[i];
+			skinnedNorm += mul(float4(input.norm, 1.0f), joints[input.joints[i]]) * input.weights[i];
 		}
 	}
 	//skinnedPos = float4(input.pos, 1.0f);
@@ -55,7 +55,9 @@ VS_OUT main(VS_IN input)
 	output.pos = mul(output.pos, projection);
 	//output.pos = float4(output.pos.xyz, 1);
 
-	output.norm = mul(float4(skinnedNorm.xyz, 1), world).xyz;
+    output.norm = normalize(input.norm); //mul(float4(skinnedNorm.xyz, 1), world).xyz);
+
+    output.norm = normalize(mul(normalize(float4(input.norm.xyx, 1)), world).xyz);
 
 	output.tex = float2(input.tex.x, input.tex.y);
 	output.eyePos.x = -dot(view[3].xyz, view[0].xyz);
