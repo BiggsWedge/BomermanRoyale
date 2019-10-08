@@ -199,8 +199,22 @@ void CObject::TurnPlayerTo(float _x, float _z) {
 	GetComponent(COMPONENT_TYPE::TRANSFORM, cTransform);
 	transform = (TTransformComponent*)cTransform;
 	DirectX::XMFLOAT3 targetVec = { _x, 0.0f, _z };
-	transform->mObjMatrix = TurnTo(transform->mObjMatrix, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec))), 10.0f);
+	DirectX::XMFLOAT3 newTarget;
+	DirectX::XMVECTOR up = { 0, 1, 0 };
+	DirectX::XMStoreFloat3(&newTarget, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec)));
+
+	DirectX::XMVECTOR z = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&targetVec), DirectX::XMLoadFloat3(&transform->fPosition));
+	z = DirectX::XMVector3Normalize(z);
+	DirectX::XMVECTOR x = DirectX::XMVector3Cross(up, z);
+	x = DirectX::XMVector3Normalize(x);
+	DirectX::XMVECTOR y = DirectX::XMVector3Cross(z, x);
+	y = DirectX::XMVector3Normalize(y);
+	DirectX::XMMATRIX result = DirectX::XMMATRIX(x, y, z, DirectX::XMLoadFloat3(&transform->fPosition));
+
+	//transform->fForwardVector = newTarget;
+	transform->mObjMatrix = result;
 }
+
 bool CObject::Move(float _x, float _z, bool rotation)
 {
 	TComponent* cTransform;
@@ -273,8 +287,7 @@ bool CObject::MoveOverTime(float start_x, float end_x, float start_z , float end
 	collider = (TColliderComponent*)cTransform;
 
 	movetimer += timepassed;
-
-	float ratio =  movetimer / 3.0f;
+	float ratio =  movetimer / 3.5f;
 	float _x = lerp(start_x, end_x, ratio);
 	_x = _x - start_x;
 	float _z = lerp(start_z, end_z, ratio);
