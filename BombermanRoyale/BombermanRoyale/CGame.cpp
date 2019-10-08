@@ -401,7 +401,7 @@ void CGame::Run() {
 				g_pMusicStream->SetVolume(0.5f);
 				timePassed = tempTime;
 				mapTime = tempMapTime;
-				if (curGameState == (GAME_STATE::ARCADE_GAME || GAME_STATE::BATTLE_GAME))
+				if (curGameState == GAME_STATE::ARCADE_GAME || curGameState == GAME_STATE::BATTLE_GAME)
 					SprinklersOn = true;
 			}
 		}
@@ -878,6 +878,7 @@ void CGame::Run() {
 					menuz = 0;
 					menux = 0;
 					menuIndex = 0;
+					prevGameState = curGameState;
 					setGameState(GAME_STATE::CHARACTER_SCREEN);
 					CSx = -11.35f;
 					continue;
@@ -986,7 +987,7 @@ void CGame::Run() {
 			{
 				CSx = -11.35;
 				menuIndex = 0;
-				setGameState(GAME_STATE::ARCADE_MENU);
+				setGameState(prevGameState);
 				continue;
 			}
 			if (menuController.ButtonReleased(DEFAULT_BUTTONS::ACTION))
@@ -1559,7 +1560,7 @@ void CGame::LoadObjectBattle(int game_state) {
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
 		loadInfo.meshID = MODELS::CUBE;
-		loadInfo.LoadState = 3;
+		loadInfo.LoadState = game_state;
 		loadInfo.item = false;
 		loadInfo.floor = false;
 		loadInfo.collisionLayer = COLLISION_LAYERS::WALL;
@@ -1625,8 +1626,8 @@ void CGame::LoadObjectSmall(int game_state) {
 				loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 				loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 				loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+				loadInfo.LoadState = game_state;
 				loadInfo.usedGeo = -1;
-				loadInfo.LoadState = 3;
 				loadInfo.destroyable = true;
 				loadInfo.collisionLayer = COLLISION_LAYERS::DESTROYABLE;
 				loadInfo.item = true;
@@ -1670,7 +1671,7 @@ void CGame::LoadObjectSmall(int game_state) {
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
 		loadInfo.meshID = MODELS::CUBE;
-		loadInfo.LoadState = 3;
+		loadInfo.LoadState = game_state;
 		loadInfo.item = false;
 		loadInfo.floor = false;
 		loadInfo.collisionLayer = COLLISION_LAYERS::WALL;
@@ -1775,7 +1776,7 @@ void CGame::LoadObjectMedium(int game_state) {
 				loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 				loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 				loadInfo.usedGeo = -1;
-				loadInfo.LoadState = 3;
+				loadInfo.LoadState = game_state;
 				loadInfo.destroyable = true;
 				loadInfo.collisionLayer = COLLISION_LAYERS::DESTROYABLE;
 				loadInfo.item = true;
@@ -1825,7 +1826,7 @@ void CGame::LoadObjectMedium(int game_state) {
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
 		loadInfo.meshID = MODELS::CUBE;
-		loadInfo.LoadState = 3;
+		loadInfo.LoadState = game_state;
 		loadInfo.item = false;
 		loadInfo.floor = false;
 		loadInfo.collisionLayer = COLLISION_LAYERS::WALL;
@@ -1898,7 +1899,7 @@ void CGame::LoadObjectLarge(int game_state) {
 				loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 				loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 				loadInfo.usedGeo = -1;
-				loadInfo.LoadState = 3;
+				loadInfo.LoadState = game_state;
 				loadInfo.destroyable = true;
 				loadInfo.collisionLayer = COLLISION_LAYERS::DESTROYABLE;
 				loadInfo.item = true;
@@ -1942,7 +1943,7 @@ void CGame::LoadObjectLarge(int game_state) {
 		loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CRATE;
 		loadInfo.meshID = MODELS::CUBE;
-		loadInfo.LoadState = 3;
+		loadInfo.LoadState = game_state;
 		loadInfo.item = false;
 		loadInfo.floor = false;
 		loadInfo.collisionLayer = COLLISION_LAYERS::WALL;
@@ -2373,20 +2374,20 @@ void CGame::GamePlayLoop(double timePassed)
 
 				switch (currPlayer->GetBombType()) {
 				case 1:
-					bombs = p_cEntityManager->DropBomb1(currPlayer, objects);
+					bombs = p_cEntityManager->DropBomb1(currPlayer, objects, curGameState);
 					break;
 				case 2:
-					bombs = p_cEntityManager->DropBomb2(currPlayer, objects);
+					bombs = p_cEntityManager->DropBomb2(currPlayer, objects, curGameState);
 					break;
 				case 3:
-					bombs = p_cEntityManager->DropBomb3(currPlayer, objects);
+					bombs = p_cEntityManager->DropBomb3(currPlayer, objects, curGameState);
 					break;
 				case 4:
-					bombs = p_cEntityManager->DropBomb4(currPlayer, objects);
+					bombs = p_cEntityManager->DropBomb4(currPlayer, objects, curGameState);
 					break;
 				default:
 					bombs.resize(1);
-					bombs[0] = p_cEntityManager->DropBomb0(currPlayer);
+					bombs[0] = p_cEntityManager->DropBomb0(currPlayer, curGameState);
 					break;
 				}
 
@@ -3011,22 +3012,22 @@ void CGame::updateBombs(double timePassed) {
 				if (objTrans->item) {
 					switch (rand() % 10) {
 					case 0:
-						items.push_back(p_cEntityManager->ItemDrop(objects[j], 1));
+						items.push_back(p_cEntityManager->ItemDrop(objects[j], 1, curGameState));
 						objects.erase(objects.begin() + j);
 						--j;
 						break;
 					case 1:
-						items.push_back(p_cEntityManager->ItemDrop(objects[j], 2));
+						items.push_back(p_cEntityManager->ItemDrop(objects[j], 2, curGameState));
 						objects.erase(objects.begin() + j);
 						--j;
 						break;
 					case 2:
-						items.push_back(p_cEntityManager->ItemDrop(objects[j], 3));
+						items.push_back(p_cEntityManager->ItemDrop(objects[j], 3, curGameState));
 						objects.erase(objects.begin() + j);
 						--j;
 						break;
 					case 3:
-						items.push_back(p_cEntityManager->ItemDrop(objects[j], 4));
+						items.push_back(p_cEntityManager->ItemDrop(objects[j], 4, curGameState));
 						objects.erase(objects.begin() + j);
 						--j;
 						break;
@@ -3154,8 +3155,8 @@ void CGame::updateBombs(double timePassed) {
 				}
 
 				explosionTimers.push_back(0.0f);
-				Xexplosions.push_back(p_cEntityManager->BombExplosionX(v_cBombs[i], parent));
-				Zexplosions.push_back(p_cEntityManager->BombExplosionZ(v_cBombs[i], parent));
+				Xexplosions.push_back(p_cEntityManager->BombExplosionX(v_cBombs[i], parent, curGameState));
+				Zexplosions.push_back(p_cEntityManager->BombExplosionZ(v_cBombs[i], parent, curGameState));
 				v_cBombs[i]->SetAlive(false);
 			}
 
@@ -4199,20 +4200,20 @@ void CGame::AI_Method(double timepassed, double action_time) {
 
 												switch (currAI->GetBombType()) {
 												case 1:
-													bombs = p_cEntityManager->DropBomb1(currAI, objects);
+													bombs = p_cEntityManager->DropBomb1(currAI, objects, curGameState);
 													break;
 												case 2:
-													bombs = p_cEntityManager->DropBomb2(currAI, objects);
+													bombs = p_cEntityManager->DropBomb2(currAI, objects, curGameState);
 													break;
 												case 3:
-													bombs = p_cEntityManager->DropBomb3(currAI, objects);
+													bombs = p_cEntityManager->DropBomb3(currAI, objects, curGameState);
 													break;
 												case 4:
-													bombs = p_cEntityManager->DropBomb4(currAI, objects);
+													bombs = p_cEntityManager->DropBomb4(currAI, objects, curGameState);
 													break;
 												default:
 													bombs.resize(1);
-													bombs[0] = p_cEntityManager->DropBomb0(currAI);
+													bombs[0] = p_cEntityManager->DropBomb0(currAI, curGameState);
 													break;
 												}
 

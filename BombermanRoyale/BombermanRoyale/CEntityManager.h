@@ -46,18 +46,18 @@ public:
 	CExplosion* CreateExplosionFromTemplate(OBJLoadInfo loadInfo);
 	CItem* CreateItemFromTemplate(OBJLoadInfo loadInfo);
 
-	CBomb* DropBomb0(CPlayer* playerSource);
-	std::vector<CBomb*> DropBomb1(CPlayer* playerSource, std::vector<CObject*>);
-	std::vector<CBomb*> DropBomb2(CPlayer* playerSource, std::vector<CObject*>);
-	std::vector<CBomb*> DropBomb3(CPlayer* playerSource, std::vector<CObject*>);
-	std::vector<CBomb*> DropBomb4(CPlayer* playerSource, std::vector<CObject*>);
+	CBomb* DropBomb0(CPlayer* playerSource, int game_state);
+	std::vector<CBomb*> DropBomb1(CPlayer* playerSource, std::vector<CObject*>, int game_state);
+	std::vector<CBomb*> DropBomb2(CPlayer* playerSource, std::vector<CObject*>, int game_state);
+	std::vector<CBomb*> DropBomb3(CPlayer* playerSource, std::vector<CObject*>, int game_state);
+	std::vector<CBomb*> DropBomb4(CPlayer* playerSource, std::vector<CObject*>, int game_state);
 
 	void Cleanup();
 
-	CExplosion* BombExplosionX(CBomb* BombSource, CPlayer* _player);
-	CExplosion* BombExplosionZ(CBomb* BombSource, CPlayer* _player);
-	CItem* ItemDrop(CObject* ItemSource, int itemType);
-	CObject* SpawnObject(CObject* obj);
+	CExplosion* BombExplosionX(CBomb* BombSource, CPlayer* _player, int game_state);
+	CExplosion* BombExplosionZ(CBomb* BombSource, CPlayer* _player, int game_state);
+	CItem* ItemDrop(CObject* ItemSource, int itemType, int game_state);
+	CObject* SpawnObject(CObject* obj, int game_state);
 	CPlayer* InstantiatePlayer(int numPlayer, int playerModel, int playerSkin, DirectX::XMFLOAT3 spawnPos, int loadState = 3, DirectX::XMFLOAT3 forwardVec = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3 scale = DirectX::XMFLOAT3(1.0f, 1.0f, 0.75f));
 };
 

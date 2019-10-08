@@ -127,7 +127,7 @@ CItem * CEntityManager::CreateItemFromTemplate(OBJLoadInfo loadInfo)
 	return temp;
 }
 
-CBomb* CEntityManager::DropBomb0(CPlayer* playerSource)
+CBomb* CEntityManager::DropBomb0(CPlayer* playerSource, int game_state)
 {
 	CBomb* bomb;
 	TComponent* transform;
@@ -193,7 +193,7 @@ CBomb* CEntityManager::DropBomb0(CPlayer* playerSource)
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
-	loadInfo.LoadState = 3;
+	loadInfo.LoadState = game_state;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
 	bomb = CreateBombFromTemplate(loadInfo);
@@ -202,7 +202,7 @@ CBomb* CEntityManager::DropBomb0(CPlayer* playerSource)
 	return bomb;
 }
 
-std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector<CObject*> objects)
+std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector<CObject*> objects, int game_state)
 {
 	std::vector<CBomb*> bombs;
 	CBomb* bomb;
@@ -272,7 +272,7 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
-	loadInfo.LoadState = 3;
+	loadInfo.LoadState = game_state;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
 
@@ -793,7 +793,7 @@ std::vector<CBomb*> CEntityManager::DropBomb2(CPlayer* playerSource, std::vector
 	return bombs;
 }
 
-std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector<CObject*> objects)
+std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector<CObject*> objects, int game_state)
 {
 	std::vector<CBomb*> bombs;
 	CBomb* bomb;
@@ -860,7 +860,7 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
-	loadInfo.LoadState = 3;
+	loadInfo.LoadState = game_state;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
 
@@ -1340,7 +1340,7 @@ std::vector<CBomb*> CEntityManager::DropBomb1(CPlayer* playerSource, std::vector
 	return bombs;
 }
 
-std::vector<CBomb*> CEntityManager::DropBomb4(CPlayer* playerSource, std::vector<CObject*> objects)
+std::vector<CBomb*> CEntityManager::DropBomb4(CPlayer* playerSource, std::vector<CObject*> objects, int game_state)
 {
 	std::vector<CBomb*> bombs;
 	CBomb* bomb;
@@ -1407,7 +1407,7 @@ std::vector<CBomb*> CEntityManager::DropBomb4(CPlayer* playerSource, std::vector
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
-	loadInfo.LoadState = 3;
+	loadInfo.LoadState = game_state;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
 
@@ -1892,7 +1892,7 @@ std::vector<CBomb*> CEntityManager::DropBomb4(CPlayer* playerSource, std::vector
 	return bombs;
 }
 
-std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector<CObject*> objects)
+std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector<CObject*> objects, int game_state)
 {
 	std::vector<CBomb*> bombs;
 	CBomb* bomb;
@@ -1959,7 +1959,7 @@ std::vector<CBomb*> CEntityManager::DropBomb3(CPlayer* playerSource, std::vector
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::BOMB;
 	loadInfo.usedGeo = -1;
-	loadInfo.LoadState = 3;
+	loadInfo.LoadState = game_state;
 	loadInfo.floor = false;
 	loadInfo.scale = DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f);
 
@@ -2452,7 +2452,7 @@ void CEntityManager::Cleanup()
 
 }
 
-CExplosion* CEntityManager::BombExplosionX(CBomb* BombSource, CPlayer* _player)
+CExplosion* CEntityManager::BombExplosionX(CBomb* BombSource, CPlayer* _player, int game_state)
 {
 	CExplosion* explosion;
 	TComponent* transform;
@@ -2473,7 +2473,7 @@ CExplosion* CEntityManager::BombExplosionX(CBomb* BombSource, CPlayer* _player)
 	loadInfo.collisionLayer = COLLISION_LAYERS::EXPLOSION;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
-	loadInfo.LoadState = 3;
+	loadInfo.LoadState = game_state;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 13.5f, 1.0f / 72.5f, 1.0f / 72.5f);
 	explosion = CreateExplosionFromTemplate(loadInfo);
 	explosion->initialize(_player);
@@ -2481,7 +2481,7 @@ CExplosion* CEntityManager::BombExplosionX(CBomb* BombSource, CPlayer* _player)
 	return explosion;
 }
 
-CExplosion* CEntityManager::BombExplosionZ(CBomb* BombSource, CPlayer* _player)
+CExplosion* CEntityManager::BombExplosionZ(CBomb* BombSource, CPlayer* _player, int game_state)
 {
 	CExplosion* explosion;
 	TComponent* transform;
@@ -2502,7 +2502,7 @@ CExplosion* CEntityManager::BombExplosionZ(CBomb* BombSource, CPlayer* _player)
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
-	loadInfo.LoadState = 3;
+	loadInfo.LoadState = game_state;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 72.5f, 1.0f / 72.5f, 1.0f / 13.5f);
 	explosion = CreateExplosionFromTemplate(loadInfo);
 	explosion->initialize(_player);
@@ -2510,7 +2510,7 @@ CExplosion* CEntityManager::BombExplosionZ(CBomb* BombSource, CPlayer* _player)
 	return explosion;
 }
 
-CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
+CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType, int game_state)
 {
 	CItem* Item;
 	TComponent* transform;
@@ -2548,7 +2548,7 @@ CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::ITEM;
 	loadInfo.usedGeo = -1;
-	loadInfo.LoadState = 3;
+	loadInfo.LoadState = game_state;
 	loadInfo.destroyable = false;
 	loadInfo.floor = false;
 	loadInfo.itemType = itemType;
@@ -2558,7 +2558,7 @@ CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType)
 	return Item;
 }
 
-CObject* CEntityManager::SpawnObject(CObject* obj) {
+CObject* CEntityManager::SpawnObject(CObject* obj, int game_state) {
 	CObject* Item;
 	TComponent* transform;
 	TTransformComponent* cTransform;
@@ -2577,7 +2577,7 @@ CObject* CEntityManager::SpawnObject(CObject* obj) {
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
-	loadInfo.LoadState = 3;
+	loadInfo.LoadState = game_state;
 	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 10.0f, 1.0f / 10.0f, 1.0f / 10.0f);
 	Item = CreateOBJFromTemplate(loadInfo);
 

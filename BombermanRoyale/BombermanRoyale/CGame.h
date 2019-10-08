@@ -120,6 +120,7 @@ public:
 	bool PlayerDisconnectToggle = false;
 	bool AI_1_Moving = false;
 	bool AI_1_STARTMoving = false;
+	int prevGameState = 0;
 
 	bool Initialize();
 	void Run();

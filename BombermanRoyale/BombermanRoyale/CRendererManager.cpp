@@ -60,7 +60,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView, DirectX::Colors::Wheat);
 	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
 
-	if (gamestate == GAME_STATE::ARCADE_GAME)
+	if (gamestate == GAME_STATE::ARCADE_GAME || gamestate == GAME_STATE::BATTLE_GAME)
 	{
 		theSkybox->Update();
 		theSkybox->Render();
