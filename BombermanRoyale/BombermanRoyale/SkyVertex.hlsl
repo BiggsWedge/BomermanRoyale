@@ -19,6 +19,7 @@ struct VS_INPUT
     float3 xyz : POSITION;
     float3 Norm : NORMAL;
     float2 Tex : TEXCOORD;
+    float4 tang : TANGENT;
     uint4 joints : JOINTS;
     float4 weights : WEIGHTS;
 };

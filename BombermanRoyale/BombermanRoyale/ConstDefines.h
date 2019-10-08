@@ -88,7 +88,9 @@ static const std::vector<const wchar_t*> diffuseTextures =
 	L".//Assets//Goat.fbm//Goat.png",
 	L".//Assets//Boar.fbm//Boar.png",
 	L".//Assets//Boar.fbm//Boar2.png",
-
+	L".//Assets//Chicken.fbm//ChickenNormal.png",
+	L".//Assets//Goat.fbm//GoatNormal.png",
+	L".//Assets//Boar.fbm//BoarNormal.png",
 };
 
 struct TMeshLoadInfo

@@ -1,6 +1,5 @@
 Texture2D txDiffuse : register(t0);
-Texture2D txEmissive : register(t1);
-Texture2D txSpecular : register(t2);
+Texture2D txNorm : register(t1);
 SamplerState txSampler : register(s0);
 
 struct Light
@@ -42,6 +41,8 @@ struct PS_IN
     float2 tex : TEXCOORD1;
     float4 wPos : WORLD;
     float4 eye : EYE;
+    float3 tangent : TANGENT;
+    float3 bitang : BITANGENT;
 };
 
 static float4 ambient_light = { 0.9f, 0.75f, 0.5f, 1.0f };
@@ -49,10 +50,16 @@ static float4 light_dir = { 0.0f, -1.0f, 1.0f, 1.0f };
 
 float4 main(PS_IN input) : SV_TARGET
 {
-
-
     float4 finalColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    float4 norm = float4(normalize(input.norm), 1.0f);
+    float3 norm = txNorm.Sample(txSampler, input.tex);
+    
+    float3x3 tbn;
+    tbn[0] = input.tangent.xyz;
+    tbn[1] = input.bitang.xyz;
+    tbn[2] = normalize(input.norm.xyz);
+    
+    norm = normalize(mul(norm, tbn));
+
 
     //finalColor += ambient_light;
 

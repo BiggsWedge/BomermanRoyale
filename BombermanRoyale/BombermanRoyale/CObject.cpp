@@ -101,6 +101,7 @@ void CObject::Draw(double timepassed)
 
 	if (tex->iUsedNormalIndex >= 0)
 	{
+		g_d3dData->d3dContext->PSSetShaderResources(1, 1, &g_d3dData->d3dDiffuseTextures[tex->iUsedNormalIndex]);
 		pConst.flags[1] = 1;
 	}
 

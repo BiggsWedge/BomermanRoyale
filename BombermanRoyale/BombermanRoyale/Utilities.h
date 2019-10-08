@@ -164,15 +164,18 @@ bool InitializeWindow();
 ***********************************************************************/
 bool InitializeGlobals();
 
-struct TSimpleVertex {
+struct TSimpleVertex
+{
 	DirectX::XMFLOAT3		fPosition;
 	DirectX::XMFLOAT3		fNormal;
 	DirectX::XMFLOAT2		fTexCoord;
+	DirectX::XMFLOAT4		fTangents;
 	DirectX::XMINT4			iJointIndies;
 	DirectX::XMFLOAT4		fWeights;
 };
 
-struct TLineVertex {
+struct TLineVertex
+{
 	DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };
 	DirectX::XMFLOAT4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
