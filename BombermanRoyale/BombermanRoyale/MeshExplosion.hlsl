@@ -1,3 +1,11 @@
+/****************************************************
+*	Filename:			MeshExplosion.hlsl
+*	Mod. Date:			10/07/2019
+*	Mod. Initials:		D.R.
+*	Author:				Drew Byh-Reeves
+*	Purpose:			Splits up mesh to imitate an explosion
+****************************************************/
+
 cbuffer SVconstantBuffer : register(b0)
 {
     matrix World;
@@ -21,18 +29,18 @@ void main(triangle GSInput input[3] : SV_POSITION, inout TriangleStream<GSInput>
 {
     GSInput output;
 
-    //
-    // Calculate the face normal
-    //
+    
+    // face normal
+    
     float3 faceEdgeA = input[1].pos - input[0].pos;
     float3 faceEdgeB = input[2].pos - input[0].pos;
     float3 faceNormal = normalize(cross(faceEdgeA, faceEdgeB));
     float3 ExplodeAmt = faceNormal * time; // cbuffer stuff * Explode
 
 
-    //
-    // Calculate the face center
-    //
+    
+    //  face center
+    
     float3 centerPos = (input[0].pos.xyz + input[1].pos.xyz + input[2].pos.xyz) / 3.0;
     float2 centerTex = (input[0].uv + input[1].uv + input[2].uv) / 3.0;
     centerPos += faceNormal * time; // cbuffer stuff* Explode

@@ -19,6 +19,7 @@
 #include "BombShader.csh"
 #include "BombPShader.csh"
 #include "GeometryShader.csh"
+#include "MeshExplosion.csh"
 #include "ComputeShader.csh"
 #include "ExplosionVertex.csh"
 #include "FirePixel.csh"
