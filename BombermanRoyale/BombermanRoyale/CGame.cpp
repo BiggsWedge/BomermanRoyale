@@ -1943,6 +1943,7 @@ void CGame::GamePlayLoop(double timePassed)
 			}
 			bombindex++;
 		}
+		
 		for (int i = 0; i < items.size(); i++)
 		{
 			if (currPlayer->Collides((CObject*)items[i]))
@@ -3403,7 +3404,7 @@ void CGame::AI_Method(double timepassed, double action_time) {
 																tile = GRID[gridlocation];
 																zchange -= z;
 																xchange -= x;
-																if (tile == GRID_SYSTEM::EXPLOSION_RADIUS && (zchange == 0 || xchange == 0) && xbounds && zbounds && AIbombaction >= 2) {
+																if (tile == GRID_SYSTEM::EXPLOSION_RADIUS && (zchange == 0 || xchange == 0) && xbounds && zbounds/* && AIbombaction >= 2*/) {
 
 																	deltaX = /*timepassed */ AI_SPEED * xchange;
 																	deltaZ = /*timepassed */ AI_SPEED * zchange;
@@ -3611,12 +3612,12 @@ void CGame::AI_Method(double timepassed, double action_time) {
 
 																	if (currAI->hasAvailableBombSlot()/* && AIbombaction >= 1*/) {
 																		AIbombaction = 0;
-																		deltaX = /*timepassed */ AI_SPEED * xchange;
-																		deltaZ = /*timepassed */ AI_SPEED * zchange;
+																		deltaX = /*timepassed */ AI_SPEED * -xchange;
+																		deltaZ = /*timepassed */ AI_SPEED * -zchange;
 
 																		//if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed));
 																		//if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed));
-																		//currAI->TurnPlayerTo(AITransform->fPosition.x + deltaX, AITransform->fPosition.z + deltaZ);
+																		currAI->TurnPlayerTo(AITransform->fPosition.x + deltaX, AITransform->fPosition.z + deltaZ);
 																		//currAI->TurnPlayerTo(0, AITransform->fPosition.z + deltaZ);
 																		//currAI->updatePlayer(timepassed);
 																		//currAI->Move(deltaX, deltaZ, true);
@@ -4322,7 +4323,7 @@ void CGame::AI_Method(double timepassed, double action_time) {
 					}
 				}
 			}
-
+			
 			for (int i = 0; i < items.size(); ++i) {
 				if (currAI->Collides((CObject*)items[i])) {
 					for (int i = 0; i < powerUpSound.size(); ++i) {
@@ -4339,6 +4340,8 @@ void CGame::AI_Method(double timepassed, double action_time) {
 					if (currAI->GetNumBombs() < 3)
 						currAI->incNumBombs();
 
+					delete items[i];
+					items[i] = nullptr;
 					items.erase(items.begin() + i);
 					--i;
 				}

@@ -183,7 +183,7 @@ void CObject::TurnPlayerTo(float _x, float _z) {
 	DirectX::XMVECTOR up = { 0, 1, 0 };
 	DirectX::XMStoreFloat3(&newTarget, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec)));
 
-	DirectX::XMVECTOR z = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&targetVec), DirectX::XMLoadFloat3(&transform->fPosition));
+	DirectX::XMVECTOR z = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&newTarget), DirectX::XMLoadFloat3(&transform->fPosition));
 	z = DirectX::XMVector3Normalize(z);
 	DirectX::XMVECTOR x = DirectX::XMVector3Cross(up, z);
 	x = DirectX::XMVector3Normalize(x);
