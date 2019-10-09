@@ -16,6 +16,8 @@ GWindow* g_pWindow = nullptr;
 GInput* g_pInputRecord = nullptr;
 GAudio* g_pAudioHolder = nullptr;
 GMusic* g_pMusicStream = nullptr;
+GMusic* g_pMusicStream1 = nullptr;
+GMusic* g_pMusicStream2 = nullptr;
 GSound* g_pSoundPlayer = nullptr;
 GSound* walkSound1;
 GSound* bombPlaceSound1;
@@ -35,6 +37,8 @@ std::vector<GSound*> powerUpSound;
 GController* g_pControllerInput = nullptr;
 
 std::vector<TMeshTemplate> v_tMeshTemplates = {};
+
+std::vector<unsigned int> availablePlayerModels = { MODELS::CHICKEN, MODELS::GOAT, MODELS::BOAR };
 
 string GetCurrentDateAndTime()
 {
@@ -275,8 +279,6 @@ void LoadMenuScreen(int width, int height, int numbuttons, const char* matFile) 
 
 		v_tMeshTemplates.push_back(temp);
 	}
-	temp._vertexBuffer = nullptr;
-	temp._indexBuffer = nullptr;
 }
 
 void LoadTextures()
@@ -414,70 +416,6 @@ void TMeshTemplate::loadModel(const char* modelFile, const char* matFile, const 
 	}
 }
 
-void TMeshTemplate::initialize(ID3D11Device* _device)
-{
-	D3D11_BUFFER_DESC vertBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertBuffSubResc;
-
-	ZeroMemory(&vertBufferDesc, sizeof(vertBufferDesc));
-	ZeroMemory(&vertBuffSubResc, sizeof(vertBuffSubResc));
-
-	vertBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertBufferDesc.ByteWidth = sizeof(TSimpleVertex) * v_tVertices.size();
-	vertBufferDesc.CPUAccessFlags = 0;
-	vertBufferDesc.MiscFlags = 0;
-	vertBufferDesc.StructureByteStride = 0;
-	vertBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-
-	vertBuffSubResc.pSysMem = v_tVertices.data();
-
-	_device->CreateBuffer(&vertBufferDesc, &vertBuffSubResc, &_vertexBuffer);
-
-	D3D11_BUFFER_DESC indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA indexBufferSubResourceData;
-
-	ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
-	ZeroMemory(&indexBufferSubResourceData, sizeof(indexBufferSubResourceData));
-
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.ByteWidth = sizeof(uint32_t) * v_iIndices.size();
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-	indexBufferDesc.StructureByteStride = 0;
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-
-	indexBufferSubResourceData.pSysMem = v_iIndices.data();
-
-	_device->CreateBuffer(&indexBufferDesc, &indexBufferSubResourceData, &_indexBuffer);
-
-	for (int i = 0; i < mats.size(); ++i)
-	{
-		for (int j = 0; j < material_t::COMPONENT::COUNT; ++j)
-		{
-			if (mats[i][j].input < 0)
-				continue;
-			std::experimental::filesystem::path filePath;
-			filePath = filePaths[mats[i][j].input].data();
-			HRESULT result = DirectX::CreateWICTextureFromFile(_device, filePath.wstring().c_str(), nullptr, &_srv[j]);
-			if (!SUCCEEDED(result))
-			{
-				std::string fail = "Failed to make texture! " + this->sName;
-				g_pLogger->LogCatergorized("FAILURE", fail.c_str());
-			}
-		}
-	}
-
-	D3D11_SAMPLER_DESC sampDesc = {};
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	sampDesc.MinLOD = 0;
-	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	_device->CreateSamplerState(&sampDesc, &_samState);
-
-}
 
 /*
 void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
@@ -537,12 +475,12 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 
 	MVP_t debugConstBuff;
 	//debugConstBuff.world = DirectX::XMMatrixTranspose(mObjMatrix);
-	
+
 	if (g_d3dData->bUseDebugRenderCamera)
 		debugConstBuff.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
 	else
 		debugConstBuff.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
-	
+
 	debugConstBuff.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
 
 #pragma endregion
@@ -593,7 +531,7 @@ void TMeshTemplate::render(ID3D11DeviceContext* _context, double timepassed)
 
 	_context->DrawIndexed(numIndices, 0, 0);
 }
-*/ 
+*/
 
 //TMeshTemplate::~TMeshTemplate()
 //{
@@ -686,7 +624,6 @@ DirectX::XMMATRIX TurnTo(DirectX::XMMATRIX _mat, DirectX::XMVECTOR _target, floa
 
 void CleanGlobals()
 {
-	GW_SAFE_RELEASE(g_pWindow);
 	//for (int i = 0; i < v_tMeshTemplates.size(); i++)
 	//{
 	//	if(v_tMeshTemplates.at(i)._vertexBuffer)
@@ -700,15 +637,22 @@ void CleanGlobals()
 	//	}
 	//
 	//}
-	for (TMeshTemplate temp : v_tMeshTemplates)
-	{
-		SAFE_RELEASE(temp._indexBuffer);
-		SAFE_RELEASE(temp._vertexBuffer)
-	}
 	v_tMeshTemplates.clear();
 	g_d3dData->Cleanup();
 	delete g_d3dData;
 	g_d3dData = nullptr;
+
+	unsigned int windowRefCount;
+	while (true)
+	{
+		g_pWindow->GetCount(windowRefCount);
+		if (windowRefCount >= 1)
+		{
+			g_pWindow->DecrementCount();
+			if (windowRefCount == 1)
+				break;
+		}
+	}
 
 	GW_SAFE_RELEASE(g_pControllerInput);
 	GW_SAFE_RELEASE(g_pMusicStream);
@@ -726,8 +670,24 @@ void LoadAnimations()
 		AnimationClip temp;
 		temp = ProcessAnimationFile(ChickenAnimFiles[i].file);
 		temp.AnimationName = ChickenAnimFiles[i].animationName;
-
+		temp.loops = ChickenAnimFiles[i].loopable;
 		v_tMeshTemplates[MODELS::CHICKEN]._animations.push_back(temp);
+	}
+	for (int i = 0; i < GoatAnimFiles.size(); ++i)
+	{
+		AnimationClip temp;
+		temp = ProcessAnimationFile(GoatAnimFiles[i].file);
+		temp.AnimationName = GoatAnimFiles[i].animationName;
+		temp.loops = GoatAnimFiles[i].loopable;
+		v_tMeshTemplates[MODELS::GOAT]._animations.push_back(temp);
+	}
+	for (int i = 0; i < BoarAnimFiles.size(); ++i)
+	{
+		AnimationClip temp;
+		temp = ProcessAnimationFile(BoarAnimFiles[i].file);
+		temp.AnimationName = BoarAnimFiles[i].animationName;
+		temp.loops = BoarAnimFiles[i].loopable;
+		v_tMeshTemplates[MODELS::BOAR]._animations.push_back(temp);
 	}
 }
 

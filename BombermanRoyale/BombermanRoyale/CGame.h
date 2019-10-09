@@ -20,6 +20,9 @@ struct GAME_STATE
 		ARCADE_GAME,
 		CHARACTER_SCREEN,
 		LOAD_SCREEN,
+		GP_SPLASH,
+		FS_SPLASH,
+		DEV_LOGO,
 		BATTLE_GAME,
 		WIN_SCREEN,
 		CONTROLS_SCREEN,
@@ -60,21 +63,22 @@ class CGame
 	emitter fourthEmit;
 	emitter freeEmit;
 	XTime timer;
-	
+
 
 	CRendererManager* p_cRendererManager;
 	CEntityManager* p_cEntityManager;
 	std::vector<CObject*> objects;
 	std::vector<CObject*> deleteLayer;
 	std::vector<CObject*> menuObjects;
-	std::vector<CObject*> Xexplosions;
-	std::vector<CObject*> Zexplosions;
+	std::vector<CObject*> particleObjects;
+	std::vector<CExplosion*> Xexplosions;
+	std::vector<CExplosion*> Zexplosions;
 	std::vector<CItem*> items;
 	std::vector<double> explosionTimers;
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
 	std::vector<CPlayer*> PlayersInCustom = { nullptr, nullptr, nullptr, nullptr };
 	std::vector<CPlayer*> v_cAI = { nullptr, nullptr };
-	std::vector<CPlayer*> AiInCustom = { nullptr, nullptr};
+	std::vector<CPlayer*> AiInCustom = { nullptr, nullptr };
 
 
 
@@ -82,7 +86,8 @@ class CGame
 	DirectX::XMMATRIX viewPos;
 	DirectX::XMFLOAT3 bombPos;
 	std::vector<CBomb*> v_cBombs;
-	CPlayer* menuBomb = nullptr;
+	//CPlayer* menuBomb = nullptr;
+	CharacterController menuController;
 	int menuIndex = 0;
 	int mapPasses = 4;
 
@@ -100,28 +105,35 @@ public:
 	void Cleanup();
 	bool FullScreen = false;
 	unsigned int curGameState = 0;
+	float BattleDuration = 300.0f;
+	int HighScore = 0;
+	int highscoreINDEX = 0;
+	bool initialLoad = true;
 	int mapsize = 2;
 	int numAI = 0;
 	int numPLAYERS = 2;
-	int playermodel[4] = { 4, 4, 4, 4 };
+	int playermodel[4] = { 0,0,0,0 };
+	int playertextures[4] = { DIFFUSE_TEXTURES::CHICKEN1, DIFFUSE_TEXTURES::CHICKEN2, DIFFUSE_TEXTURES::CHICKEN3, DIFFUSE_TEXTURES::CHICKEN4 };
 	int AImodel[2] = { 4, 4 };
 	int PlayerDiscIndex = 0;
 	bool playerdisconnect = false;
 	bool PlayerDisconnectToggle = false;
 	bool AI_1_Moving = false;
 	bool AI_1_STARTMoving = false;
+	int prevGameState = 0;
 
 	bool Initialize();
 	void Run();
 
 	void InitSortedParticles(end::sorted_pool_t<particle, 500>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color);
+	void InitSortedParticles_vs_2(end::sorted_pool_t<particle, 500>& sortedPool, double deltaTime, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color, DirectX::XMFLOAT4 direction);
 	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime);
 
 	void LoadAnim();
-	void LoadObjectBattle();
-	void LoadObjectSmall();
-	void LoadObjectMedium();
-	void LoadObjectLarge();
+	void LoadObjectBattle(int gmae_state);
+	void LoadObjectSmall(int gmae_state);
+	void LoadObjectMedium(int gmae_state);
+	void LoadObjectLarge(int gmae_state);
 
 	CGame();
 	~CGame();
@@ -136,9 +148,11 @@ public:
 	void PlayerBombCollision(CPlayer* playerToCheck, CBomb* cBomb);
 	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer* playerToCheck);
 	void AI_Method(double timepassed, double action_time);
+	void CustomMeshUpdate(float timepassed);
 	void moveAI(CPlayer* player, int direction, float deltaX, float deltaZ);
-	void CustomMeshUpdate();
 	void WallDrop(CObject* objectToCheck);
+	void WallFlames(CObject* wall, float duration, int frames);
+	void DeathTimerforRespawnUpdate(float timepassed);
 
 	inline CPlayer* GetPlayer(int index) { if (index >= v_cPlayers.size())return nullptr; else return v_cPlayers.at(index); }
 	inline CPlayer* GetAI(int index) { if (index >= v_cAI.size()) return nullptr; else return v_cAI.at(index); }
