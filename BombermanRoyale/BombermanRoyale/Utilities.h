@@ -33,6 +33,8 @@ extern GW::SYSTEM::GWindow* g_pWindow;
 extern GW::SYSTEM::GInput* g_pInputRecord;
 extern GW::AUDIO::GAudio* g_pAudioHolder;
 extern GW::AUDIO::GMusic* g_pMusicStream;
+extern GW::AUDIO::GMusic* g_pMusicStream1;
+extern GW::AUDIO::GMusic* g_pMusicStream2;
 extern GW::AUDIO::GSound* g_pSoundPlayer;
 extern GW::AUDIO::GSound* walkSound1;
 extern GW::AUDIO::GSound* bombPlaceSound1;

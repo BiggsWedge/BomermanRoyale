@@ -16,6 +16,8 @@ GWindow* g_pWindow = nullptr;
 GInput* g_pInputRecord = nullptr;
 GAudio* g_pAudioHolder = nullptr;
 GMusic* g_pMusicStream = nullptr;
+GMusic* g_pMusicStream1 = nullptr;
+GMusic* g_pMusicStream2 = nullptr;
 GSound* g_pSoundPlayer = nullptr;
 GSound* walkSound1;
 GSound* bombPlaceSound1;

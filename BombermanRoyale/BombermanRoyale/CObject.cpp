@@ -292,11 +292,8 @@ bool CObject::MoveOverTime(float start_x, float end_x, float start_z , float end
 	_x = _x - start_x;
 	float _z = lerp(start_z, end_z, ratio);
 	_z = _z - start_z;
-	_x = end_x - start_x;
-	_z = end_z - start_z;
-	_x *= timepassed * 5.0f;
-	_z *= timepassed * 5.0f;
-	this->Move(_x, _z);
+	collider->d3dCollider.Center.x += _x;
+	collider->d3dCollider.Center.z += _z;
 	if (ratio >= 1.0f)
 		movetimer = 0.0f;
 
