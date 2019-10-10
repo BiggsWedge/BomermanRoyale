@@ -1333,7 +1333,7 @@ void CGame::Run() {
 					numPlayersAlive++;
 			}
 
-			if (prevNumPlayersAlive > 1 && numPlayersAlive <= 1 || BattleDuration <= 0) {
+			if ((prevNumPlayersAlive > 1 && numPlayersAlive <= 1) || BattleDuration <= 0) {
 				int winner = 0;
 				int aiwinner = 0;
 
