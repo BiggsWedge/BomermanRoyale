@@ -5517,15 +5517,8 @@ void CGame::CustomMeshUpdate(float timepassed) {
 												g_d3dData->tempCamera = g_d3dData->viewMat;*/
 												items.erase(items.begin() + i);
 											}
-
-
-
-											if (iRenderer->fPosition.x == renderer->fPosition.x && iRenderer->fPosition.z == renderer->fPosition.z)
-												items.erase(items.begin() + i);
 										}
 									}
-
-
 									objects.erase(objects.begin() + i);
 								}
 							}
