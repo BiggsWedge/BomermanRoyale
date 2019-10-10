@@ -20,6 +20,8 @@
 #include "BombPShader.csh"
 #include "GeometryShader.csh"
 #include "ComputeShader.csh"
+#include "ExplosionVertex.csh"
+#include "FirePixel.csh"
 #include "DirectXData.h"
 #include "SharedDefines.h"
 #include <fstream>
@@ -31,6 +33,8 @@ extern GW::SYSTEM::GWindow* g_pWindow;
 extern GW::SYSTEM::GInput* g_pInputRecord;
 extern GW::AUDIO::GAudio* g_pAudioHolder;
 extern GW::AUDIO::GMusic* g_pMusicStream;
+extern GW::AUDIO::GMusic* g_pMusicStream1;
+extern GW::AUDIO::GMusic* g_pMusicStream2;
 extern GW::AUDIO::GSound* g_pSoundPlayer;
 extern GW::AUDIO::GSound* walkSound1;
 extern GW::AUDIO::GSound* bombPlaceSound1;
@@ -48,7 +52,7 @@ extern std::vector<GW::AUDIO::GSound*> explosionSound;
 extern std::vector<GW::AUDIO::GSound*> bombPlaceSound;
 extern std::vector<GW::AUDIO::GSound*> powerUpSound;
 extern GW::SYSTEM::GController* g_pControllerInput;
-
+extern std::vector<unsigned int> availablePlayerModels;
 
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the
@@ -250,6 +254,7 @@ struct AnimationClip
 	std::vector<joint> _bindPose;
 	double duration;
 	std::vector<KeyFrame> frames;
+	bool loops;
 };
 
 struct TMeshTemplate
@@ -266,28 +271,15 @@ struct TMeshTemplate
 	uint32_t numVerts;
 	uint32_t numIndices;
 
-	int currKeyFrame = 0;
-	float frameTime = 0;
-	float currFrameIndex = 0;
-	float animTime = 0.0f;
-	float totalTime;
-
 	TMaterial _mat;
-
-	ID3D11Buffer* _vertexBuffer = nullptr;
-	ID3D11Buffer* _indexBuffer = nullptr;
 
 	std::vector<file_path_t> filePaths;
 	std::vector<material_t> mats;
 
 	enum TEXTURES { DIFFUSE = 0, EMISSIVE, SPECULAR, COUNT };
 
-	ID3D11ShaderResourceView*	_srv[TEXTURES::COUNT];
-	ID3D11Resource*				_textures[TEXTURES::COUNT];
-	ID3D11SamplerState*			_samState;
-
 	void loadModel(const char* modelFile, const char* matFile = nullptr, const char* animFile = nullptr, float scale = 1.0f);
-	void initialize(ID3D11Device* _device);
+
 	/*~TMeshTemplate();
 	TMeshTemplate();*/
 };

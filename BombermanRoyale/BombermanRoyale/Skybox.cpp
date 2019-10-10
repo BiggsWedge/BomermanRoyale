@@ -10,6 +10,7 @@ Skybox::Skybox()
 
 Skybox::~Skybox()
 {
+	Cleanup();
 }
 
 void Skybox::Cleanup()
@@ -23,7 +24,6 @@ void Skybox::Cleanup()
 	SAFE_RELEASE(d3dVertexShader);
 	p_d3dUsedSampler = nullptr;
 	p_d3dUsedTexture = nullptr;
-
 }
 
 void Skybox::Initialize()

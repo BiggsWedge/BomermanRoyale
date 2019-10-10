@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CBomb.h"
+#include "CExplosion.h"
 #include "CharacterController.h"
 
 
@@ -10,12 +11,17 @@ private:
 	std::vector<int> bombs;
 	int numBombs = 1;
 	bool alive;
+	float respawntimer = 0.0f;
 	int controllerIndex;
 	int bombType = 0;
 	int placedBombs = 0;
 	CharacterController controller;
 	bool crouched = false;
 	bool renderable = true;
+	int score = 0;
+	int killstreak = 0;
+	float deathtimer = 0.0f;
+	DirectX::XMFLOAT3 spawnPos;
 
 public:
 	CPlayer();
@@ -36,6 +42,16 @@ public:
 	inline int GetBombType() { return bombType; }
 	inline void GetInput() { controller.Update(); }
 	inline bool GetCrouchStatus() { return crouched; }
+	inline float GetRespawnTimer() { return respawntimer; }
+	inline void SetRespawnTimer(float timepassed) { respawntimer += timepassed; }
+	inline int getScore() { return score; }
+	inline void setScore(int scorechange) { score += scorechange; }
+	inline int getKillStreak() { return killstreak; }
+	inline void setKillStreak(int kschange) { killstreak += kschange; }
+	inline float getDeathTimer() { return deathtimer; }
+	inline void setDeathTimer(float timepassed) { deathtimer += timepassed; }
+	inline DirectX::XMFLOAT3 getSpawnPos() { return spawnPos; }
+	inline void setSpawnPos(DirectX::XMFLOAT3 newSpawnPos) { spawnPos = newSpawnPos; }
 	inline CharacterController* GetCharacterController() { return &controller; }
 
 	//MUTATORS
