@@ -1333,7 +1333,7 @@ void CGame::Run() {
 					numPlayersAlive++;
 			}
 
-			if (prevNumPlayersAlive > 1 && numPlayersAlive <= 1) {
+			if (prevNumPlayersAlive > 1 && numPlayersAlive <= 1 || BattleDuration <= 0) {
 				int winner = 0;
 				int aiwinner = 0;
 
@@ -2837,7 +2837,7 @@ void CGame::setGameState(int _gameState) {
 		mapTime = 0;
 		centerAItimer1 = 2.0f;
 		gameStart = 5.0f;
-		BattleDuration = 300;
+		BattleDuration = 200;
 
 		v_cPlayers.resize(numPLAYERS);
 		v_cAI.resize(numAI);
@@ -2972,7 +2972,7 @@ void CGame::setGameState(int _gameState) {
 		mapTime = 0;
 		centerAItimer1 = 2.0f;
 		gameStart = 5.0f;
-		BattleDuration = 300;
+		BattleDuration = 200;
 
 		v_cPlayers.resize(numPLAYERS);
 		v_cAI.resize(numAI);
