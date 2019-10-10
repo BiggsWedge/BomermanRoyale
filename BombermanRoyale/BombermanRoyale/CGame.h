@@ -82,7 +82,7 @@ class CGame
 
 
 
-	int maxNumBombs = 48;
+	int maxNumBombs = 100;
 	DirectX::XMMATRIX viewPos;
 	DirectX::XMFLOAT3 bombPos;
 	std::vector<CBomb*> v_cBombs;

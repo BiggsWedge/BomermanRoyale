@@ -3267,7 +3267,7 @@ void CGame::updateBombs(double timePassed) {
 			if (v_cBombs[k] && v_cBombs[k]->isAlive()) {
 				if (Xexplosions[i]->Collides((CObject*)v_cBombs[k]) || Zexplosions[i]->Collides((CObject*)v_cBombs[k])) {
 					v_cBombs[k]->SetToExplode();
-					v_cBombs[k]->setParent(Xexplosions[i]->getParent());
+					//v_cBombs[k]->setParent(Xexplosions[i]->getParent());
 				}
 			}
 		}
