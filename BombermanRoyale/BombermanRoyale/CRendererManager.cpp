@@ -98,6 +98,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	float invAspect = (float)g_d3dData->windowWidthHeight.y / (float)g_d3dData->windowWidthHeight.x;
 	DirectX::GXMVECTOR scale = { 0.1f * aspectRatio, 0.1f * aspectRatio, 0.1f * aspectRatio, 1.0f };
 	DirectX::GXMVECTOR scale2 = { 0.2f * aspectRatio, 0.2f * aspectRatio, 0.2f * aspectRatio, 1.0f };
+	DirectX::GXMVECTOR scale3 = { 0.5f * aspectRatio, 0.5f * aspectRatio, 0.5f * aspectRatio, 1.0f };
 
 	//g_d3dData->d3dContext->OMSetDepthStencilState(g_d3dData->d3dDepthStencilState[DEPTH_STENCIL_STATE::DEFAULT], 0);
 	g_d3dData->d3dContext->OMSetBlendState(g_d3dData->d3dBlendState[BLEND_STATE::UI], 0, 0xFFFFFFFF);
@@ -125,7 +126,16 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 			rect.right = 0.75f * (float)g_d3dData->windowWidthHeight.x;
 			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::DC1 + parentGame->PlayerDiscIndex], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 		}
-
+		wchar_t startTime[10];
+		wchar_t battleduration[10];
+		swprintf_s(startTime, L"%d", (int)parentGame->gameStart);
+		swprintf_s(battleduration, L"%d", (int)parentGame->BattleDuration);
+		if(parentGame->gameStart >= 1)
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, startTime, DirectX::XMVECTOR{ (0.5f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.4f * (float)g_d3dData->windowWidthHeight.y }, (parentGame->gameStart >= 2.5f) ? DirectX::Colors::Red : DirectX::Colors::Green, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale3);
+		if(parentGame->gameStart <= 1 && parentGame->BattleDuration >= 294)
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "GO", DirectX::XMVECTOR{ (0.5f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.4f * (float)g_d3dData->windowWidthHeight.y }, (parentGame->gameStart >= 2.5f) ? DirectX::Colors::Red : DirectX::Colors::Green, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale3);
+		if(parentGame->gameStart <= 0)
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, battleduration, DirectX::XMVECTOR{ (0.5f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.12f * (float)g_d3dData->windowWidthHeight.y }, (parentGame->gameStart >= 2.5f) ? DirectX::Colors::Red : DirectX::Colors::Green, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale2);
 	}
 
 	if (gamestate == GAME_STATE::ARCADE_MENU || gamestate == GAME_STATE::BATTLE_MENU)

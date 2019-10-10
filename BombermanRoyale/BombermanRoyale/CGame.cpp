@@ -1285,6 +1285,15 @@ void CGame::Run() {
 			updateBombs(timePassed);
 			prevCursor = currCursor;
 			GetCursorPos(&currCursor);
+			if (!isPaused)
+			{
+				BattleDuration -= timePassed;
+				if (gameStart >= 0)
+				{
+					gameStart -= timePassed;
+					timePassed = 0;
+				}
+			}
 
 			g_d3dData->debugCamDelta = { 0.0f, 0.0f };
 
@@ -1400,7 +1409,13 @@ void CGame::Run() {
 			if (!isPaused)
 			{
 				BattleDuration -= timePassed;
+				if (gameStart >= 0)
+				{
+					gameStart -= timePassed;
+					timePassed = 0;
+				}
 			}
+
 
 			g_d3dData->debugCamDelta = { 0.0f, 0.0f };
 
@@ -2398,7 +2413,7 @@ void CGame::GamePlayLoop(double timePassed)
 			}
 		}
 
-		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_BUTTONS::ACTION) && !isPaused)
+		if (currPlayer->GetCharacterController()->ButtonPressed(DEFAULT_BUTTONS::ACTION) && !isPaused && timePassed != 0)
 		{
 			if (currPlayer->hasAvailableBombSlot())
 			{
@@ -2716,6 +2731,7 @@ void CGame::setGameState(int _gameState) {
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (!soundplaying)
 			g_pMusicStream2->ResumeStream();
+		mapsize = 2;
 		g_d3dData->viewMat = g_d3dData->camMat;
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
@@ -2734,6 +2750,7 @@ void CGame::setGameState(int _gameState) {
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (!soundplaying)
 			g_pMusicStream2->ResumeStream();
+		mapsize = 2;
 		g_d3dData->viewMat = g_d3dData->camMat;
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
@@ -2819,6 +2836,8 @@ void CGame::setGameState(int _gameState) {
 		shakeTime = 0;
 		mapTime = 0;
 		centerAItimer1 = 2.0f;
+		gameStart = 5.0f;
+		BattleDuration = 300;
 
 		v_cPlayers.resize(numPLAYERS);
 		v_cAI.resize(numAI);
@@ -2952,6 +2971,8 @@ void CGame::setGameState(int _gameState) {
 		shakeTime = 0;
 		mapTime = 0;
 		centerAItimer1 = 2.0f;
+		gameStart = 5.0f;
+		BattleDuration = 300;
 
 		v_cPlayers.resize(numPLAYERS);
 		v_cAI.resize(numAI);
@@ -5188,7 +5209,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 					newTexture = (TTextureComponent*)texture;
 					newTexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::FIRE_TEX;
 
-					WallFlames(objects[i], 5.0f, 13);
+					//WallFlames(objects[i], 5.0f, 13);
 					if (!warningSoundPlaying)
 						warnSound->Play();
 

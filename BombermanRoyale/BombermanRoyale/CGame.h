@@ -121,6 +121,7 @@ public:
 	bool AI_1_Moving = false;
 	bool AI_1_STARTMoving = false;
 	int prevGameState = 0;
+	float gameStart = 5.0f;
 
 	bool Initialize();
 	void Run();
