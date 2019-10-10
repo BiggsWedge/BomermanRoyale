@@ -2124,6 +2124,12 @@ void CGame::GamePlayLoop(double timePassed)
 			if (currPlayer->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
 				TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 				currPlayer->setAlive(true);
+				TComponent* playerRender = nullptr;
+				TRendererComponent* explosionRender = nullptr;
+				currPlayer->GetComponent(COMPONENT_TYPE::RENDERER, playerRender);
+				explosionRender = (TRendererComponent*)playerRender;
+				explosionRender->iUsedGeometryShaderIndex = -1;
+
 				currPlayer->setDeathTimer(-currPlayer->getDeathTimer());
 				currPlayer->CrouchRoll(currPlayer->getSpawnPos().x - pRenderer->fPosition.x, currPlayer->getSpawnPos().z - pRenderer->fPosition.z, currPlayer->getSpawnPos().y - pRenderer->fPosition.y, false);
 			}
@@ -3205,10 +3211,12 @@ void CGame::updateBombs(double timePassed) {
 
 		TComponent* Xplo = nullptr;
 		TComponent* Zplo = nullptr;
+		TComponent* playerRender = nullptr;
 		TTransformComponent* XexplosionTrans;
 		XexplosionTrans = nullptr;
 		TTransformComponent* ZexplosionTrans;
 		ZexplosionTrans = nullptr;
+		TRendererComponent* explosionRender = nullptr;
 
 		for (CPlayer* player : v_cPlayers) {
 			if (player) {
@@ -3233,6 +3241,10 @@ void CGame::updateBombs(double timePassed) {
 
 						//else if(player->isAlive())
 						//	Xexplosions[i]->getParent()->setScore(-1);
+						player->setAlive(false);
+						player->GetComponent(COMPONENT_TYPE::RENDERER, playerRender);
+						explosionRender = (TRendererComponent*)playerRender;
+						explosionRender->iUsedGeometryShaderIndex = GEOMETRY_SHADER::MESH_EXPLOSION;
 						DeathSound->Play();
 						player->setAlive(false);
 
@@ -5499,11 +5511,20 @@ void CGame::CustomMeshUpdate(float timepassed) {
 
 										if (items[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, _iRenderer)) {
 											TTransformComponent* iRenderer = (TTransformComponent*)_iRenderer;
+											if (iRenderer->fPosition.x == renderer->fPosition.x && iRenderer->fPosition.z == renderer->fPosition.z)
+											{
+												/*g_d3dData->viewMat = DirectX::XMMatrixTranslation(0, -1.0f, 8.0f) * g_d3dData->viewMat;
+												g_d3dData->tempCamera = g_d3dData->viewMat;*/
+												items.erase(items.begin() + i);
+											}
+
+
 
 											if (iRenderer->fPosition.x == renderer->fPosition.x && iRenderer->fPosition.z == renderer->fPosition.z)
 												items.erase(items.begin() + i);
 										}
 									}
+
 
 									objects.erase(objects.begin() + i);
 								}

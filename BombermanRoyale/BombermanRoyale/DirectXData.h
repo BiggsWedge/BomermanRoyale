@@ -67,7 +67,7 @@ struct PIXEL_SHADER
 
 struct GEOMETRY_SHADER
 {
-	enum { DEFAULT = 0, PARTICLE, COUNT };
+	enum { DEFAULT = 0, PARTICLE, MESH_EXPLOSION, COUNT };
 };
 
 struct COMPUTE_SHADER
@@ -200,6 +200,8 @@ public:
 	DirectX::XMMATRIX					tempCamera;
 
 	TBasicVertexConstBuff				basicConstBuff;
+
+
 
 	D3D11_VIEWPORT						d3dViewport;
 
