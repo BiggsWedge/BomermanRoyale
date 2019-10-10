@@ -8,6 +8,7 @@ struct AnimFileName
 {
 	const char* file;
 	std::string animationName;
+	bool loopable;
 };
 
 static const std::vector<const wchar_t*> diffuseTextures =
@@ -27,7 +28,7 @@ static const std::vector<const wchar_t*> diffuseTextures =
 	L".//Assets//Menus.fbm//DC1.png",
 	L".//Assets//Menus.fbm//DC2.png",
 	L".//Assets//Menus.fbm//DC3.png",
-	L".//Assets//Menus.fbm//DC4.png",	
+	L".//Assets//Menus.fbm//DC4.png",
 	L".//Assets//Menus.fbm//GPGlogo_solid.jpg",
 	L".//Assets//Menus.fbm//Full_Sail_Logo.jpg",
 	L".//Assets//Menus.fbm//RushDevIcon.png",
@@ -85,6 +86,10 @@ static const std::vector<const wchar_t*> diffuseTextures =
 	L".//Assets//Fire//fire1_ 11.png",
 	L".//Assets//Fire//fire1_ 12.png",
 	L".//Assets//Fire//fire1_ 13.png",
+	L".//Assets//Goat.fbm//Goat.png",
+	L".//Assets//Boar.fbm//Boar.png",
+	L".//Assets//Boar.fbm//Boar2.png",
+
 };
 
 struct TMeshLoadInfo
@@ -97,11 +102,27 @@ struct TMeshLoadInfo
 
 static const std::vector<AnimFileName> ChickenAnimFiles
 {
-	{".//Assets//ChickenIdle.anim","Idle"},
-	{".//Assets//ChickenEat.anim","Eat"},
-	{".//Assets//ChickenWalk.anim","Walk"},
-	{".//Assets//ChickenRun.anim","Run"},
-	{".//Assets//ChickenDie.anim","Die"}
+	{".//Assets//ChickenIdle.anim","Idle", true},
+	{".//Assets//ChickenEat.anim","Eat", true},
+	{".//Assets//ChickenWalk.anim","Walk", true},
+	{".//Assets//ChickenRun.anim","Run", true},
+	{".//Assets//ChickenDie.anim","Die", false}
+};
+
+static const std::vector<AnimFileName> GoatAnimFiles
+{
+	{".//Assets//GoatIdle.anim", "Idle",true},
+	{".//Assets//GoatWalk.anim", "Walk",true},
+	{".//Assets//GoatRun.anim", "Run",true},
+	{".//Assets//GoatDie.anim", "Die",false}
+};
+
+static const std::vector<AnimFileName> BoarAnimFiles
+{
+	{".//Assets//BoarIdle.anim", "Idle",true},
+	{".//Assets//BoarWalk.anim", "Walk",true},
+	{".//Assets//BoarRun.anim", "Run", true},
+	{".//Assets//BoarDie.anim", "Die", false}
 };
 
 static const std::vector<TMeshLoadInfo> modelLoadInfos
@@ -110,12 +131,19 @@ static const std::vector<TMeshLoadInfo> modelLoadInfos
 	{"BattleMage", ".//Assets//BattleMage.mesh", ".\\Assets\\BattleMage.mat", ".\\Assets\\BattleMage.anim"},
 	{"Bomb", ".//Assets//Bomb.mesh", nullptr, nullptr},
 	{"Bomb2", ".//Assets//Bomb2.mesh", nullptr, nullptr},
-	{"Chicken", ".//Assets//Chicken.mesh", nullptr, nullptr}
+	{"Chicken", ".//Assets//Chicken.mesh", nullptr, nullptr},
+	{"Goat", ".//Assets//Goat.mesh", nullptr, nullptr},
+	{"Boar", ".//Assets//Boar.mesh", nullptr, nullptr}
 };
 
 struct MODELS
 {
-	enum { CUBE = 0, BATTLEMAGE, BOMB, BOMB2, CHICKEN, MENU1, MENU2, COUNT };
+	enum { CUBE = 0, BATTLEMAGE, BOMB, BOMB2, CHICKEN, GOAT, BOAR, MENU1, MENU2, COUNT };
+};
+
+struct PLAYER_MODELS
+{
+	enum { CHICKEN, GOAT, BOAR };
 };
 
 #endif // !CONST_EXPRESSIONS

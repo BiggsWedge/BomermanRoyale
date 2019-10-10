@@ -34,6 +34,8 @@ extern GW::SYSTEM::GWindow* g_pWindow;
 extern GW::SYSTEM::GInput* g_pInputRecord;
 extern GW::AUDIO::GAudio* g_pAudioHolder;
 extern GW::AUDIO::GMusic* g_pMusicStream;
+extern GW::AUDIO::GMusic* g_pMusicStream1;
+extern GW::AUDIO::GMusic* g_pMusicStream2;
 extern GW::AUDIO::GSound* g_pSoundPlayer;
 extern GW::AUDIO::GSound* walkSound1;
 extern GW::AUDIO::GSound* bombPlaceSound1;
@@ -51,7 +53,7 @@ extern std::vector<GW::AUDIO::GSound*> explosionSound;
 extern std::vector<GW::AUDIO::GSound*> bombPlaceSound;
 extern std::vector<GW::AUDIO::GSound*> powerUpSound;
 extern GW::SYSTEM::GController* g_pControllerInput;
-
+extern std::vector<unsigned int> availablePlayerModels;
 
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the
@@ -253,6 +255,7 @@ struct AnimationClip
 	std::vector<joint> _bindPose;
 	double duration;
 	std::vector<KeyFrame> frames;
+	bool loops;
 };
 
 struct TMeshTemplate

@@ -21,6 +21,7 @@ public:
 	inline double getTimer() { return timer; }
 	inline void updateBomb(double timePassed) { timer += timePassed; }
 	inline CPlayer* getParent() { return p_cParentPlayer; }
+	inline void setParent(CPlayer* _player) { p_cParentPlayer = _player; }
 	void initialize(CPlayer* parent);
 	void Draw(double timepassed);
 	inline bool isAlive() { return alive; }
