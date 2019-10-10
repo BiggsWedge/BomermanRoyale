@@ -2740,10 +2740,12 @@ void CGame::updateBombs(double timePassed) {
 
 		TComponent* Xplo = nullptr;
 		TComponent* Zplo = nullptr;
+		TComponent* playerRender = nullptr;
 		TTransformComponent* XexplosionTrans;
 		XexplosionTrans = nullptr;
 		TTransformComponent* ZexplosionTrans;
 		ZexplosionTrans = nullptr;
+		TRendererComponent* explosionRender = nullptr;
 
 		for (CPlayer* player : v_cPlayers) {
 			if (player) {
@@ -2758,7 +2760,9 @@ void CGame::updateBombs(double timePassed) {
 				if (Xexplosions[i]->Collides((CObject*)player) || Zexplosions[i]->Collides((CObject*)player)) {
 					if (player->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 0 || ZexplosionTrans->fPosition.y == 0) {
 						player->setAlive(false);
-
+						player->GetComponent(COMPONENT_TYPE::RENDERER, playerRender);
+						explosionRender = (TRendererComponent*)playerRender;
+						explosionRender->iUsedGeometryShaderIndex = GEOMETRY_SHADER::MESH_EXPLOSION;
 						DeathSound->Play();
 					}
 				}
@@ -4524,7 +4528,11 @@ void CGame::CustomMeshUpdate(float timepassed) {
 												TTransformComponent* iRenderer = (TTransformComponent*)_iRenderer;
 
 												if (iRenderer->fPosition.x == renderer->fPosition.x && iRenderer->fPosition.z == renderer->fPosition.z)
+												{
+													/*g_d3dData->viewMat = DirectX::XMMatrixTranslation(0, -1.0f, 8.0f) * g_d3dData->viewMat;
+													g_d3dData->tempCamera = g_d3dData->viewMat;*/
 													items.erase(items.begin() + i);
+												}
 											}
 										}
 

@@ -201,6 +201,8 @@ public:
 
 	TBasicVertexConstBuff				basicConstBuff;
 
+
+
 	D3D11_VIEWPORT						d3dViewport;
 
 	DirectX::XMUINT2					windowWidthHeight;

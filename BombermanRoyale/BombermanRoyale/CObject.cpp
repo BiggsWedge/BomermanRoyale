@@ -85,6 +85,28 @@ void CObject::Draw(double timepassed)
 	g_d3dData->d3dContext->PSSetShader(g_d3dData->d3dPixelShader[renderer->iUsedPixelShaderIndex], 0, 0);
 	if (renderer->iUsedGeometryShaderIndex >= 0)
 		g_d3dData->d3dContext->GSSetShader(g_d3dData->d3dGeometryShader[renderer->iUsedGeometryShaderIndex], 0, 0);
+	else
+		g_d3dData->d3dContext->GSSetShader(nullptr, 0, 0);
+	bombconstbuffer bombconst;
+	if (renderer->iUsedGeometryShaderIndex == GEOMETRY_SHADER::MESH_EXPLOSION)
+	{
+		//bombconst.world = DirectX::XMMatrixTranspose(transform->mObjMatrix);
+		bombconst.world *= DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&transform->fScale));
+
+		if (g_d3dData->bUseDebugRenderCamera)
+			bombconst.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
+		else
+			bombconst.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
+
+		bombconst.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
+		bombconst.time = totalTime * 300.0f;
+		DirectX::XMVECTOR scale = DirectX::XMLoadFloat3(&transform->fScale);
+		DirectX::XMStoreFloat3(&bombconst.padding, scale);
+		
+
+		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST], 0, nullptr, &bombconst, 0, 0);
+		g_d3dData->d3dContext->GSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST]);
+	}
 	//g_d3dData->d3dContext->OMSetBlendState
 
 	TBasicPixelConstBuff pConst;
@@ -136,7 +158,7 @@ void CObject::Draw(double timepassed)
 
 		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::JOINTS], 0, nullptr, &jcb, 0, 0);
 	}
-	bombconstbuffer bombconst;
+	
 	if (renderer->iUsedVertexShaderIndex != VERTEX_SHADER::EXPLOSION)
 	{
 		if (g_d3dData->bUseDebugRenderCamera)
@@ -171,7 +193,6 @@ void CObject::Draw(double timepassed)
 		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST], 0, nullptr, &bombconst, 0, 0);
 		g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST]);
 	}
-
 	
 
 	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC], 0, nullptr, &pConst, 0, 0);
