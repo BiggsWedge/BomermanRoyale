@@ -444,37 +444,40 @@ void CGame::Run() {
 
 		if (curGameState == GAME_STATE::MAIN_MENU)
 		{
+			menuTime += timePassed;
+			MenuAnimation(DIFFUSE_TEXTURES::MAIN_MENU_1, 3.5f, 70, GAME_STATE::MAIN_MENU);
 			menucontroltimer += timePassed;
+
 			if (menuController.GetUpDown() > 0.0f && menucontroltimer > 0.2 && menuIndex > 0)
 			{
-				if (menuIndex == 1)
+				//if (menuIndex == 1)
+				//{
+				menucontroltimer = 0.0;
+				menuIndex -= 1;
+				for (int i = 0; i < MenuSounds.size(); ++i)
 				{
-					menucontroltimer = 0.0;
-					menuIndex -= 1;
-					for (int i = 0; i < MenuSounds.size(); ++i)
+					MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					if (!soundplaying)
 					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
-						{
-							MenuSounds.at(i)->Play();
-							break;
-						}
+						MenuSounds.at(i)->Play();
+						break;
 					}
 				}
-				if (menuIndex == 3)
-				{
-					menucontroltimer = 0.0;
-					menuIndex -= 2;
-					for (int i = 0; i < MenuSounds.size(); ++i)
-					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
-						{
-							MenuSounds.at(i)->Play();
-							break;
-						}
-					}
-				}
+				//}
+				//if (menuIndex == 3)
+				//{
+				//	menucontroltimer = 0.0;
+				//	menuIndex -= 2;
+				//	for (int i = 0; i < MenuSounds.size(); ++i)
+				//	{
+				//		MenuSounds.at(i)->isSoundPlaying(soundplaying);
+				//		if (!soundplaying)
+				//		{
+				//			MenuSounds.at(i)->Play();
+				//			break;
+				//		}
+				//	}
+				//}
 				//else {
 				//	menucontroltimer = 0.0;
 				//	menuIndex -= 3;
@@ -497,43 +500,43 @@ void CGame::Run() {
 					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
 					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 					TTextureComponent* Texture = (TTextureComponent*)cTexture;
-					if (renderer->iUsedLoadState == GAME_STATE::MAIN_MENU)
+					if (renderer->iUsedLoadState == GAME_STATE::MAIN_MENU  && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
 					{
-						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::MAIN_MENU;
+						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::MAIN_MENU + menuIndex;
 					}
 				}
 				//setGameState(GAME_STATE::MAIN_MENU);
 			}
 			if (menuController.GetUpDown() < 0.0f && menucontroltimer > 0.2 && menuIndex < 3)
 			{
-				if (menuIndex != 0)
+				//if (menuIndex != 0)
+				//{
+				//	menucontroltimer = 0.0;
+				//	menuIndex += 2;
+				//	for (int i = 0; i < MenuSounds.size(); ++i)
+				//	{
+				//		MenuSounds.at(i)->isSoundPlaying(soundplaying);
+				//		if (!soundplaying)
+				//		{
+				//			MenuSounds.at(i)->Play();
+				//			break;
+				//		}
+				//	}
+				//}
+				//if (menuIndex == 0)
+				//{
+				menucontroltimer = 0.0;
+				menuIndex += 1;
+				for (int i = 0; i < MenuSounds.size(); ++i)
 				{
-					menucontroltimer = 0.0;
-					menuIndex += 2;
-					for (int i = 0; i < MenuSounds.size(); ++i)
-					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
-						if (!soundplaying)
-						{
-							MenuSounds.at(i)->Play();
-							break;
-						}
-					}
-				}
-				if (menuIndex == 0)
-				{
-					menucontroltimer = 0.0;
-					menuIndex += 1;
-					for (int i = 0; i < MenuSounds.size(); ++i)
-					{
-						MenuSounds.at(i)->isSoundPlaying(soundplaying);
+					MenuSounds.at(i)->isSoundPlaying(soundplaying);
 
-						if (!soundplaying) {
-							MenuSounds.at(i)->Play();
-							break;
-						}
+					if (!soundplaying) {
+						MenuSounds.at(i)->Play();
+						break;
 					}
 				}
+				//}
 				for (CObject* menu : menuObjects)
 				{
 					TComponent* cRenderer;
@@ -543,12 +546,11 @@ void CGame::Run() {
 					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
 					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 					TTextureComponent* Texture = (TTextureComponent*)cTexture;
-					if (renderer->iUsedLoadState == GAME_STATE::MAIN_MENU)
+					if (renderer->iUsedLoadState == GAME_STATE::MAIN_MENU && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
 					{
-						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::MAIN_MENU + 1;
+						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::MAIN_MENU + menuIndex;
 					}
 				}
-				//setGameState(GAME_STATE::MAIN_MENU);
 			}
 			if (menuController.ButtonReleased(DEFAULT_BUTTONS::ACTION))
 			{
@@ -607,7 +609,8 @@ void CGame::Run() {
 			{
 				numAI++;
 			}
-
+			menuTime += timePassed;
+			MenuAnimation(DIFFUSE_TEXTURES::ARCADE_MENU_1, 4.0f, 104, curGameState);
 			menucontroltimer += timePassed;
 			if (menuController.GetUpDown() > 0.0f && menucontroltimer > 0.2 && menuz > 0)
 			{
@@ -640,7 +643,7 @@ void CGame::Run() {
 					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
 					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 					TTextureComponent* Texture = (TTextureComponent*)cTexture;
-					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
+					if ((renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU) && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
 					{
 						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
 					}
@@ -683,7 +686,7 @@ void CGame::Run() {
 					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
 					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 					TTextureComponent* Texture = (TTextureComponent*)cTexture;
-					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
+					if ((renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU) && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
 					{
 						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
 					}
@@ -722,7 +725,7 @@ void CGame::Run() {
 					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
 					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 					TTextureComponent* Texture = (TTextureComponent*)cTexture;
-					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
+					if ((renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU) && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
 					{
 						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
 					}
@@ -757,7 +760,7 @@ void CGame::Run() {
 					menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
 					TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 					TTextureComponent* Texture = (TTextureComponent*)cTexture;
-					if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
+					if ((renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU) && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
 					{
 						Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU + menuIndex;
 					}
@@ -833,7 +836,7 @@ void CGame::Run() {
 						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 						TTextureComponent* Texture = (TTextureComponent*)cTexture;
 
-						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
+						if ((renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU) && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
 						{
 							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
 						}
@@ -864,7 +867,7 @@ void CGame::Run() {
 						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 						TTextureComponent* Texture = (TTextureComponent*)cTexture;
 
-						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
+						if ((renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU) && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
 						{
 							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
 						}
@@ -892,7 +895,7 @@ void CGame::Run() {
 						TRendererComponent* renderer = (TRendererComponent*)cRenderer;
 						TTextureComponent* Texture = (TTextureComponent*)cTexture;
 
-						if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU)
+						if ((renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU || renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU) && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
 						{
 							Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
 						}
@@ -2680,6 +2683,25 @@ void CGame::setGameState(int _gameState) {
 	{
 	case GAME_STATE::MAIN_MENU:
 
+		for (CObject* menu : menuObjects)
+		{
+			TComponent* cRenderer;
+			TComponent* cTexture;
+			if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				continue;
+			menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+			TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+			TTextureComponent* Texture = (TTextureComponent*)cTexture;
+			if (renderer->iUsedLoadState == GAME_STATE::MAIN_MENU && Texture->iUsedDiffuseIndex > DIFFUSE_TEXTURES::BOAR)
+			{
+				Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::MAIN_MENU_1;
+			}
+			if (renderer->iUsedLoadState == GAME_STATE::MAIN_MENU && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
+			{
+				Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::MAIN_MENU;
+			}
+		}
+		menuTime = 0.0f;
 		g_d3dData->viewMat = g_d3dData->camMat;
 		//p1Pause.Reset(false);
 		ClearPlayersAndBombs();
@@ -2725,6 +2747,26 @@ void CGame::setGameState(int _gameState) {
 		break;
 
 	case GAME_STATE::ARCADE_MENU:
+
+		for (CObject* menu : menuObjects)
+		{
+			TComponent* cRenderer;
+			TComponent* cTexture;
+			if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				continue;
+			menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+			TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+			TTextureComponent* Texture = (TTextureComponent*)cTexture;
+			if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU && Texture->iUsedDiffuseIndex > DIFFUSE_TEXTURES::BOAR)
+			{
+				Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU_1;
+			}
+			if (renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
+			{
+				Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
+			}
+		}
+		menuTime = 0.0f;
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (soundplaying)
 			g_pMusicStream->PauseStream();
@@ -2744,6 +2786,25 @@ void CGame::setGameState(int _gameState) {
 		SprinklersOn = false;
 		break;
 	case GAME_STATE::BATTLE_MENU:
+		for (CObject* menu : menuObjects)
+		{
+			TComponent* cRenderer;
+			TComponent* cTexture;
+			if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				continue;
+			menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+			TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+			TTextureComponent* Texture = (TTextureComponent*)cTexture;
+			if (renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU && Texture->iUsedDiffuseIndex > DIFFUSE_TEXTURES::BOAR)
+			{
+				Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU_1;
+			}
+			if (renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
+			{
+				Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::ARCADE_MENU;
+			}
+		}
+		menuTime = 0.0f;
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (soundplaying)
 			g_pMusicStream->PauseStream();
@@ -3356,8 +3417,16 @@ bool CGame::loadTempMenus() {
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::MAIN_MENU;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::MAIN_MENU_1;
 	loadInfo.scale = DirectX::XMFLOAT3(2.55f, 2.0f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::MAIN_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 2.0f, 12.4f, -9.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::MAIN_MENU;
+	loadInfo.scale = DirectX::XMFLOAT3(0.8f, 0.8f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::MAIN_MENU;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -3396,16 +3465,32 @@ bool CGame::loadTempMenus() {
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_MENU;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_MENU_1;
 	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 2.0f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::ARCADE_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 12.4f, -5.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_MENU;
+	loadInfo.scale = DirectX::XMFLOAT3(1.4f, 0.9f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::ARCADE_MENU;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_MENU;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_MENU_1;
 	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 2.0f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::BATTLE_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 12.4f, -5.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_MENU;
+	loadInfo.scale = DirectX::XMFLOAT3(1.4f, 0.9f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::BATTLE_MENU;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
@@ -5344,11 +5429,20 @@ void CGame::CustomMeshUpdate(float timepassed) {
 			continue;
 
 		TRendererComponent* renderer = (TRendererComponent*)cRenderer;
-		if (renderer->iUsedLoadState == curGameState || (PauseMenuToggle && renderer->iUsedLoadState == GAME_STATE::PAUSE_MENU))
+		if ((renderer->iUsedLoadState == curGameState && renderer->iUsedLoadState != GAME_STATE::ARCADE_MENU && renderer->iUsedLoadState != GAME_STATE::BATTLE_MENU) || (PauseMenuToggle && renderer->iUsedLoadState == GAME_STATE::PAUSE_MENU))
 			p_cRendererManager->RenderObject(menu);
 
 		if (renderer->iUsedLoadState == GAME_STATE::CONTROLS_SCREEN && ControlScreenToggle) {
 			p_cRendererManager->RenderObject(menu);
+		}
+		if (renderer->iUsedLoadState == curGameState)
+		{
+			if (menu->GetComponent(COMPONENT_TYPE::TEXTURE, cRenderer))
+			{
+				TTextureComponent* renderer = (TTextureComponent*)cRenderer;
+				if(renderer->iUsedDiffuseIndex > DIFFUSE_TEXTURES::BOAR)
+					p_cRendererManager->RenderObject(menu);
+			}
 		}
 	}
 
@@ -5811,4 +5905,34 @@ void CGame::DeathTimerforRespawnUpdate(float timepassed)
 			AI->setDeathTimer(timepassed);
 		}
 	}
+}
+
+void CGame::MenuAnimation(int startDiffuseTexture, float duration, int frames, int loadstate)
+{
+	float frameDuration = duration / ((float)frames - 1.0f);
+	int frame = menuTime / frameDuration;
+	if (frame >= frames - 1)
+		frame = frames - 1;
+
+	for (CObject* menu : menuObjects)
+	{
+		TComponent* pRenderer = nullptr;
+		TComponent* pTexture = nullptr;
+		TRendererComponent* prenderer = nullptr;
+		TTextureComponent* Texture = nullptr;
+
+		if (menu->GetComponent(COMPONENT_TYPE::TEXTURE, pTexture))
+			Texture = (TTextureComponent*)pTexture;
+
+		if (menu->GetComponent(COMPONENT_TYPE::RENDERER, pRenderer))
+			prenderer = (TRendererComponent*)pRenderer;
+
+		if (Texture->iUsedDiffuseIndex > DIFFUSE_TEXTURES::BOAR && prenderer->iUsedLoadState == loadstate)
+		{
+			Texture->iUsedDiffuseIndex = startDiffuseTexture + frame;
+		}
+	}
+
+	if (menuTime > duration)
+		menuTime = 0.0f;
 }
