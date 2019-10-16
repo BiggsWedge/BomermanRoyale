@@ -90,24 +90,25 @@ void CObject::Draw(double timepassed)
 	bombconstbuffer bombconst;
 	if (renderer->iUsedGeometryShaderIndex == GEOMETRY_SHADER::MESH_EXPLOSION)
 	{
-		//bombconst.world = DirectX::XMMatrixTranspose(transform->mObjMatrix);
-		bombconst.world *= DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&transform->fScale));
+	/*	bombconst.world = DirectX::XMMatrixTranspose(transform->mObjMatrix);
+		bombconst.world *= DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&transform->fScale));*/
 
-		if (g_d3dData->bUseDebugRenderCamera)
+		/*if (g_d3dData->bUseDebugRenderCamera)
 			bombconst.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
 		else
 			bombconst.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
 
-		bombconst.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
-		bombconst.time = totalTime * 300.0f;
-		DirectX::XMVECTOR scale = DirectX::XMLoadFloat3(&transform->fScale);
-		DirectX::XMStoreFloat3(&bombconst.padding, scale);
+		bombconst.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);*/
+		bombconst.time = totalTime * 40.0f;
+	/*	DirectX::XMVECTOR scale = DirectX::XMLoadFloat3(&transform->fScale);
+		DirectX::XMStoreFloat3(&bombconst.padding, scale);*/
 		
+
 
 		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST], 0, nullptr, &bombconst, 0, 0);
 		g_d3dData->d3dContext->GSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST]);
 	}
-	//g_d3dData->d3dContext->OMSetBlendState
+	/*g_d3dData->d3dContext->OMSetBlendState();*/
 
 	TBasicPixelConstBuff pConst;
 	for (int i = 0; i < 8; ++i)
