@@ -8,7 +8,7 @@
 #define GET_RANDOM_DIRECTION rand() % 4
 
 const char* CharacterMusicFilePath = ".//Assets//Music//RushedDevelopment_BattleDemo.wav";
-const char* backgroundMusicFilePath = ".//Assets//Music//Barnyard.wav";
+const char* backgroundMusicFilePath = ".//Assets//Music//RushedBarn.wav";
 const char* MenuMusicFilePath = ".//Assets//Music//BanjoFast.wav";
 const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
 const char* walkSFX = ".//Assets//Music//RD_UI_Scroll_Up.wav";
