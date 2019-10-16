@@ -2825,6 +2825,20 @@ void CGame::setGameState(int _gameState) {
 		break;
 
 	case GAME_STATE::CHARACTER_SCREEN:
+		for (CObject* menu : menuObjects)
+		{
+			TComponent* cRenderer;
+			TComponent* cTexture;
+			if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				continue;
+			menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+			TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+			TTextureComponent* Texture = (TTextureComponent*)cTexture;
+			if (renderer->iUsedLoadState == GAME_STATE::CHARACTER_SCREEN)
+			{
+				Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::CHARACTER_SCREEN1;
+			}
+		}
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (soundplaying)
 			g_pMusicStream->PauseStream();
