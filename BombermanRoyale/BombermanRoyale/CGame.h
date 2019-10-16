@@ -122,6 +122,7 @@ public:
 	bool AI_1_STARTMoving = false;
 	int prevGameState = 0;
 	float gameStart = 5.0f;
+	float menuTime = 0.0f;
 
 	bool Initialize();
 	void Run();
@@ -154,6 +155,8 @@ public:
 	void WallDrop(CObject* objectToCheck);
 	void WallFlames(CObject* wall, float duration, int frames);
 	void DeathTimerforRespawnUpdate(float timepassed);
+	void MenuAnimation(int startDiffuseTexture, float duration, int frames, int loadstate);
+	inline std::vector<CObject*> getMenuObjects() { return menuObjects; }
 
 	inline CPlayer* GetPlayer(int index) { if (index >= v_cPlayers.size())return nullptr; else return v_cPlayers.at(index); }
 	inline CPlayer* GetAI(int index) { if (index >= v_cAI.size()) return nullptr; else return v_cAI.at(index); }

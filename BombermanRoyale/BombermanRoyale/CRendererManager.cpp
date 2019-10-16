@@ -145,18 +145,43 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 	if (gamestate == GAME_STATE::ARCADE_MENU || gamestate == GAME_STATE::BATTLE_MENU)
 	{
+		RECT rect2;
+		rect2.top = 0.08f * (float)g_d3dData->windowWidthHeight.y;
+		rect2.bottom = 0.92f * (float)g_d3dData->windowWidthHeight.y;
+		rect2.left = 0.08f * (float)g_d3dData->windowWidthHeight.x;
+		rect2.right = 0.92f * (float)g_d3dData->windowWidthHeight.x;
+		int texture;
+		for (CObject* menu : parentGame->getMenuObjects())
+		{
+			TComponent* cRenderer;
+			TComponent* cTexture;
+			if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				continue;
+			menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+			TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+			TTextureComponent* Texture = (TTextureComponent*)cTexture;
+			if (gamestate == GAME_STATE::ARCADE_MENU && renderer->iUsedLoadState == GAME_STATE::ARCADE_MENU && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
+			{
+				texture = Texture->iUsedDiffuseIndex;
+			}
+			if (gamestate == GAME_STATE::BATTLE_MENU && renderer->iUsedLoadState == GAME_STATE::BATTLE_MENU && Texture->iUsedDiffuseIndex < DIFFUSE_TEXTURES::BOAR)
+			{
+				texture = Texture->iUsedDiffuseIndex;
+			}
+		}
+		g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[texture], rect2, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 		wchar_t numP[10];
 		wchar_t numA[10];
 		swprintf_s(numP, L"%d", parentGame->numPLAYERS);
 		swprintf_s(numA, L"%d", parentGame->numAI);
 		if (parentGame->mapsize == 1)
-			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "SMALL", DirectX::XMVECTOR{ (0.51f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.35f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "SMALL", DirectX::XMVECTOR{ (0.49f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.36f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 		else if (parentGame->mapsize == 3)
-			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "LARGE", DirectX::XMVECTOR{ (0.51f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.35f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "LARGE", DirectX::XMVECTOR{ (0.49f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.36f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 		else
-			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "MEDIUM", DirectX::XMVECTOR{ (0.51f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.35f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
-		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, numA, DirectX::XMVECTOR{ (0.47f*(float)g_d3dData->windowWidthHeight.x), 0.63f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale2);
-		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, numP, DirectX::XMVECTOR{ (0.47f*(float)g_d3dData->windowWidthHeight.x), 0.48f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale2);
+			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "MEDIUM", DirectX::XMVECTOR{ (0.49f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.36f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
+		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, numA, DirectX::XMVECTOR{ (0.46f*(float)g_d3dData->windowWidthHeight.x), 0.62f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale2);
+		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, numP, DirectX::XMVECTOR{ (0.46f*(float)g_d3dData->windowWidthHeight.x), 0.48f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Black, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale2);
 	}
 	RECT rect;
 	wchar_t score[10];
