@@ -2411,7 +2411,7 @@ void CGame::GamePlayLoop(double timePassed)
 			TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
 
-			if (pRenderer->fPosition.x < fMinX || pRenderer->fPosition.x > fMaxX || pRenderer->fPosition.z < fMinZ || pRenderer->fPosition.z > fMaxZ) {
+			if (pRenderer->fPosition.x < fMinX - 1.25f || pRenderer->fPosition.x > fMaxX + 1.25f || pRenderer->fPosition.z < fMinZ - 1.25f || pRenderer->fPosition.z > fMaxZ + 1.25f) {
 				offMapTimer += timePassed;
 
 				if (offMapTimer >= 0.25) {
@@ -5494,7 +5494,7 @@ void CGame::AI_Method(double timepassed, double action_time) {
 		if (currAI->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
 			TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
-			if (pRenderer->fPosition.x < fMinX || pRenderer->fPosition.x > fMaxX || pRenderer->fPosition.z < fMinZ || pRenderer->fPosition.z > fMaxZ) {
+			if (pRenderer->fPosition.x < fMinX - 1.25f || pRenderer->fPosition.x > fMaxX + 1.25f || pRenderer->fPosition.z < fMinZ - 1.25f || pRenderer->fPosition.z > fMaxZ + 1.25f) {
 				offMapTimer += timepassed;
 
 				if (offMapTimer >= 0.25) {
@@ -5604,7 +5604,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 			if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer)) {
 				renderer = (TTransformComponent*)cRenderer;
 
-				if (renderer->fPosition.x == fMinX || renderer->fPosition.z == fMinZ || renderer->fPosition.x == fMaxX || renderer->fPosition.z == fMaxZ) {
+				if (renderer->fPosition.x <= fMinX - 1.25f|| renderer->fPosition.z <= fMinZ - 1.25f|| renderer->fPosition.x >= fMaxX + 1.25f || renderer->fPosition.z >= fMaxZ + 1.25f) {
 					objects[i]->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
 					newTexture = (TTextureComponent*)texture;
 					newTexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::FIRE_TEX;
@@ -5669,7 +5669,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 					}
 				}
 
-				if (mapTime >= 28.0f && droppedLayers < mapPasses) {
+				if (mapTime >= 27.0f && droppedLayers < mapPasses) {
 					for (int passes = 0; passes < 7; ++passes) {
 						for (int i = 0; i < objects.size(); ++i) {
 							TComponent* cRenderer = nullptr;
@@ -5678,7 +5678,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 							if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer)) {
 								renderer = (TTransformComponent*)cRenderer;
 
-								if (renderer->fPosition.x == fMinX || renderer->fPosition.z == fMinZ || renderer->fPosition.x == fMaxX || renderer->fPosition.z == fMaxZ) {
+								if (renderer->fPosition.x <= fMinX - 1.25f || renderer->fPosition.z <= fMinZ - 1.25f || renderer->fPosition.x >= fMaxX + 1.25f || renderer->fPosition.z >= fMaxZ + 1.25f) {
 									for (CPlayer* player : v_cPlayers) {
 										if (!player || !player->isAlive())
 											continue;
