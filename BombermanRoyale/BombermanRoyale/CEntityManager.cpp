@@ -1401,7 +1401,7 @@ std::vector<CBomb*> CEntityManager::DropBomb4(CPlayer* playerSource, std::vector
 
 	loadInfo.forwardVec = { 1.0f, 0.0f, 0.0f };
 	loadInfo.meshID = MODELS::BOMB;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB5;
 	loadInfo.usedVertex = VERTEX_SHADER::BOMB;
 	loadInfo.usedPixel = PIXEL_SHADER::BOMB;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
@@ -2537,7 +2537,7 @@ CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType, int game_stat
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB3;
 		break;
 	case 4:
-		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BATTLE_MAGE;
+		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB5;
 		break;
 	case 3:
 		loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB4;

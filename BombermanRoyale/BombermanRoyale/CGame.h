@@ -82,7 +82,7 @@ class CGame
 
 
 
-	int maxNumBombs = 48;
+	int maxNumBombs = 100;
 	DirectX::XMMATRIX viewPos;
 	DirectX::XMFLOAT3 bombPos;
 	std::vector<CBomb*> v_cBombs;
@@ -98,6 +98,7 @@ class CGame
 	bool showMouse = true;
 	bool bombExploded = false;
 	bool SprinklersOn = false;
+	bool isPaused = false;
 	float CSx = -11.35f;
 
 
@@ -121,6 +122,8 @@ public:
 	bool AI_1_Moving = false;
 	bool AI_1_STARTMoving = false;
 	int prevGameState = 0;
+	float gameStart = 5.0f;
+	float menuTime = 0.0f;
 
 	bool Initialize();
 	void Run();
@@ -153,6 +156,9 @@ public:
 	void WallDrop(CObject* objectToCheck);
 	void WallFlames(CObject* wall, float duration, int frames);
 	void DeathTimerforRespawnUpdate(float timepassed);
+	void MenuAnimation(int startDiffuseTexture, float duration, int frames, int loadstate);
+	inline std::vector<CObject*> getMenuObjects() { return menuObjects; }
+	inline bool GetisPaused() { return isPaused; }
 
 	inline CPlayer* GetPlayer(int index) { if (index >= v_cPlayers.size())return nullptr; else return v_cPlayers.at(index); }
 	inline CPlayer* GetAI(int index) { if (index >= v_cAI.size()) return nullptr; else return v_cAI.at(index); }
