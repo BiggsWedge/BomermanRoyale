@@ -30,6 +30,7 @@ public:
 	float explosiontime = 0.0f;
 	float totalTime;
 	float movetimer = 0.0f;
+	bool moving = false;
 
 	CObject();
 	virtual ~CObject();
