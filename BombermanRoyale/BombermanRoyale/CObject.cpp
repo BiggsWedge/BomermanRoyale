@@ -193,7 +193,6 @@ void CObject::Draw(double timepassed)
 		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST], 0, nullptr, &bombconst, 0, 0);
 		g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::BOMBCONST]);
 	}
-	
 
 	g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC], 0, nullptr, &pConst, 0, 0);
 	g_d3dData->d3dContext->PSSetConstantBuffers(0, 1, &g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::P_BASIC]);
@@ -222,9 +221,9 @@ void CObject::TurnPlayerTo(float _x, float _z) {
 	DirectX::XMFLOAT3 targetVec = { _x, 0.0f, _z };
 	DirectX::XMFLOAT3 newTarget;
 	DirectX::XMVECTOR up = { 0, 1, 0 };
-	DirectX::XMStoreFloat3(&newTarget, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec)));
+	DirectX::XMStoreFloat3(&newTarget, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec))));
 
-	DirectX::XMVECTOR z = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&newTarget), DirectX::XMLoadFloat3(&transform->fPosition));
+	DirectX::XMVECTOR z = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&newTarget), DirectX::XMLoadFloat3(&transform->fForwardVector));
 	z = DirectX::XMVector3Normalize(z);
 	DirectX::XMVECTOR x = DirectX::XMVector3Cross(up, z);
 	x = DirectX::XMVector3Normalize(x);
@@ -234,6 +233,10 @@ void CObject::TurnPlayerTo(float _x, float _z) {
 
 	//transform->fForwardVector = newTarget;
 	transform->mObjMatrix = result;
+	DirectX::XMFLOAT4 pos;
+	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
+	DirectX::XMStoreFloat3(&transform->fForwardVector, transform->mObjMatrix.r[2]);
+	transform->fPosition = DirectX::XMFLOAT3(pos.x, pos.y, pos.z);
 }
 
 bool CObject::Move(float _x, float _z, bool rotation)
@@ -295,49 +298,60 @@ bool CObject::CrouchRoll(float _x, float _z, float _y, bool rotation)
 	return true;
 }
 
-bool CObject::MoveOverTime(float start_x, float end_x, float start_z , float end_z, float timepassed, bool rotation)
+bool CObject::MoveOverTime(float start_x, float end_x, float start_z, float end_z, float timepassed, bool rotation)
 {
-	TComponent* cTransform;
-	TTransformComponent* transform;
-	if (!GetComponent(COMPONENT_TYPE::TRANSFORM, cTransform))
-		return false;
-	transform = (TTransformComponent*)cTransform;
-	TColliderComponent* collider;
-	if (!GetComponent(COMPONENT_TYPE::COLLIDER, cTransform))
-		return false;
-	collider = (TColliderComponent*)cTransform;
-
-	movetimer += timepassed;
-	float ratio =  movetimer / 3.5f;
-	float _x = lerp(start_x, end_x, ratio);
-	_x = _x - start_x;
-	float _z = lerp(start_z, end_z, ratio);
-	_z = _z - start_z;
-	collider->d3dCollider.Center.x += _x;
-	collider->d3dCollider.Center.z += _z;
-	if (ratio >= 1.0f)
-		movetimer = 0.0f;
-
-
-	transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
-	DirectX::XMFLOAT3 targetVec = { _x, 0, _z };
-	if (rotation)
+	float ratio = 0.0f;
+	if (!moving)
 	{
-		transform->mObjMatrix = TurnTo(transform->mObjMatrix, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec))), 0.5f);
-	}
+		TComponent* cTransform;
+		TTransformComponent* transform;
+		if (!GetComponent(COMPONENT_TYPE::TRANSFORM, cTransform))
+			return false;
+		transform = (TTransformComponent*)cTransform;
+		TColliderComponent* collider;
+		if (!GetComponent(COMPONENT_TYPE::COLLIDER, cTransform))
+			return false;
+		collider = (TColliderComponent*)cTransform;
+		while (ratio < 1.0f)
+		{
+			movetimer += (timepassed * 0.25f);
+			ratio = movetimer / 3.0f;
+			float _x = lerp(start_x, end_x, ratio);
+			_x = _x - start_x;
+			float _z = lerp(start_z, end_z, ratio);
+			_z = _z - start_z;
+			
+			transform->mObjMatrix = transform->mObjMatrix * DirectX::XMMatrixTranslation(_x, 0, _z);
+			DirectX::XMFLOAT3 targetVec = { _x, 0, _z };
+			if (rotation)
+			{
+				transform->mObjMatrix = TurnTo(transform->mObjMatrix, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec))), 0.8f);
+			}
 
-	DirectX::XMFLOAT4 pos;
-	DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
-	DirectX::XMStoreFloat3(&transform->fForwardVector, DirectX::XMVector3Normalize(transform->mObjMatrix.r[2]));
-	transform->fPosition = DirectX::XMFLOAT3(pos.x, pos.y, pos.z);
-	
-	if (ratio >= 1.0f)
-	{
-		return true;
+			DirectX::XMFLOAT4 pos;
+			DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
+			DirectX::XMStoreFloat3(&transform->fForwardVector, DirectX::XMVector3Normalize(transform->mObjMatrix.r[2]));
+			transform->fPosition = DirectX::XMFLOAT3(pos.x, pos.y, pos.z);
+			collider->d3dCollider.Center.x = pos.x;
+			collider->d3dCollider.Center.z = pos.z;
+			/*if (ratio >= 1.0f)
+				movetimer = 0.0f;*/
+			if (ratio >= 1.0f) {
+				movetimer = 0.0f;
+				ratio = 0.0f;
+				return true;
+			}
+			break;
+		}
+		if (ratio >= 1.0f) {
+			movetimer = 0.0f;
+			ratio = 0.0f;
+		}
+		moving = true;
 	}
-	else
-		return false;
-	
+	//this->TurnPlayerTo(-pos.x, -pos.z);
+	moving = false;
+	return true;
 }
 
 bool CObject::Collides(CObject * _other)
