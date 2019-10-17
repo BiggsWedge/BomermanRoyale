@@ -279,7 +279,6 @@ bool CObject::MoveOverTime(float start_x, float end_x, float start_z, float end_
 	float ratio = 0.0f;
 	if (!moving)
 	{
-		moving = true;
 		TComponent* cTransform;
 		TTransformComponent* transform;
 		if (!GetComponent(COMPONENT_TYPE::TRANSFORM, cTransform))
@@ -291,7 +290,6 @@ bool CObject::MoveOverTime(float start_x, float end_x, float start_z, float end_
 		collider = (TColliderComponent*)cTransform;
 		while (ratio < 1.0f)
 		{
-
 			movetimer += (timepassed * 0.1f);
 			ratio = movetimer / 3.0f;
 			float _x = lerp(start_x, end_x, ratio);
@@ -309,9 +307,9 @@ bool CObject::MoveOverTime(float start_x, float end_x, float start_z, float end_
 			DirectX::XMFLOAT4 pos;
 			DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
 			DirectX::XMStoreFloat3(&transform->fForwardVector, DirectX::XMVector3Normalize(transform->mObjMatrix.r[2]));
-			collider->d3dCollider.Center.x += _x;
-			collider->d3dCollider.Center.z += _z;
 			transform->fPosition = DirectX::XMFLOAT3(pos.x, pos.y, pos.z);
+			collider->d3dCollider.Center.x = pos.x;
+			collider->d3dCollider.Center.z = pos.z;
 			/*if (ratio >= 1.0f)
 				movetimer = 0.0f;*/
 			if (ratio >= 1.0f) {
@@ -320,6 +318,11 @@ bool CObject::MoveOverTime(float start_x, float end_x, float start_z, float end_
 			}
 			break;
 		}
+		if (ratio >= 1.0f) {
+			movetimer = 0.0f;
+			ratio = 0.0f;
+		}
+		moving = true;
 	}
 	//this->TurnPlayerTo(-pos.x, -pos.z);
 	moving = false;
