@@ -90,18 +90,9 @@ void CObject::Draw(double timepassed)
 	bombconstbuffer bombconst;
 	if (renderer->iUsedGeometryShaderIndex == GEOMETRY_SHADER::MESH_EXPLOSION)
 	{
-	/*	bombconst.world = DirectX::XMMatrixTranspose(transform->mObjMatrix);
-		bombconst.world *= DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&transform->fScale));*/
-
-		/*if (g_d3dData->bUseDebugRenderCamera)
-			bombconst.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
-		else
-			bombconst.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
-
-		bombconst.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);*/
-		bombconst.time = totalTime * 40.0f;
-	/*	DirectX::XMVECTOR scale = DirectX::XMLoadFloat3(&transform->fScale);
-		DirectX::XMStoreFloat3(&bombconst.padding, scale);*/
+	
+		bombconst.world.r[3] = transform->mObjMatrix.r[3];
+		bombconst.time = totalTime * 30.0f;
 		
 
 

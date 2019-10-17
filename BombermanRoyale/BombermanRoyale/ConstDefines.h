@@ -35,6 +35,7 @@ static const std::vector<const wchar_t*> diffuseTextures =
 	L".//Assets//Menus.fbm//Full_Sail_Logo.jpg",
 	L".//Assets//Menus.fbm//RushDevIcon.png",
 	L".//Assets//Menus.fbm//Pause_Menu.png",
+	L".//Assets//Menus.fbm//ReticleForBoss.png",
 	L".//Assets//Menus.fbm//Controls2.png",
 	L".//Assets//Menus.fbm//Arcade_Menu4.0.png",
 	L".//Assets//Menus.fbm//Arcade_Menu5.0.png",
