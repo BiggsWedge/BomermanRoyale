@@ -4147,8 +4147,8 @@ void CGame::AI_Method(double timepassed, double action_time) {
 										//}
 										for (int dZ = -1; dZ <= 1; ++dZ) {
 											for (int dX = -1; dX <= 1; ++dX) {
-												 zbounds = true;
-												 xbounds = true;
+												bool zbounds = true;
+												bool xbounds = true;
 												zchange = z + dZ;
 												xchange = x + dX;
 
@@ -4189,16 +4189,16 @@ void CGame::AI_Method(double timepassed, double action_time) {
 														}
 
 														//currAI->TurnPlayerTo(deltaX, deltaZ);
-														if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed)) 
 															for (CObject* cObj : objects) {
 																if (currAI->Collides(cObj))
 																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
 															}
-															if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed))
+														if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed)) 
 																for (CObject* cObj : objects) {
 																	if (currAI->Collides(cObj))
 																		PlayerCollision(currAI, cObj, deltaX, deltaZ);
 																}
+															if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed))
 														
 														//if (currAI == v_cAI[1])
 														//{
@@ -4225,8 +4225,8 @@ void CGame::AI_Method(double timepassed, double action_time) {
 													{
 														for (int dZ = -2; dZ <= 2; ++dZ) {
 															for (int dX = -2; dX <= 2; ++dX) {
-																 zbounds = true;
-																 xbounds = true;
+																 bool zbounds = true;
+																 bool xbounds = true;
 																 zchange = z + dZ;
 																 xchange = x + dX;
 													
@@ -4248,10 +4248,10 @@ void CGame::AI_Method(double timepassed, double action_time) {
 																if (gridlocation < GRID.size()) {
 																	int tile = GRID[gridlocation];
 													
-																	if ((tile == GRID_SYSTEM::FREE) && (zchange == 0 xor xchange == 0) && xbounds && zbounds /*&& AIbombaction >= 1.5f*/) {
+																	if ((tile == GRID_SYSTEM::FREE || tile == GRID_SYSTEM::POWERUP) && (zchange == 0 xor xchange == 0) && xbounds && zbounds /*&& AIbombaction >= 1.5f*/) {
 																		//AIbombaction = 0.0f;					    
-																		deltaX = /*timepassed */ AI_SPEED * xchange * 0.5f;
-																		deltaZ = /*timepassed */ AI_SPEED * zchange * 0.5f;
+																		deltaX = /*timepassed */ AI_SPEED * xchange;
+																		deltaZ = /*timepassed */ AI_SPEED * zchange;
 													
 																		if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
 																			if (currAI->SetCurrentAnimaion("Idle") == 1)
@@ -4314,8 +4314,8 @@ void CGame::AI_Method(double timepassed, double action_time) {
 
 										for (int dZ = -1; dZ <= 1; ++dZ) {
 											for (int dX = -1; dX <= 1; ++dX) {
-												 zbounds = true;
-												 xbounds = true;
+												bool zbounds = true;
+												bool xbounds = true;
 												zchange = z + dZ;
 												xchange = x + dX;
 
@@ -4354,16 +4354,16 @@ void CGame::AI_Method(double timepassed, double action_time) {
 														}
 
 														//currAI->TurnPlayerTo(deltaX, deltaZ);
+															for (CObject* cObj : objects) {
+																if (currAI->Collides(cObj))
+																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
+															}
 														if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed))
 															for (CObject* cObj : objects) {
 																if (currAI->Collides(cObj))
 																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
 															}
 														if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed))
-															for (CObject* cObj : objects) {
-																if (currAI->Collides(cObj))
-																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
-															}
 
 														//if (currAI == v_cAI[1])
 														//{
@@ -4434,8 +4434,8 @@ void CGame::AI_Method(double timepassed, double action_time) {
 												{
 													continue;
 												}
-												 zbounds = true;
-												 xbounds = true;
+												bool zbounds = true;
+												bool xbounds = true;
 												zchange = z + dZ;
 												xchange = x + dX;
 
@@ -4469,23 +4469,23 @@ void CGame::AI_Method(double timepassed, double action_time) {
 											}
 										}
 
-
 										deltaX = lastDeltaX;
 										deltaZ = lastDeltaZ;
+
 										if (currAI->hasAvailableBombSlot()/* && AIbombaction >= 1*/ && currAI->getBombIndices().size() == 0) {
 											//AIbombaction = 0;
 
 											//currAI->TurnPlayerTo(deltaX, deltaZ);
+												for (CObject* cObj : objects) {
+													if (currAI->Collides(cObj))
+														PlayerCollision(currAI, cObj, deltaX, deltaZ);
+												}
 											if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed))
 												for (CObject* cObj : objects) {
 													if (currAI->Collides(cObj))
 														PlayerCollision(currAI, cObj, deltaX, deltaZ);
 												}
 											if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed))
-												for (CObject* cObj : objects) {
-													if (currAI->Collides(cObj))
-														PlayerCollision(currAI, cObj, deltaX, deltaZ);
-												}
 
 											//currAI->TurnPlayerTo(0, AITransform->fPosition.z + deltaZ);
 											//currAI->updatePlayer(timepassed);
@@ -4667,8 +4667,8 @@ void CGame::AI_Method(double timepassed, double action_time) {
 											for (int dZ = -2; dZ <= 2; ++dZ) {
 												for (int dX = -2; dX <= 2; ++dX) {
 
-													 zbounds = true;
-													 xbounds = true;
+													bool zbounds = true;
+													bool xbounds = true;
 													zchange = z + dZ;
 													xchange = x + dX;
 
@@ -4724,12 +4724,16 @@ void CGame::AI_Method(double timepassed, double action_time) {
 													if (currAI->Collides(cObj))
 														PlayerCollision(currAI, cObj, deltaX, deltaZ);
 												}
-												if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed));
+												if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed * 0.5f))
 												for (CObject* cObj : objects) {
 													if (currAI->Collides(cObj))
 														PlayerCollision(currAI, cObj, deltaX, deltaZ);
 												}
-												if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed));
+												if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed * 0.5f))
+													for (CObject* cObj : objects) {
+														if (currAI->Collides(cObj))
+															PlayerCollision(currAI, cObj, deltaX, deltaZ);
+													}
 											AI_1_Moving = true;
 											gridcheck = 6;
 											dX = 3;
