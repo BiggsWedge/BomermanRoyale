@@ -1455,7 +1455,7 @@ void CGame::Run() {
 				if (v_cPlayers[i] && v_cPlayers[i]->getScore() >= HighScore)
 				{
 					HighScore = v_cPlayers[i]->getScore();
-					highscoreINDEX = i + 1;
+					highscoreINDEX = i;
 				}
 			}
 
