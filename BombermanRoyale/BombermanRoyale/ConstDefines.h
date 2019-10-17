@@ -20,7 +20,7 @@ static const std::vector<const wchar_t*> diffuseTextures =
 	L".//Assets//Menus.fbm//Chicken_Pic9.jpg",
 	L".//Assets//Menus.fbm//Chicken_Pic10.jpg",
 	L".//Assets//Menus.fbm//In-Game Barnyard Blast.png",
-	L".//Assets//Menus.fbm//Playe Status.png",
+	L".//Assets//Menus.fbm//Buttons//ButtonSquare3.png",
 	L".//Assets//Menus.fbm//Player1Win.png",
 	L".//Assets//Menus.fbm//Player2Win.png",
 	L".//Assets//Menus.fbm//Player3Win.png",

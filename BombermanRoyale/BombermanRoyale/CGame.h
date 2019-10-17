@@ -98,6 +98,7 @@ class CGame
 	bool showMouse = true;
 	bool bombExploded = false;
 	bool SprinklersOn = false;
+	bool isPaused = false;
 	float CSx = -11.35f;
 
 
@@ -157,6 +158,7 @@ public:
 	void DeathTimerforRespawnUpdate(float timepassed);
 	void MenuAnimation(int startDiffuseTexture, float duration, int frames, int loadstate);
 	inline std::vector<CObject*> getMenuObjects() { return menuObjects; }
+	inline bool GetisPaused() { return isPaused; }
 
 	inline CPlayer* GetPlayer(int index) { if (index >= v_cPlayers.size())return nullptr; else return v_cPlayers.at(index); }
 	inline CPlayer* GetAI(int index) { if (index >= v_cAI.size()) return nullptr; else return v_cAI.at(index); }

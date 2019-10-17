@@ -92,7 +92,6 @@ bool warningSoundPlaying = false;
 bool fallingSoundPlaying = false;
 bool playerfallingSoundPlaying = false;
 bool loadHappened = false;
-bool isPaused = false;
 float centerAItimer1 = 2.0f;
 
 static double timePassed = 0.0f;
