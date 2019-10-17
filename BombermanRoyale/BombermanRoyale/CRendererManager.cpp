@@ -195,7 +195,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	{
 		bombtype = parentGame->GetPlayer(0)->GetBombType();
 		swprintf_s(score, L"%d", parentGame->GetPlayer(0)->getScore());
-		g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+		g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BOMB + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Player 1:", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x , (float)g_d3dData->windowWidthHeight.y * 0.045f }, DirectX::Colors::Red, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Player 1 Score:", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x - (0.03f *(float)g_d3dData->windowWidthHeight.x) , (float)g_d3dData->windowWidthHeight.y * 0.075f }, DirectX::Colors::Red, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 
@@ -210,7 +210,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 		rect.right = (x * (float)g_d3dData->windowWidthHeight.x) + 40;
 		bombtype = parentGame->GetPlayer(1)->GetBombType();
 		swprintf_s(score, L"%d", parentGame->GetPlayer(1)->getScore());
-		g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+		g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BOMB + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Player 2:", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.045f }, DirectX::Colors::Blue, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 		g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "Player 2 Score:", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x - (0.03f *(float)g_d3dData->windowWidthHeight.x), (float)g_d3dData->windowWidthHeight.y * 0.075f }, DirectX::Colors::Blue, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 
@@ -230,7 +230,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 		{
 			bombtype = parentGame->GetPlayer(2)->GetBombType();
 			swprintf_s(score, L"%d", parentGame->GetPlayer(2)->getScore());
-			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BOMB + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, (parentGame->GetPlayer(2)->isAlive()) ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.045f }, (parentGame->GetPlayer(2)->isAlive()) ? DirectX::Colors::Green : DirectX::Colors::Red, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, score, DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.075f }, (parentGame->GetPlayer(2)->getScore() > 0) ? DirectX::Colors::Green : DirectX::Colors::Red, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 
@@ -242,7 +242,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 			x += 0.16f *invAspect;
 			bombtype = parentGame->GetAI(1)->GetBombType();
 			swprintf_s(score, L"%d", parentGame->GetAI(1)->getScore());
-			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BOMB + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, parentGame->GetAI(1)->isAlive() ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.045f }, (parentGame->GetAI(1)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, score, DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.075f }, (parentGame->GetAI(1)->getScore() > 0) ? DirectX::Colors::Green : DirectX::Colors::Red, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 		}
@@ -250,7 +250,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 		{
 			bombtype = parentGame->GetPlayer(2)->GetBombType();
 			swprintf_s(score, L"%d", parentGame->GetPlayer(2)->getScore());
-			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BOMB + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, (parentGame->GetPlayer(2)->isAlive()) ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.045f }, (parentGame->GetPlayer(2)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, score, DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.075f }, (parentGame->GetPlayer(2)->getScore() > 0) ? DirectX::Colors::Green : DirectX::Colors::Red, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 		}
@@ -258,7 +258,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 		{
 			bombtype = parentGame->GetAI(1)->GetBombType();
 			swprintf_s(score, L"%d", parentGame->GetAI(1)->getScore());
-			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BOMB + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, parentGame->GetAI(1)->isAlive() ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.045f }, (parentGame->GetAI(1)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, score, DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.075f }, (parentGame->GetAI(1)->getScore() > 0) ? DirectX::Colors::Green : DirectX::Colors::Red, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 		}
@@ -275,7 +275,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 		{
 			bombtype = parentGame->GetPlayer(3)->GetBombType();
 			swprintf_s(score, L"%d", parentGame->GetPlayer(3)->getScore());
-			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BOMB + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, parentGame->GetPlayer(3)->isAlive() ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.045f }, (parentGame->GetPlayer(3)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, score, DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.075f }, (parentGame->GetPlayer(3)->getScore() < 0) ? DirectX::Colors::Green : DirectX::Colors::Red, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 		}
@@ -283,7 +283,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 		{
 			bombtype = parentGame->GetAI(0)->GetBombType();
 			swprintf_s(score, L"%d", parentGame->GetAI(0)->getScore());
-			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BD + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::BOMB + bombtype], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, parentGame->GetAI(0)->isAlive() ? "Alive" : "Dead", DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.045f }, (parentGame->GetAI(0)->isAlive()) ? DirectX::Colors::DarkGreen : DirectX::Colors::DarkRed, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 			g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, score, DirectX::XMVECTOR{ x* (float)g_d3dData->windowWidthHeight.x, (float)g_d3dData->windowWidthHeight.y * 0.075f }, (parentGame->GetAI(0)->getScore() > 0) ? DirectX::Colors::Green : DirectX::Colors::Red, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale);
 		}

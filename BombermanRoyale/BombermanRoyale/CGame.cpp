@@ -8,7 +8,7 @@
 #define GET_RANDOM_DIRECTION rand() % 4
 
 const char* CharacterMusicFilePath = ".//Assets//Music//RushedDevelopment_BattleDemo.wav";
-const char* backgroundMusicFilePath = ".//Assets//Music//Barnyard.wav";
+const char* backgroundMusicFilePath = ".//Assets//Music//RushedBarn.wav";
 const char* MenuMusicFilePath = ".//Assets//Music//BanjoFast.wav";
 const char* placeHolderSFX = ".//Assets//Music//snd_15186.wav";
 const char* walkSFX = ".//Assets//Music//RD_UI_Scroll_Up.wav";
@@ -2825,6 +2825,20 @@ void CGame::setGameState(int _gameState) {
 		break;
 
 	case GAME_STATE::CHARACTER_SCREEN:
+		for (CObject* menu : menuObjects)
+		{
+			TComponent* cRenderer;
+			TComponent* cTexture;
+			if (!menu->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer))
+				continue;
+			menu->GetComponent(COMPONENT_TYPE::TEXTURE, cTexture);
+			TRendererComponent* renderer = (TRendererComponent*)cRenderer;
+			TTextureComponent* Texture = (TTextureComponent*)cTexture;
+			if (renderer->iUsedLoadState == GAME_STATE::CHARACTER_SCREEN)
+			{
+				Texture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::CHARACTER_SCREEN1;
+			}
+		}
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (soundplaying)
 			g_pMusicStream->PauseStream();
