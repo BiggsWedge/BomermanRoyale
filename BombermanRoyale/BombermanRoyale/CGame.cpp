@@ -5604,7 +5604,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 			if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer)) {
 				renderer = (TTransformComponent*)cRenderer;
 
-				if (renderer->fPosition.x <= fMinX - 1.25f|| renderer->fPosition.z <= fMinZ - 1.25f|| renderer->fPosition.x >= fMaxX + 1.25f || renderer->fPosition.z >= fMaxZ + 1.25f) {
+				if (renderer->fPosition.x <= fMinX|| renderer->fPosition.z <= fMinZ || renderer->fPosition.x >= fMaxX || renderer->fPosition.z >= fMaxZ) {
 					objects[i]->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
 					newTexture = (TTextureComponent*)texture;
 					newTexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::FIRE_TEX;
@@ -5633,7 +5633,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 							if (player->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
 								TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
-								if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z) {
+								if (pRenderer->fPosition.x <= fMinX + 1.25f || pRenderer->fPosition.z <= fMinZ + 1.25f || pRenderer->fPosition.x >= fMaxX - 1.25f || pRenderer->fPosition.z >= fMaxZ - 1.25f) {
 									player->CrouchRoll(0.0f, 0.0f, -0.5f, false);
 									//player->setAlive(false);
 									if (!playerfallingSoundPlaying)
@@ -5678,7 +5678,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 							if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer)) {
 								renderer = (TTransformComponent*)cRenderer;
 
-								if (renderer->fPosition.x <= fMinX - 1.25f || renderer->fPosition.z <= fMinZ - 1.25f || renderer->fPosition.x >= fMaxX + 1.25f || renderer->fPosition.z >= fMaxZ + 1.25f) {
+								if (renderer->fPosition.x <= fMinX|| renderer->fPosition.z <= fMinZ|| renderer->fPosition.x >= fMaxX|| renderer->fPosition.z >= fMaxZ) {
 									for (CPlayer* player : v_cPlayers) {
 										if (!player || !player->isAlive())
 											continue;
@@ -5691,7 +5691,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 											if (pRenderer->fPosition.y < 0)
 												player->setAlive(false);
 
-											if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z)
+											if (pRenderer->fPosition.x <= fMinX + 1.25f || pRenderer->fPosition.z <= fMinZ + 1.25f || pRenderer->fPosition.x >= fMaxX - 1.25f || pRenderer->fPosition.z >= fMaxZ - 1.25f)
 												player->setAlive(false);
 										}
 									}
