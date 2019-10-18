@@ -38,14 +38,17 @@ outVertex main(in inVertex _inVert)
 	float freqx = _inVert.position.x % 4;
 	float freqz = _inVert.position.z % 4;
 	outVert.position = float4(_inVert.position, 1.0f);
-	if (padding.x > padding.z)
-	{
-		outVert.position.z += ratio / freqx;
-	}
-	else
-	{
-		outVert.position.x += ratio / freqz;
-	}
+	//---- explosion movement code -----
+	//if (padding.x > padding.z)
+	//{
+	//	outVert.position.z += ratio / freqx;
+	//}
+	//else
+	//{
+	//	outVert.position.x += ratio / freqz;
+	//}
+
+
 	//outVert.position = float4(_inVert.position, 0.0f);
 	outVert.position = mul(outVert.position, world);
 	outVert.position = mul(outVert.position, view);
@@ -53,5 +56,6 @@ outVertex main(in inVertex _inVert)
 
 	outVert.normal = normalize(mul(float4(_inVert.normal.xyz, 1.0f), world));
 	outVert.texCoord = _inVert.texCoord;
+	
 	return outVert;
 }

@@ -3247,6 +3247,19 @@ void CGame::updateBombs(double timePassed) {
 			continue;
 		}
 
+		TComponent* texture = nullptr;
+		TTextureComponent* ptexture = nullptr;
+
+		Xexplosions.at(i)->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
+		ptexture = (TTextureComponent*)texture;
+		float frameduration = 0.3f / 6.0f;
+		int frame = explosionTimers[i] / frameduration;
+		ptexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::EXPL_1 + frame;
+
+		Zexplosions.at(i)->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
+		ptexture = (TTextureComponent*)texture;
+		ptexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::EXPL_1 + frame;
+
 		for (int j = 0; j < objects.size(); j++) {
 			TComponent* obj = nullptr;
 			TTransformComponent* objTrans;
