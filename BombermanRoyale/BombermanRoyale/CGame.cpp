@@ -3505,6 +3505,14 @@ bool CGame::loadTempMenus() {
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::OPTIONS_MENU;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::MAIN_MENU;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_MENU_1;
 	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 2.0f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
