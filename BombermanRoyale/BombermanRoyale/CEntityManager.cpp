@@ -2467,7 +2467,7 @@ CExplosion* CEntityManager::BombExplosionX(CBomb* BombSource, CPlayer* _player, 
 	loadInfo.position = pos;
 	loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
 	loadInfo.meshID = MODELS::CUBE;
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::EXPL_1;
 	loadInfo.usedVertex = VERTEX_SHADER::EXPLOSION;
 	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
 	loadInfo.collisionLayer = COLLISION_LAYERS::EXPLOSION;
@@ -2479,6 +2479,41 @@ CExplosion* CEntityManager::BombExplosionX(CBomb* BombSource, CPlayer* _player, 
 	explosion->initialize(_player);
 
 	return explosion;
+}
+
+CExplosion* CEntityManager::ExplosionXAnim(CBomb* BombSource, CPlayer* _player, int game_state, float newX)
+{
+	CExplosion* explosion;
+	OBJLoadInfo loadInfo;
+	TComponent* cRenderer = nullptr;
+	TTransformComponent* renderer = nullptr;
+
+	if (BombSource->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+		renderer = (TTransformComponent*)cRenderer;
+
+	float newY = renderer->fPosition.y + 2.5f;
+	float zvec = g_d3dData->camPos.z - renderer->fPosition.z;
+	float yvec = g_d3dData->camPos.y - renderer->fPosition.y;
+
+	loadInfo.position = { renderer->fPosition.x + newX, newY, renderer->fPosition.z };
+
+	loadInfo.usedVertex = VERTEX_SHADER::EXPLOSION;
+	loadInfo.collisionLayer = COLLISION_LAYERS::EXPLOSION;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.forwardVec = { 0.0f, yvec, zvec };
+
+
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::EXPL_1;
+	loadInfo.scale = DirectX::XMFLOAT3(0.17f, 0.17f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = game_state;
+	explosion = CreateExplosionFromTemplate(loadInfo);
+	explosion->initialize(_player);
+
+	return explosion;
+
 }
 
 CExplosion* CEntityManager::BombExplosionZ(CBomb* BombSource, CPlayer* _player, int game_state)
@@ -2508,6 +2543,41 @@ CExplosion* CEntityManager::BombExplosionZ(CBomb* BombSource, CPlayer* _player, 
 	explosion->initialize(_player);
 
 	return explosion;
+}
+
+CExplosion* CEntityManager::ExplosionZAnim(CBomb* BombSource, CPlayer* _player, int game_state, float newZ)
+{
+	CExplosion* explosion;
+	OBJLoadInfo loadInfo;
+	TComponent* cRenderer = nullptr;
+	TTransformComponent* renderer = nullptr;
+
+	if (BombSource->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
+		renderer = (TTransformComponent*)cRenderer;
+
+	float newY = renderer->fPosition.y + 2.5f;
+	float zvec = g_d3dData->camPos.z - renderer->fPosition.z;
+	float yvec = g_d3dData->camPos.y - renderer->fPosition.y;
+
+	loadInfo.position = { renderer->fPosition.x, newY, renderer->fPosition.z + newZ };
+
+	loadInfo.usedVertex = VERTEX_SHADER::EXPLOSION;
+	loadInfo.collisionLayer = COLLISION_LAYERS::EXPLOSION;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.forwardVec = { 0.0f, yvec, zvec };
+
+
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::EXPL_1;
+	loadInfo.scale = DirectX::XMFLOAT3(0.17f, 0.17f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = game_state;
+	explosion = CreateExplosionFromTemplate(loadInfo);
+	explosion->initialize(_player);
+
+	return explosion;
+
 }
 
 CItem* CEntityManager::ItemDrop(CObject* ItemSource, int itemType, int game_state)

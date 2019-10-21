@@ -115,6 +115,12 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	{
 		RECT rect;
 		rect.top = 0;
+		rect.bottom = (float)g_d3dData->windowWidthHeight.y;
+		rect.left = 0.0f;
+		rect.right = (float)g_d3dData->windowWidthHeight.x;
+		if(parentGame->gameStart >= 0)
+		g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::RED_TEX], rect, nullptr, { (parentGame->gameStart <= 2.0f) ? 0.5f * parentGame->gameStart : 1.0f, (parentGame->gameStart <= 2.0f) ? 0.5f * parentGame->gameStart : 1.0f,  (parentGame->gameStart <= 2.0f) ? 0.5f * parentGame->gameStart : 1.0f,  (parentGame->gameStart <= 2.0f) ? 0.5f * parentGame->gameStart : 1.0f });
+		rect.top = 0;
 		rect.bottom = 0.13f * (float)g_d3dData->windowWidthHeight.y;
 		rect.left = 0.0f;
 		rect.right = (float)g_d3dData->windowWidthHeight.x;
@@ -137,6 +143,14 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 		swprintf_s(battleduration, L"%d", (int)parentGame->BattleDuration);
 		if (!parentGame->GetisPaused())
 		{
+			if (parentGame->BattleDuration >= 194)
+			{
+				rect.top = 0.32f * (float)g_d3dData->windowWidthHeight.y;
+				rect.bottom = 0.6f * (float)g_d3dData->windowWidthHeight.y;
+				rect.left = (parentGame->gameStart <= 1) ? 0.45f * (float)g_d3dData->windowWidthHeight.x : 0.45f * (float)g_d3dData->windowWidthHeight.x;
+				rect.right = (parentGame->gameStart <= 1) ? 0.57f * (float)g_d3dData->windowWidthHeight.x : 0.52f * (float)g_d3dData->windowWidthHeight.x;
+				g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::NAMES_HUD], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+			}
 			if (parentGame->gameStart >= 1)
 				g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, startTime, DirectX::XMVECTOR{ (0.5f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.4f * (float)g_d3dData->windowWidthHeight.y }, (parentGame->gameStart >= 2.0f) ? DirectX::Colors::Red : DirectX::Colors::Green, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale3);
 			if (parentGame->gameStart <= 1 && parentGame->BattleDuration >= 194)

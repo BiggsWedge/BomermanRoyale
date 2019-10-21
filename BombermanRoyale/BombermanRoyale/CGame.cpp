@@ -3252,7 +3252,7 @@ void CGame::updateBombs(double timePassed) {
 
 		Xexplosions.at(i)->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
 		ptexture = (TTextureComponent*)texture;
-		float frameduration = 0.3f / 6.0f;
+		float frameduration = 0.3f / 13.0f;
 		int frame = explosionTimers[i] / frameduration;
 		ptexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::EXPL_1 + frame;
 
@@ -3321,7 +3321,7 @@ void CGame::updateBombs(double timePassed) {
 				}
 
 				if (Xexplosions[i]->Collides((CObject*)player) || Zexplosions[i]->Collides((CObject*)player)) {
-					if (player->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 0 || ZexplosionTrans->fPosition.y == 0) {
+					if (player->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 2.5f || ZexplosionTrans->fPosition.y == 2.5f) {
 						if (player->SetCurrentAnimaion("Die") == 1)
 							player->ResetAnimation();
 						if (player != Xexplosions[i]->getParent() && player->isAlive())
@@ -3349,7 +3349,7 @@ void CGame::updateBombs(double timePassed) {
 		for (CPlayer* AI : v_cAI) {
 			if (AI) {
 				if (Xexplosions[i]->Collides((CObject*)AI) || Zexplosions[i]->Collides((CObject*)AI)) {
-					if (AI->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 0 || ZexplosionTrans->fPosition.y == 0) {
+					if (AI->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 2.5f || ZexplosionTrans->fPosition.y == 2.5f) {
 						AI->setAlive(false);
 						DeathSound->Play();
 						if (AI != Xexplosions[i]->getParent() && AI->isAlive())
@@ -3416,9 +3416,15 @@ void CGame::updateBombs(double timePassed) {
 
 				CPlayer* parent = v_cBombs[i]->getParent();
 
-				explosionTimers.push_back(0.0f);
+				/*explosionTimers.push_back(0.0f);
 				Xexplosions.push_back(p_cEntityManager->BombExplosionX(v_cBombs[i], parent, curGameState));
-				Zexplosions.push_back(p_cEntityManager->BombExplosionZ(v_cBombs[i], parent, curGameState));
+				Zexplosions.push_back(p_cEntityManager->BombExplosionZ(v_cBombs[i], parent, curGameState));*/
+				for (float newvar = -2.5f; newvar <= 2.5f; newvar += 2.5f)
+				{
+					explosionTimers.push_back(0.0f);
+					Xexplosions.push_back(p_cEntityManager->ExplosionXAnim(v_cBombs[i], parent, curGameState, newvar));
+					Zexplosions.push_back(p_cEntityManager->ExplosionZAnim(v_cBombs[i], parent, curGameState, newvar));
+				}
 				v_cBombs[i]->SetAlive(false);
 				for (int j = 0; j < parent->getBombIndices().size(); ++j) {
 					if (parent->getBombIndices()[j] == i) {
