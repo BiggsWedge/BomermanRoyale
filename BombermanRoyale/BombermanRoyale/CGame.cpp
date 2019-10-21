@@ -4,7 +4,7 @@
 #include "pools.h"
 
 #define PLAYER_SPEED 5.0f
-#define AI_SPEED 2.5f
+#define AI_SPEED 5.0f
 #define GET_RANDOM_DIRECTION rand() % 4
 
 const char* CharacterMusicFilePath = ".//Assets//Music//RushedDevelopment_BattleDemo.wav";
@@ -92,7 +92,6 @@ bool warningSoundPlaying = false;
 bool fallingSoundPlaying = false;
 bool playerfallingSoundPlaying = false;
 bool loadHappened = false;
-bool isPaused = false;
 float centerAItimer1 = 2.0f;
 
 static double timePassed = 0.0f;
@@ -1455,7 +1454,7 @@ void CGame::Run() {
 				if (v_cPlayers[i] && v_cPlayers[i]->getScore() >= HighScore)
 				{
 					HighScore = v_cPlayers[i]->getScore();
-					highscoreINDEX = i + 1;
+					highscoreINDEX = i;
 				}
 			}
 
@@ -1626,10 +1625,10 @@ void CGame::LoadObjectBattle(int game_state) {
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	//world box
-	loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	loadInfo.position = { 0, 0, 2.5 };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
+	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//loadInfo.position = { 0, 0, 2.5 };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
 void CGame::LoadObjectSmall(int game_state) {
@@ -1770,10 +1769,10 @@ void CGame::LoadObjectSmall(int game_state) {
 	loadInfo.position = { 0, 0, 2.5f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	loadInfo.position = { 0.0f, 0.0f, 2.5f };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
+	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//loadInfo.position = { 0.0f, 0.0f, 2.5f };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
 void CGame::LoadObjectMedium(int game_state) {
@@ -1821,7 +1820,7 @@ void CGame::LoadObjectMedium(int game_state) {
 				loadInfo.collisionLayer = COLLISION_LAYERS::DESTROYABLE;
 				loadInfo.item = true;
 				loadInfo.floor = false;
-				loadInfo.scale = DirectX::XMFLOAT3(1.0f / 50.0f, 1.0f / 50.0f, 1.0f / 50.0f);
+				loadInfo.scale = DirectX::XMFLOAT3(1.0f / 40.0f, 1.0f / 40.0f, 1.0f / 40.0f);
 				objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 			}
 		}
@@ -1898,10 +1897,10 @@ void CGame::LoadObjectMedium(int game_state) {
 	loadInfo.position = { 0, 0, 2.5f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	loadInfo.position = { 0.0f, 0.0f, 2.5f };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
+	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//loadInfo.position = { 0.0f, 0.0f, 2.5f };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
 void CGame::LoadObjectLarge(int game_state) {
@@ -2015,10 +2014,10 @@ void CGame::LoadObjectLarge(int game_state) {
 	loadInfo.position = { 0, 0, 2.5f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	loadInfo.position = { 0.0f, 0.0f, 2.5f };
-	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+	//loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
+	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//loadInfo.position = { 0.0f, 0.0f, 2.5f };
+	//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 }
 
 void CGame::Cleanup()
@@ -2177,7 +2176,12 @@ void CGame::GamePlayLoop(double timePassed)
 			}
 		}
 	}
-	AI_Method(timePassed, 5.0f);
+	if (!AI_1_Moving)
+	{
+		AI_Method(timePassed, 5.0f);
+		AI_1_Moving = true;
+	}
+	AI_1_Moving = false;
 	for (CPlayer* currPlayer : v_cPlayers)
 	{
 
@@ -2407,7 +2411,7 @@ void CGame::GamePlayLoop(double timePassed)
 			TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
 
-			if (pRenderer->fPosition.x < fMinX - 1.3 || pRenderer->fPosition.x > fMaxX + 1.3 || pRenderer->fPosition.z < fMinZ - 1.3 || pRenderer->fPosition.z > fMaxZ + 1.3) {
+			if (pRenderer->fPosition.x < fMinX - 1.25f || pRenderer->fPosition.x > fMaxX + 1.25f || pRenderer->fPosition.z < fMinZ - 1.25f || pRenderer->fPosition.z > fMaxZ + 1.25f) {
 				offMapTimer += timePassed;
 
 				if (offMapTimer >= 0.25) {
@@ -3243,6 +3247,19 @@ void CGame::updateBombs(double timePassed) {
 			continue;
 		}
 
+		TComponent* texture = nullptr;
+		TTextureComponent* ptexture = nullptr;
+
+		Xexplosions.at(i)->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
+		ptexture = (TTextureComponent*)texture;
+		float frameduration = 0.3f / 6.0f;
+		int frame = explosionTimers[i] / frameduration;
+		ptexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::EXPL_1 + frame;
+
+		Zexplosions.at(i)->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
+		ptexture = (TTextureComponent*)texture;
+		ptexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::EXPL_1 + frame;
+
 		for (int j = 0; j < objects.size(); j++) {
 			TComponent* obj = nullptr;
 			TTransformComponent* objTrans;
@@ -3398,17 +3415,17 @@ void CGame::updateBombs(double timePassed) {
 				*/
 
 				CPlayer* parent = v_cBombs[i]->getParent();
+
+				explosionTimers.push_back(0.0f);
+				Xexplosions.push_back(p_cEntityManager->BombExplosionX(v_cBombs[i], parent, curGameState));
+				Zexplosions.push_back(p_cEntityManager->BombExplosionZ(v_cBombs[i], parent, curGameState));
+				v_cBombs[i]->SetAlive(false);
 				for (int j = 0; j < parent->getBombIndices().size(); ++j) {
 					if (parent->getBombIndices()[j] == i) {
 						parent->deleteBomb(j);
 						parent->DecPlacedBombs();
 					}
 				}
-
-				explosionTimers.push_back(0.0f);
-				Xexplosions.push_back(p_cEntityManager->BombExplosionX(v_cBombs[i], parent, curGameState));
-				Zexplosions.push_back(p_cEntityManager->BombExplosionZ(v_cBombs[i], parent, curGameState));
-				v_cBombs[i]->SetAlive(false);
 			}
 
 			v_cBombs[i]->updateBomb(timePassed);
@@ -3715,273 +3732,273 @@ void CGame::AI_Method(double timepassed, double action_time) {
 	AIbombaction += timepassed;
 	centerAItimer1 += timepassed;
 
-	if (action_time >= AItime) {
-		AItime = 0.0;
+	//if (action_time >= AItime) {
+		//AItime = 0.0;
 
-		int width = (((fMaxX + 2.5f) - fMinX) / 2.5f);
-		int height = (((fMaxZ + 2.5f) - fMinZ) / 2.5f);
-		int gridsize = width * height;
-		float z = 0.0f;
+	int width = ((fMaxX) - (fMinX) / 2.5f);
+	int height = ((fMaxZ) - (fMinZ) / 2.5f);
+	int gridsize = width * height;
+	float z = 0.0f;
+	float x = 0.0f;
+
+	std::vector<int> GRID;
+	GRID.resize(gridsize);
+
+	//filling the grid
+	for (int i = 0; i < GRID.size(); ++i) {
+		z = i / width;
+		x = i % width;
+
+		float xpos = (fMinX)+(x * 2.5f);
+		float zpos = (fMinZ)+(z * 2.5f);
+		bool filled = false;
+
+		for (CBomb* bomb : v_cBombs) {
+			if (!bomb || !bomb->isAlive())
+				continue;
+
+			TComponent* pComponent;
+			bomb->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
+			TTransformComponent* bTransform = (TTransformComponent*)pComponent;
+
+			float dX = abs(bTransform->fPosition.x - xpos);
+			float dZ = abs(bTransform->fPosition.z - zpos);
+
+			if (dX < 1.25f && dZ < 1.25f) {
+				GRID.at(i) = GRID_SYSTEM::BOMB;
+				filled = true;
+				break;
+			}
+		}
+
+		if (filled)
+			continue;
+
+		for (CObject* Xexplode : Xexplosions) {
+			if (!Xexplode)
+				continue;
+
+			TComponent* pComponent;
+			Xexplode->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
+			TTransformComponent* bTransform = (TTransformComponent*)pComponent;
+
+			float dX = abs(bTransform->fPosition.x - xpos);
+			float dZ = abs(bTransform->fPosition.z - zpos);
+
+			if (dX < 1.25f && dZ < 1.25f) {
+				GRID.at(i) = GRID_SYSTEM::BOMB;
+				filled = true;
+				break;
+			}
+		}
+
+		if (filled)
+			continue;
+
+		for (CPlayer* player : v_cPlayers) {
+			if (!player || !player->isAlive())
+				continue;
+
+			TComponent* pComponent;
+			player->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
+			TTransformComponent* pTransform = (TTransformComponent*)pComponent;
+
+			float dX = abs(pTransform->fPosition.x - xpos);
+			float dZ = abs(pTransform->fPosition.z - zpos);
+
+			if ((dX < 1.25f && dZ < 1.25f) && player->isAlive()) {
+				GRID.at(i) = GRID_SYSTEM::PLAYER;
+				filled = true;
+				break;
+			}
+		}
+
+		if (filled)
+			continue;
+
+		for (CObject* pow : items) {
+			if (!pow)
+				continue;
+
+			TComponent* pComponent;
+			pow->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
+			TTransformComponent* iTransform = (TTransformComponent*)pComponent;
+
+			float dX = abs(iTransform->fPosition.x - xpos);
+			float dZ = abs(iTransform->fPosition.z - zpos);
+
+			if (dX < 1.25f && dZ < 1.25f) {
+				GRID.at(i) = GRID_SYSTEM::POWERUP;
+				filled = true;
+				break;
+			}
+		}
+
+		if (filled)
+			continue;
+
+		for (CObject* obj : objects) {
+			TComponent* pComponent;
+			obj->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
+			TTransformComponent* oTransform = (TTransformComponent*)pComponent;
+
+			float dX = abs(oTransform->fPosition.x - xpos);
+			float dZ = abs(oTransform->fPosition.z - zpos);
+
+			if ((dX < 1.25f && dZ < 1.25f) && oTransform->destroyable && !oTransform->nFloor) {
+				GRID.at(i) = GRID_SYSTEM::DESTROYABLE;
+				filled = true;
+				break;
+			}
+			else if ((dX < 1.25f && dZ < 1.25f) && !oTransform->destroyable && !oTransform->nFloor) {
+				GRID.at(i) = GRID_SYSTEM::CRATE;
+				filled = true;
+				break;
+			}
+		}
+
+		if (filled)
+			continue;
+
+		if (!filled)
+			GRID.at(i) = GRID_SYSTEM::FREE;
+	}
+
+	//changing area around bombs to explosions
+	for (int i = 0; i < GRID.size(); ++i) {
+		if (GRID[i] == GRID_SYSTEM::BOMB) {
+			if (i - 1 < GRID.size() && i - 1 > 0 && GRID[i - 1] != GRID_SYSTEM::CRATE && GRID[i - 1] != GRID_SYSTEM::DESTROYABLE)
+				GRID[i - 1] = GRID_SYSTEM::EXPLOSION_RADIUS;
+
+			if (i - width < GRID.size() && i - width > 0 && GRID[i - width] != GRID_SYSTEM::CRATE && GRID[i - width] != GRID_SYSTEM::DESTROYABLE)
+				GRID[i - width] = GRID_SYSTEM::EXPLOSION_RADIUS;
+
+			if (i + 1 < GRID.size() && i + 1 > 0 && GRID[i + 1] != GRID_SYSTEM::CRATE && GRID[i + 1] != GRID_SYSTEM::DESTROYABLE)
+				GRID[i + 1] = GRID_SYSTEM::EXPLOSION_RADIUS;
+
+			if (i + width < GRID.size() && i + width > 0 && GRID[i + width] != GRID_SYSTEM::CRATE && GRID[i + width] != GRID_SYSTEM::DESTROYABLE)
+				GRID[i + width] = GRID_SYSTEM::EXPLOSION_RADIUS;
+		}
+	}
+
+	//find AI
+	for (CPlayer* currAI : v_cAI) {
+		if (!currAI || !currAI->isAlive())
+			continue;
+		currAI->updatePlayer(timepassed);
+		float deltaX = 0.0f;
+		float deltaZ = 0.0f;
+		float cZ = 0.0f;
+		float cX = 0.0f;
+		float startx = 0.0f;
+		float startz = 0.0f;
+		float endx = 0.0f;
+		float endz = 0.0f;
+		float dec = 0.0f;
 		float x = 0.0f;
+		float z = 0.0f;
+		float xpos = 0.0f;
+		float zpos = 0.0f;
+		int gridlocation = 0;
+		int randDirection = 0;
+		float lastDeltaX = -1.0f;
+		float lastDeltaZ = -1.0f;
 
-		std::vector<int> GRID;
-		GRID.resize(gridsize);
+		TComponent* AIComponent;
+		currAI->GetComponent(COMPONENT_TYPE::TRANSFORM, AIComponent);
+		TTransformComponent* AITransform = (TTransformComponent*)AIComponent;
 
-		//filling the grid
 		for (int i = 0; i < GRID.size(); ++i) {
 			z = i / width;
 			x = i % width;
+			xpos = (fMinX)+(x * 2.5f);
+			zpos = (fMinZ)+(z * 2.5f);
+			TComponent* pComponent;
 
-			float xpos = fMinX + (x * 2.5f);
-			float zpos = fMinZ + (z * 2.5f);
-			bool filled = false;
+			float dX = abs(AITransform->fPosition.x - xpos);
+			float dZ = abs(AITransform->fPosition.z - zpos);
 
-			for (CBomb* bomb : v_cBombs) {
-				if (!bomb || !bomb->isAlive())
-					continue;
+			//if (!AI_1_STARTMoving) {
+			//startx = AITransform->fPosition.x;
+			//startz = AITransform->fPosition.z;
+			//endx = xpos;
+			//endz = zpos;
+			//AI_1_STARTMoving = true;
+			//}
+			//
+			//cZ = (AITransform->fPosition.z - zpos);
+			//cX = (AITransform->fPosition.x - xpos);
 
-				TComponent* pComponent;
-				bomb->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
-				TTransformComponent* bTransform = (TTransformComponent*)pComponent;
-
-				float dX = abs(bTransform->fPosition.x - xpos);
-				float dZ = abs(bTransform->fPosition.z - zpos);
-
-				if (dX < 1.25f && dZ < 1.25f) {
-					GRID.at(i) = GRID_SYSTEM::BOMB;
-					filled = true;
-					break;
-				}
-			}
-
-			if (filled)
-				continue;
-
-			for (CObject* Xexplode : Xexplosions) {
-				if (!Xexplode)
-					continue;
-
-				TComponent* pComponent;
-				Xexplode->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
-				TTransformComponent* bTransform = (TTransformComponent*)pComponent;
-
-				float dX = abs(bTransform->fPosition.x - xpos);
-				float dZ = abs(bTransform->fPosition.z - zpos);
-
-				if (dX < 1.25f && dZ < 1.25f) {
-					GRID.at(i) = GRID_SYSTEM::BOMB;
-					filled = true;
-					break;
-				}
-			}
-
-			if (filled)
-				continue;
-
-			for (CPlayer* player : v_cPlayers) {
-				if (!player || !player->isAlive())
-					continue;
-
-				TComponent* pComponent;
-				player->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
-				TTransformComponent* pTransform = (TTransformComponent*)pComponent;
-
-				float dX = abs(pTransform->fPosition.x - xpos);
-				float dZ = abs(pTransform->fPosition.z - zpos);
-
-				if ((dX < 1.25f && dZ < 1.25f) && player->isAlive()) {
-					GRID.at(i) = GRID_SYSTEM::PLAYER;
-					filled = true;
-					break;
-				}
-			}
-
-			if (filled)
-				continue;
-
-			for (CObject* pow : items) {
-				if (!pow)
-					continue;
-
-				TComponent* pComponent;
-				pow->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
-				TTransformComponent* iTransform = (TTransformComponent*)pComponent;
-
-				float dX = abs(iTransform->fPosition.x - xpos);
-				float dZ = abs(iTransform->fPosition.z - zpos);
-
-				if (dX < 1.25f && dZ < 1.25f) {
-					GRID.at(i) = GRID_SYSTEM::POWERUP;
-					filled = true;
-					break;
-				}
-			}
-
-			if (filled)
-				continue;
-
-			for (CObject* obj : objects) {
-				TComponent* pComponent;
-				obj->GetComponent(COMPONENT_TYPE::TRANSFORM, pComponent);
-				TTransformComponent* oTransform = (TTransformComponent*)pComponent;
-
-				float dX = abs(oTransform->fPosition.x - xpos);
-				float dZ = abs(oTransform->fPosition.z - zpos);
-
-				if ((dX < 1.25f && dZ < 1.25f) && oTransform->destroyable && !oTransform->nFloor) {
-					GRID.at(i) = GRID_SYSTEM::DESTROYABLE;
-					filled = true;
-					break;
-				}
-				else if ((dX < 1.25f && dZ < 1.25f) && !oTransform->destroyable && !oTransform->nFloor) {
-					GRID.at(i) = GRID_SYSTEM::CRATE;
-					filled = true;
-					break;
-				}
-			}
-
-			if (filled)
-				continue;
-
-			if (!filled)
-				GRID.at(i) = GRID_SYSTEM::FREE;
-		}
-
-		//changing area around bombs to explosions
-		for (int i = 0; i < GRID.size(); ++i) {
-			if (GRID[i] == GRID_SYSTEM::BOMB) {
-				if (i - 1 < GRID.size() && i - 1 > 0 && GRID[i - 1] != GRID_SYSTEM::CRATE && GRID[i - 1] != GRID_SYSTEM::DESTROYABLE)
-					GRID[i - 1] = GRID_SYSTEM::EXPLOSION_RADIUS;
-
-				if (i - width < GRID.size() && i - width > 0 && GRID[i - width] != GRID_SYSTEM::CRATE && GRID[i - width] != GRID_SYSTEM::DESTROYABLE)
-					GRID[i - width] = GRID_SYSTEM::EXPLOSION_RADIUS;
-
-				if (i + 1 < GRID.size() && i + 1 > 0 && GRID[i + 1] != GRID_SYSTEM::CRATE && GRID[i + 1] != GRID_SYSTEM::DESTROYABLE)
-					GRID[i + 1] = GRID_SYSTEM::EXPLOSION_RADIUS;
-
-				if (i + width < GRID.size() && i + width > 0 && GRID[i + width] != GRID_SYSTEM::CRATE && GRID[i + width] != GRID_SYSTEM::DESTROYABLE)
-					GRID[i + width] = GRID_SYSTEM::EXPLOSION_RADIUS;
-			}
-		}
-
-		//find AI
-		for (CPlayer* currAI : v_cAI) {
-			if (!currAI || !currAI->isAlive())
-				continue;
-			currAI->updatePlayer(timepassed);
-			float deltaX = 0.0f;
-			float deltaZ = 0.0f;
-			float cZ = 0.0f;
-			float cX = 0.0f;
-			float startx = 0.0f;
-			float startz = 0.0f;
-			float endx = 0.0f;
-			float endz = 0.0f;
-			float dec = 0.0f;
-			float x = 0.0f;
-			float z = 0.0f;
-			float xpos = 0.0f;
-			float zpos = 0.0f;
-			int gridlocation = 0;
-			int randDirection = 0;
-			float lastDeltaX = -1.0f;
-			float lastDeltaZ = -1.0f;
-
-			TComponent* AIComponent;
-			currAI->GetComponent(COMPONENT_TYPE::TRANSFORM, AIComponent);
-			TTransformComponent* AITransform = (TTransformComponent*)AIComponent;
-
-			for (int i = 0; i < GRID.size(); ++i) {
-				z = i / width;
-				x = i % width;
-				xpos = fMinX + (x * 2.5f);
-				zpos = fMinZ + (z * 2.5f);
-				TComponent* pComponent;
-
-				float dX = abs(AITransform->fPosition.x - xpos);
-				float dZ = abs(AITransform->fPosition.z - zpos);
-
-				//if (!AI_1_STARTMoving) {
-				startx = AITransform->fPosition.x;
-				startz = AITransform->fPosition.z;
-				endx = xpos;
-				endz = zpos;
-				//AI_1_STARTMoving = true;
+			if (dX <= 1.25f && dZ <= 1.25f) {
+				//if (centerAItimer1 >= 5.0f) {
+				//	currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + cX, AITransform->fPosition.z, AITransform->fPosition.z  + cZ, timepassed);
+				//	centerAItimer1 = 0.0f;
+				//if (step1)
+				//{
+				//	if (currAI == v_cAI[1])
+				//	{
+				//		if (numAI == 1)
+				//		{
+				//			objects.erase(objects.end() - 1);
+				//		}
+				//		else
+				//		{
+				//			objects.erase(objects.end() - 2, objects.end() - 1);
+				//
+				//		}
+				//
+				//	}
+				//	if (currAI == v_cAI[0])
+				//	{
+				//		objects.erase(objects.end() - 1);
+				//	}
 				//}
+				//}
+				gridlocation = i;
+				//OBJLoadInfo loadInfo;
 
-				cZ = (AITransform->fPosition.z - zpos);
-				cX = (AITransform->fPosition.x - xpos);
-
-				if (dX <= 1.25f && dZ <= 1.25f) {
-					//if (centerAItimer1 >= 5.0f) {
-					//	currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + cX, AITransform->fPosition.z, AITransform->fPosition.z  + cZ, timepassed);
-					//	centerAItimer1 = 0.0f;
-					//if (step1)
-					//{
-					//	if (currAI == v_cAI[1])
-					//	{
-					//		if (numAI == 1)
-					//		{
-					//			objects.erase(objects.end() - 1);
-					//		}
-					//		else
-					//		{
-					//			objects.erase(objects.end() - 2, objects.end() - 1);
-					//
-					//		}
-					//
-					//	}
-					//	if (currAI == v_cAI[0])
-					//	{
-					//		objects.erase(objects.end() - 1);
-					//	}
-					//}
-					//}
-					gridlocation = i;
-					//OBJLoadInfo loadInfo;
-
-					//loadInfo.usedVertex = VERTEX_SHADER::BASIC;
-					//loadInfo.usedPixel = PIXEL_SHADER::BASIC;
-					//loadInfo.usedInput = INPUT_LAYOUT::BASIC;
-					//loadInfo.usedGeo = -1;
-					//loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
-					//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
-					//loadInfo.meshID = MODELS::CUBE;
-					//loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
-					//loadInfo.floor = true;
-					//loadInfo.item = false;
-					//loadInfo.destroyable = false;
-					//loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
-					//loadInfo.scale = DirectX::XMFLOAT3(1.0f / 180.0f, 1.0f / 180.0f, 1.0f / 180.0f);
-					//loadInfo.position = { xpos, 2.5, zpos };
-					//if (currAI == v_cAI[1])
-					//{
-					//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-					//}
-					//if (currAI == v_cAI[0])
-					//{
-					//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-					//}
-					step1 = true;
-					break;
-				}
+				//loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+				//loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+				//loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+				//loadInfo.usedGeo = -1;
+				//loadInfo.forwardVec = { 0.0f, 0.0f, -1.0f };
+				//loadInfo.usedDiffuse = DIFFUSE_TEXTURES::RED_TEX;
+				//loadInfo.meshID = MODELS::CUBE;
+				//loadInfo.LoadState = GAME_STATE::ARCADE_GAME;
+				//loadInfo.floor = true;
+				//loadInfo.item = false;
+				//loadInfo.destroyable = false;
+				//loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
+				//loadInfo.scale = DirectX::XMFLOAT3(1.0f / 180.0f, 1.0f / 180.0f, 1.0f / 180.0f);
+				//loadInfo.position = { xpos, 2.5, zpos };
+				//if (currAI == v_cAI[1])
+				//{
+				//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+				//}
+				//if (currAI == v_cAI[0])
+				//{
+				//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+				//}
+				//step1 = true;
+				break;
 			}
+		}
 
+		bool breakout = false;
 
-
-			bool breakout = false;
-
-			//if (AI_1_STARTMoving && !AI_1_Moving) {
-			//if (currAI->MoveOverTime(startx, endx, startz, endz, timepassed)) {
-			//	AI_1_Moving = true;
-			//}
-			//else if (AI_1_Moving) {
-			//	AI_1_Moving = false;
-			//}
-			//else {
+		//if (AI_1_STARTMoving && !AI_1_Moving) {
+		//if (currAI->MoveOverTime(startx, endx, startz, endz, timepassed)) {
+		//	AI_1_Moving = true;
+		//}
+		//else if (AI_1_Moving) {
+		//	AI_1_Moving = false;
+		//}
+		//else {
+		if (!AI_1_Moving)
+		{
 			if (gridlocation < GRID.size()) {
-				xpos = fMinX + (x * 2.5f);
-				zpos = fMinZ + (z * 2.5f);
+				xpos = (fMinX)+(x * 2.5f);
+				zpos = (fMinZ)+(z * 2.5f);
 				//if (step2)
 				//{
 				//	if (currAI == v_cAI[1])
@@ -4159,36 +4176,31 @@ void CGame::AI_Method(double timepassed, double action_time) {
 							int tile = GRID[gridlocation];
 
 							if (tile == GRID_SYSTEM::PLAYER && xbounds && zbounds && (zchange == 0 || xchange == 0)) {
+								deltaX = /*timepassed */ AI_SPEED * xchange * 0.2f;
+								deltaZ = /*timepassed */ AI_SPEED * zchange * 0.2f;
 
 								if (currAI->hasAvailableBombSlot()/* && AIbombaction >= 1*/) {
-									AIbombaction = 0;
-									deltaX = /*timepassed */ AI_SPEED * xchange * 0.2f;
-									deltaZ = /*timepassed */ AI_SPEED * zchange * 0.2f;
+									//AIbombaction = 0;
 
-									if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed));
-									if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed));
-									//currAI->TurnPlayerTo(AITransform->fPosition.x + deltaX, AITransform->fPosition.z + deltaZ);
-									//currAI->TurnPlayerTo(0, AITransform->fPosition.z + deltaZ);
-									//currAI->updatePlayer(timepassed);
-									//currAI->Move(deltaX, deltaZ, true);
-									//if (currAI == v_cAI[1])
-									//{
-									//	loadInfo.position = { xpos, 2.5, zpos };
-									//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-									//}
-									//if (currAI == v_cAI[0])
-									//{
-									//	loadInfo.position = { xpos, 2.5, zpos };
-									//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-									//}
-									step2 = true;
+									//currAI->TurnPlayerTo(deltaX, deltaZ);
+									if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed)) {
+										for (CObject* cObj : objects) {
+											if (currAI->Collides(cObj))
+												PlayerCollision(currAI, cObj, deltaX, deltaZ);
+										}
+										if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed))
+											for (CObject* cObj : objects) {
+												if (currAI->Collides(cObj))
+													PlayerCollision(currAI, cObj, deltaX, deltaZ);
+											}
+									}
 									std::vector<CBomb*> bombs;
 
 									int numBombsPlaced = 0;
 									bool soundplaying = false;
 
 									bombPlaceSound1->isSoundPlaying(soundplaying);
-									AIbombaction = 0.0f;
+									//AIbombaction = 0.0f;
 
 									if (!soundplaying) {
 										bombPlaceSound1->Play();
@@ -4235,6 +4247,7 @@ void CGame::AI_Method(double timepassed, double action_time) {
 						}
 					}
 				}
+
 				for (int gridcheck = 0; gridcheck <= 5; ++gridcheck) {
 					for (int dZ = -1; dZ <= 1; ++dZ) {
 						for (int dX = -1; dX <= 1; ++dX) {
@@ -4264,32 +4277,32 @@ void CGame::AI_Method(double timepassed, double action_time) {
 								switch (gridcheck) {
 								case 0:
 									if (tile == GRID_SYSTEM::BOMB && xbounds && zbounds && (zchange == 0 || xchange == 0)) {
-										//deltaX = /*timepassed */ AI_SPEED * -xchange;
-																				//deltaZ = /*timepassed */ AI_SPEED * -zchange;
-																				//
-																				//if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
-																				//	if (currAI->SetCurrentAnimaion("Idle") == 1)
-																				//		currAI->ResetAnimation();
-																				//}
-																				//else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
-																				//	if (currAI->SetCurrentAnimaion("Run") == 1)
-																				//		currAI->ResetAnimation();
-																				//}
-																				//else {
-																				//	if (currAI->SetCurrentAnimaion("Walk") == 1)
-																				//		currAI->ResetAnimation();
-																				//}
-																				//
-																				//if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, //timepassed));
-																				//
-																				//for (CObject* cObj : objects) {
-																				//	if (currAI->Collides(cObj))
-																				//		PlayerCollision(currAI, cObj, deltaX, deltaZ);
-																				//}
+										lastDeltaX =  xchange;
+										lastDeltaZ =  zchange;
+										//
+										//if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
+										//	if (currAI->SetCurrentAnimaion("Idle") == 1)
+										//		currAI->ResetAnimation();
+										//}
+										//else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
+										//	if (currAI->SetCurrentAnimaion("Run") == 1)
+										//		currAI->ResetAnimation();
+										//}
+										//else {
+										//	if (currAI->SetCurrentAnimaion("Walk") == 1)
+										//		currAI->ResetAnimation();
+										//}
+										//
+										//if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, //timepassed));
+										//
+										//for (CObject* cObj : objects) {
+										//	if (currAI->Collides(cObj))
+										//		PlayerCollision(currAI, cObj, deltaX, deltaZ);
+										//}
 										for (int dZ = -1; dZ <= 1; ++dZ) {
 											for (int dX = -1; dX <= 1; ++dX) {
-												zbounds = true;
-												xbounds = true;
+												bool zbounds = true;
+												bool xbounds = true;
 												zchange = z + dZ;
 												xchange = x + dX;
 
@@ -4312,7 +4325,7 @@ void CGame::AI_Method(double timepassed, double action_time) {
 												if (gridlocation < GRID.size()) {
 													int tile = GRID[gridlocation];
 
-													if (tile == GRID_SYSTEM::FREE && xbounds && zbounds) {
+													if ((tile == GRID_SYSTEM::FREE || tile == GRID_SYSTEM::POWERUP) && xbounds && zbounds/* && (zchange == 0 xor xchange == 0)*/) {
 														deltaX = /*timepassed */ AI_SPEED * xchange;
 														deltaZ = /*timepassed */ AI_SPEED * zchange;
 
@@ -4329,8 +4342,18 @@ void CGame::AI_Method(double timepassed, double action_time) {
 																currAI->ResetAnimation();
 														}
 
-														if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed));
-														if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed));
+														//currAI->TurnPlayerTo(deltaX, deltaZ);
+															for (CObject* cObj : objects) {
+																if (currAI->Collides(cObj))
+																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
+															}
+														if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed)) 
+																for (CObject* cObj : objects) {
+																	if (currAI->Collides(cObj))
+																		PlayerCollision(currAI, cObj, deltaX, deltaZ);
+																}
+															if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed))
+														
 														//if (currAI == v_cAI[1])
 														//{
 														//	loadInfo.position = { xpos, 2.5, zpos };
@@ -4341,92 +4364,105 @@ void CGame::AI_Method(double timepassed, double action_time) {
 														//	loadInfo.position = { xpos, 2.5, zpos };
 														//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 														//}
-														step2 = true;
+														//step2 = true;
 														for (CObject* cObj : objects) {
 															if (currAI->Collides(cObj))
 																PlayerCollision(currAI, cObj, deltaX, deltaZ);
 														}
-
+														AI_1_Moving = true;
 														gridcheck = 6;
 														dX = 3;
 														dZ = 3;
 														break;
 													}
-													else if (dZ == 1 && dX == 1 && tile != GRID_SYSTEM::FREE && xbounds && zbounds)
+													if (dZ >= 1 && dX >= 1)
 													{
-														for (int dZ = -1; dZ <= 1; ++dZ) {
-															for (int dX = -1; dX <= 1; ++dX) {
-																bool zbounds = true;
-																bool xbounds = true;
-																int zchange = z + dZ;
-																int xchange = x + dX;
-
+														for (int dZ = -2; dZ <= 2; ++dZ) {
+															for (int dX = -2; dX <= 2; ++dX) {
+																 bool zbounds = true;
+																 bool xbounds = true;
+																 zchange = z + dZ;
+																 xchange = x + dX;
+													
 																if (zchange < 0 || zchange > height) {
 																	zbounds = false;
 																	zchange = z;
 																	continue;
 																}
-
+													
 																if (xchange < 0 || xchange > width) {
 																	xbounds = false;
 																	xchange = x;
 																	continue;
 																}
-
+													
 																gridlocation = (zchange * width) + xchange;
-																tile = GRID[gridlocation];
 																zchange -= z;
 																xchange -= x;
-
-																if (tile == GRID_SYSTEM::EXPLOSION_RADIUS && (zchange == 0 || xchange == 0) && xbounds && zbounds /*&& AIbombaction >= 2*/) {
-																	deltaX = /*timepassed */ AI_SPEED * xchange;
-																	deltaZ = /*timepassed */ AI_SPEED * zchange;
-
-																	if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
-																		if (currAI->SetCurrentAnimaion("Idle") == 1)
-																			currAI->ResetAnimation();
+																if (gridlocation < GRID.size()) {
+																	int tile = GRID[gridlocation];
+													
+																	if ((tile == GRID_SYSTEM::FREE || tile == GRID_SYSTEM::POWERUP) && (zchange == 0 xor xchange == 0) && xbounds && zbounds /*&& AIbombaction >= 1.5f*/) {
+																		//AIbombaction = 0.0f;					    
+																		deltaX = /*timepassed */ AI_SPEED * xchange;
+																		deltaZ = /*timepassed */ AI_SPEED * zchange;
+													
+																		if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
+																			if (currAI->SetCurrentAnimaion("Idle") == 1)
+																				currAI->ResetAnimation();
+																		}
+																		else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
+																			if (currAI->SetCurrentAnimaion("Run") == 1)
+																				currAI->ResetAnimation();
+																		}
+																		else {
+																			if (currAI->SetCurrentAnimaion("Walk") == 1)
+																				currAI->ResetAnimation();
+																		}
+													
+																		//currAI->TurnPlayerTo(deltaX, deltaZ);
+																			for (CObject* cObj : objects) {
+																				if (currAI->Collides(cObj))
+																					PlayerCollision(currAI, cObj, deltaX, deltaZ);
+																			}
+																		if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed))
+																			for (CObject* cObj : objects) {
+																				if (currAI->Collides(cObj))
+																					PlayerCollision(currAI, cObj, deltaX, deltaZ);
+																			}
+																		if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed))
+													
+																		//if (currAI == v_cAI[1])
+																//{
+																//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+																//}
+																//if (currAI == v_cAI[0])
+																//{
+																//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+																//}
+																		//step2 = true;
+													
+																		for (CObject* cObj : objects) {
+																			if (currAI->Collides(cObj))
+																				PlayerCollision(currAI, cObj, deltaX, deltaZ);
+																		}
+																		AI_1_Moving = true;
+																		gridcheck = 6;
+																		dX = 3;
+																		dZ = 3;
+																		break;
 																	}
-																	else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
-																		if (currAI->SetCurrentAnimaion("Run") == 1)
-																			currAI->ResetAnimation();
-																	}
-																	else {
-																		if (currAI->SetCurrentAnimaion("Walk") == 1)
-																			currAI->ResetAnimation();
-																	}
-
-																	if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed));
-																	if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed));
-																	//if (currAI == v_cAI[1])
-															//{
-															//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-															//}
-															//if (currAI == v_cAI[0])
-															//{
-															//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-															//}
-																	step2 = true;
-																	for (CObject* cObj : objects) {
-																		if (currAI->Collides(cObj))
-																			PlayerCollision(currAI, cObj, deltaX, deltaZ);
-																	}
-
-																	gridcheck = 6;
-																	dX = 3;
-																	dZ = 3;
-																	break;
 																}
 															}
 														}
 													}
-												}
+												}	
 											}
 										}
 									}
-
 									break;
 								case 1:
-									if (tile == GRID_SYSTEM::EXPLOSION_RADIUS && xbounds && zbounds && dX == 0 && dZ == 0) {
+									if (tile == GRID_SYSTEM::EXPLOSION_RADIUS && xbounds && zbounds && dX == 0 && dZ == 0 /*&& (zchange == 0 || xchange == 0)*/) {
 										deltaX = /*timepassed */ AI_SPEED * xchange;
 										deltaZ = /*timepassed */ AI_SPEED * zchange;
 
@@ -4434,8 +4470,8 @@ void CGame::AI_Method(double timepassed, double action_time) {
 											for (int dX = -1; dX <= 1; ++dX) {
 												bool zbounds = true;
 												bool xbounds = true;
-												int zchange = z + dZ;
-												int xchange = x + dX;
+												zchange = z + dZ;
+												xchange = x + dX;
 
 												if (zchange < 0 || zchange > height) {
 													zbounds = false;
@@ -4450,46 +4486,58 @@ void CGame::AI_Method(double timepassed, double action_time) {
 												}
 
 												gridlocation = (zchange * width) + xchange;
-												tile = GRID[gridlocation];
 												zchange -= z;
 												xchange -= x;
-												if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds) {
-													deltaX = /*timepassed */ AI_SPEED * xchange;
-													deltaZ = /*timepassed */ AI_SPEED * zchange;
+												if (gridlocation < GRID.size()) {
+													int tile = GRID[gridlocation];
+													if ((tile == GRID_SYSTEM::FREE || tile == GRID_SYSTEM::POWERUP) /*&& (zchange == 0 xor xchange == 0)*/ && xbounds && zbounds) {
+														deltaX = /*timepassed */ AI_SPEED * xchange;
+														deltaZ = /*timepassed */ AI_SPEED * zchange;
 
-													if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
-														if (currAI->SetCurrentAnimaion("Idle") == 1)
-															currAI->ResetAnimation();
-													}
-													else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
-														if (currAI->SetCurrentAnimaion("Run") == 1)
-															currAI->ResetAnimation();
-													}
-													else {
-														if (currAI->SetCurrentAnimaion("Walk") == 1)
-															currAI->ResetAnimation();
-													}
+														if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
+															if (currAI->SetCurrentAnimaion("Idle") == 1)
+																currAI->ResetAnimation();
+														}
+														else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
+															if (currAI->SetCurrentAnimaion("Run") == 1)
+																currAI->ResetAnimation();
+														}
+														else {
+															if (currAI->SetCurrentAnimaion("Walk") == 1)
+																currAI->ResetAnimation();
+														}
 
-													if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed));
-													if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed));
-													//if (currAI == v_cAI[1])
-													//{
-													//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-													//}
-													//if (currAI == v_cAI[0])
-													//{
-													//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-													//}
-													step2 = true;
-													for (CObject* cObj : objects) {
-														if (currAI->Collides(cObj))
-															PlayerCollision(currAI, cObj, deltaX, deltaZ);
-													}
+														//currAI->TurnPlayerTo(deltaX, deltaZ);
+															for (CObject* cObj : objects) {
+																if (currAI->Collides(cObj))
+																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
+															}
+														if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed))
+															for (CObject* cObj : objects) {
+																if (currAI->Collides(cObj))
+																	PlayerCollision(currAI, cObj, deltaX, deltaZ);
+															}
+														if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed))
 
-													gridcheck = 6;
-													dX = 3;
-													dZ = 3;
-													break;
+														//if (currAI == v_cAI[1])
+														//{
+														//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+														//}
+														//if (currAI == v_cAI[0])
+														//{
+														//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+														//}
+														//step2 = true;
+														for (CObject* cObj : objects) {
+															if (currAI->Collides(cObj))
+																PlayerCollision(currAI, cObj, deltaX, deltaZ);
+														}
+														AI_1_Moving = true;
+														gridcheck = 6;
+														dX = 3;
+														dZ = 3;
+														break;
+													}
 												}
 											}
 										}
@@ -4501,8 +4549,18 @@ void CGame::AI_Method(double timepassed, double action_time) {
 										deltaX = /*timepassed */ AI_SPEED * xchange;
 										deltaZ = /*timepassed */ AI_SPEED * zchange;
 
-										if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed));
-										if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed));
+										//currAI->TurnPlayerTo(deltaX,  deltaZ);
+										if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed))
+											for (CObject* cObj : objects) {
+												if (currAI->Collides(cObj))
+													PlayerCollision(currAI, cObj, deltaX, deltaZ);
+											}
+										if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed))
+											for (CObject* cObj : objects) {
+												if (currAI->Collides(cObj))
+													PlayerCollision(currAI, cObj, deltaX, deltaZ);
+											}
+
 										//if (currAI == v_cAI[1])
 										//{
 										//	loadInfo.position = { xpos, 2.5, zpos };
@@ -4513,23 +4571,25 @@ void CGame::AI_Method(double timepassed, double action_time) {
 										//	loadInfo.position = { xpos, 2.5, zpos };
 										//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 										//}
-										step2 = true;
 										for (CObject* cObj : objects) {
 											if (currAI->Collides(cObj))
 												PlayerCollision(currAI, cObj, deltaX, deltaZ);
 										}
-
+										AI_1_Moving = true;
 									}
 									break;
 								case 3:
 									if (tile == GRID_SYSTEM::DESTROYABLE && xbounds && zbounds && (zchange == 0 xor xchange == 0)) {
+										lastDeltaX = /*timepassed */ AI_SPEED * xchange * 0.1f;
+										lastDeltaZ = /*timepassed */ AI_SPEED * zchange * 0.1f;
 										for (int dZ = -2; dZ <= 2; ++dZ) {
 											for (int dX = -2; dX <= 2; ++dX) {
-												if (dZ > -2 && dZ <= 2 && dX > -2 && dX <= 2)
+												if (dX > -2 && dX <= 2 && dZ > -2 && dZ <= 2)
+												{
 													continue;
-
-												zbounds = true;
-												xbounds = true;
+												}
+												bool zbounds = true;
+												bool xbounds = true;
 												zchange = z + dZ;
 												xchange = x + dX;
 
@@ -4553,80 +4613,240 @@ void CGame::AI_Method(double timepassed, double action_time) {
 													int tile = GRID[gridlocation];
 
 													if (tile == GRID_SYSTEM::BOMB && xbounds && zbounds) {
+														AI_1_Moving = true;
 														gridcheck = 6;
 														dX = 3;
 														dZ = 3;
 														break;
 													}
-													if (tile == GRID_SYSTEM::DESTROYABLE && xbounds && zbounds && (zchange == 0 xor xchange == 0)) {
+												}
+											}
+										}
 
-														if (currAI->hasAvailableBombSlot()/* && AIbombaction >= 1*/) {
-															AIbombaction = 0;
-															deltaX = /*timepassed */ AI_SPEED * xchange * 0.5f;
-															deltaZ = /*timepassed */ AI_SPEED * zchange * 0.5f;
+										deltaX = lastDeltaX;
+										deltaZ = lastDeltaZ;
 
-															if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed));
-															if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed));
-															//currAI->TurnPlayerTo(AITransform->fPosition.x + deltaX, AITransform->fPosition.z + deltaZ);
-															//currAI->TurnPlayerTo(0, AITransform->fPosition.z + deltaZ);
-															//currAI->updatePlayer(timepassed);
-															//currAI->Move(deltaX, deltaZ, true);
-															//if (currAI == v_cAI[1])
-															//{
-															//	loadInfo.position = { xpos, 2.5, zpos };
-															//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-															//}
-															//if (currAI == v_cAI[0])
-															//{
-															//	loadInfo.position = { xpos, 2.5, zpos };
-															//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-															//}
-															step2 = true;
-															std::vector<CBomb*> bombs;
+										if (currAI->hasAvailableBombSlot()/* && AIbombaction >= 1*/ && currAI->getBombIndices().size() == 0) {
+											//AIbombaction = 0;
 
-															int numBombsPlaced = 0;
-															bool soundplaying = false;
+											//currAI->TurnPlayerTo(deltaX, deltaZ);
+												for (CObject* cObj : objects) {
+													if (currAI->Collides(cObj))
+														PlayerCollision(currAI, cObj, deltaX, deltaZ);
+												}
+											if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed))
+												for (CObject* cObj : objects) {
+													if (currAI->Collides(cObj))
+														PlayerCollision(currAI, cObj, deltaX, deltaZ);
+												}
+											if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed))
 
-															bombPlaceSound1->isSoundPlaying(soundplaying);
-															AIbombaction = 0.0f;
+											//currAI->TurnPlayerTo(0, AITransform->fPosition.z + deltaZ);
+											//currAI->updatePlayer(timepassed);
+											//currAI->Move(deltaX, deltaZ, true);
 
-															if (!soundplaying) {
-																bombPlaceSound1->Play();
-															}
-															else {
-																bombPlaceSound2->Play();
-															}
+											//step2 = true;
+											for (CObject* cObj : objects) {
+												if (currAI->Collides(cObj))
+													PlayerCollision(currAI, cObj, deltaX, deltaZ);
+											}
+											std::vector<CBomb*> bombs;
 
-															switch (currAI->GetBombType()) {
-															case 1:
-																bombs = p_cEntityManager->DropBomb1(currAI, objects, curGameState);
-																break;
-															case 2:
-																bombs = p_cEntityManager->DropBomb2(currAI, objects, curGameState);
-																break;
-															case 3:
-																bombs = p_cEntityManager->DropBomb3(currAI, objects, curGameState);
-																break;
-															case 4:
-																bombs = p_cEntityManager->DropBomb4(currAI, objects, curGameState);
-																break;
-															default:
-																bombs.resize(1);
-																bombs[0] = p_cEntityManager->DropBomb0(currAI, curGameState);
-																break;
-															}
+											int numBombsPlaced = 0;
+											bool soundplaying = false;
 
-															for (int j = 0; j < bombs.size(); ++j) {
-																for (int i = 0; i < maxNumBombs; ++i) {
-																	if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive()) {
-																		v_cBombs[i] = bombs[j];
-																		currAI->AddBombIndex(i);
-																		break;
-																	}
-																}
-															}
+											bombPlaceSound1->isSoundPlaying(soundplaying);
+											//AIbombaction = 0.0f;
 
-															currAI->IncPlacedBombs();
+											if (!soundplaying) {
+												bombPlaceSound1->Play();
+											}
+											else {
+												bombPlaceSound2->Play();
+											}
+
+											switch (currAI->GetBombType()) {
+											case 1:
+												bombs = p_cEntityManager->DropBomb1(currAI, objects, curGameState);
+												break;
+											case 2:
+												bombs = p_cEntityManager->DropBomb2(currAI, objects, curGameState);
+												break;
+											case 3:
+												bombs = p_cEntityManager->DropBomb3(currAI, objects, curGameState);
+												break;
+											case 4:
+												bombs = p_cEntityManager->DropBomb4(currAI, objects, curGameState);
+												break;
+											default:
+												bombs.resize(1);
+												bombs[0] = p_cEntityManager->DropBomb0(currAI, curGameState);
+												break;
+											}
+
+											for (int j = 0; j < bombs.size(); ++j) {
+												for (int i = 0; i < maxNumBombs; ++i) {
+													if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive()) {
+														v_cBombs[i] = bombs[j];
+														currAI->AddBombIndex(i);
+														break;
+													}
+												}
+											}
+
+											currAI->IncPlacedBombs();
+											AI_1_Moving = true;
+											gridcheck = 6;
+											dX = 3;
+											dZ = 3;
+											break;
+
+										}
+
+									}
+									//if (gridcheck != 6)
+									//{
+									//	for (int dZ = -1; dZ <= 1; ++dZ) {
+									//		for (int dX = -1; dX <= 1; ++dX) {
+									//			zbounds = true;
+									//			xbounds = true;
+									//			zchange = z + dZ;
+									//			xchange = x + dX;
+									//
+									//			if (zchange < 0 || zchange > height) {
+									//				zbounds = false;
+									//				zchange = z;
+									//				continue;
+									//			}
+									//
+									//			if (xchange < 0 || xchange > width) {
+									//				xbounds = false;
+									//				xchange = x;
+									//				continue;
+									//			}
+									//
+									//			gridlocation = ((zchange * width) + xchange);
+									//			zchange -= z;
+									//			xchange -= x;
+									//
+									//			if (gridlocation < GRID.size() && (zchange == 0 xor xchange == 0)) {
+									//				int tile = GRID[gridlocation];
+									//				if (tile == GRID_SYSTEM::DESTROYABLE && xbounds && zbounds && (zchange == 0 xor xchange == 0)) {
+									//
+									//					if (currAI->hasAvailableBombSlot()/* && AIbombaction >= 1*/) {
+									//						AIbombaction = 0;
+									//						deltaX = /*timepassed */ AI_SPEED * -xchange;
+									//						deltaZ = /*timepassed */ AI_SPEED * -zchange;
+									//
+									//						//if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed));
+									//						//if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed));
+									//						currAI->TurnPlayerTo(AITransform->fPosition.x + deltaX, AITransform->fPosition.z + deltaZ);
+									//						//currAI->TurnPlayerTo(0, AITransform->fPosition.z + deltaZ);
+									//						//currAI->updatePlayer(timepassed);
+									//						//currAI->Move(deltaX, deltaZ, true);
+									//						//if (currAI == v_cAI[1])
+									//						//{
+									//						//	loadInfo.position = { xpos, 2.5, zpos };
+									//						//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+									//						//}
+									//						//if (currAI == v_cAI[0])
+									//						//{
+									//						//	loadInfo.position = { xpos, 2.5, zpos };
+									//						//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+									//						//}
+									//						step2 = true;
+									//						std::vector<CBomb*> bombs;
+									//
+									//						int numBombsPlaced = 0;
+									//						bool soundplaying = false;
+									//
+									//						bombPlaceSound1->isSoundPlaying(soundplaying);
+									//						AIbombaction = 0.0f;
+									//
+									//						if (!soundplaying) {
+									//							bombPlaceSound1->Play();
+									//						}
+									//						else {
+									//							bombPlaceSound2->Play();
+									//						}
+									//
+									//						switch (currAI->GetBombType()) {
+									//						case 1:
+									//							bombs = p_cEntityManager->DropBomb1(currAI, objects);
+									//							break;
+									//						case 2:
+									//							bombs = p_cEntityManager->DropBomb2(currAI, objects);
+									//							break;
+									//						case 3:
+									//							bombs = p_cEntityManager->DropBomb3(currAI, objects);
+									//							break;
+									//						case 4:
+									//							bombs = p_cEntityManager->DropBomb4(currAI, objects);
+									//							break;
+									//						default:
+									//							bombs.resize(1);
+									//							bombs[0] = p_cEntityManager->DropBomb0(currAI);
+									//							break;
+									//						}
+									//
+									//						for (int j = 0; j < bombs.size(); ++j) {
+									//							for (int i = 0; i < maxNumBombs; ++i) {
+									//								if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive()) {
+									//									v_cBombs[i] = bombs[j];
+									//									currAI->AddBombIndex(i);
+									//									break;
+									//								}
+									//							}
+									//						}
+									//
+									//						currAI->IncPlacedBombs();
+									//						gridcheck = 6;
+									//						dX = 3;
+									//						dZ = 3;
+									//						break;
+									//					}
+									//				}
+									//			}
+									//		}
+									//	}
+									//}
+									break;
+								case 4:
+									if (rand() % 10 >= 9)
+										if (tile == GRID_SYSTEM::FREE && xbounds && zbounds && (zchange == 0 xor xchange == 0) && !AI_1_Moving) {
+											//lastDeltaX = deltaX;
+											//lastDeltaZ = deltaZ;
+											lastDeltaX = /*timepassed */ AI_SPEED * xchange;
+											lastDeltaZ = /*timepassed */ AI_SPEED * zchange;
+											for (int dZ = -2; dZ <= 2; ++dZ) {
+												for (int dX = -2; dX <= 2; ++dX) {
+
+													bool zbounds = true;
+													bool xbounds = true;
+													zchange = z + dZ;
+													xchange = x + dX;
+
+													if (zchange < 0 || zchange > height) {
+														zbounds = false;
+														zchange = z;
+														continue;
+													}
+
+													if (xchange < 0 || xchange > width) {
+														xbounds = false;
+														xchange = x;
+														continue;
+													}
+
+													gridlocation = ((zchange * width) + xchange);
+													zchange -= z;
+													xchange -= x;
+
+													if (gridlocation < GRID.size()) {
+														int tile = GRID[gridlocation];
+
+														if (tile == GRID_SYSTEM::BOMB && xbounds && zbounds) {
+															AI_1_Moving = true;
 															gridcheck = 6;
 															dX = 3;
 															dZ = 3;
@@ -4634,123 +4854,11 @@ void CGame::AI_Method(double timepassed, double action_time) {
 														}
 													}
 												}
-												//if (gridcheck != 6)
-												//{
-												//	for (int dZ = -1; dZ <= 1; ++dZ) {
-												//		for (int dX = -1; dX <= 1; ++dX) {
-												//			zbounds = true;
-												//			xbounds = true;
-												//			zchange = z + dZ;
-												//			xchange = x + dX;
-												//
-												//			if (zchange < 0 || zchange > height) {
-												//				zbounds = false;
-												//				zchange = z;
-												//				continue;
-												//			}
-												//
-												//			if (xchange < 0 || xchange > width) {
-												//				xbounds = false;
-												//				xchange = x;
-												//				continue;
-												//			}
-												//
-												//			gridlocation = ((zchange * width) + xchange);
-												//			zchange -= z;
-												//			xchange -= x;
-												//
-												//			if (gridlocation < GRID.size() && (zchange == 0 xor xchange == 0)) {
-												//				int tile = GRID[gridlocation];
-												//				if (tile == GRID_SYSTEM::DESTROYABLE && xbounds && zbounds && (zchange == 0 xor xchange == 0)) {
-												//
-												//					if (currAI->hasAvailableBombSlot()/* && AIbombaction >= 1*/) {
-												//						AIbombaction = 0;
-												//						deltaX = /*timepassed */ AI_SPEED * -xchange;
-												//						deltaZ = /*timepassed */ AI_SPEED * -zchange;
-												//
-												//						//if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed));
-												//						//if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed));
-												//						currAI->TurnPlayerTo(AITransform->fPosition.x + deltaX, AITransform->fPosition.z + deltaZ);
-												//						//currAI->TurnPlayerTo(0, AITransform->fPosition.z + deltaZ);
-												//						//currAI->updatePlayer(timepassed);
-												//						//currAI->Move(deltaX, deltaZ, true);
-												//						//if (currAI == v_cAI[1])
-												//						//{
-												//						//	loadInfo.position = { xpos, 2.5, zpos };
-												//						//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-												//						//}
-												//						//if (currAI == v_cAI[0])
-												//						//{
-												//						//	loadInfo.position = { xpos, 2.5, zpos };
-												//						//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-												//						//}
-												//						step2 = true;
-												//						std::vector<CBomb*> bombs;
-												//
-												//						int numBombsPlaced = 0;
-												//						bool soundplaying = false;
-												//
-												//						bombPlaceSound1->isSoundPlaying(soundplaying);
-												//						AIbombaction = 0.0f;
-												//
-												//						if (!soundplaying) {
-												//							bombPlaceSound1->Play();
-												//						}
-												//						else {
-												//							bombPlaceSound2->Play();
-												//						}
-												//
-												//						switch (currAI->GetBombType()) {
-												//						case 1:
-												//							bombs = p_cEntityManager->DropBomb1(currAI, objects);
-												//							break;
-												//						case 2:
-												//							bombs = p_cEntityManager->DropBomb2(currAI, objects);
-												//							break;
-												//						case 3:
-												//							bombs = p_cEntityManager->DropBomb3(currAI, objects);
-												//							break;
-												//						case 4:
-												//							bombs = p_cEntityManager->DropBomb4(currAI, objects);
-												//							break;
-												//						default:
-												//							bombs.resize(1);
-												//							bombs[0] = p_cEntityManager->DropBomb0(currAI);
-												//							break;
-												//						}
-												//
-												//						for (int j = 0; j < bombs.size(); ++j) {
-												//							for (int i = 0; i < maxNumBombs; ++i) {
-												//								if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive()) {
-												//									v_cBombs[i] = bombs[j];
-												//									currAI->AddBombIndex(i);
-												//									break;
-												//								}
-												//							}
-												//						}
-												//
-												//						currAI->IncPlacedBombs();
-												//						gridcheck = 6;
-												//						dX = 3;
-												//						dZ = 3;
-												//						break;
-												//					}
-												//				}
-												//			}
-												//		}
-												//	}
-												//}
 											}
-										}
-									}
-									break;
-								case 4:
-									if (rand() % 4 >= 3)
-										if (tile == GRID_SYSTEM::FREE && xbounds && zbounds && (zchange == 0 xor xchange == 0)) {
-											lastDeltaX = deltaX;
-											lastDeltaZ = deltaZ;
-											deltaX = /*timepassed */ AI_SPEED * xchange;
-											deltaZ = /*timepassed */ AI_SPEED * zchange;
+
+
+											deltaX = lastDeltaX;
+											deltaZ = lastDeltaZ;
 											if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
 												if (currAI->SetCurrentAnimaion("Idle") == 1)
 													currAI->ResetAnimation();
@@ -4765,29 +4873,25 @@ void CGame::AI_Method(double timepassed, double action_time) {
 											}
 											//if ((deltaX != -lastDeltaX && deltaZ != lastDeltaZ) || (deltaZ != -lastDeltaZ && deltaX != lastDeltaX) || (lastDeltaX == 0 && lastDeltaZ == 0))
 											//{
-
-											if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed));
-											if (!currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed));
-
-											//if (currAI == v_cAI[1])
-											//{
-											//	loadInfo.position = { xpos, 2.5, zpos };
-											//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-											//}
-											//if (currAI == v_cAI[0])
-											//{
-											//	loadInfo.position = { xpos, 2.5, zpos };
-											//	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-											//}
-											step2 = true;
-											for (CObject* cObj : objects) {
-												if (currAI->Collides(cObj))
-													PlayerCollision(currAI, cObj, deltaX, deltaZ);
-											}
-
+											//currAI->TurnPlayerTo(deltaX, deltaZ);
+												for (CObject* cObj : objects) {
+													if (currAI->Collides(cObj))
+														PlayerCollision(currAI, cObj, deltaX, deltaZ);
+												}
+												if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed * 0.5f))
+												for (CObject* cObj : objects) {
+													if (currAI->Collides(cObj))
+														PlayerCollision(currAI, cObj, deltaX, deltaZ);
+												}
+												if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed * 0.5f))
+													for (CObject* cObj : objects) {
+														if (currAI->Collides(cObj))
+															PlayerCollision(currAI, cObj, deltaX, deltaZ);
+													}
+											AI_1_Moving = true;
 											gridcheck = 6;
-											dX = 2;
-											dZ = 2;
+											dX = 3;
+											dZ = 3;
 											break;
 											//}
 											//else
@@ -4799,6 +4903,7 @@ void CGame::AI_Method(double timepassed, double action_time) {
 											//}
 
 										}
+									//AIbombaction = 0.0f;
 									break;
 									//default:
 									//	if (gridcheck == 0 || gridcheck == 1) {
@@ -5101,321 +5206,329 @@ void CGame::AI_Method(double timepassed, double action_time) {
 					}
 				}
 			}
+			AI_1_Moving = false;
+			//break;
+		}
 
-			//	//else if (gridlocation >= GRID.size()) {
-			//	//	if (x > width)
-			//	//		x = width;
-			//
-			//	//	if (z > height)
-			//	//		z = height;
-			//
-			//	//	gridlocation = (z * width) + x;
-			//
-			//	//	if (GRID.at(gridlocation) == GRID_SYSTEM::BOMB) {
-			//	//		int tile = GRID[gridlocation];
-			//
-			//	//		for (int dZ = -1; dZ <= 1; ++dZ) {
-			//	//			for (int dX = -1; dX <= 1; ++dX) {
-			//	//				bool zbounds = true;
-			//	//				bool xbounds = true;
-			//	//				int zchange = z + dZ;
-			//	//				int xchange = x + dX;
-			//
-			//	//				if (zchange < 0 || zchange > height) {
-			//	//					zbounds = false;
-			//	//					zchange = z;
-			//	//					continue;
-			//	//				}
-			//
-			//	//				if (xchange < 0 || xchange > width) {
-			//	//					xbounds = false;
-			//	//					xchange = x;
-			//	//					continue;
-			//	//				}
-			//
-			//	//				if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds) {
-			//	//					deltaX = timepassed * AI_SPEED * dX;
-			//	//					deltaZ = timepassed * AI_SPEED * dZ;
-			//
-			//	//					if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
-			//	//						if (currAI->SetCurrentAnimaion("Idle") == 1)
-			//	//							currAI->ResetAnimation();
-			//	//					}
-			//	//					else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
-			//	//						if (currAI->SetCurrentAnimaion("Run") == 1)
-			//	//							currAI->ResetAnimation();
-			//	//					}
-			//	//					else {
-			//	//						if (currAI->SetCurrentAnimaion("Walk") == 1)
-			//	//							currAI->ResetAnimation();
-			//	//					}
-			//
-			//	//					currAI->MoveOverTime(AITransform->fPosition.x, deltaX, AITransform->fPosition.z, deltaZ, timepassed);
-			//
-			//	//					for (CObject* cObj : objects) {
-			//	//						if (currAI->Collides(cObj))
-			//	//							PlayerCollision(currAI, cObj, deltaX, deltaZ);
-			//	//					}
-			//
-			//	//					dZ = 2;
-			//	//					break;
-			//	//				}
-			//	//			}
-			//	//		}
-			//	//	}
-			//	//	else {
-			//	//		for (int gridcheck = 0; gridcheck < 5; ++gridcheck) {
-			//	//			for (int dZ = -1; dZ <= 1; ++dZ) {
-			//	//				for (int dX = -1; dX <= 1; ++dX) {
-			//	//					bool zbounds = true;
-			//	//					bool xbounds = true;
-			//	//					int zchange = z + dZ;
-			//	//					int xchange = x + dX;
-			//
-			//	//					if (zchange < 0 && zchange > height) {
-			//	//						zbounds = false;
-			//	//						zchange = z;
-			//	//						continue;
-			//	//					}
-			//
-			//	//					if (xchange < 0 && xchange > width) {
-			//	//						xbounds = false;
-			//	//						xchange = x;
-			//	//						continue;
-			//	//					}
-			//
-			//	//					gridlocation = ((zchange* width) + xchange);
-			//	//					zchange -= z;
-			//	//					xchange -= x;
-			//
-			//	//					if (gridlocation < GRID.size()) {
-			//	//						int tile = GRID[gridlocation];
-			//
-			//	//						if (gridcheck == 0) {
-			//	//							if (tile == GRID_SYSTEM::BOMB && (zchange == 0 xor xchange == 0) && xbounds && zbounds) {
-			//	//								//deltaX = timepassed * AI_SPEED * -xchange;
-			//	//								//deltaZ = timepassed * AI_SPEED * -zchange;
-			//	//								//
-			//	//								//if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
-			//	//								//	if (currAI->SetCurrentAnimaion("Idle") == 1)
-			//	//								//		currAI->ResetAnimation();
-			//	//								//}
-			//	//								//else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
-			//	//								//	if (currAI->SetCurrentAnimaion("Run") == 1)
-			//	//								//		currAI->ResetAnimation();
-			//	//								//}
-			//	//								//else {
-			//	//								//	if (currAI->SetCurrentAnimaion("Walk") == 1)
-			//	//								//		currAI->ResetAnimation();
-			//	//								//}
-			//	//								//
-			//	//								//currAI->MoveOverTime(AITransform->fPosition.x, deltaX, AITransform->fPosition.z, deltaZ, timepassed);
-			//	//								//
-			//	//								//for (CObject* cObj : objects) {
-			//	//								//	if (currAI->Collides(cObj))
-			//	//								//		PlayerCollision(currAI, cObj, deltaX, deltaZ);
-			//	//								//}
-			//
-			//	//								for (int dZ = -1; dZ <= 1; ++dZ) {
-			//	//									for (int dX = -1; dX <= 2; ++dX) {
-			//	//										zbounds = true;
-			//	//										xbounds = true;
-			//	//										zchange = z + dZ;
-			//	//										xchange = x + dX;
-			//
-			//	//										if (zchange < 0 && zchange > height) {
-			//	//											zbounds = false;
-			//	//											zchange = z;
-			//	//											continue;
-			//	//										}
-			//
-			//	//										if (xchange < 0 && xchange > width) {
-			//	//											xbounds = false;
-			//	//											xchange = x;
-			//	//											continue;
-			//	//										}
-			//
-			//	//										gridlocation = ((zchange * width) + xchange);
-			//	//										zchange -= z;
-			//	//										xchange -= x;
-			//
-			//	//										if (gridlocation < GRID.size()) {
-			//	//											int tile = GRID[gridlocation];
-			//
-			//	//											if (tile == GRID_SYSTEM::FREE  && xbounds && zbounds) {
-			//	//												deltaX = timepassed * AI_SPEED * xchange;
-			//	//												deltaZ = timepassed * AI_SPEED * zchange;
-			//
-			//	//												if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
-			//	//													if (currAI->SetCurrentAnimaion("Idle") == 1)
-			//	//														currAI->ResetAnimation();
-			//	//												}
-			//	//												else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
-			//	//													if (currAI->SetCurrentAnimaion("Run") == 1)
-			//	//														currAI->ResetAnimation();
-			//	//												}
-			//	//												else {
-			//	//													if (currAI->SetCurrentAnimaion("Walk") == 1)
-			//	//														currAI->ResetAnimation();
-			//	//												}
-			//
-			//	//												currAI->MoveOverTime(AITransform->fPosition.x, deltaX, AITransform->fPosition.z, deltaZ, timepassed);
-			//
-			//	//												for (CObject* cObj : objects) {
-			//	//													if (currAI->Collides(cObj))
-			//	//														PlayerCollision(currAI, cObj, deltaX, deltaZ);
-			//	//												}
-			//	//											}
-			//	//										}
-			//	//									}
-			//	//								}
-			//	//							}
-			//	//						}
-			//	//						else if (gridcheck == 1 && AIbombaction >= 3.0f) {
-			//	//							if (tile == GRID_SYSTEM::DESTROYABLE && (zchange == 0 xor xchange == 0) && xbounds && zbounds) {
-			//	//								deltaX = timepassed * AI_SPEED * xchange * 0.1f;
-			//	//								deltaZ = timepassed * AI_SPEED * zchange * 0.1f;
-			//
-			//	//								currAI->MoveOverTime(AITransform->fPosition.x, deltaX, AITransform->fPosition.z, deltaZ, timepassed);
-			//
-			//	//								if (currAI->hasAvailableBombSlot()) {
-			//	//									std::vector<CBomb*> bombs;
-			//
-			//	//									int numBombsPlaced = 0;
-			//	//									bool soundplaying;
-			//
-			//	//									bombPlaceSound1->isSoundPlaying(soundplaying);
-			//	//									AIbombaction = 0.0f;
-			//
-			//	//									if (!soundplaying) {
-			//	//										bombPlaceSound1->Play();
-			//	//									}
-			//	//									else {
-			//	//										bombPlaceSound2->Play();
-			//	//									}
-			//
-			//	//									switch (currAI->GetBombType()) {
-			//	//									case 1:
-			//	//										bombs = p_cEntityManager->DropBomb1(currAI, objects);
-			//	//										break;
-			//	//									case 2:
-			//	//										bombs = p_cEntityManager->DropBomb2(currAI, objects);
-			//	//										break;
-			//	//									case 3:
-			//	//										bombs = p_cEntityManager->DropBomb3(currAI, objects);
-			//	//										break;
-			//	//									case 4:
-			//	//										bombs = p_cEntityManager->DropBomb4(currAI, objects);
-			//	//										break;
-			//	//									default:
-			//	//										bombs.resize(1);
-			//	//										bombs[0] = p_cEntityManager->DropBomb0(currAI);
-			//	//										break;
-			//	//									}
-			//
-			//	//									for (int j = 0; j < bombs.size(); ++j) {
-			//	//										for (int i = 0; i < maxNumBombs; ++i) {
-			//	//											if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive()) {
-			//	//												v_cBombs[i] = bombs[j];
-			//	//												currAI->AddBombIndex(i);
-			//	//												break;
-			//	//											}
-			//	//										}
-			//	//									}
-			//
-			//	//									currAI->IncPlacedBombs();
-			//	//								}
-			//	//							}
-			//	//						}
-			//	//						else if (gridcheck == 2) {
-			//	//							if (tile == GRID_SYSTEM::FREE && xbounds && zbounds) {
-			//	//								deltaX = timepassed * AI_SPEED * xchange;
-			//	//								deltaZ = timepassed * AI_SPEED * zchange;
-			//
-			//	//								if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
-			//	//									if (currAI->SetCurrentAnimaion("Idle") == 1)
-			//	//										currAI->ResetAnimation();
-			//	//								}
-			//	//								else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
-			//	//									if (currAI->SetCurrentAnimaion("Run") == 1)
-			//	//										currAI->ResetAnimation();
-			//	//								}
-			//	//								else {
-			//	//									if (currAI->SetCurrentAnimaion("Walk") == 1)
-			//	//										currAI->ResetAnimation();
-			//	//								}
-			//
-			//	//								currAI->MoveOverTime(AITransform->fPosition.x, deltaX, AITransform->fPosition.z, deltaZ, timepassed);
-			//
-			//	//								for (CObject* cObj : objects) {
-			//	//									if (currAI->Collides(cObj))
-			//	//										PlayerCollision(currAI, cObj, deltaX, deltaZ);
-			//	//								}
-			//	//							}
-			//	//						}
-			//	//					}
-			//	//				}
-			//	//			}
-			//	//		}
-			//	//	}
-			//	//}
-			////}
-			//
-			//	//for (CObject* cObj : objects) {
-			//	//	if (currAI->Collides(cObj))
-			//	//		PlayerCollision(currAI, cObj, deltaX, deltaZ);
-			//	//}
+		//	//else if (gridlocation >= GRID.size()) {
+		//	//	if (x > width)
+		//	//		x = width;
+		//
+		//	//	if (z > height)
+		//	//		z = height;
+		//
+		//	//	gridlocation = (z * width) + x;
+		//
+		//	//	if (GRID.at(gridlocation) == GRID_SYSTEM::BOMB) {
+		//	//		int tile = GRID[gridlocation];
+		//
+		//	//		for (int dZ = -1; dZ <= 1; ++dZ) {
+		//	//			for (int dX = -1; dX <= 1; ++dX) {
+		//	//				bool zbounds = true;
+		//	//				bool xbounds = true;
+		//	//				int zchange = z + dZ;
+		//	//				int xchange = x + dX;
+		//
+		//	//				if (zchange < 0 || zchange > height) {
+		//	//					zbounds = false;
+		//	//					zchange = z;
+		//	//					continue;
+		//	//				}
+		//
+		//	//				if (xchange < 0 || xchange > width) {
+		//	//					xbounds = false;
+		//	//					xchange = x;
+		//	//					continue;
+		//	//				}
+		//
+		//	//				if (tile == GRID_SYSTEM::FREE && (zchange == 0 xor xchange == 0) && xbounds && zbounds) {
+		//	//					deltaX = timepassed * AI_SPEED * dX;
+		//	//					deltaZ = timepassed * AI_SPEED * dZ;
+		//
+		//	//					if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
+		//	//						if (currAI->SetCurrentAnimaion("Idle") == 1)
+		//	//							currAI->ResetAnimation();
+		//	//					}
+		//	//					else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
+		//	//						if (currAI->SetCurrentAnimaion("Run") == 1)
+		//	//							currAI->ResetAnimation();
+		//	//					}
+		//	//					else {
+		//	//						if (currAI->SetCurrentAnimaion("Walk") == 1)
+		//	//							currAI->ResetAnimation();
+		//	//					}
+		//
+		//	//					currAI->MoveOverTime(AITransform->fPosition.x, deltaX, AITransform->fPosition.z, deltaZ, timepassed);
+		//
+		//	//					for (CObject* cObj : objects) {
+		//	//						if (currAI->Collides(cObj))
+		//	//							PlayerCollision(currAI, cObj, deltaX, deltaZ);
+		//	//					}
+		//
+		//	//					dZ = 2;
+		//	//					break;
+		//	//				}
+		//	//			}
+		//	//		}
+		//	//	}
+		//	//	else {
+		//	//		for (int gridcheck = 0; gridcheck < 5; ++gridcheck) {
+		//	//			for (int dZ = -1; dZ <= 1; ++dZ) {
+		//	//				for (int dX = -1; dX <= 1; ++dX) {
+		//	//					bool zbounds = true;
+		//	//					bool xbounds = true;
+		//	//					int zchange = z + dZ;
+		//	//					int xchange = x + dX;
+		//
+		//	//					if (zchange < 0 && zchange > height) {
+		//	//						zbounds = false;
+		//	//						zchange = z;
+		//	//						continue;
+		//	//					}
+		//
+		//	//					if (xchange < 0 && xchange > width) {
+		//	//						xbounds = false;
+		//	//						xchange = x;
+		//	//						continue;
+		//	//					}
+		//
+		//	//					gridlocation = ((zchange* width) + xchange);
+		//	//					zchange -= z;
+		//	//					xchange -= x;
+		//
+		//	//					if (gridlocation < GRID.size()) {
+		//	//						int tile = GRID[gridlocation];
+		//
+		//	//						if (gridcheck == 0) {
+		//	//							if (tile == GRID_SYSTEM::BOMB && (zchange == 0 xor xchange == 0) && xbounds && zbounds) {
+		//	//								//deltaX = timepassed * AI_SPEED * -xchange;
+		//	//								//deltaZ = timepassed * AI_SPEED * -zchange;
+		//	//								//
+		//	//								//if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
+		//	//								//	if (currAI->SetCurrentAnimaion("Idle") == 1)
+		//	//								//		currAI->ResetAnimation();
+		//	//								//}
+		//	//								//else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
+		//	//								//	if (currAI->SetCurrentAnimaion("Run") == 1)
+		//	//								//		currAI->ResetAnimation();
+		//	//								//}
+		//	//								//else {
+		//	//								//	if (currAI->SetCurrentAnimaion("Walk") == 1)
+		//	//								//		currAI->ResetAnimation();
+		//	//								//}
+		//	//								//
+		//	//								//currAI->MoveOverTime(AITransform->fPosition.x, deltaX, AITransform->fPosition.z, deltaZ, timepassed);
+		//	//								//
+		//	//								//for (CObject* cObj : objects) {
+		//	//								//	if (currAI->Collides(cObj))
+		//	//								//		PlayerCollision(currAI, cObj, deltaX, deltaZ);
+		//	//								//}
+		//
+		//	//								for (int dZ = -1; dZ <= 1; ++dZ) {
+		//	//									for (int dX = -1; dX <= 2; ++dX) {
+		//	//										zbounds = true;
+		//	//										xbounds = true;
+		//	//										zchange = z + dZ;
+		//	//										xchange = x + dX;
+		//
+		//	//										if (zchange < 0 && zchange > height) {
+		//	//											zbounds = false;
+		//	//											zchange = z;
+		//	//											continue;
+		//	//										}
+		//
+		//	//										if (xchange < 0 && xchange > width) {
+		//	//											xbounds = false;
+		//	//											xchange = x;
+		//	//											continue;
+		//	//										}
+		//
+		//	//										gridlocation = ((zchange * width) + xchange);
+		//	//										zchange -= z;
+		//	//										xchange -= x;
+		//
+		//	//										if (gridlocation < GRID.size()) {
+		//	//											int tile = GRID[gridlocation];
+		//
+		//	//											if (tile == GRID_SYSTEM::FREE  && xbounds && zbounds) {
+		//	//												deltaX = timepassed * AI_SPEED * xchange;
+		//	//												deltaZ = timepassed * AI_SPEED * zchange;
+		//
+		//	//												if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
+		//	//													if (currAI->SetCurrentAnimaion("Idle") == 1)
+		//	//														currAI->ResetAnimation();
+		//	//												}
+		//	//												else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
+		//	//													if (currAI->SetCurrentAnimaion("Run") == 1)
+		//	//														currAI->ResetAnimation();
+		//	//												}
+		//	//												else {
+		//	//													if (currAI->SetCurrentAnimaion("Walk") == 1)
+		//	//														currAI->ResetAnimation();
+		//	//												}
+		//
+		//	//												currAI->MoveOverTime(AITransform->fPosition.x, deltaX, AITransform->fPosition.z, deltaZ, timepassed);
+		//
+		//	//												for (CObject* cObj : objects) {
+		//	//													if (currAI->Collides(cObj))
+		//	//														PlayerCollision(currAI, cObj, deltaX, deltaZ);
+		//	//												}
+		//	//											}
+		//	//										}
+		//	//									}
+		//	//								}
+		//	//							}
+		//	//						}
+		//	//						else if (gridcheck == 1 && AIbombaction >= 3.0f) {
+		//	//							if (tile == GRID_SYSTEM::DESTROYABLE && (zchange == 0 xor xchange == 0) && xbounds && zbounds) {
+		//	//								deltaX = timepassed * AI_SPEED * xchange * 0.1f;
+		//	//								deltaZ = timepassed * AI_SPEED * zchange * 0.1f;
+		//
+		//	//								currAI->MoveOverTime(AITransform->fPosition.x, deltaX, AITransform->fPosition.z, deltaZ, timepassed);
+		//
+		//	//								if (currAI->hasAvailableBombSlot()) {
+		//	//									std::vector<CBomb*> bombs;
+		//
+		//	//									int numBombsPlaced = 0;
+		//	//									bool soundplaying;
+		//
+		//	//									bombPlaceSound1->isSoundPlaying(soundplaying);
+		//	//									AIbombaction = 0.0f;
+		//
+		//	//									if (!soundplaying) {
+		//	//										bombPlaceSound1->Play();
+		//	//									}
+		//	//									else {
+		//	//										bombPlaceSound2->Play();
+		//	//									}
+		//
+		//	//									switch (currAI->GetBombType()) {
+		//	//									case 1:
+		//	//										bombs = p_cEntityManager->DropBomb1(currAI, objects);
+		//	//										break;
+		//	//									case 2:
+		//	//										bombs = p_cEntityManager->DropBomb2(currAI, objects);
+		//	//										break;
+		//	//									case 3:
+		//	//										bombs = p_cEntityManager->DropBomb3(currAI, objects);
+		//	//										break;
+		//	//									case 4:
+		//	//										bombs = p_cEntityManager->DropBomb4(currAI, objects);
+		//	//										break;
+		//	//									default:
+		//	//										bombs.resize(1);
+		//	//										bombs[0] = p_cEntityManager->DropBomb0(currAI);
+		//	//										break;
+		//	//									}
+		//
+		//	//									for (int j = 0; j < bombs.size(); ++j) {
+		//	//										for (int i = 0; i < maxNumBombs; ++i) {
+		//	//											if (v_cBombs[i] == nullptr || !v_cBombs[i]->isAlive()) {
+		//	//												v_cBombs[i] = bombs[j];
+		//	//												currAI->AddBombIndex(i);
+		//	//												break;
+		//	//											}
+		//	//										}
+		//	//									}
+		//
+		//	//									currAI->IncPlacedBombs();
+		//	//								}
+		//	//							}
+		//	//						}
+		//	//						else if (gridcheck == 2) {
+		//	//							if (tile == GRID_SYSTEM::FREE && xbounds && zbounds) {
+		//	//								deltaX = timepassed * AI_SPEED * xchange;
+		//	//								deltaZ = timepassed * AI_SPEED * zchange;
+		//
+		//	//								if (abs(deltaX) + abs(deltaZ) <= 0.2f) {
+		//	//									if (currAI->SetCurrentAnimaion("Idle") == 1)
+		//	//										currAI->ResetAnimation();
+		//	//								}
+		//	//								else if (abs(deltaX) + abs(deltaZ) >= 1.5f) {
+		//	//									if (currAI->SetCurrentAnimaion("Run") == 1)
+		//	//										currAI->ResetAnimation();
+		//	//								}
+		//	//								else {
+		//	//									if (currAI->SetCurrentAnimaion("Walk") == 1)
+		//	//										currAI->ResetAnimation();
+		//	//								}
+		//
+		//	//								currAI->MoveOverTime(AITransform->fPosition.x, deltaX, AITransform->fPosition.z, deltaZ, timepassed);
+		//
+		//	//								for (CObject* cObj : objects) {
+		//	//									if (currAI->Collides(cObj))
+		//	//										PlayerCollision(currAI, cObj, deltaX, deltaZ);
+		//	//								}
+		//	//							}
+		//	//						}
+		//	//					}
+		//	//				}
+		//	//			}
+		//	//		}
+		//	//	}
+		//	//}
+		////}
+		//
+		//	//for (CObject* cObj : objects) {
+		//	//	if (currAI->Collides(cObj))
+		//	//		PlayerCollision(currAI, cObj, deltaX, deltaZ);
+		//	//}
 
-			TComponent* _prenderer = nullptr;
-			TComponent* _brenderer = nullptr;
+		TComponent* _prenderer = nullptr;
+		TComponent* _brenderer = nullptr;
 
-			for (CBomb* bomb : v_cBombs) {
-				if (bomb && bomb->isAlive()) {
-					if (bomb->getTimer() >= 0.5f) {
-						if (currAI->Collides(bomb))
-							PlayerBombCollision(currAI, bomb);
-					}
-				}
-			}
-
-			for (int i = 0; i < items.size(); ++i) {
-				if (currAI->Collides((CObject*)items[i])) {
-					for (int i = 0; i < powerUpSound.size(); ++i) {
-						powerUpSound.at(i)->isSoundPlaying(soundplaying);
-
-						if (!soundplaying) {
-							powerUpSound.at(i)->Play();
-							break;
-						}
-					}
-
-					currAI->SetBombType(items[i]->GetItemType());
-
-					if (currAI->GetNumBombs() < 3)
-						currAI->incNumBombs();
-
-					delete items[i];
-					items[i] = nullptr;
-					items.erase(items.begin() + i);
-					--i;
-				}
-			}
-
-			if (currAI->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
-				TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
-
-				if (pRenderer->fPosition.x < fMinX - 1.3f || pRenderer->fPosition.x > fMaxX + 1.3f || pRenderer->fPosition.z < fMinZ - 1.3f || pRenderer->fPosition.z > fMaxZ + 1.3f) {
-					offMapTimer += timepassed;
-
-					if (offMapTimer >= 0.25) {
-						offMapTimer = 0.0;
-						currAI->setAlive(false);
-					}
+		for (CBomb* bomb : v_cBombs) {
+			if (bomb && bomb->isAlive()) {
+				if (bomb->getTimer() >= 0.5f) {
+					if (currAI->Collides(bomb))
+						PlayerBombCollision(currAI, bomb);
 				}
 			}
 		}
 
+		for (CObject* cObj : objects) {
+			if (currAI->Collides(cObj))
+				PlayerCollision(currAI, cObj, deltaX, deltaZ);
+		}
+
+		for (int i = 0; i < items.size(); ++i) {
+			if (currAI->Collides((CObject*)items[i])) {
+				for (int i = 0; i < powerUpSound.size(); ++i) {
+					powerUpSound.at(i)->isSoundPlaying(soundplaying);
+
+					if (!soundplaying) {
+						powerUpSound.at(i)->Play();
+						break;
+					}
+				}
+
+				currAI->SetBombType(items[i]->GetItemType());
+
+				if (currAI->GetNumBombs() < 3)
+					currAI->incNumBombs();
+
+				delete items[i];
+				items[i] = nullptr;
+				items.erase(items.begin() + i);
+				--i;
+			}
+		}
+
+		if (currAI->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
+			TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
+
+			if (pRenderer->fPosition.x < fMinX - 1.25f || pRenderer->fPosition.x > fMaxX + 1.25f || pRenderer->fPosition.z < fMinZ - 1.25f || pRenderer->fPosition.z > fMaxZ + 1.25f) {
+				offMapTimer += timepassed;
+
+				if (offMapTimer >= 0.25) {
+					offMapTimer = 0.0;
+					currAI->setAlive(false);
+				}
+			}
+		}
 	}
+
+	//}
 }
 
 
@@ -5514,7 +5627,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 			if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer)) {
 				renderer = (TTransformComponent*)cRenderer;
 
-				if (renderer->fPosition.x == fMinX || renderer->fPosition.z == fMinZ || renderer->fPosition.x == fMaxX || renderer->fPosition.z == fMaxZ) {
+				if (renderer->fPosition.x <= fMinX|| renderer->fPosition.z <= fMinZ || renderer->fPosition.x >= fMaxX || renderer->fPosition.z >= fMaxZ) {
 					objects[i]->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
 					newTexture = (TTextureComponent*)texture;
 					newTexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::FIRE_TEX;
@@ -5543,8 +5656,8 @@ void CGame::CustomMeshUpdate(float timepassed) {
 							if (player->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
 								TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
-								if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z) {
-									player->CrouchRoll(0.0f, 0.0f, -1.0f, false);
+								if (pRenderer->fPosition.x <= fMinX + 1.25f || pRenderer->fPosition.z <= fMinZ + 1.25f || pRenderer->fPosition.x >= fMaxX - 1.25f || pRenderer->fPosition.z >= fMaxZ - 1.25f) {
+									player->CrouchRoll(0.0f, 0.0f, -0.5f, false);
 									//player->setAlive(false);
 									if (!playerfallingSoundPlaying)
 										playerfallingSound->Play();
@@ -5576,12 +5689,10 @@ void CGame::CustomMeshUpdate(float timepassed) {
 									items[i]->CrouchRoll(0.0f, 0.0f, -0.5f, false);
 							}
 						}
-
 					}
-
-
 				}
-				if (mapTime >= 28.0f && droppedLayers < mapPasses) {
+
+				if (mapTime >= 27.0f && droppedLayers < mapPasses) {
 					for (int passes = 0; passes < 7; ++passes) {
 						for (int i = 0; i < objects.size(); ++i) {
 							TComponent* cRenderer = nullptr;
@@ -5590,7 +5701,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 							if (objects[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer)) {
 								renderer = (TTransformComponent*)cRenderer;
 
-								if (renderer->fPosition.x == fMinX || renderer->fPosition.z == fMinZ || renderer->fPosition.x == fMaxX || renderer->fPosition.z == fMaxZ) {
+								if (renderer->fPosition.x <= fMinX|| renderer->fPosition.z <= fMinZ|| renderer->fPosition.x >= fMaxX|| renderer->fPosition.z >= fMaxZ) {
 									for (CPlayer* player : v_cPlayers) {
 										if (!player || !player->isAlive())
 											continue;
@@ -5603,7 +5714,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 											if (pRenderer->fPosition.y < 0)
 												player->setAlive(false);
 
-											if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z)
+											if (pRenderer->fPosition.x <= fMinX + 1.25f || pRenderer->fPosition.z <= fMinZ + 1.25f || pRenderer->fPosition.x >= fMaxX - 1.25f || pRenderer->fPosition.z >= fMaxZ - 1.25f)
 												player->setAlive(false);
 										}
 									}
