@@ -3477,6 +3477,15 @@ bool CGame::loadTempMenus() {
 	loadInfo.LoadState = GAME_STATE::DEV_LOGO;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CREDITS_SCREEN;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::CREDIT_SCREEN;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_MENU_1;
@@ -3508,6 +3517,7 @@ bool CGame::loadTempMenus() {
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::BATTLE_MENU;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };

@@ -90,8 +90,15 @@ void CObject::Draw(double timepassed)
 	bombconstbuffer bombconst;
 	if (renderer->iUsedGeometryShaderIndex == GEOMETRY_SHADER::MESH_EXPLOSION)
 	{
-	
-		bombconst.world.r[3] = transform->mObjMatrix.r[3];
+		if (g_d3dData->bUseDebugRenderCamera)
+			bombconst.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
+		else
+			bombconst.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
+
+		bombconst.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
+
+		bombconst.world *= DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&transform->fScale));
+		bombconst.world *= DirectX::XMMatrixTranslation(transform->fPosition.x, transform->fPosition.y, transform->fPosition.z);
 		bombconst.time = totalTime * 30.0f;
 		
 
@@ -151,7 +158,7 @@ void CObject::Draw(double timepassed)
 		g_d3dData->d3dContext->UpdateSubresource(g_d3dData->d3dConstBuffers[CONSTANT_BUFFER::JOINTS], 0, nullptr, &jcb, 0, 0);
 	}
 	
-	if (renderer->iUsedVertexShaderIndex != VERTEX_SHADER::EXPLOSION)
+	if (renderer->iUsedVertexShaderIndex != VERTEX_SHADER::EXPLOSION && renderer->iUsedGeometryShaderIndex != GEOMETRY_SHADER::MESH_EXPLOSION)
 	{
 		if (g_d3dData->bUseDebugRenderCamera)
 			g_d3dData->basicConstBuff.mViewMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(0, g_d3dData->debugCamMat));
