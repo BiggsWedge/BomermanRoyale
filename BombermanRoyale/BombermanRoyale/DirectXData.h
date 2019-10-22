@@ -87,7 +87,7 @@ struct RASTERIZER_STATE
 
 struct DEPTH_STENCIL_VIEW
 {
-	enum { DEFAULT = 0, COUNT };
+	enum { DEFAULT = 0, MSAA, COUNT };
 };
 
 struct DEPTH_STENCIL_STATE
@@ -139,10 +139,16 @@ public:
 	ID3D11Device*						d3dDevice = nullptr;
 	IDXGISwapChain*						d3dSwapChain = nullptr;
 	ID3D11DeviceContext*				d3dContext = nullptr;
+
 	ID3D11RenderTargetView*				d3dRenderTargetView = nullptr;
 	ID3D11RenderTargetView*				d3dPreMSAATargetView = nullptr;
-	ID3D11DepthStencilView*				d3dDepthStencilView = nullptr;
+
+	ID3D11DepthStencilView*				d3dDepthStencilView[DEPTH_STENCIL_VIEW::COUNT] = {};
 	ID3D11DepthStencilState*			d3dDepthStencilState[DEPTH_STENCIL_STATE::COUNT] = {};
+
+	ID3D11Texture2D*					d3dMSAATex = nullptr;
+
+
 
 #pragma endregion
 

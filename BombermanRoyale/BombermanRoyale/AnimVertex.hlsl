@@ -46,7 +46,7 @@ VS_OUT main(VS_IN input)
         if (input.joints[i] >= 0)
         {
             skinnedPos += mul(float4(input.pos, 1.0f), joints[input.joints[i]]) * input.weights[i];
-            skinnedNorm += mul(float4(input.norm, 1.0f), joints[input.joints[i]]) * input.weights[i];
+            skinnedNorm += mul(float4(input.norm, 0.0f), joints[input.joints[i]]) * input.weights[i];
         }
     }
 	//skinnedPos = float4(input.pos, 1.0f);
@@ -58,11 +58,10 @@ VS_OUT main(VS_IN input)
     output.pos = mul(output.pos, projection);
 	//output.pos = float4(output.pos.xyz, 1);
 
-    output.norm = normalize(input.norm); //mul(float4(skinnedNorm.xyz, 1), world).xyz);
-    output.tangent = normalize(mul(float4(input.tang.xyz * input.tang.w, 0.0f), world));
-    output.bitang = normalize(mul(float4(cross(input.norm.xyz, input.tang.xyz), 0.0f), world));
-
-    output.norm = normalize(mul(normalize(float4(input.norm.xyx, 1)), world).xyz);
+    //output.norm = normalize(skinnedNorm).xyz; //mul(float4(normalize(skinnedNorm).xyz, 0.0f), world).xyz; // mul(float4(skinnedNorm.xyz, 1.0f), world).xyz ; //normalize(skinnedNorm).xyz; //mul(float4(input.norm.xyz, 1.0f), world).xyz; //mul(float4(skinnedNorm.xyz, 1.0f), world).xyz ;
+    output.norm = normalize(mul(normalize(skinnedNorm), world).xyz);
+    output.tangent = normalize(mul(float4(input.tang.xyz * input.tang.w, 0.0f), world).xyz);
+    output.bitang = normalize(mul(float4(cross(input.norm.xyz, input.tang.xyz), 0.0f), world).xyz);
 
     output.tex = float2(input.tex.x, input.tex.y);
     output.eyePos.x = -dot(view[3].xyz, view[0].xyz);

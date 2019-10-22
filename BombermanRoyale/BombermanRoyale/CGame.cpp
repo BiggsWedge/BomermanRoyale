@@ -20,7 +20,8 @@ const char* playerfallingSFX = ".//Assets//Music//PlayerFalling.wav";
 const char* WinScreenSFX = ".//Assets//Music//WinScreen.wav";
 const char* DeathSFX = ".//Assets//Music//DeathSound.wav";
 
-struct key {
+struct key
+{
 	bool prevState = false;
 	bool currState = false;
 
@@ -40,12 +41,14 @@ struct CONTROL_KEYS
 	enum { UP = 0, DOWN, LEFT, RIGHT, BOMB, COUNT };
 };
 
-struct KeyboardInput {
+struct KeyboardInput
+{
 	std::vector<key> controls;
 	std::vector<int> keycodes;
 
 	void updateKeys() {
-		for (int i = 0; i < controls.size(); ++i) {
+		for (int i = 0; i < controls.size(); ++i)
+		{
 			controls[i].prevState = controls[i].currState;
 			controls[i].currState = GetAsyncKeyState(keycodes[i]);
 		}
@@ -57,12 +60,14 @@ struct KeyboardInput {
 };
 
 static std::vector<KeyboardInput> keyboardInputs;
-struct KEYS {
+struct KEYS
+{
 	enum { UP = 0, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE, HELP_MENU, GAME_STATE, FULLSCREEN, PAUSE, DISC_TOG, AI_DEC_COUNT, AI_INC_COUNT, COUNT };
 };
 static std::vector<key> keys(KEYS::COUNT);
 
-static std::vector<int> keycodes = {
+static std::vector<int> keycodes =
+{
 	VK_UP,
 	VK_DOWN,
 	VK_LEFT,
@@ -134,8 +139,6 @@ float isP1UDPADPressed = 0.0f;
 float isP1DDPADPressed = 0.0f;
 float isP1SouthButtonPressed = 0.0f;
 
-
-
 bool CGame::Initialize()
 {
 	keyboardInputs.resize(2);
@@ -164,117 +167,83 @@ void CGame::Run()
 
 #pragma region Audio
 
-	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicStream))) {
-		if (G_SUCCESS(g_pMusicStream->SetVolume(0.5f))) {
+	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(backgroundMusicFilePath, &g_pMusicStream)))
+		if (G_SUCCESS(g_pMusicStream->SetVolume(0.5f)))
 			g_pMusicStream->StreamStart(true);
-		}
-	}
 
 #pragma endregion
 
 	float errorCode = 0;
 
-	if (G_FAIL(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer))) {
+	if (G_FAIL(g_pAudioHolder->CreateSound(placeHolderSFX, &g_pSoundPlayer)))
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
 
-	if (G_FAIL(g_pAudioHolder->CreateSound(warningSFX, &warnSound))) {
+	if (G_FAIL(g_pAudioHolder->CreateSound(warningSFX, &warnSound)))
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
 
-	if (G_FAIL(g_pAudioHolder->CreateSound(fallingSFX, &fallingSound))) {
+	if (G_FAIL(g_pAudioHolder->CreateSound(fallingSFX, &fallingSound)))
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
 
-	if (G_FAIL(g_pAudioHolder->CreateSound(playerfallingSFX, &playerfallingSound))) {
+	if (G_FAIL(g_pAudioHolder->CreateSound(playerfallingSFX, &playerfallingSound)))
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
 
-	if (G_FAIL(g_pAudioHolder->CreateSound(WinScreenSFX, &WinScreenSound))) {
+	if (G_FAIL(g_pAudioHolder->CreateSound(WinScreenSFX, &WinScreenSound)))
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
 
-	if (G_FAIL(g_pAudioHolder->CreateSound(DeathSFX, &DeathSound))) {
+	if (G_FAIL(g_pAudioHolder->CreateSound(DeathSFX, &DeathSound)))
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(walkSFX, &walkSound1)))
-	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
 	walkSound1->SetVolume(0.4f);
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(spawnSFX, &spawnSound1)))
-	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
 	spawnSound1->SetVolume(0.25f);
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(bombPlaceSFX, &bombPlaceSound1)))
-	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
 	bombPlaceSound1->SetVolume(0.8f);
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(spawnSFX, &spawnSound2)))
-	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
 	spawnSound2->SetVolume(0.25f);
 
 	if (G_FAIL(g_pAudioHolder->CreateSound(bombPlaceSFX, &bombPlaceSound2)))
-	{
 		g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-	}
 	bombPlaceSound2->SetVolume(0.8f);
 
 	for (int i = 0; i < 2; ++i)
 	{
 		if (MenuSounds.size() != 2)
-		{
 			MenuSounds.resize(2);
-		}
 		if (G_FAIL(g_pAudioHolder->CreateSound(menuSFX, &MenuSounds.at(i))))
-		{
 			g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-		}
 	}
 
 	for (int i = 0; i < 24; ++i)
 	{
 		if (explosionSound.size() != 24)
-		{
 			explosionSound.resize(24);
-		}
 		if (G_FAIL(g_pAudioHolder->CreateSound(explosionSFX, &explosionSound.at(i))))
-		{
 			g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-		}
 	}
 
 	for (int i = 0; i < 4; ++i)
 	{
 		if (bombPlaceSound.size() != 4)
-		{
 			bombPlaceSound.resize(4);
-		}
 		if (G_FAIL(g_pAudioHolder->CreateSound(bombPlaceSFX, &bombPlaceSound.at(i))))
-		{
 			g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-		}
 		bombPlaceSound.at(i)->SetVolume(0.8f);
 	}
 
 	for (int i = 0; i < 4; ++i)
 	{
 		if (powerUpSound.size() != 4)
-		{
 			powerUpSound.resize(4);
-		}
 		if (G_FAIL(g_pAudioHolder->CreateSound(powerUpSFX, &powerUpSound.at(i))))
-		{
 			g_pLogger->LogCatergorized("FAILURE", "Failed to create SFX");
-		}
 		powerUpSound.at(i)->SetVolume(0.2f);
 	}
 
@@ -284,7 +253,8 @@ void CGame::Run()
 	p1Pause.Reset(false);
 	GW::SYSTEM::GWindowInputEvents gLastEvent;
 
-	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY) {
+	while (G_SUCCESS(g_pWindow->GetLastEvent(gLastEvent)) && gLastEvent != GW::SYSTEM::GWindowInputEvents::DESTROY)
+	{
 		if (G_FAIL(g_pWindow->ProcessWindowEvents()))
 			break;
 
@@ -300,7 +270,6 @@ void CGame::Run()
 		if (!isPaused)
 			mapTime += timePassed;
 
-
 		loadScreenTime = timer.Delta() + loadScreenTime;
 		if (loadScreenTime < 0.5)
 		{
@@ -310,13 +279,11 @@ void CGame::Run()
 		if (loadScreenTime > 4 && (curGameState == GAME_STATE::FS_SPLASH || curGameState == GAME_STATE::GP_SPLASH) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::FS_SPLASH);
-
 		}
 
 		if (loadScreenTime > 8 && (curGameState == GAME_STATE::LOAD_SCREEN || curGameState == GAME_STATE::FS_SPLASH) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::LOAD_SCREEN);
-
 		}
 
 		if (loadScreenTime > 12 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
@@ -342,13 +309,11 @@ void CGame::Run()
 			keyboardInputs[1].controls[i].currState = GetAsyncKeyState(keyboardInputs[1].keycodes[i]);
 		}
 
-
 		if (keys[KEYS::FULLSCREEN].pressed())
 		{
 			FullScreen = !FullScreen;
 			this->WindowResize();
 		}
-
 
 		if (keys[KEYS::HELP_MENU].pressed() || p1Help.Pressed()) {
 			ControlScreenToggle = !ControlScreenToggle;
@@ -409,7 +374,6 @@ void CGame::Run()
 				SprinklersOn = true;
 			}
 		}
-
 
 		g_pControllerInput->GetNumConnected(currNumControllers);
 
@@ -1956,8 +1920,6 @@ void CGame::GamePlayLoop(double timePassed)
 	AI_Method(timePassed, 0.016f);
 	for (CPlayer* currPlayer : v_cPlayers)
 	{
-
-
 		if (!currPlayer)
 			continue;
 		currPlayer->updatePlayer(timePassed);
@@ -1967,14 +1929,12 @@ void CGame::GamePlayLoop(double timePassed)
 
 		currPlayer->GetInput();
 
-
 		CharacterController* cont = currPlayer->GetCharacterController();
 
 		float deltaX = 0.0f, deltaZ = 0.0f;
 
 		if (currPlayer->GetCharacterController()->ButtonReleased(DEFAULT_BUTTONS::PAUSE) && !ControlScreenToggle)
 		{
-
 			int previndex = menuIndex;
 			menuIndex = 0;
 			previndex = menuIndex - previndex;
@@ -2003,7 +1963,6 @@ void CGame::GamePlayLoop(double timePassed)
 		// Pause on DC
 		if (PlayerDisconnectToggle)
 		{
-
 			if (currNumControllers < numPLAYERS || currNumControllers == 0)
 
 			{
@@ -2020,7 +1979,6 @@ void CGame::GamePlayLoop(double timePassed)
 						break;
 					}
 				}
-
 			}
 
 			g_pControllerInput->GetNumConnected(prevNumControllers);
@@ -2118,7 +2076,6 @@ void CGame::GamePlayLoop(double timePassed)
 		int bombindex = 0;
 		for (CBomb* bomb : v_cBombs)
 		{
-
 			if (!bomb)
 				continue;
 
@@ -2149,7 +2106,6 @@ void CGame::GamePlayLoop(double timePassed)
 
 						}
 					}
-
 					bomb->updateBomb(timePassed);
 				}
 			}
@@ -2183,7 +2139,6 @@ void CGame::GamePlayLoop(double timePassed)
 		if (currPlayer->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer)) {
 			TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
 
-
 			if (pRenderer->fPosition.x < fMinX - 1.3 || pRenderer->fPosition.x > fMaxX + 1.3 || pRenderer->fPosition.z < fMinZ - 1.3 || pRenderer->fPosition.z > fMaxZ + 1.3) {
 				offMapTimer += timePassed;
 
@@ -2213,7 +2168,6 @@ void CGame::GamePlayLoop(double timePassed)
 				{
 					bombPlaceSound2->Play();
 				}
-
 
 				int numBombsPlaced = 0;
 				std::vector<CBomb*> bombs;
@@ -2494,8 +2448,8 @@ void CGame::setGameState(int _gameState) {
 		PlayersInCustom.resize(numPLAYERS);
 		AiInCustom.resize(numAI);
 
-		PlayersInCustom[0] = p_cEntityManager->InstantiatePlayer(1, availablePlayerModels[playermodel[0]], DIFFUSE_TEXTURES::CHICKEN1, DirectX::XMFLOAT3(-10.3f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.4f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
-		PlayersInCustom[1] = p_cEntityManager->InstantiatePlayer(2, availablePlayerModels[playermodel[1]], DIFFUSE_TEXTURES::CHICKEN2, DirectX::XMFLOAT3(-4.0f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.5f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
+		PlayersInCustom[0] = p_cEntityManager->InstantiatePlayer(1, availablePlayerModels[playermodel[0]], availablePlayerTextures[playertextures[0]], DirectX::XMFLOAT3(-10.3f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.4f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
+		PlayersInCustom[1] = p_cEntityManager->InstantiatePlayer(2, availablePlayerModels[playermodel[1]], availablePlayerTextures[playertextures[1]], DirectX::XMFLOAT3(-4.0f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.5f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
 
 		PlayersInCustom[0]->SetCurrentAnimaion("Idle");
 		PlayersInCustom[0]->ResetAnimation();
@@ -2504,13 +2458,13 @@ void CGame::setGameState(int _gameState) {
 
 		if (numPLAYERS > 2)
 		{
-			PlayersInCustom[2] = p_cEntityManager->InstantiatePlayer(3, availablePlayerModels[playermodel[2]], DIFFUSE_TEXTURES::CHICKEN3, DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
+			PlayersInCustom[2] = p_cEntityManager->InstantiatePlayer(3, availablePlayerModels[playermodel[2]], availablePlayerTextures[playertextures[2]], DirectX::XMFLOAT3(2.8f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.7f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
 			PlayersInCustom[2]->SetCurrentAnimaion("Idle");
 			PlayersInCustom[2]->ResetAnimation();
 		}
 		if (numPLAYERS > 3)
 		{
-			PlayersInCustom[3] = p_cEntityManager->InstantiatePlayer(4, availablePlayerModels[playermodel[3]], DIFFUSE_TEXTURES::CHICKEN4, DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
+			PlayersInCustom[3] = p_cEntityManager->InstantiatePlayer(4, availablePlayerModels[playermodel[3]], availablePlayerTextures[playertextures[3]], DirectX::XMFLOAT3(9.1f, 11.4f, -8.4f), GAME_STATE::CHARACTER_SCREEN, DirectX::XMFLOAT3(0.8f, 1.6f, -1.0f), DirectX::XMFLOAT3(0.06f, 0.06f, 0.06f));
 			PlayersInCustom[3]->SetCurrentAnimaion("Idle");
 			PlayersInCustom[3]->ResetAnimation();
 		}
@@ -3647,11 +3601,9 @@ void CGame::AI_Method(double timepassed, double action_time)
 													continue;
 												}
 
-
 												gridlocation = ((zchange)* width) + (xchange);
 												zchange -= z;
 												xchange -= x;
-
 
 												if (gridlocation < GRID.size())
 												{
@@ -3972,8 +3924,6 @@ void CGame::AI_Method(double timepassed, double action_time)
 						}
 					}
 				}
-
-
 			}
 			else if (gridlocation >= GRID.size())
 			{
@@ -4069,7 +4019,6 @@ void CGame::AI_Method(double timepassed, double action_time)
 									continue;
 								}
 
-
 								if (xchange < 0 && xchange > width - 1)
 								{
 									xbounds = false;
@@ -4137,7 +4086,6 @@ void CGame::AI_Method(double timepassed, double action_time)
 														zchange = z;
 														continue;
 													}
-
 
 													if (xchange < 0 && xchange > width - 1)
 													{
@@ -4423,7 +4371,6 @@ void CGame::CustomMeshUpdate(float timepassed) {
 		InitSortedParticles_vs_2(sortedParticles, timer.Delta(), bombPos, (rand() % 2 > 0) ? DirectX::XMFLOAT4(1, 1, 0, 1) : DirectX::XMFLOAT4(1, 0.5, 0, 1), { -4,0,0,0 });
 		InitSortedParticles_vs_2(sortedParticles, timer.Delta(), bombPos, (rand() % 2 > 0) ? DirectX::XMFLOAT4(1, 1, 0, 1) : DirectX::XMFLOAT4(1, 0.5, 0, 1), { 0,0,-4,0 });
 		InitSortedParticles_vs_2(sortedParticles, timer.Delta(), bombPos, (rand() % 2 > 0) ? DirectX::XMFLOAT4(1, 1, 0, 1) : DirectX::XMFLOAT4(1, 0.5, 0, 1), { 0, 0,4,0 });
-
 	}
 
 	if (SprinklersOn == true) {
@@ -4469,8 +4416,6 @@ void CGame::CustomMeshUpdate(float timepassed) {
 						g_pControllerInput->StartVibration(0, 0.125f, 1, 2);
 						g_pControllerInput->StartVibration(0, 0.125f, 1, 3);
 
-
-
 						objects[i]->CrouchRoll(0, 0, -0.75f, false);
 						SprinklersOn = false;
 
@@ -4513,8 +4458,6 @@ void CGame::CustomMeshUpdate(float timepassed) {
 									items[i]->CrouchRoll(0, 0, -0.5f, false);
 							}
 						}
-
-
 					}
 
 					if (mapTime >= 29 && passes < mapPasses) {
@@ -4539,8 +4482,6 @@ void CGame::CustomMeshUpdate(float timepassed) {
 											if (player->GetComponent(COMPONENT_TYPE::TRANSFORM, _prenderer))
 											{
 												TTransformComponent* pRenderer = (TTransformComponent*)_prenderer;
-
-
 
 												if (pRenderer->fPosition.x == renderer->fPosition.x && pRenderer->fPosition.z == renderer->fPosition.z) {
 													player->setAlive(false);
@@ -4597,8 +4538,6 @@ void CGame::CustomMeshUpdate(float timepassed) {
 			}
 		}
 	}
-
-
 
 	if (objects.size() > 0) {
 		for (int i = 0; i < objects.size() - 1; ++i) {
@@ -4821,13 +4760,11 @@ void CGame::WallFlames(CObject* wall, float duration, int frames)
 		}
 	}
 
-
 	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
 	loadInfo.usedPixel = PIXEL_SHADER::FIRE;
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.forwardVec = { -xvec, yvec, zvec };
-
 
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_WALL1 + frame;
 	loadInfo.scale = DirectX::XMFLOAT3(0.2f, 0.2f, 1.0f);
