@@ -22,6 +22,7 @@ struct GAME_STATE
 		LOAD_SCREEN,
 		GP_SPLASH,
 		FS_SPLASH,
+		DEV_LOGO,
 		BATTLE_GAME,
 		WIN_SCREEN,
 		CONTROLS_SCREEN,
@@ -43,6 +44,7 @@ struct emitter
 {
 	DirectX::XMFLOAT3 spawn_pos;
 	DirectX::XMFLOAT4 spawn_color;
+
 	// indices into the shared_pool 
 	end::sorted_pool_t<int16_t, 256> indices;
 };
@@ -69,8 +71,8 @@ class CGame
 	std::vector<CObject*> deleteLayer;
 	std::vector<CObject*> menuObjects;
 	std::vector<CObject*> particleObjects;
-	std::vector<CObject*> Xexplosions;
-	std::vector<CObject*> Zexplosions;
+	std::vector<CExplosion*> Xexplosions;
+	std::vector<CExplosion*> Zexplosions;
 	std::vector<CItem*> items;
 	std::vector<double> explosionTimers;
 	std::vector<CPlayer*> v_cPlayers = { nullptr, nullptr, nullptr, nullptr };
@@ -80,7 +82,7 @@ class CGame
 
 
 
-	int maxNumBombs = 48;
+	int maxNumBombs = 100;
 	DirectX::XMMATRIX viewPos;
 	DirectX::XMFLOAT3 bombPos;
 	std::vector<CBomb*> v_cBombs;
@@ -96,6 +98,7 @@ class CGame
 	bool showMouse = true;
 	bool bombExploded = false;
 	bool SprinklersOn = false;
+	bool isPaused = false;
 	float CSx = -11.35f;
 
 
@@ -103,6 +106,10 @@ public:
 	void Cleanup();
 	bool FullScreen = false;
 	unsigned int curGameState = 0;
+	float BattleDuration = 300.0f;
+	int HighScore = 0;
+	int highscoreINDEX = 0;
+	bool initialLoad = true;
 	int mapsize = 2;
 	int numAI = 0;
 	int numPLAYERS = 2;
@@ -115,6 +122,9 @@ public:
 	bool PlayerDisconnectToggle = false;
 	bool AI_1_Moving = false;
 	bool AI_1_STARTMoving = false;
+	int prevGameState = 0;
+	float gameStart = 5.0f;
+	float menuTime = 0.0f;
 
 	bool Initialize();
 	void Run();
@@ -124,10 +134,10 @@ public:
 	void InitFreeParticles(emitter& emitter, end::pool_t<particle, 1024>& freePool, double deltaTime);
 
 	void LoadAnim();
-	void LoadObjectBattle();
-	void LoadObjectSmall();
-	void LoadObjectMedium();
-	void LoadObjectLarge();
+	void LoadObjectBattle(int gmae_state);
+	void LoadObjectSmall(int gmae_state);
+	void LoadObjectMedium(int gmae_state);
+	void LoadObjectLarge(int gmae_state);
 
 	CGame();
 	~CGame();
@@ -139,12 +149,17 @@ public:
 	void updateBombs(double timePassed);
 	bool loadTempMenus();
 	void PlayerCollision(CPlayer* playerToCheck, CObject* cObj, float dx, float dz);
-	void PlayerBombCollision(CPlayer * playerToCheck, CBomb* cBomb);
-	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer * playerToCheck);
+	void PlayerBombCollision(CPlayer* playerToCheck, CBomb* cBomb);
+	void BombCollision(CObject* objectToCheck, CBomb* cBomb, CPlayer* playerToCheck);
 	void AI_Method(double timepassed, double action_time);
 	void CustomMeshUpdate(float timepassed);
+	void moveAI(CPlayer* player, int direction, float deltaX, float deltaZ);
 	void WallDrop(CObject* objectToCheck);
 	void WallFlames(CObject* wall, float duration, int frames);
+	void DeathTimerforRespawnUpdate(float timepassed);
+	void MenuAnimation(int startDiffuseTexture, float duration, int frames, int loadstate);
+	inline std::vector<CObject*> getMenuObjects() { return menuObjects; }
+	inline bool GetisPaused() { return isPaused; }
 
 	inline CPlayer* GetPlayer(int index) { if (index >= v_cPlayers.size())return nullptr; else return v_cPlayers.at(index); }
 	inline CPlayer* GetAI(int index) { if (index >= v_cAI.size()) return nullptr; else return v_cAI.at(index); }

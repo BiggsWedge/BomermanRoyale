@@ -30,6 +30,7 @@ public:
 	float explosiontime = 0.0f;
 	float totalTime;
 	float movetimer = 0.0f;
+	bool moving = false;
 
 	CObject();
 	virtual ~CObject();
@@ -38,10 +39,11 @@ public:
 	bool GetComponent(int componentType, TComponent* & component);
 	virtual void Draw(double timepassed);
 
+	void TurnPlayerTo(float _x, float _z);
 	bool Move(float _x, float _z, bool rotation = true);
 	bool CrouchRoll(float _x, float _z, float _y, bool rotation = true);
 	bool Collides(CObject* _other);
-	bool MoveOverTime(float start_x, float end_x, float start_z, float end_z, float timepassed);
+	bool MoveOverTime(float start_x, float end_x, float start_z, float end_z, float timepassed, bool rotation = true);
 	virtual void Cleanup();
 
 };

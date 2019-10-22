@@ -279,6 +279,16 @@ bool DirectXData::Initialize()
 	}
 	else
 		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the geometry shader");
+
+
+	if (FAILED(d3dDevice->CreateGeometryShader(MeshExplosion, sizeof(MeshExplosion), nullptr, &d3dGeometryShader[GEOMETRY_SHADER::MESH_EXPLOSION])))
+	{
+		//log failure
+		return false;
+	}
+	else
+		g_pLogger->LogCatergorized("SUCCESS", "Successfully created the explosion geometry shader");
+
 #pragma endregion
 
 #pragma region Compute
