@@ -143,7 +143,7 @@ public:
 	ID3D11RenderTargetView*				d3dRenderTargetView = nullptr;
 	ID3D11RenderTargetView*				d3dPreMSAATargetView = nullptr;
 
-	ID3D11DepthStencilView*				d3dDepthStencilView[DEPTH_STENCIL_VIEW::COUNT] = {};
+	ID3D11DepthStencilView*				d3dDepthStencilView = nullptr;// [DEPTH_STENCIL_VIEW::COUNT] = {};
 	ID3D11DepthStencilState*			d3dDepthStencilState[DEPTH_STENCIL_STATE::COUNT] = {};
 
 	ID3D11Texture2D*					d3dMSAATex = nullptr;
