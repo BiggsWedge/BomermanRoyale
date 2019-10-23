@@ -3143,12 +3143,12 @@ void CGame::setGameState(int _gameState) {
 
 		if (numAI > 0)
 		{
-			v_cAI[0] = p_cEntityManager->InstantiatePlayer(4, AImodel[0], (AImodel[0] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (AImodel[0] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.55f, 0.55f, 0.55f));
+			v_cAI[0] = p_cEntityManager->InstantiatePlayer(4, availablePlayerModels[AImodel[0]], availablePlayerTextures[AItexture[0]], DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[AImodel[0]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.55f, 0.55f, 0.55f));
 		}
 
 		if (numAI > 1)
 		{
-			v_cAI[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], (AImodel[1] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN3 : DIFFUSE_TEXTURES::BOMB3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (AImodel[1] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.55f, 0.55f, 0.55f));
+			v_cAI[1] = p_cEntityManager->InstantiatePlayer(3, availablePlayerModels[AImodel[1]], availablePlayerTextures[AItexture[1]], DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::ARCADE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[AImodel[1]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.55f, 0.55f, 0.55f));
 		}
 
 		//mapTime = 0;
@@ -3262,28 +3262,28 @@ void CGame::setGameState(int _gameState) {
 			break;
 		}
 
-		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, availablePlayerModels[playermodel[0]], playertextures[0], DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[playermodel[0]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.02f, 0.02f, 0.01f));
+		v_cPlayers[0] = p_cEntityManager->InstantiatePlayer(1, availablePlayerModels[playermodel[0]], availablePlayerTextures[playertextures[0]], DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[playermodel[0]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.02f, 0.02f, 0.01f));
 
-		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, availablePlayerModels[playermodel[1]], playertextures[1], DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[playermodel[1]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.02f, 0.02f, 0.01f));
+		v_cPlayers[1] = p_cEntityManager->InstantiatePlayer(2, availablePlayerModels[playermodel[1]], availablePlayerTextures[playertextures[1]], DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[playermodel[1]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.02f, 0.02f, 0.01f));
 
 		if (numPLAYERS > 2)
 		{
-			v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, availablePlayerModels[playermodel[2]], playertextures[2], DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[playermodel[2]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.02f, 0.02f, 0.01f));
+			v_cPlayers[2] = p_cEntityManager->InstantiatePlayer(3, availablePlayerModels[playermodel[2]], availablePlayerTextures[playertextures[2]], DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[playermodel[2]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.02f, 0.02f, 0.01f));
 		}
 
 		if (numPLAYERS > 3)
 		{
-			v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, availablePlayerModels[playermodel[3]], playertextures[3], DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[playermodel[3]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.02f, 0.02f, 0.01f));
+			v_cPlayers[3] = p_cEntityManager->InstantiatePlayer(4, availablePlayerModels[playermodel[3]], availablePlayerTextures[playertextures[3]], DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[playermodel[3]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.02f, 0.02f, 0.01f));
 		}
 
 		if (numAI > 0)
 		{
-			v_cAI[0] = p_cEntityManager->InstantiatePlayer(4, AImodel[0], (AImodel[0] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN4 : DIFFUSE_TEXTURES::BOMB4, DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (AImodel[0] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.55f, 0.55f, 0.55f));
+			v_cAI[0] = p_cEntityManager->InstantiatePlayer(4, availablePlayerModels[AImodel[0]], availablePlayerTextures[AItexture[0]], DirectX::XMFLOAT3(fMinX + 2.5, 0.0f, fMinZ + 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[AImodel[0]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.55f, 0.55f, 0.55f));
 		}
 
 		if (numAI > 1)
 		{
-			v_cAI[1] = p_cEntityManager->InstantiatePlayer(3, AImodel[1], (AImodel[1] == MODELS::CHICKEN) ? DIFFUSE_TEXTURES::CHICKEN3 : DIFFUSE_TEXTURES::BOMB3, DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (AImodel[1] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.55f, 0.55f, 0.55f));
+			v_cAI[1] = p_cEntityManager->InstantiatePlayer(3, availablePlayerModels[AImodel[1]], availablePlayerTextures[AItexture[1]], DirectX::XMFLOAT3(fMaxX - 2.5, 0.0f, fMaxZ - 2.5), GAME_STATE::BATTLE_GAME, DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), (availablePlayerModels[AImodel[1]] == MODELS::CHICKEN) ? DirectX::XMFLOAT3(0.04f, 0.04f, 0.03f) : DirectX::XMFLOAT3(0.55f, 0.55f, 0.55f));
 		}
 
 		//mapTime = 0;
