@@ -24,6 +24,9 @@ private:
 	DirectX::XMFLOAT3 spawnPos;
 
 public:
+	int x = 0;
+	int z = 0;
+	int gridlocation;
 	CPlayer();
 	~CPlayer();
 	void resetStats();
@@ -53,6 +56,9 @@ public:
 	inline DirectX::XMFLOAT3 getSpawnPos() { return spawnPos; }
 	inline void setSpawnPos(DirectX::XMFLOAT3 newSpawnPos) { spawnPos = newSpawnPos; }
 	inline CharacterController* GetCharacterController() { return &controller; }
+	inline int getX() { return x; }
+	inline int getZ() { return z; }
+	inline int getGridlocation() { return gridlocation; }
 
 	//MUTATORS
 	inline void setControllerIndex(int index) { controller.SetControllerIndex(index); }
@@ -66,6 +72,9 @@ public:
 	inline void SetBombType(int _bombType) { bombType = _bombType; }
 	inline void IncPlacedBombs() { placedBombs++; }
 	inline void DecPlacedBombs() { placedBombs--; if (placedBombs < 0)placedBombs = 0; }
+	inline void setX(int _x) { x = _x; }
+	inline void setZ(int _z) { z = _z; }
+	inline void setGridlocation(int _gridlocation) { gridlocation = _gridlocation; }
 };
 
 

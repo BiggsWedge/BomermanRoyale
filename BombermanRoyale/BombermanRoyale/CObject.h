@@ -39,7 +39,7 @@ public:
 	bool GetComponent(int componentType, TComponent* & component);
 	virtual void Draw(double timepassed);
 
-	void TurnPlayerTo(float _x, float _z);
+	bool TurnPlayerTo(float _x, float _z);
 	bool Move(float _x, float _z, bool rotation = true);
 	bool CrouchRoll(float _x, float _z, float _y, bool rotation = true);
 	bool Collides(CObject* _other);
