@@ -2890,7 +2890,7 @@ void CGame::setGameState(int _gameState) {
 		if (!soundplaying)
 		{
 			g_pMusicStream1->SetVolume(0.3f);
-			g_pMusicStream1->StreamStart();
+			g_pMusicStream1->StreamStart(true);
 		}
 
 		switch (mapsize) {
@@ -2950,7 +2950,7 @@ void CGame::setGameState(int _gameState) {
 			g_pMusicStream2->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (!soundplaying)
-			g_pMusicStream2->StreamStart();
+			g_pMusicStream2->StreamStart(true);
 		mapsize = 2;
 		g_d3dData->viewMat = g_d3dData->camMat;
 		p1Pause.Reset(false);
@@ -2988,7 +2988,7 @@ void CGame::setGameState(int _gameState) {
 			g_pMusicStream2->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (!soundplaying)
-			g_pMusicStream2->StreamStart();
+			g_pMusicStream2->StreamStart(true);
 		mapsize = 2;
 		g_d3dData->viewMat = g_d3dData->camMat;
 		p1Pause.Reset(false);
@@ -3022,7 +3022,7 @@ void CGame::setGameState(int _gameState) {
 			g_pMusicStream2->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (!soundplaying)
-			g_pMusicStream2->StreamStart();
+			g_pMusicStream2->StreamStart(true);
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
 		PlayersInCustom.resize(numPLAYERS);
@@ -3082,7 +3082,7 @@ void CGame::setGameState(int _gameState) {
 			g_pMusicStream2->StopStream();
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (!soundplaying)
-			g_pMusicStream->StreamStart();
+			g_pMusicStream->StreamStart(true);
 		SprinklersOn = true;
 		droppedLayers = 0;
 		ClearPlayersAndBombs();
@@ -3177,7 +3177,7 @@ void CGame::setGameState(int _gameState) {
 		if (!soundplaying)
 		{
 			g_pMusicStream1->SetVolume(0.1f);
-			g_pMusicStream1->StreamStart();
+			g_pMusicStream1->StreamStart(true);
 		}
 		g_d3dData->viewMat = g_d3dData->camMat;
 		switch (mapsize) {
@@ -3217,7 +3217,7 @@ void CGame::setGameState(int _gameState) {
 			g_pMusicStream2->StopStream();
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (!soundplaying)
-			g_pMusicStream->StreamStart();
+			g_pMusicStream->StreamStart(true);
 		SprinklersOn = true;
 		droppedLayers = 0;
 		ClearPlayersAndBombs();
