@@ -184,7 +184,7 @@ void CObject::Draw(double timepassed)
 			bombconst.view = DirectX::XMMatrixTranspose(g_d3dData->viewMat);
 
 		bombconst.projection = DirectX::XMMatrixTranspose(g_d3dData->projMat);
-		bombconst.time = totalTime * 10.0f;
+		bombconst.time = totalTime * 30.0f;
 		DirectX::XMVECTOR scale = DirectX::XMLoadFloat3(&transform->fScale);
 		DirectX::XMStoreFloat3(&bombconst.padding, scale);
 
