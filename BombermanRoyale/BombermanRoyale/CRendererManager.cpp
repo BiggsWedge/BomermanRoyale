@@ -240,7 +240,11 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 		rect.left = 0.0f;
 		rect.right = (float)g_d3dData->windowWidthHeight.x;
 		if (parentGame->gameStart >= 0)
+		{
 			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::LOADING_SCREEN], rect, nullptr, { (parentGame->gameStart <= 2.0f) ? 0.5f * parentGame->gameStart : 1.0f, (parentGame->gameStart <= 2.0f) ? 0.5f * parentGame->gameStart : 1.0f,  (parentGame->gameStart <= 2.0f) ? 0.5f * parentGame->gameStart : 1.0f,  (parentGame->gameStart <= 2.0f) ? 0.5f * parentGame->gameStart : 1.0f });
+			if(parentGame->GetisPaused())
+				g_d3dData->d3dSpriteFont->DrawString(g_d3dData->d3dSpriteBatch, "PAUSE", DirectX::XMVECTOR{ (0.35f*(float)g_d3dData->windowWidthHeight.x) - ((measurement.m128_f32[0] * scale.m128_f32[0])*0.5f), 0.5f * (float)g_d3dData->windowWidthHeight.y }, DirectX::Colors::Red, 0.0f, DirectX::XMVECTOR{ 0.0f, 0.0f }, scale3);
+		}
 		if (parentGame->playerdisconnect && parentGame->PlayerDisconnectToggle)
 		{
 			rect.top = 0.13f * (float)g_d3dData->windowWidthHeight.y;
