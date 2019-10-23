@@ -59,7 +59,7 @@ struct KeyboardInput {
 };
 
 struct KEYS {
-	enum { UP = 0, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE, HELP_MENU, GAME_STATE, FULLSCREEN, PAUSE, DISC_TOG, AI_DEC_COUNT, AI_INC_COUNT, COUNT };
+	enum { UP = 0, DOWN, LEFT, RIGHT, ZERO, RMB, SPACE, HELP_MENU, GAME_STATE, FULLSCREEN, PAUSE, DISC_TOG, AI_DEC_COUNT, AI_INC_COUNT, CREDITS, COUNT };
 };
 
 static std::vector<int> keycodes = {
@@ -77,6 +77,7 @@ static std::vector<int> keycodes = {
 	'T',
 	'U',
 	'I',
+	'N',
 };
 
 static std::vector<KeyboardInput> keyboardInputs;
@@ -321,7 +322,13 @@ void CGame::Run() {
 
 		}
 
-		if (loadScreenTime > 17 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
+		if (loadScreenTime > 16 && (curGameState == GAME_STATE::CREDIT_SCREEN || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::CREDIT_SCREEN);
+
+		}
+
+		if (loadScreenTime > 19 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::CREDIT_SCREEN) && loadHappened == false)
 		{
 
 			setGameState(GAME_STATE::MAIN_MENU);
@@ -358,6 +365,10 @@ void CGame::Run() {
 			this->WindowResize();
 		}
 
+		if (keys[KEYS::CREDITS].pressed())
+		{
+			setGameState(GAME_STATE::CREDIT_SCREEN);
+		}
 
 		if (keys[KEYS::HELP_MENU].pressed() || p1Help.Pressed()) {
 			ControlScreenToggle = !ControlScreenToggle;
@@ -3581,6 +3592,23 @@ bool CGame::loadTempMenus() {
 	loadInfo.LoadState = GAME_STATE::DEV_LOGO;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::CREDITS_SCREEN;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::CREDIT_SCREEN;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::OPTIONS_MENU;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::OPTIONS_SCREEN;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::ARCADE_MENU_1;
@@ -3612,6 +3640,7 @@ bool CGame::loadTempMenus() {
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::BATTLE_MENU;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
