@@ -754,6 +754,14 @@ void LoadAnimations()
 		temp.loops = BoarAnimFiles[i].loopable;
 		v_tMeshTemplates[MODELS::BOAR]._animations.push_back(temp);
 	}
+	for (int i = 0; i < RabbitAnimFiles.size(); ++i)
+	{
+		AnimationClip temp;
+		temp = ProcessAnimationFile(RabbitAnimFiles[i].file);
+		temp.AnimationName = RabbitAnimFiles[i].animationName;
+		temp.loops = RabbitAnimFiles[i].loopable;
+		v_tMeshTemplates[MODELS::RABBIT]._animations.push_back(temp);
+	}
 }
 
 AnimationClip ProcessAnimationFile(const char * animFileName)

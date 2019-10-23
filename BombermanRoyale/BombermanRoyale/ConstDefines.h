@@ -227,7 +227,7 @@ struct MODELS
 
 struct PLAYER_MODELS
 {
-	enum { CHICKEN, GOAT, BOAR };
+	enum { CHICKEN, GOAT, BOAR};
 };
 
 #endif // !CONST_EXPRESSIONS

@@ -68,7 +68,7 @@ float4 main(PS_IN input) : SV_TARGET
 
     float lightRatio = saturate(dot(-light_dir, norm));
    
-    finalColor += lightRatio * float4(float3(1.0f, 0.75f, 0.25f) * 0.5f, 1.0f);
+    finalColor += lightRatio * float4(float3(1.0f, 0.64f, 0.0f) * 0.5f, 1.0f);
     /*
 
 	float3 light_dir = light.position - input.wPos.xyz;

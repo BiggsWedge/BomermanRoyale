@@ -874,7 +874,7 @@ void CGame::Run() {
 					menux = 0;
 					menuIndex = 0;
 
-					setGameState(GAME_STATE::CHARACTER_SCREEN);
+					//setGameState(GAME_STATE::CHARACTER_SCREEN);
 					for (CObject* menu : menuObjects)
 					{
 
@@ -897,7 +897,7 @@ void CGame::Run() {
 					menuz = 0;
 					menux = 0;
 					menuIndex = 0;
-					prevGameState = curGameState;
+					//prevGameState = curGameState;
 					setGameState(GAME_STATE::CHARACTER_SCREEN);
 					CSx = -11.35f;
 					continue;
@@ -3214,6 +3214,7 @@ void CGame::setGameState(int _gameState) {
 		v_cBombs.resize(maxNumBombs);
 		break;
 	}
+	prevGameState = curGameState;
 	curGameState = _gameState;
 }
 
