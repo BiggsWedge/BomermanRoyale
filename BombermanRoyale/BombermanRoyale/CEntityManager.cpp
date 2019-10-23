@@ -2514,7 +2514,7 @@ CExplosion* CEntityManager::ExplosionXAnim(CBomb* BombSource, CPlayer* _player, 
 
 
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::EXPL_1;
-	loadInfo.scale = DirectX::XMFLOAT3(0.17f, 0.17f, 1.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(0.17f, 0.22f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = game_state;
 	explosion = CreateExplosionFromTemplate(loadInfo);
@@ -2578,7 +2578,7 @@ CExplosion* CEntityManager::ExplosionZAnim(CBomb* BombSource, CPlayer* _player, 
 
 
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::EXPL_1;
-	loadInfo.scale = DirectX::XMFLOAT3(0.17f, 0.17f, 1.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(0.17f, 0.22f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = game_state;
 	explosion = CreateExplosionFromTemplate(loadInfo);

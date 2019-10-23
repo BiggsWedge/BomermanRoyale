@@ -129,10 +129,10 @@ void Skybox::Render()
 
 	g_d3dData->d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	g_d3dData->d3dContext->VSSetShader(d3dVertexShader, nullptr, 0);
+	g_d3dData->d3dContext->VSSetShader(g_d3dData->d3dVertexShader[VERTEX_SHADER::BASIC], nullptr, 0);
 	g_d3dData->d3dContext->VSSetConstantBuffers(0, 1, &d3dConstantBuffer);
 
-	g_d3dData->d3dContext->PSSetShader(d3dPixelShader, nullptr, 0);
+	g_d3dData->d3dContext->PSSetShader(g_d3dData->d3dPixelShader[PIXEL_SHADER::BASIC], nullptr, 0);
 	g_d3dData->d3dContext->PSSetSamplers(0, 1, p_d3dUsedSampler);
 	g_d3dData->d3dContext->PSSetShaderResources(0, 1, p_d3dUsedTexture);
 
