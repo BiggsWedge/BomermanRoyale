@@ -1624,6 +1624,22 @@ void CGame::LoadObjectBattle(int game_state) {
 	loadInfo.position = { 0, 0, 2.5 };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.forwardVec = { 0.0f, 1.0f, 0.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::FIRE_TEX;
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = game_state;
+	loadInfo.floor = true;
+	loadInfo.item = false;
+	loadInfo.destroyable = false;
+	loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
+	loadInfo.scale = DirectX::XMFLOAT3(3.0f, 3.0f, 1.0f);
+	loadInfo.position = { 0, 0.0f, 0.0f };
+	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 	//world box
 	//loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
 	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
@@ -1769,6 +1785,22 @@ void CGame::LoadObjectSmall(int game_state) {
 	loadInfo.position = { 0, 0, 2.5f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.forwardVec = { 0.0f, 1.0f, -0.3f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::LAVA;
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = game_state;
+	loadInfo.floor = true;
+	loadInfo.item = false;
+	loadInfo.destroyable = false;
+	loadInfo.collisionLayer = COLLISION_LAYERS::WALL;
+	loadInfo.scale = DirectX::XMFLOAT3(6.0f, 6.0f, 1.0f);
+	loadInfo.position = { 0, -15.0f, 2.0f };
+	lava.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 	//loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
 	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	//loadInfo.position = { 0.0f, 0.0f, 2.5f };
@@ -1897,6 +1929,22 @@ void CGame::LoadObjectMedium(int game_state) {
 	loadInfo.position = { 0, 0, 2.5f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.forwardVec = { 0.0f, 1.0f, -0.3f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::LAVA;
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = game_state;
+	loadInfo.floor = true;
+	loadInfo.item = false;
+	loadInfo.destroyable = false;
+	loadInfo.collisionLayer = COLLISION_LAYERS::WALL;
+	loadInfo.scale = DirectX::XMFLOAT3(6.0f, 6.0f, 1.0f);
+	loadInfo.position = { 0, -15.0f, 2.0f };
+	lava.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 	//loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
 	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	//loadInfo.position = { 0.0f, 0.0f, 2.5f };
@@ -2014,6 +2062,22 @@ void CGame::LoadObjectLarge(int game_state) {
 	loadInfo.position = { 0, 0, 2.5f };
 	objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
+	loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+	loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+	loadInfo.usedGeo = -1;
+	loadInfo.forwardVec = { 0.0f, 1.0f, -0.3f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::LAVA;
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = game_state;
+	loadInfo.floor = true;
+	loadInfo.item = false;
+	loadInfo.destroyable = false;
+	loadInfo.collisionLayer = COLLISION_LAYERS::WALL;
+	loadInfo.scale = DirectX::XMFLOAT3(7.0f, 7.0f, 1.0f);
+	loadInfo.position = { 0, -5.0f, 15.0f };
+	lava.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
 	//loadInfo.forwardVec = { 0.0f, 0.0f, 1.0f };
 	//loadInfo.scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	//loadInfo.position = { 0.0f, 0.0f, 2.5f };
@@ -2034,6 +2098,14 @@ void CGame::Cleanup()
 		object = nullptr;
 	}
 	objects.clear();
+
+	for (CObject* object : lava)
+	{
+		object->Cleanup();
+		delete object;
+		object = nullptr;
+	}
+	lava.clear();
 
 	for (CObject* object : particleObjects)
 	{
@@ -3191,6 +3263,15 @@ void CGame::ClearPlayersAndBombs() {
 		}
 	}
 	objects.clear();
+
+	for (CObject* object : lava) {
+		if (object)
+		{
+			delete object;
+			object = nullptr;
+		}
+	}
+	lava.clear();
 
 	for (CObject* exp : Xexplosions) {
 		if (exp)
@@ -5781,8 +5862,6 @@ void CGame::CustomMeshUpdate(float timepassed) {
 	if (objects.size() > 0) {
 		for (int i = 0; i < objects.size() - 1; ++i) {
 			TComponent* cRenderer = nullptr;
-			TComponent* fRenderer = nullptr;
-			TColliderComponent* floorRender = nullptr;
 			TRendererComponent* renderer = nullptr;
 
 			if (objects[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer)) {
@@ -5799,6 +5878,20 @@ void CGame::CustomMeshUpdate(float timepassed) {
 					if (renderer->iUsedLoadState == GAME_STATE::CONTROLS_SCREEN)
 						p_cRendererManager->RenderObject(objects[i]);
 				}
+			}
+		}
+	}
+
+	if (lava.size() > 0) {
+		for (int i = 0; i < lava.size(); ++i) {
+			TComponent* cRenderer = nullptr;
+			TRendererComponent* renderer = nullptr;
+
+			if (lava[i]->GetComponent(COMPONENT_TYPE::RENDERER, cRenderer)) {
+				renderer = (TRendererComponent*)cRenderer;
+
+				if (renderer->iUsedLoadState == curGameState)
+					p_cRendererManager->RenderObject(lava[i]);
 			}
 		}
 	}
@@ -5826,14 +5919,14 @@ void CGame::CustomMeshUpdate(float timepassed) {
 			TRendererComponent* tRenderer = (TRendererComponent*)renderer;
 
 			if (tRenderer->iUsedLoadState == curGameState)
-				p_cRendererManager->RenderObject(Xexplosions[i]);
+				p_cRendererManager->RenderParticle(Xexplosions[i]);
 		}
 
 		if (Zexplosions[i]->GetComponent(COMPONENT_TYPE::RENDERER, renderer)) {
 			TRendererComponent* tRenderer = (TRendererComponent*)renderer;
 
 			if (tRenderer->iUsedLoadState == curGameState)
-				p_cRendererManager->RenderObject(Zexplosions[i]);
+				p_cRendererManager->RenderParticle(Zexplosions[i]);
 		}
 	}
 

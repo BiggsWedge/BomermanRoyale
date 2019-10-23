@@ -68,6 +68,7 @@ class CGame
 	CRendererManager* p_cRendererManager;
 	CEntityManager* p_cEntityManager;
 	std::vector<CObject*> objects;
+	std::vector<CObject*> lava;
 	std::vector<CObject*> deleteLayer;
 	std::vector<CObject*> menuObjects;
 	std::vector<CObject*> particleObjects;

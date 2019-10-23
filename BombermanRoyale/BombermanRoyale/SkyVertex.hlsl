@@ -27,7 +27,7 @@ struct VS_INPUT
 struct OutputVertex
 {
     float4 xyzw : SV_POSITION;
-    float3 Tex : TEXCOORD;
+    float2 Tex : TEXCOORD;
 };
 
 OutputVertex main(VS_INPUT input)
@@ -37,7 +37,7 @@ OutputVertex main(VS_INPUT input)
     output.xyzw = mul(float4(input.xyz, 1.0f), World);
     output.xyzw = mul(output.xyzw, View);
     output.xyzw = mul(output.xyzw, Projection);
-    output.Tex = input.xyz;
+    output.Tex = input.Tex;
 
     return output;
 }
