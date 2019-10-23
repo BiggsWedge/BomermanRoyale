@@ -54,6 +54,7 @@ extern std::vector<GW::AUDIO::GSound*> bombPlaceSound;
 extern std::vector<GW::AUDIO::GSound*> powerUpSound;
 extern GW::SYSTEM::GController* g_pControllerInput;
 extern std::vector<unsigned int> availablePlayerModels;
+extern std::vector<unsigned int> availablePlayerTextures;
 
 /***********************************************************************
 *	GetCurrentDateAndTime():	Returns, in a string format, the
@@ -166,15 +167,18 @@ bool InitializeWindow();
 ***********************************************************************/
 bool InitializeGlobals();
 
-struct TSimpleVertex {
+struct TSimpleVertex
+{
 	DirectX::XMFLOAT3		fPosition;
 	DirectX::XMFLOAT3		fNormal;
 	DirectX::XMFLOAT2		fTexCoord;
+	DirectX::XMFLOAT4		fTangents;
 	DirectX::XMINT4			iJointIndies;
 	DirectX::XMFLOAT4		fWeights;
 };
 
-struct TLineVertex {
+struct TLineVertex
+{
 	DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };
 	DirectX::XMFLOAT4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 

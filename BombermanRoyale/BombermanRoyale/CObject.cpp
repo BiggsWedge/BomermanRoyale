@@ -22,7 +22,6 @@ void CObject::Draw(double timepassed)
 	totalTime += timepassed;
 	explosiontime += timepassed;
 
-
 	float fractionalTime = timepassed - (int)timepassed;
 
 	ID3D11CommandList* d3dCommandList = nullptr;
@@ -71,7 +70,6 @@ void CObject::Draw(double timepassed)
 	ID3D11RenderTargetView* const d3dTargets[] = { g_d3dData->d3dRenderTargetView };
 
 	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
-	g_d3dData->d3dContext->OMSetRenderTargets(1, d3dTargets, g_d3dData->d3dDepthStencilView);
 	g_d3dData->d3dContext->IASetInputLayout(g_d3dData->d3dInputLayout[renderer->iUsedInputLayout]);
 	g_d3dData->d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -122,6 +120,7 @@ void CObject::Draw(double timepassed)
 
 	if (tex->iUsedNormalIndex >= 0)
 	{
+		g_d3dData->d3dContext->PSSetShaderResources(1, 1, &g_d3dData->d3dDiffuseTextures[tex->iUsedNormalIndex]);
 		pConst.flags[1] = 1;
 	}
 

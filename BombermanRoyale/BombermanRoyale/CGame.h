@@ -116,8 +116,9 @@ public:
 	int numAI = 0;
 	int numPLAYERS = 2;
 	int playermodel[4] = { 0,0,0,0 };
-	int playertextures[4] = { DIFFUSE_TEXTURES::CHICKEN1, DIFFUSE_TEXTURES::CHICKEN2, DIFFUSE_TEXTURES::CHICKEN3, DIFFUSE_TEXTURES::CHICKEN4 };
-	int AImodel[2] = { 4, 4 };
+	int playertextures[4] = { 0,0,0,0 };
+	int AImodel[2] = { 0,0 };
+	int AItexture[2] = { 0,0 };
 	int PlayerDiscIndex = 0;
 	bool playerdisconnect = false;
 	bool PlayerDisconnectToggle = true;

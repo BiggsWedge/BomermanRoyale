@@ -47,7 +47,15 @@ CPlayer* CEntityManager::CreatePlayerFromTemplate(OBJLoadInfo loadInfo)
 	TMeshComponent* mesh = new TMeshComponent(v_tMeshTemplates.at(loadInfo.meshID));
 	temp->AddComponent((TComponent*)mesh);
 
-	TTextureComponent* tex = new TTextureComponent(loadInfo.usedDiffuse);
+	int norm = -1;
+	if (loadInfo.usedDiffuse >= DIFFUSE_TEXTURES::CHICKEN1 && loadInfo.usedDiffuse <= DIFFUSE_TEXTURES::CHICKEN4)
+		norm = DIFFUSE_TEXTURES::CHICKEN_NORMAL;
+	else if (loadInfo.usedDiffuse == DIFFUSE_TEXTURES::GOAT)
+		norm = DIFFUSE_TEXTURES::GOAT_NORMAL;
+	else if (loadInfo.usedDiffuse >= DIFFUSE_TEXTURES::BOAR && loadInfo.usedDiffuse <= DIFFUSE_TEXTURES::BOAR2)
+		norm = DIFFUSE_TEXTURES::BOAR_NORMAL;
+
+	TTextureComponent* tex = new TTextureComponent(loadInfo.usedDiffuse, norm);
 	temp->AddComponent((TComponent*)tex);
 
 	if (v_tMeshTemplates[loadInfo.meshID]._animations.size() > 0)

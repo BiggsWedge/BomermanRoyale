@@ -39,6 +39,7 @@ GController* g_pControllerInput = nullptr;
 std::vector<TMeshTemplate> v_tMeshTemplates = {};
 
 std::vector<unsigned int> availablePlayerModels = { MODELS::CHICKEN, MODELS::GOAT, MODELS::BOAR };
+std::vector<unsigned int> availablePlayerTextures = { DIFFUSE_TEXTURES::CHICKEN1, DIFFUSE_TEXTURES::GOAT, DIFFUSE_TEXTURES::BOAR };
 
 string GetCurrentDateAndTime()
 {
@@ -197,14 +198,72 @@ void LoadModel(TMeshLoadInfo loadInfo)
 
 		file.close();
 
-		if (loadInfo.name != "BattleMage")
+		for (auto& v : temp.v_tVertices)
 		{
-			for (auto& v : temp.v_tVertices)
+			v.fPosition.x = -v.fPosition.x;
+		}
+		for (int i = 0; i < numIndices; i += 3)
+		{
+			XMFLOAT3 vEdge1, vEdge2;
+			vEdge1.x = temp.v_tVertices[temp.v_iIndices[i + 1]].fPosition.x - temp.v_tVertices[temp.v_iIndices[i]].fPosition.x;
+			vEdge1.y = temp.v_tVertices[temp.v_iIndices[i + 1]].fPosition.y - temp.v_tVertices[temp.v_iIndices[i]].fPosition.y;
+			vEdge1.z = temp.v_tVertices[temp.v_iIndices[i + 1]].fPosition.z - temp.v_tVertices[temp.v_iIndices[i]].fPosition.z;
+
+			vEdge2.x = temp.v_tVertices[temp.v_iIndices[i + 2]].fPosition.x - temp.v_tVertices[temp.v_iIndices[i]].fPosition.x;
+			vEdge2.y = temp.v_tVertices[temp.v_iIndices[i + 2]].fPosition.y - temp.v_tVertices[temp.v_iIndices[i]].fPosition.y;
+			vEdge2.z = temp.v_tVertices[temp.v_iIndices[i + 2]].fPosition.z - temp.v_tVertices[temp.v_iIndices[i]].fPosition.z;
+
+			XMFLOAT2 tEdge1, tEdge2;
+			tEdge1.x = temp.v_tVertices[temp.v_iIndices[i + 1]].fTexCoord.x - temp.v_tVertices[temp.v_iIndices[i]].fTexCoord.x;
+			tEdge1.y = temp.v_tVertices[temp.v_iIndices[i + 1]].fTexCoord.y - temp.v_tVertices[temp.v_iIndices[i]].fTexCoord.y;
+
+			tEdge2.x = temp.v_tVertices[temp.v_iIndices[i + 2]].fTexCoord.x - temp.v_tVertices[temp.v_iIndices[i]].fTexCoord.x;
+			tEdge2.y = temp.v_tVertices[temp.v_iIndices[i + 2]].fTexCoord.y - temp.v_tVertices[temp.v_iIndices[i]].fTexCoord.y;
+
+			float ratio = 1.0f / (tEdge1.x * tEdge2.y - tEdge1.y * tEdge2.x);
+
+			XMFLOAT3 uDirection = XMFLOAT3
+			(
+				(tEdge2.y * vEdge1.x - tEdge1.y * vEdge2.x) * ratio,
+				(tEdge2.y * vEdge1.y - tEdge1.y * vEdge2.y) * ratio,
+				(tEdge2.y * vEdge1.z - tEdge1.y * vEdge2.z) * ratio
+			);
+
+			XMFLOAT3 vDirection = XMFLOAT3
+			(
+				(tEdge1.x * vEdge2.x - tEdge2.x * vEdge1.x) * ratio,
+				(tEdge1.x * vEdge2.y - tEdge2.x * vEdge1.y) * ratio,
+				(tEdge1.x * vEdge2.z - tEdge2.x * vEdge1.z) * ratio
+			);
+
+			XMVECTOR uDirVec = XMVector3Normalize(XMLoadFloat3(&uDirection));
+			XMVECTOR vDirVec = XMVector3Normalize(XMLoadFloat3(&vDirection));
+
+			for (int j = 0; j < 3; ++j)
 			{
-				v.fPosition.x = -v.fPosition.x;
-				v.fNormal.x = -v.fNormal.x;
+				XMVECTOR dotResult = XMVector3Dot(XMLoadFloat3(&temp.v_tVertices[temp.v_iIndices[i + j]].fNormal), uDirVec);
+
+				XMVECTOR tang = uDirVec - XMLoadFloat3(&temp.v_tVertices[temp.v_iIndices[i + j]].fNormal) * dotResult;
+
+				tang = XMVector3Normalize(tang);
+
+				XMVECTOR cross = XMVector3Cross(XMLoadFloat3(&temp.v_tVertices[temp.v_iIndices[i + j]].fNormal), uDirVec);
+				XMVECTOR handedness = vDirVec;
+
+				dotResult = XMVector3Dot(cross, handedness);
+
+				XMFLOAT4 dotResFLoats;
+				XMStoreFloat4(&dotResFLoats, dotResult);
+
+				XMFLOAT4 _tang;
+				XMStoreFloat4(&_tang, tang);
+
+				_tang.w = (dotResFLoats.x < 0.0f) ? -1.0f : 1.0f;
+
+				temp.v_tVertices[temp.v_iIndices[i + j]].fTangents = _tang;
 			}
 		}
+
 	}
 	v_tMeshTemplates.push_back(temp);
 }
@@ -286,7 +345,13 @@ void LoadTextures()
 	for (int i = 0; i < (int)diffuseTextures.size(); ++i)
 	{
 		if (FAILED(DirectX::CreateWICTextureFromFile(g_d3dData->d3dDevice, diffuseTextures[i], nullptr, &g_d3dData->d3dDiffuseTextures[i])))
-			g_pLogger->LogCatergorized("FAILURE", "Failed to load texture");
+		{
+			std::string outS = "Failed to load texture ";
+			outS.append(std::to_string(i));
+			outS.append(" of ");
+			outS.append(std::to_string(diffuseTextures.size()));
+			g_pLogger->LogCatergorized("FAILURE", outS.c_str());
+		}
 	}
 }
 
@@ -688,6 +753,14 @@ void LoadAnimations()
 		temp.AnimationName = BoarAnimFiles[i].animationName;
 		temp.loops = BoarAnimFiles[i].loopable;
 		v_tMeshTemplates[MODELS::BOAR]._animations.push_back(temp);
+	}
+	for (int i = 0; i < RabbitAnimFiles.size(); ++i)
+	{
+		AnimationClip temp;
+		temp = ProcessAnimationFile(RabbitAnimFiles[i].file);
+		temp.AnimationName = RabbitAnimFiles[i].animationName;
+		temp.loops = RabbitAnimFiles[i].loopable;
+		v_tMeshTemplates[MODELS::RABBIT]._animations.push_back(temp);
 	}
 }
 

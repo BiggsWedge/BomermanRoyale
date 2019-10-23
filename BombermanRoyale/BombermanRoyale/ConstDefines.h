@@ -107,6 +107,9 @@ static const std::vector<const wchar_t*> diffuseTextures =
 	L".//Assets//Goat.fbm//Goat.png",
 	L".//Assets//Boar.fbm//Boar.png",
 	L".//Assets//Boar.fbm//Boar2.png",
+	L".//Assets//Chicken.fbm//ChickenNormal.png",
+	L".//Assets//Goat.fbm//GoatNormal.png",
+	L".//Assets//Boar.fbm//BoarNormal.png",
 	L".//Assets//Menus.fbm//Menu1//RECOVER_GameScreen0001.jpg",	L".//Assets//Menus.fbm//Menu1//RECOVER_GameScreen0002.jpg",	L".//Assets//Menus.fbm//Menu1//RECOVER_GameScreen0003.jpg",
 	L".//Assets//Menus.fbm//Menu1//RECOVER_GameScreen0004.jpg",	L".//Assets//Menus.fbm//Menu1//RECOVER_GameScreen0005.jpg",	L".//Assets//Menus.fbm//Menu1//RECOVER_GameScreen0006.jpg",
 	L".//Assets//Menus.fbm//Menu1//RECOVER_GameScreen0007.jpg",	L".//Assets//Menus.fbm//Menu1//RECOVER_GameScreen0008.jpg",	L".//Assets//Menus.fbm//Menu1//RECOVER_GameScreen0009.jpg",
@@ -201,6 +204,15 @@ static const std::vector<AnimFileName> BoarAnimFiles
 	{".//Assets//BoarDie.anim", "Die", false}
 };
 
+static const std::vector<AnimFileName> RabbitAnimFiles
+{
+	{".//Assets//RabbitIdle.anim", "Idle",true},
+	{".//Assets//RabbitWalk.anim", "Walk",true},
+	{".//Assets//RabbitRun.anim", "Run", true},
+	{".//Assets//RabbitDie.anim", "Die", false}
+
+};
+
 static const std::vector<TMeshLoadInfo> modelLoadInfos
 {
 	{"Cube", ".//Assets//Cube.mesh", nullptr, nullptr},
@@ -209,17 +221,18 @@ static const std::vector<TMeshLoadInfo> modelLoadInfos
 	{"Bomb2", ".//Assets//Bomb2.mesh", nullptr, nullptr},
 	{"Chicken", ".//Assets//Chicken.mesh", nullptr, nullptr},
 	{"Goat", ".//Assets//Goat.mesh", nullptr, nullptr},
-	{"Boar", ".//Assets//Boar.mesh", nullptr, nullptr}
+	{"Boar", ".//Assets//Boar.mesh", nullptr, nullptr},
+	{"Rabbit", ".//Assets//Rabbit.mesh", nullptr, nullptr}
 };
 
 struct MODELS
 {
-	enum { CUBE = 0, BATTLEMAGE, BOMB, BOMB2, CHICKEN, GOAT, BOAR, MENU1, MENU2, COUNT };
+	enum { CUBE = 0, BATTLEMAGE, BOMB, BOMB2, CHICKEN, GOAT, BOAR, RABBIT, MENU1, MENU2, COUNT };
 };
 
 struct PLAYER_MODELS
 {
-	enum { CHICKEN, GOAT, BOAR };
+	enum { CHICKEN, GOAT, BOAR};
 };
 
 #endif // !CONST_EXPRESSIONS
