@@ -169,21 +169,21 @@ void CGame::Run() {
 		if (G_SUCCESS(g_pMusicStream->SetVolume(0.3f)))
 		{
 			g_pMusicStream->StreamStart(true);
-			g_pMusicStream->PauseStream();
+			g_pMusicStream->StopStream();
 		}
 	}
 	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(MenuMusicFilePath, &g_pMusicStream1))) {
 		if (G_SUCCESS(g_pMusicStream1->SetVolume(0.3f)))
 		{
 			g_pMusicStream1->StreamStart(true);
-			//g_pMusicStream1->PauseStream();
+			//g_pMusicStream1->StopStream();
 		}
 	}
 	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(CharacterMusicFilePath, &g_pMusicStream2))) {
 		if (G_SUCCESS(g_pMusicStream2->SetVolume(0.5f)))
 		{
 			g_pMusicStream2->StreamStart(true);
-			g_pMusicStream2->PauseStream();
+			g_pMusicStream2->StopStream();
 		}
 	}
 
@@ -2783,18 +2783,18 @@ void CGame::setGameState(int _gameState) {
 		ClearPlayersAndBombs();
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream->PauseStream();
+			g_pMusicStream->StopStream();
 		g_pMusicStream1->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream1->PauseStream();
+			g_pMusicStream1->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream2->PauseStream();
+			g_pMusicStream2->StopStream();
 		g_pMusicStream1->isStreamPlaying(soundplaying);
 		if (!soundplaying)
 		{
 			g_pMusicStream1->SetVolume(0.3f);
-			g_pMusicStream1->ResumeStream();
+			g_pMusicStream1->StreamStart();
 		}
 
 		switch (mapsize) {
@@ -2845,16 +2845,16 @@ void CGame::setGameState(int _gameState) {
 		menuTime = 0.0f;
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream->PauseStream();
+			g_pMusicStream->StopStream();
 		g_pMusicStream1->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream1->PauseStream();
+			g_pMusicStream1->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream2->PauseStream();
+			g_pMusicStream2->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (!soundplaying)
-			g_pMusicStream2->ResumeStream();
+			g_pMusicStream2->StreamStart();
 		mapsize = 2;
 		g_d3dData->viewMat = g_d3dData->camMat;
 		p1Pause.Reset(false);
@@ -2883,16 +2883,16 @@ void CGame::setGameState(int _gameState) {
 		menuTime = 0.0f;
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream->PauseStream();
+			g_pMusicStream->StopStream();
 		g_pMusicStream1->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream1->PauseStream();
+			g_pMusicStream1->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream2->PauseStream();
+			g_pMusicStream2->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (!soundplaying)
-			g_pMusicStream2->ResumeStream();
+			g_pMusicStream2->StreamStart();
 		mapsize = 2;
 		g_d3dData->viewMat = g_d3dData->camMat;
 		p1Pause.Reset(false);
@@ -2917,16 +2917,16 @@ void CGame::setGameState(int _gameState) {
 		}
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream->PauseStream();
+			g_pMusicStream->StopStream();
 		g_pMusicStream1->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream1->PauseStream();
+			g_pMusicStream1->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream2->PauseStream();
+			g_pMusicStream2->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (!soundplaying)
-			g_pMusicStream2->ResumeStream();
+			g_pMusicStream2->StreamStart();
 		p1Pause.Reset(false);
 		ClearPlayersAndBombs();
 		PlayersInCustom.resize(numPLAYERS);
@@ -2977,16 +2977,16 @@ void CGame::setGameState(int _gameState) {
 	case GAME_STATE::ARCADE_GAME:
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream->PauseStream();
+			g_pMusicStream->StopStream();
 		g_pMusicStream1->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream1->PauseStream();
+			g_pMusicStream1->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream2->PauseStream();
+			g_pMusicStream2->StopStream();
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (!soundplaying)
-			g_pMusicStream->ResumeStream();
+			g_pMusicStream->StreamStart();
 		SprinklersOn = true;
 		droppedLayers = 0;
 		ClearPlayersAndBombs();
@@ -3070,18 +3070,18 @@ void CGame::setGameState(int _gameState) {
 	case GAME_STATE::WIN_SCREEN:
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream->PauseStream();
+			g_pMusicStream->StopStream();
 		g_pMusicStream1->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream1->PauseStream();
+			g_pMusicStream1->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream2->PauseStream();
+			g_pMusicStream2->StopStream();
 		g_pMusicStream1->isStreamPlaying(soundplaying);
 		if (!soundplaying)
 		{
 			g_pMusicStream1->SetVolume(0.1f);
-			g_pMusicStream1->ResumeStream();
+			g_pMusicStream1->StreamStart();
 		}
 		g_d3dData->viewMat = g_d3dData->camMat;
 		switch (mapsize) {
@@ -3112,16 +3112,16 @@ void CGame::setGameState(int _gameState) {
 	case GAME_STATE::BATTLE_GAME:
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream->PauseStream();
+			g_pMusicStream->StopStream();
 		g_pMusicStream1->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream1->PauseStream();
+			g_pMusicStream1->StopStream();
 		g_pMusicStream2->isStreamPlaying(soundplaying);
 		if (soundplaying)
-			g_pMusicStream2->PauseStream();
+			g_pMusicStream2->StopStream();
 		g_pMusicStream->isStreamPlaying(soundplaying);
 		if (!soundplaying)
-			g_pMusicStream->ResumeStream();
+			g_pMusicStream->StreamStart();
 		SprinklersOn = true;
 		droppedLayers = 0;
 		ClearPlayersAndBombs();
@@ -3402,7 +3402,7 @@ void CGame::updateBombs(double timePassed) {
 				}
 
 				if (Xexplosions[i]->Collides((CObject*)player) || Zexplosions[i]->Collides((CObject*)player)) {
-					if (player->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 2.5f || ZexplosionTrans->fPosition.y == 2.5f) {
+					if (player->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 2.2f || ZexplosionTrans->fPosition.y == 2.2f) {
 						if (player->SetCurrentAnimaion("Die") == 1)
 							player->ResetAnimation();
 						if (player != Xexplosions[i]->getParent() && player->isAlive())
@@ -3430,7 +3430,7 @@ void CGame::updateBombs(double timePassed) {
 		for (CPlayer* AI : v_cAI) {
 			if (AI) {
 				if (Xexplosions[i]->Collides((CObject*)AI) || Zexplosions[i]->Collides((CObject*)AI)) {
-					if (AI->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 2.5f || ZexplosionTrans->fPosition.y == 2.5f) {
+					if (AI->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 2.2f || ZexplosionTrans->fPosition.y == 2.2f) {
 						AI->setAlive(false);
 						DeathSound->Play();
 						if (AI != Xexplosions[i]->getParent() && AI->isAlive())
@@ -3497,9 +3497,9 @@ void CGame::updateBombs(double timePassed) {
 
 				CPlayer* parent = v_cBombs[i]->getParent();
 
-				/*explosionTimers.push_back(0.0f);
+				explosionTimers.push_back(0.0f);
 				Xexplosions.push_back(p_cEntityManager->BombExplosionX(v_cBombs[i], parent, curGameState));
-				Zexplosions.push_back(p_cEntityManager->BombExplosionZ(v_cBombs[i], parent, curGameState));*/
+				Zexplosions.push_back(p_cEntityManager->BombExplosionZ(v_cBombs[i], parent, curGameState));
 				for (float newvar = -2.5f; newvar <= 2.5f; newvar += 2.5f)
 				{
 					explosionTimers.push_back(0.0f);
@@ -3647,7 +3647,7 @@ bool CGame::loadTempMenus() {
 
 	loadInfo.position = { -2.2f, 18.9f, -10.5f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
-	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB;
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::BOMB2;
 	loadInfo.scale = DirectX::XMFLOAT3(0.5, 0.5f, 0.0001f);
 	loadInfo.meshID = MODELS::BOMB;
 	loadInfo.LoadState = GAME_STATE::PAUSE_MENU;

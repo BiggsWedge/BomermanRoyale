@@ -2474,7 +2474,7 @@ CExplosion* CEntityManager::BombExplosionX(CBomb* BombSource, CPlayer* _player, 
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = game_state;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 13.5f, 1.0f / 72.5f, 1.0f / 72.5f);
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 14.5f, 1.0f / 72.5f, 1.0f / 72.5f);
 	explosion = CreateExplosionFromTemplate(loadInfo);
 	explosion->initialize(_player);
 
@@ -2491,7 +2491,7 @@ CExplosion* CEntityManager::ExplosionXAnim(CBomb* BombSource, CPlayer* _player, 
 	if (BombSource->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 		renderer = (TTransformComponent*)cRenderer;
 
-	float newY = renderer->fPosition.y + 2.5f;
+	float newY = renderer->fPosition.y + 2.2f;
 	float zvec = g_d3dData->camPos.z - renderer->fPosition.z;
 	float yvec = g_d3dData->camPos.y - renderer->fPosition.y;
 
@@ -2506,7 +2506,7 @@ CExplosion* CEntityManager::ExplosionXAnim(CBomb* BombSource, CPlayer* _player, 
 
 
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::EXPL_1;
-	loadInfo.scale = DirectX::XMFLOAT3(0.17f, 0.22f, 1.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(0.15f, 0.19f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = game_state;
 	explosion = CreateExplosionFromTemplate(loadInfo);
@@ -2538,7 +2538,7 @@ CExplosion* CEntityManager::BombExplosionZ(CBomb* BombSource, CPlayer* _player, 
 	loadInfo.usedInput = INPUT_LAYOUT::BASIC;
 	loadInfo.usedGeo = -1;
 	loadInfo.LoadState = game_state;
-	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 72.5f, 1.0f / 72.5f, 1.0f / 13.5f);
+	loadInfo.scale = DirectX::XMFLOAT3(1.0f / 72.5f, 1.0f / 72.5f, 1.0f / 14.5f);
 	explosion = CreateExplosionFromTemplate(loadInfo);
 	explosion->initialize(_player);
 
@@ -2555,7 +2555,7 @@ CExplosion* CEntityManager::ExplosionZAnim(CBomb* BombSource, CPlayer* _player, 
 	if (BombSource->GetComponent(COMPONENT_TYPE::TRANSFORM, cRenderer))
 		renderer = (TTransformComponent*)cRenderer;
 
-	float newY = renderer->fPosition.y + 2.5f;
+	float newY = renderer->fPosition.y + 2.2f;
 	float zvec = g_d3dData->camPos.z - renderer->fPosition.z;
 	float yvec = g_d3dData->camPos.y - renderer->fPosition.y;
 
@@ -2570,7 +2570,7 @@ CExplosion* CEntityManager::ExplosionZAnim(CBomb* BombSource, CPlayer* _player, 
 
 
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::EXPL_1;
-	loadInfo.scale = DirectX::XMFLOAT3(0.17f, 0.22f, 1.0f);
+	loadInfo.scale = DirectX::XMFLOAT3(0.15f, 0.19f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = game_state;
 	explosion = CreateExplosionFromTemplate(loadInfo);

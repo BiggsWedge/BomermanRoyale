@@ -119,7 +119,7 @@ public:
 	int AImodel[2] = { 4, 4 };
 	int PlayerDiscIndex = 0;
 	bool playerdisconnect = false;
-	bool PlayerDisconnectToggle = false;
+	bool PlayerDisconnectToggle = true;
 	bool AI_1_Moving = false;
 	bool AI_1_STARTMoving = false;
 	int prevGameState = 0;
