@@ -3526,8 +3526,7 @@ void CGame::updateBombs(double timePassed) {
 			if (AI) {
 				if (Xexplosions[i]->Collides((CObject*)AI) || Zexplosions[i]->Collides((CObject*)AI)) {
 					if (AI->GetCrouchStatus() == false || XexplosionTrans->fPosition.y == 2.2f || ZexplosionTrans->fPosition.y == 2.2f) {
-						AI->setAlive(false);
-						DeathSound->Play();
+						
 						if (AI != Xexplosions[i]->getParent() && AI->isAlive())
 						{
 							Xexplosions[i]->getParent()->setScore(1 + (int)(Xexplosions[i]->getParent()->getKillStreak() * 0.5f));
@@ -3535,6 +3534,8 @@ void CGame::updateBombs(double timePassed) {
 							AI->setKillStreak(-AI->getKillStreak());
 						}
 
+						AI->setAlive(false);
+						DeathSound->Play();
 						//else if (AI->isAlive())
 						//	Xexplosions[i]->getParent()->setScore(-1);
 
