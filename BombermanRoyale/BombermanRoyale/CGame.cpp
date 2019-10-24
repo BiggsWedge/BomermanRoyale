@@ -4237,12 +4237,56 @@ void CGame::AI_Method(double timepassed, double action_time) {
 								currAI->IncPlacedBombs();
 								dX = 6;
 								dZ = 6;
+								if (AI_1_Moving)
+								{
+									AI_1_Moving = false;
+									xpos = (fMinX)+(currAI->x * 2.5f);
+									zpos = (fMinZ)+(currAI->z * 2.5f);
+
+
+									float dX = (AITransform->fPosition.x - xpos);
+									float dZ = (AITransform->fPosition.z - zpos);
+
+									if (dX > 0.5f || dZ > 0.5f || dZ < -0.5 || dX < -0.5) {
+
+										if (currAI->Move(-dX, -dZ));
+										//if (currAI->Move(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + dZ, timepassed));
+										//break;
+									}
+									//gridcheck = 6;
+									dX = 3;
+									dZ = 3;
+									updateGrid = true;
+									break;
+								}
 								break;
 							}
 							else if (currAI->hasAvailableBombSlot() && currAI->GetBombType() == 0) {
 								updateGrid = true;
 								dX = 6;
 								dZ = 6;
+								if (AI_1_Moving)
+								{
+									AI_1_Moving = false;
+									xpos = (fMinX)+(currAI->x * 2.5f);
+									zpos = (fMinZ)+(currAI->z * 2.5f);
+
+
+									float dX = (AITransform->fPosition.x - xpos);
+									float dZ = (AITransform->fPosition.z - zpos);
+
+									if (dX > 0.5f || dZ > 0.5f || dZ < -0.5 || dX < -0.5) {
+
+										if (currAI->Move(-dX, -dZ));
+										//if (currAI->Move(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + dZ, timepassed));
+										//break;
+									}
+									//gridcheck = 6;
+									dX = 3;
+									dZ = 3;
+									updateGrid = true;
+									break;
+								}
 								break;
 							}
 						}
@@ -4374,6 +4418,28 @@ void CGame::AI_Method(double timepassed, double action_time) {
 													gridcheck = 6;
 													dX = 3;
 													dZ = 3;
+													if (AI_1_Moving)
+													{
+														AI_1_Moving = false;
+														xpos = (fMinX)+(currAI->x * 2.5f);
+														zpos = (fMinZ)+(currAI->z * 2.5f);
+
+
+														float dX = (AITransform->fPosition.x - xpos);
+														float dZ = (AITransform->fPosition.z - zpos);
+
+														if (dX > 0.5f || dZ > 0.5f || dZ < -0.5 || dX < -0.5) {
+
+															if (currAI->Move(-dX, -dZ));
+															//if (currAI->Move(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + dZ, timepassed));
+															//break;
+														}
+														gridcheck = 6;
+														dX = 3;
+														dZ = 3;
+														updateGrid = true;
+														break;
+													}
 													break;
 												}
 												if (dZ >= 1 && dX >= 1)
@@ -4452,23 +4518,28 @@ void CGame::AI_Method(double timepassed, double action_time) {
 																	gridcheck = 6;
 																	dX = 3;
 																	dZ = 3;
-																	//if (!AI_1_Moving)
-																	//{
-																	//	AI_1_Moving = true;
-																	//xpos = (fMinX)+(currAI->x * 2.5f);
-																	//zpos = (fMinZ)+(currAI->z * 2.5f);
+																	 if (AI_1_Moving)
+																	{
+																		AI_1_Moving = false;
+																		xpos = (fMinX)+(currAI->x * 2.5f);
+																		zpos = (fMinZ)+(currAI->z * 2.5f);
 
 
-																	//float dX = (AITransform->fPosition.x - xpos);
-																	//float dZ = (AITransform->fPosition.z - zpos);
+																		float dX = (AITransform->fPosition.x - xpos);
+																		float dZ = (AITransform->fPosition.z - zpos);
 
-																	//if (dX > 0.5f || dZ > 0.5f || dZ < -0.5 || dX < -0.5) {
+																		if (dX > 0.5f || dZ > 0.5f || dZ < -0.5 || dX < -0.5) {
 
-																	//	if (currAI->Move(-dX, -dZ));
-																	//	//if (currAI->Move(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + dZ, timepassed));
-																	//break;
-																	//}
-																	//}
+																			if (currAI->Move(-dX, -dZ));
+																			//if (currAI->Move(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + dZ, timepassed));
+																			//break;
+																		}
+																		gridcheck = 6;
+																		dX = 3;
+																		dZ = 3;
+																		updateGrid = true;
+																		break;
+																	}
 																	break;
 
 																}
@@ -4558,23 +4629,29 @@ void CGame::AI_Method(double timepassed, double action_time) {
 													gridcheck = 6;
 													dX = 3;
 													dZ = 3;			
-													//if (!AI_1_Moving)
-													//{
-													//	AI_1_Moving = true;
-													//	xpos = (fMinX)+(currAI->x * 2.5f);
-													//	zpos = (fMinZ)+(currAI->z * 2.5f);
-													//
-													//
-													//	float dX = (AITransform->fPosition.x - xpos);
-													//	float dZ = (AITransform->fPosition.z - zpos);
-													//
-													//	if (dX > 0.5f || dZ > 0.5f || dZ < -0.5 || dX < -0.5) {
-													//
-													//		if (currAI->Move(-dX, -dZ));
-													//		//if (currAI->Move(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + dZ, timepassed));
-													//		//break;
-													//	}
-													//}
+													
+													if (AI_1_Moving)
+													{
+														AI_1_Moving = false;
+														xpos = (fMinX)+(currAI->x * 2.5f);
+														zpos = (fMinZ)+(currAI->z * 2.5f);
+
+
+														float dX = (AITransform->fPosition.x - xpos);
+														float dZ = (AITransform->fPosition.z - zpos);
+
+														if (dX > 0.5f || dZ > 0.5f || dZ < -0.5 || dX < -0.5) {
+
+															if (currAI->Move(-dX, -dZ));
+															//if (currAI->Move(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + dZ, timepassed));
+															//break;
+														}
+														gridcheck = 6;
+														dX = 3;
+														dZ = 3;
+														updateGrid = true;
+														break;
+													}
 													break;
 												}
 											}
@@ -4613,7 +4690,7 @@ void CGame::AI_Method(double timepassed, double action_time) {
 												PlayerCollision(currAI, cObj, deltaX, deltaZ);
 											}
 										}
-									if (AITransform->fPosition.x > (oldX) && AITransform->fPosition.z > (oldZ) && AITransform->fPosition.x < newX && AITransform->fPosition.z < newZ)
+									if ( (currAI->GetNumBombs() != currBombs || currAI->GetBombType() != currBombType))
 									{
 										AI_1_Moving = true;
 									}
