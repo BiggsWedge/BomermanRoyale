@@ -3903,7 +3903,7 @@ void CGame::AI_Method(double timepassed, double action_time) {
 		float endx = 0.0f;
 		float endz = 0.0f;
 		float dec = 0.0f;
-
+		int gridlocation = 0;
 		float lastZ = 0.0f;
 		float lastX = 0.0f;
 		float xpos = 0.0f;
@@ -3976,6 +3976,7 @@ void CGame::AI_Method(double timepassed, double action_time) {
 				loadInfo.scale = DirectX::XMFLOAT3(1.0f / 180.0f, 1.0f / 180.0f, 1.0f / 180.0f);
 				if (dX <= 1.25f && dZ <= 1.25f) {
 					currAI->gridlocation = i;
+					gridlocation = i;
 					updateGrid = true;
 
 					//if (currAI == v_cAI[0])
@@ -3988,7 +3989,7 @@ void CGame::AI_Method(double timepassed, double action_time) {
 			}
 		}
 		//AI_1_Moving = true;
-		if (currAI->gridlocation < GRID.size()) {
+		if (gridlocation < GRID.size()) {
 			xpos = (fMinX)+(currAI->x * 2.5f);
 			zpos = (fMinZ)+(currAI->z * 2.5f);
 			//if (step2)
@@ -4142,8 +4143,8 @@ void CGame::AI_Method(double timepassed, double action_time) {
 			//	}
 			//}
 
-			for (int dZ = -5; dZ <= 5; ++dZ) {
-				for (int dX = -5; dX <= 5; ++dX) {
+			for (int dZ = -4; dZ <= 4; ++dZ) {
+				for (int dX = -4; dX <= 4; ++dX) {
 					bool zbounds = true;
 					bool xbounds = true;
 					int zchange = currAI->z + dZ;
@@ -4161,12 +4162,12 @@ void CGame::AI_Method(double timepassed, double action_time) {
 						continue;
 					}
 			
-					currAI->gridlocation = ((zchange* width) + xchange);
+					gridlocation = ((zchange* width) + xchange);
 					zchange -= currAI->z;
 					xchange -= currAI->x;
 			
-					if (currAI->gridlocation < GRID.size()) {
-						int tile = GRID[currAI->gridlocation];
+					if (gridlocation < GRID.size()) {
+						int tile = GRID[gridlocation];
 			
 						if ((tile == GRID_SYSTEM::PLAYER) && xbounds && zbounds && (zchange == 0 || xchange == 0)) {
 			
@@ -4232,7 +4233,7 @@ void CGame::AI_Method(double timepassed, double action_time) {
 								}
 			
 								updateGrid = true;
-								AI_1_Moving = true;
+								//AI_1_Moving = true;
 								currAI->IncPlacedBombs();
 								dX = 6;
 								dZ = 6;
@@ -4270,11 +4271,11 @@ void CGame::AI_Method(double timepassed, double action_time) {
 							continue;
 						}
 
-						currAI->gridlocation = ((zchange* width) + xchange);
+						gridlocation = ((zchange* width) + xchange);
 						zchange -= currAI->z;
 						xchange -= currAI->x;
-						if (currAI->gridlocation < GRID.size()) {
-							int tile = GRID[currAI->gridlocation];
+						if (gridlocation < GRID.size()) {
+							int tile = GRID[gridlocation];
 
 
 							switch (gridcheck) {
@@ -4321,12 +4322,12 @@ void CGame::AI_Method(double timepassed, double action_time) {
 												continue;
 											}
 
-											currAI->gridlocation = ((zchange * width) + xchange);
+											gridlocation = ((zchange * width) + xchange);
 											zchange -= currAI->z;
 											xchange -= currAI->x;
 
-											if (currAI->gridlocation < GRID.size()) {
-												int tile = GRID[currAI->gridlocation];
+											if (gridlocation < GRID.size()) {
+												int tile = GRID[gridlocation];
 
 												if ((tile == GRID_SYSTEM::FREE || tile == GRID_SYSTEM::POWERUP) && xbounds && zbounds && (zchange == 0 xor xchange == 0)) {
 													deltaX = /*timepassed */ AI_SPEED * xchange;
@@ -4396,11 +4397,11 @@ void CGame::AI_Method(double timepassed, double action_time) {
 																continue;
 															}
 
-															currAI->gridlocation = (zchange * width) + xchange;
+															gridlocation = (zchange * width) + xchange;
 															zchange -= currAI->z;
 															xchange -= currAI->x;
-															if (currAI->gridlocation < GRID.size()) {
-																int tile = GRID[currAI->gridlocation];
+															if (gridlocation < GRID.size()) {
+																int tile = GRID[gridlocation];
 
 																if ((tile == GRID_SYSTEM::EXPLOSION_RADIUS) && (zchange == 0 xor xchange == 0) && xbounds && zbounds /*&& AIbombaction >= 1.5f*/) {
 																	//AIbombaction = 0.0f;					    
@@ -4504,11 +4505,11 @@ void CGame::AI_Method(double timepassed, double action_time) {
 												continue;
 											}
 
-											currAI->gridlocation = (zchange * width) + xchange;
+											gridlocation = (zchange * width) + xchange;
 											zchange -= currAI->z;
 											xchange -= currAI->x;
-											if (currAI->gridlocation < GRID.size()) {
-												int tile = GRID[currAI->gridlocation];
+											if (gridlocation < GRID.size()) {
+												int tile = GRID[gridlocation];
 												if ((tile == GRID_SYSTEM::FREE || tile == GRID_SYSTEM::POWERUP) && (zchange == 0 xor xchange == 0) && xbounds && zbounds) {
 													deltaX = /*timepassed */ AI_SPEED * xchange;
 													deltaZ = /*timepassed */ AI_SPEED * zchange;
@@ -4591,16 +4592,28 @@ void CGame::AI_Method(double timepassed, double action_time) {
 
 									//loadInfo.position = { AITransform->fPosition.x + deltaX, 2.5, AITransform->fPosition.z + deltaZ };
 									//objects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
-									int lastbomb = currAI->GetNumBombs();
-									
+									//zchange = currAI->z + dZ;
+									//xchange = currAI->x + dX;
+									//int nextlocation = ((zchange* width) + xchange);
+									//int currLocation = currAI->getGridlocation();
+									int currBombs = currAI->GetNumBombs();
+									int currBombType = currAI->GetBombType();
+									float oldX = AITransform->fPosition.x;
+									float oldZ = AITransform->fPosition.z;
+									float newX = AITransform->fPosition.x + deltaX;
+									float newZ = AITransform->fPosition.z + deltaZ;
 									if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x + deltaX, AITransform->fPosition.z, AITransform->fPosition.z, timepassed))
 										for (CObject* cObj : objects) {
 											if (currAI->Collides(cObj))
 												PlayerCollision(currAI, cObj, deltaX, deltaZ);
 										}
 									if (currAI->MoveOverTime(AITransform->fPosition.x, AITransform->fPosition.x, AITransform->fPosition.z, AITransform->fPosition.z + deltaZ, timepassed))
-									
-									if (currAI->GetNumBombs() != lastbomb)
+										for (CObject* cObj : objects) {
+											if (currAI->Collides(cObj)) {
+												PlayerCollision(currAI, cObj, deltaX, deltaZ);
+											}
+										}
+									if (AITransform->fPosition.x > (oldX) && AITransform->fPosition.z > (oldZ) && AITransform->fPosition.x < newX && AITransform->fPosition.z < newZ)
 									{
 										AI_1_Moving = true;
 									}
@@ -4661,12 +4674,12 @@ void CGame::AI_Method(double timepassed, double action_time) {
 												continue;
 											}
 
-											currAI->gridlocation = ((zchange * width) + xchange);
+											gridlocation = ((zchange * width) + xchange);
 											zchange -= currAI->z;
 											xchange -= currAI->x;
 
-											if (currAI->gridlocation < GRID.size()) {
-												int tile = GRID[currAI->gridlocation];
+											if (gridlocation < GRID.size()) {
+												int tile = GRID[gridlocation];
 
 												if (tile == GRID_SYSTEM::BOMB) {
 
@@ -4702,7 +4715,7 @@ void CGame::AI_Method(double timepassed, double action_time) {
 										break;
 									}
 									deltaX = lastDeltaX;
-									deltaZ = lastDeltaZ;
+									deltaZ = -lastDeltaZ;
 
 									if (currAI->hasAvailableBombSlot()/* && AIbombaction >= 1*/ && currAI->getBombIndices().size() == 0) {
 										//AIbombaction = 0;
@@ -4923,12 +4936,12 @@ void CGame::AI_Method(double timepassed, double action_time) {
 												continue;
 											}
 
-											currAI->gridlocation = ((zchange * width) + xchange);
+											gridlocation = ((zchange * width) + xchange);
 											zchange -= currAI->z;
 											xchange -= currAI->x;
 
-											if (currAI->gridlocation < GRID.size()) {
-												int tile = GRID[currAI->gridlocation];
+											if (gridlocation < GRID.size()) {
+												int tile = GRID[gridlocation];
 
 												if (tile == GRID_SYSTEM::BOMB && xbounds && zbounds) {
 
