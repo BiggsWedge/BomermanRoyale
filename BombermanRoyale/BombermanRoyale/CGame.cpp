@@ -3426,15 +3426,19 @@ void CGame::updateBombs(double timePassed) {
 		TComponent* texture = nullptr;
 		TTextureComponent* ptexture = nullptr;
 
+		
 		Xexplosions.at(i)->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
 		ptexture = (TTextureComponent*)texture;
-		float frameduration = 0.3f / 13.0f;
-		int frame = explosionTimers[i] / frameduration;
-		ptexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::EXPL_1 + frame;
+		if (ptexture->iUsedDiffuseIndex <= DIFFUSE_TEXTURES::EXPL_8)
+		{
+			float frameduration = 0.3f / 7.0f;
+			int frame = explosionTimers[i] / frameduration;
+			ptexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::EXPL_1 + frame;
 
-		Zexplosions.at(i)->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
-		ptexture = (TTextureComponent*)texture;
-		ptexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::EXPL_1 + frame;
+			Zexplosions.at(i)->GetComponent(COMPONENT_TYPE::TEXTURE, texture);
+			ptexture = (TTextureComponent*)texture;
+			ptexture->iUsedDiffuseIndex = DIFFUSE_TEXTURES::EXPL_1 + frame;
+		}
 
 		for (int j = 0; j < objects.size(); j++) {
 			TComponent* obj = nullptr;
@@ -3480,11 +3484,13 @@ void CGame::updateBombs(double timePassed) {
 		TComponent* Xplo = nullptr;
 		TComponent* Zplo = nullptr;
 		TComponent* playerRender = nullptr;
+		TComponent* playerTransform = nullptr;
 		TTransformComponent* XexplosionTrans;
 		XexplosionTrans = nullptr;
 		TTransformComponent* ZexplosionTrans;
 		ZexplosionTrans = nullptr;
 		TRendererComponent* explosionRender = nullptr;
+		TTransformComponent* deathSignTrans = nullptr;
 
 		for (CPlayer* player : v_cPlayers) {
 			if (player) {
@@ -3506,10 +3512,32 @@ void CGame::updateBombs(double timePassed) {
 							Xexplosions[i]->getParent()->setKillStreak(1);
 							player->setKillStreak(-player->getKillStreak());
 						}
-
+						if (player->isAlive())
+						{
+							player->GetComponent(COMPONENT_TYPE::TRANSFORM, playerTransform);
+							deathSignTrans = (TTransformComponent*)playerTransform;
+							explosionTimers.push_back(-0.3);
+							int num = rand() % 4;
+							OBJLoadInfo loadInfo;
+							loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+							loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+							loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+							loadInfo.usedGeo = -1;
+							loadInfo.forwardVec = { 0.0f, 1.5f, -0.2f };
+							loadInfo.usedDiffuse = DIFFUSE_TEXTURES::EXPL_9 + num;
+							loadInfo.meshID = MODELS::MENU1;
+							loadInfo.LoadState = curGameState;
+							loadInfo.floor = true;
+							loadInfo.item = false;
+							loadInfo.destroyable = false;
+							loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
+							loadInfo.scale = (num < 3) ? DirectX::XMFLOAT3(0.3f, 0.3f, 1.0f) : DirectX::XMFLOAT3(0.3f, 0.55f, 1.0f);
+							loadInfo.position = { deathSignTrans->fPosition.x, deathSignTrans->fPosition.y + 1.5f, deathSignTrans->fPosition.z };
+							Xexplosions.push_back(p_cEntityManager->CreateExplosionFromTemplate(loadInfo));
+							Zexplosions.push_back(p_cEntityManager->CreateExplosionFromTemplate(loadInfo));
+						}
 						//else if(player->isAlive())
 						//	Xexplosions[i]->getParent()->setScore(-1);
-						player->setAlive(false);
 						player->GetComponent(COMPONENT_TYPE::RENDERER, playerRender);
 						explosionRender = (TRendererComponent*)playerRender;
 						explosionRender->iUsedGeometryShaderIndex = GEOMETRY_SHADER::MESH_EXPLOSION;
@@ -3592,6 +3620,33 @@ void CGame::updateBombs(double timePassed) {
 				*/
 
 				CPlayer* parent = v_cBombs[i]->getParent();
+
+				TComponent* bombTransform = nullptr;
+				TTransformComponent* explosionScorchTrans = nullptr;
+				
+				v_cBombs[i]->GetComponent(COMPONENT_TYPE::TRANSFORM, bombTransform);
+				explosionScorchTrans = (TTransformComponent*)bombTransform;
+				OBJLoadInfo loadInfo;
+				loadInfo.usedVertex = VERTEX_SHADER::BASIC;
+				loadInfo.usedPixel = PIXEL_SHADER::BASIC;
+				loadInfo.usedInput = INPUT_LAYOUT::BASIC;
+				loadInfo.usedGeo = -1;
+				loadInfo.forwardVec = { 0.0f, 1.5f, -0.5f };
+				loadInfo.usedDiffuse = DIFFUSE_TEXTURES::EXPL_13;
+				loadInfo.meshID = MODELS::MENU1;
+				loadInfo.LoadState = curGameState;
+				loadInfo.floor = true;
+				loadInfo.item = false;
+				loadInfo.destroyable = false;
+				loadInfo.collisionLayer = COLLISION_LAYERS::FLOOR;
+				loadInfo.scale = DirectX::XMFLOAT3(0.3f, 0.3f, 1.0f);
+				loadInfo.position = { explosionScorchTrans->fPosition.x, explosionScorchTrans->fPosition.y + 0.2f, explosionScorchTrans->fPosition.z };
+				if (explosionScorchTrans->fPosition.y <= 0.5f)
+				{
+					explosionTimers.push_back(-1.0f);
+					Xexplosions.push_back(p_cEntityManager->CreateExplosionFromTemplate(loadInfo));
+					Zexplosions.push_back(p_cEntityManager->CreateExplosionFromTemplate(loadInfo));
+				}
 
 				explosionTimers.push_back(0.0f);
 				Xexplosions.push_back(p_cEntityManager->BombExplosionX(v_cBombs[i], parent, curGameState));
@@ -6082,6 +6137,7 @@ void CGame::CustomMeshUpdate(float timepassed) {
 		}
 	}
 
+	//render lava floor
 	if (lava.size() > 0) {
 		for (int i = 0; i < lava.size(); ++i) {
 			TComponent* cRenderer = nullptr;

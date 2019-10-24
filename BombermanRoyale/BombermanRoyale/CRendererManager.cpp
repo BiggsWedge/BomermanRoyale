@@ -57,7 +57,7 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 	const float bg_green[] = { 0.2f, 0.5f, 0.2f, 1.0f };
 
 
-	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView, DirectX::Colors::Wheat);
+	g_d3dData->d3dContext->ClearRenderTargetView(g_d3dData->d3dRenderTargetView, DirectX::Colors::White);
 	g_d3dData->d3dContext->RSSetViewports(1, &g_d3dData->d3dViewport);
 
 	if (gamestate == GAME_STATE::ARCADE_GAME || gamestate == GAME_STATE::BATTLE_GAME)
