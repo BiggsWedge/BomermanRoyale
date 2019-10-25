@@ -317,13 +317,8 @@ void CGame::Run() {
 			setGameState(GAME_STATE::LOAD_SCREEN);
 		}
 
-		if (loadScreenTime > 16 && (curGameState == GAME_STATE::CREDIT_SCREEN || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
-		{
-			setGameState(GAME_STATE::CREDIT_SCREEN);
 
-		}
-
-		if (loadScreenTime > 19 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::CREDIT_SCREEN) && loadHappened == false)
+		if (loadScreenTime > 16 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
 		{
 
 			setGameState(GAME_STATE::MAIN_MENU);
@@ -360,7 +355,7 @@ void CGame::Run() {
 
 		if (keys[KEYS::CREDITS].pressed())
 		{
-			setGameState(GAME_STATE::CREDIT_SCREEN);
+			setGameState(GAME_STATE::MAIN_MENU);
 		}
 
 		if (keys[KEYS::HELP_MENU].pressed() || p1Help.Pressed()) {
