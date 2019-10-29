@@ -398,7 +398,7 @@ void CGame::Run() {
 
 		if (keys[KEYS::CREDITS].pressed())
 		{
-			setGameState(GAME_STATE::MAIN_MENU);
+			setGameState(GAME_STATE::CREDIT_SCREEN);
 		}
 
 		if (keys[KEYS::HELP_MENU].pressed() || p1Help.Pressed()) {
