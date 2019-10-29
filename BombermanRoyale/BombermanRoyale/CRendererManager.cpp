@@ -118,6 +118,17 @@ bool CRendererManager::Draw(double timepassed, int gamestate, CGame* parentGame)
 
 	DirectX::XMVECTOR measurement = g_d3dData->d3dSpriteFont->MeasureString("Arcade Mode");
 
+	if (gamestate == GAME_STATE::MAIN_MENU || gamestate == GAME_STATE::ARCADE_MENU || gamestate == GAME_STATE::BATTLE_MENU || gamestate == GAME_STATE::CHARACTER_SCREEN)
+	{
+		RECT rect;
+		rect.top = 0;
+		rect.bottom = (float)g_d3dData->windowWidthHeight.y;
+		rect.left = 0.0f;
+		rect.right = (float)g_d3dData->windowWidthHeight.x;
+		(gamestate == GAME_STATE::CHARACTER_SCREEN) ? g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::MENU_NAV2], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }) : 
+			g_d3dData->d3dSpriteBatch->Draw(g_d3dData->d3dDiffuseTextures[DIFFUSE_TEXTURES::MENU_NAV1], rect, nullptr, { 1.0f, 1.0f, 1.0f, 1.0f });
+	}
+
 	if (gamestate == GAME_STATE::ARCADE_GAME || gamestate == GAME_STATE::BATTLE_GAME)
 	{
 		RECT rect;

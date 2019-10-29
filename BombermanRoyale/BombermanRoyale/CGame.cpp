@@ -3692,7 +3692,7 @@ bool CGame::loadTempMenus() {
 	loadInfo.LoadState = GAME_STATE::MAIN_MENU;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
-	loadInfo.position = { 2.0f, 12.4f, -9.2f };
+	loadInfo.position = { 2.0f, 12.4f, -8.2f };
 	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
 	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::MAIN_MENU;
 	loadInfo.scale = DirectX::XMFLOAT3(0.8f, 0.8f, 1.0f);
