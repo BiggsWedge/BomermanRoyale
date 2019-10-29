@@ -317,13 +317,51 @@ void CGame::Run() {
 			setGameState(GAME_STATE::LOAD_SCREEN);
 		}
 
-		if (loadScreenTime > 16 && (curGameState == GAME_STATE::CREDIT_SCREEN || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
-		{
-			setGameState(GAME_STATE::CREDIT_SCREEN);
 
+		if (loadScreenTime > 14 && (curGameState == GAME_STATE::OP1 || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::OP1);
 		}
 
-		if (loadScreenTime > 19 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::CREDIT_SCREEN) && loadHappened == false)
+
+		if (loadScreenTime > 16 && (curGameState == GAME_STATE::OP2 || curGameState == GAME_STATE::OP1) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::OP2);
+		}
+
+
+
+		if (loadScreenTime > 18 && (curGameState == GAME_STATE::OP3 || curGameState == GAME_STATE::OP2) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::OP3);
+		}
+
+
+		if (loadScreenTime > 20 && (curGameState == GAME_STATE::OP4 || curGameState == GAME_STATE::OP3) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::OP4);
+		}
+
+
+		if (loadScreenTime > 22 && (curGameState == GAME_STATE::OP5 || curGameState == GAME_STATE::OP4) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::OP5);
+		}
+
+
+		if (loadScreenTime > 26 && (curGameState == GAME_STATE::OP6 || curGameState == GAME_STATE::OP5) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::OP6);
+		}
+
+
+		if (loadScreenTime > 28 && (curGameState == GAME_STATE::OP7 || curGameState == GAME_STATE::OP6) && loadHappened == false)
+		{
+			setGameState(GAME_STATE::OP7);
+		}
+
+
+		if (loadScreenTime > 30 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::OP7) && loadHappened == false)
 		{
 
 			setGameState(GAME_STATE::MAIN_MENU);
@@ -3714,6 +3752,62 @@ bool CGame::loadTempMenus() {
 	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
 	loadInfo.meshID = MODELS::MENU1;
 	loadInfo.LoadState = GAME_STATE::GP_SPLASH;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::OP1;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::OP1;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::OP2;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::OP2;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::OP3;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::OP3;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::OP4;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::OP4;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::OP5;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::OP5;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::OP6;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::OP6;
+	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
+
+	loadInfo.position = { 0.0f, 11.4f, -4.2f };
+	loadInfo.forwardVec = { 0.0f, 1.59f, -1.0f };
+	loadInfo.usedDiffuse = DIFFUSE_TEXTURES::OP7;
+	loadInfo.scale = DirectX::XMFLOAT3(2.515f, 1.95f, 1.0f);
+	loadInfo.meshID = MODELS::MENU1;
+	loadInfo.LoadState = GAME_STATE::OP7;
 	menuObjects.push_back(p_cEntityManager->CreateOBJFromTemplate(loadInfo));
 
 	loadInfo.position = { 0.0f, 11.4f, -4.2f };
