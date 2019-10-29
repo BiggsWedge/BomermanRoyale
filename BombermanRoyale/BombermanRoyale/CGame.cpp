@@ -327,7 +327,7 @@ void CGame::Run() {
 		}
 
 
-		if (loadScreenTime > 16 && (curGameState == GAME_STATE::OP2 || curGameState == GAME_STATE::OP1) && loadHappened == false)
+		if (loadScreenTime > 18 && (curGameState == GAME_STATE::OP2 || curGameState == GAME_STATE::OP1) && loadHappened == false)
 		{
 
 			setGameState(GAME_STATE::OP2);
@@ -336,7 +336,7 @@ void CGame::Run() {
 		}
 
 
-		if (loadScreenTime > 18 && (curGameState == GAME_STATE::OP3 || curGameState == GAME_STATE::OP2) && loadHappened == false)
+		if (loadScreenTime > 22 && (curGameState == GAME_STATE::OP3 || curGameState == GAME_STATE::OP2) && loadHappened == false)
 		{
 
 			setGameState(GAME_STATE::OP3);
@@ -345,7 +345,7 @@ void CGame::Run() {
 		}
 
 
-		if (loadScreenTime > 20 && (curGameState == GAME_STATE::OP4 || curGameState == GAME_STATE::OP3) && loadHappened == false)
+		if (loadScreenTime > 26 && (curGameState == GAME_STATE::OP4 || curGameState == GAME_STATE::OP3) && loadHappened == false)
 		{
 
 			setGameState(GAME_STATE::OP4);
@@ -354,7 +354,7 @@ void CGame::Run() {
 		}
 
 
-		if (loadScreenTime > 22 && (curGameState == GAME_STATE::OP5 || curGameState == GAME_STATE::OP4) && loadHappened == false)
+		if (loadScreenTime > 30 && (curGameState == GAME_STATE::OP5 || curGameState == GAME_STATE::OP4) && loadHappened == false)
 		{
 
 			setGameState(GAME_STATE::OP5);
@@ -362,7 +362,7 @@ void CGame::Run() {
 			continue;
 		}
 
-		if (loadScreenTime > 24 && (curGameState == GAME_STATE::OP6 || curGameState == GAME_STATE::OP5) && loadHappened == false)
+		if (loadScreenTime > 34 && (curGameState == GAME_STATE::OP6 || curGameState == GAME_STATE::OP5) && loadHappened == false)
 		{
 
 			setGameState(GAME_STATE::OP6);
@@ -370,7 +370,7 @@ void CGame::Run() {
 			continue;
 		}
 
-		if (loadScreenTime > 26 && (curGameState == GAME_STATE::OP7 || curGameState == GAME_STATE::OP6) && loadHappened == false)
+		if (loadScreenTime > 38 && (curGameState == GAME_STATE::OP7 || curGameState == GAME_STATE::OP6) && loadHappened == false)
 		{
 
 			setGameState(GAME_STATE::OP7);
@@ -378,7 +378,7 @@ void CGame::Run() {
 			continue;
 		}
 
-		if (loadScreenTime > 28 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::OP7) && loadHappened == false)
+		if (loadScreenTime > 42 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::OP7) && loadHappened == false)
 		{
 
 			setGameState(GAME_STATE::MAIN_MENU);
