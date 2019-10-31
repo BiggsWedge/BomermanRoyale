@@ -222,20 +222,25 @@ bool CObject::TurnPlayerTo(float _x, float _z) {
 	//	return false;
 	//collider = (TColliderComponent*)cTransform;
 	DirectX::XMFLOAT3 targetVec = { _x, 0.0f, _z };
+	//DirectX::XMFLOAT3 targetVec = { transform->fPosition.x, 0.0f, transform->fPosition.z };
 	DirectX::XMFLOAT3 newTarget;
 	DirectX::XMVECTOR up = { 0, 1, 0, 0 };
-	DirectX::XMStoreFloat3(&newTarget, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec))));
+	DirectX::XMVECTOR newTarNorm = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&targetVec));
 
-	DirectX::XMVECTOR z = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&newTarget), DirectX::XMLoadFloat3(&transform->fPosition));
+
+	DirectX::XMVECTOR z = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&transform->fPosition), DirectX::XMLoadFloat3(&targetVec));
 	z = DirectX::XMVector3Normalize(z);
+	DirectX::XMStoreFloat3(&newTarget, z);
 	DirectX::XMVECTOR x = DirectX::XMVector3Cross(up, z);
 	x = DirectX::XMVector3Normalize(x);
-	DirectX::XMVECTOR y = DirectX::XMVector3Cross(z, x);
+	DirectX::XMVECTOR y = DirectX::XMVector3Cross(z,x);
 	y = DirectX::XMVector3Normalize(y);
 	DirectX::XMMATRIX result = DirectX::XMMATRIX(x, y, z, DirectX::XMLoadFloat3(&transform->fPosition));
 
-	//transform->fForwardVector = newTarget;
-	transform->mObjMatrix = result;
+	//result = DirectX::XMMatrixScaling(transform->fScale.x, transform->fScale.y, transform->fScale.z) * result;
+	transform->fForwardVector = newTarget;
+	transform->ResetMatrix();
+	//transform->mObjMatrix = result;
 	//DirectX::XMFLOAT4 pos;
 	//DirectX::XMStoreFloat4(&pos, transform->mObjMatrix.r[3]);
 	//DirectX::XMStoreFloat3(&transform->fForwardVector, transform->mObjMatrix.r[2]);
@@ -243,7 +248,7 @@ bool CObject::TurnPlayerTo(float _x, float _z) {
 	//collider->d3dCollider.Center.x = transform->fPosition.x;
 	//collider->d3dCollider.Center.y = transform->fPosition.y;
 	//collider->d3dCollider.Center.z = transform->fPosition.z;
-
+	return true;
 }
 
 bool CObject::Move(float _x, float _z, bool rotation)
