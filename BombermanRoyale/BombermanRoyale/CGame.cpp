@@ -22,6 +22,7 @@ const char* fallingSFX = ".//Assets//Music//FallingSound.wav";
 const char* playerfallingSFX = ".//Assets//Music//PlayerFalling.wav";
 const char* WinScreenSFX = ".//Assets//Music//WinScreen.wav";
 const char* DeathSFX = ".//Assets//Music//DeathSound.wav";
+const char* VoiceOver = ".//Assets//Music//Chickens_1.wav";
 
 Button p1Pause;
 Button p1Help;
@@ -185,6 +186,13 @@ void CGame::Run() {
 			//g_pMusicStream1->StopStream();
 		}
 	}
+	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(VoiceOver, &g_pVoiceOverStream))) {
+		if (G_SUCCESS(g_pVoiceOverStream->SetVolume(0.4f)))
+		{
+			g_pVoiceOverStream->StreamStart();
+			g_pVoiceOverStream->StopStream();
+		}
+	}
 	if (G_SUCCESS(g_pAudioHolder->CreateMusicStream(CharacterMusicFilePath, &g_pMusicStream2))) {
 		if (G_SUCCESS(g_pMusicStream2->SetVolume(0.5f)))
 		{
@@ -308,63 +316,76 @@ void CGame::Run() {
 		if (loadScreenTime > 8 && (curGameState == GAME_STATE::DEV_LOGO || curGameState == GAME_STATE::GP_SPLASH) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::DEV_LOGO);
-
+			g_pMusicStream1->SetVolume(0.2);
 		}
 
 
 		if (loadScreenTime > 12 && (curGameState == GAME_STATE::LOAD_SCREEN || curGameState == GAME_STATE::DEV_LOGO) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::LOAD_SCREEN);
+			g_pMusicStream1->SetVolume(0.1);
 		}
 
 
 		if (loadScreenTime > 14 && (curGameState == GAME_STATE::OP1 || curGameState == GAME_STATE::LOAD_SCREEN) && loadHappened == false)
 		{
+
 			setGameState(GAME_STATE::OP1);
+			g_pMusicStream1->SetVolume(0.01);
+			g_pVoiceOverStream->isStreamPlaying(soundplaying);
+			if (!soundplaying)
+				g_pVoiceOverStream->StreamStart();
 		}
 
 
-		if (loadScreenTime > 16 && (curGameState == GAME_STATE::OP2 || curGameState == GAME_STATE::OP1) && loadHappened == false)
+		if (loadScreenTime > 18 && (curGameState == GAME_STATE::OP2 || curGameState == GAME_STATE::OP1) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::OP2);
 		}
 
 
 
-		if (loadScreenTime > 18 && (curGameState == GAME_STATE::OP3 || curGameState == GAME_STATE::OP2) && loadHappened == false)
+		if (loadScreenTime > 29 && (curGameState == GAME_STATE::OP3 || curGameState == GAME_STATE::OP2) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::OP3);
 		}
 
 
-		if (loadScreenTime > 20 && (curGameState == GAME_STATE::OP4 || curGameState == GAME_STATE::OP3) && loadHappened == false)
+		if (loadScreenTime > 43 && (curGameState == GAME_STATE::OP4 || curGameState == GAME_STATE::OP3) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::OP4);
 		}
 
 
-		if (loadScreenTime > 22 && (curGameState == GAME_STATE::OP5 || curGameState == GAME_STATE::OP4) && loadHappened == false)
+		if (loadScreenTime > 59 && (curGameState == GAME_STATE::OP5 || curGameState == GAME_STATE::OP4) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::OP5);
 		}
 
 
-		if (loadScreenTime > 26 && (curGameState == GAME_STATE::OP6 || curGameState == GAME_STATE::OP5) && loadHappened == false)
+		if (loadScreenTime > 78 && (curGameState == GAME_STATE::OP6 || curGameState == GAME_STATE::OP5) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::OP6);
 		}
 
 
-		if (loadScreenTime > 28 && (curGameState == GAME_STATE::OP7 || curGameState == GAME_STATE::OP6) && loadHappened == false)
+		if (loadScreenTime > 90 && (curGameState == GAME_STATE::OP7 || curGameState == GAME_STATE::OP6) && loadHappened == false)
 		{
 			setGameState(GAME_STATE::OP7);
+			if (loadScreenTime > 104 && loadScreenTime < 105)
+				g_pMusicStream1->SetVolume(0.08);
+			if(loadScreenTime > 105 && loadScreenTime < 106)
+				g_pMusicStream1->SetVolume(0.14);
+			if (loadScreenTime > 106)
+				g_pMusicStream1->SetVolume(0.22);
 		}
 
 
-		if (loadScreenTime > 30 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::OP7) && loadHappened == false)
+		if (loadScreenTime > 107 && (curGameState == GAME_STATE::MAIN_MENU || curGameState == GAME_STATE::OP7) && loadHappened == false)
 		{
-
+			g_pVoiceOverStream->StopStream();
 			setGameState(GAME_STATE::MAIN_MENU);
+			g_pMusicStream1->SetVolume(0.3);
 			loadHappened = true;
 			continue;
 		}
